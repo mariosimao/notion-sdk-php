@@ -1,0 +1,27 @@
+{
+    "name": "mariosimao/notion-sdk",
+    "description": "Notion SDK",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Notion\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Mario Simão",
+            "email": "mariogsimao@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.0",
+        "psr/http-client": "^1.0",
+        "nyholm/psr7": "^1.4"
+    },
+    "require-dev": {
+        "vimeo/psalm": "^4.10",
+        "guzzlehttp/guzzle": "^7.3",
+        "symfony/http-client": "^5.3"
+    }
+}
