@@ -43,8 +43,10 @@ class Page
 
     public static function fromArray(array $array): self
     {
-        $icon = $array["icon"]["type"] === "emoji" ?
-            Emoji::fromArray($array["icon"]) : File::fromArray($array["icon"]);
+        $icon = match($array["icon"]["type"]) {
+            "emoji" => Emoji::fromArray($array["icon"]),
+            "file"  => File::fromArray($array["icon"]),
+        };
 
         $cover = isset($array["cover"]) ? File::fromArray($array["cover"]) : null;
 
@@ -60,6 +62,20 @@ class Page
             $parent,
             $array["url"],
         );
+    }
+
+    public function toArray(): array
+    {
+        return [
+            "id"               => $this->id,
+            "created_time"     => $this->createdTime->format(DATE_ISO8601),
+            "last_edited_time" => $this->lastEditedTime->format(DATE_ISO8601),
+            "archived"         => $this->archived,
+            "icon"             => $this->icon->toArray(),
+            "cover"            => $this->cover->toArray(),
+            "parent"           => $this->parent->toArray(),
+            "url"              => $this->url,
+        ];
     }
 
     public function id(): string
