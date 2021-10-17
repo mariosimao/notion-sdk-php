@@ -48,6 +48,25 @@ class User
         );
     }
 
+    public function toArray(): array
+    {
+        $array = [
+            "id"         => $this->id,
+            "name"       => $this->name,
+            "avatar_url" => $this->avatarUrl,
+            "type"       => $this->type,
+        ];
+
+        if ($this->isPerson()) {
+            $array["person"] = $this->person->toArray();
+        }
+        if ($this->isBot()) {
+            $array["bot"] = $this->bot->toArray();
+        }
+
+        return $array;
+    }
+
     public function id(): string
     {
         return $this->id;

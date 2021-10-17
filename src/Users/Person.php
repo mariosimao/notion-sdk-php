@@ -16,6 +16,13 @@ class Person
         return new self($array["email"]);
     }
 
+    public function toArray(): array
+    {
+        return [
+            "email" => $this->email,
+        ];
+    }
+
     public function email(): string
     {
         return $this->email;

@@ -12,4 +12,9 @@ class Bot
     {
         return new self();
     }
+
+    public function toArray(): array
+    {
+        return [];
+    }
 }
