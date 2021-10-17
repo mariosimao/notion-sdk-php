@@ -3,6 +3,7 @@
 namespace Notion;
 
 use GuzzleHttp\Client as GuzzleClient;
+use Notion\Pages\Client as PagesClient;
 use Notion\Users\Client as UsersClient;
 use Psr\Http\Client\ClientInterface;
 use Symfony\Component\HttpClient\Psr18Client as SymfonyClient;
@@ -36,6 +37,15 @@ class Client
     public function users(): UsersClient
     {
         return new UsersClient(
+            $this->psrClient,
+            $this->token,
+            self::NOTION_VERSION
+        );
+    }
+
+    public function pages(): PagesClient
+    {
+        return new PagesClient(
             $this->psrClient,
             $this->token,
             self::NOTION_VERSION
