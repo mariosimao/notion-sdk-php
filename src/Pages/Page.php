@@ -14,6 +14,7 @@ class Page
     private bool $archived;
     private Emoji|File $icon;
     private File|null $cover;
+    private PageParent $parent;
     private string $url;
 
     private function __construct(
@@ -23,6 +24,7 @@ class Page
         bool $archived,
         Emoji|File $icon,
         File|null $cover,
+        PageParent $parent,
         string $url,
     ) {
         if ($cover !== null && $cover->isInternal()) {
@@ -35,6 +37,7 @@ class Page
         $this->archived = $archived;
         $this->icon = $icon;
         $this->cover = $cover;
+        $this->parent = $parent;
         $this->url = $url;
     }
 
@@ -45,6 +48,8 @@ class Page
 
         $cover = isset($array["cover"]) ? File::fromArray($array["cover"]) : null;
 
+        $parent = PageParent::fromArray($array);
+
         return new self(
             $array["id"],
             new DateTimeImmutable($array["created_time"]),
@@ -52,6 +57,7 @@ class Page
             $array["archived"],
             $icon,
             $cover,
+            $parent,
             $array["url"],
         );
     }
@@ -84,6 +90,11 @@ class Page
     public function cover(): File|null
     {
         return $this->cover;
+    }
+
+    public function parent(): PageParent
+    {
+        return $this->parent;
     }
 
     public function url(): string
