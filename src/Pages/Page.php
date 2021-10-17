@@ -5,6 +5,7 @@ namespace Notion\Pages;
 use DateTimeImmutable;
 use Notion\Common\Emoji;
 use Notion\Common\File;
+use Notion\Pages\Properties\Factory;
 
 class Page
 {
@@ -12,8 +13,9 @@ class Page
     private DateTimeImmutable $createdTime;
     private DateTimeImmutable $lastEditedTime;
     private bool $archived;
-    private Emoji|File $icon;
+    private Emoji|File|null $icon;
     private File|null $cover;
+    private array $properties;
     private PageParent $parent;
     private string $url;
 
@@ -22,8 +24,9 @@ class Page
         DateTimeImmutable $createdTime,
         DateTimeImmutable $lastEditedTime,
         bool $archived,
-        Emoji|File $icon,
+        Emoji|File|null $icon,
         File|null $cover,
+        array $properties,
         PageParent $parent,
         string $url,
     ) {
@@ -37,20 +40,29 @@ class Page
         $this->archived = $archived;
         $this->icon = $icon;
         $this->cover = $cover;
+        $this->properties = $properties;
         $this->parent = $parent;
         $this->url = $url;
     }
 
     public static function fromArray(array $array): self
     {
-        $icon = match($array["icon"]["type"]) {
-            "emoji" => Emoji::fromArray($array["icon"]),
-            "file"  => File::fromArray($array["icon"]),
-        };
+        $icon = null;
+        if (is_array($array["icon"])) {
+            $icon = match($array["icon"]["type"]) {
+                "emoji" => Emoji::fromArray($array["icon"]),
+                "file"  => File::fromArray($array["icon"]),
+            };
+        }
 
         $cover = isset($array["cover"]) ? File::fromArray($array["cover"]) : null;
 
-        $parent = PageParent::fromArray($array);
+        $parent = PageParent::fromArray($array["parent"]);
+
+        $properties = [];
+        foreach ($array["properties"] as $propertyName => $propertyArray) {
+            $properties[$propertyName] = Factory::fromArray($propertyArray);
+        }
 
         return new self(
             $array["id"],
@@ -59,6 +71,7 @@ class Page
             $array["archived"],
             $icon,
             $cover,
+            $properties,
             $parent,
             $array["url"],
         );
@@ -71,8 +84,9 @@ class Page
             "created_time"     => $this->createdTime->format(DATE_ISO8601),
             "last_edited_time" => $this->lastEditedTime->format(DATE_ISO8601),
             "archived"         => $this->archived,
-            "icon"             => $this->icon->toArray(),
-            "cover"            => $this->cover->toArray(),
+            "icon"             => $this->icon?->toArray(),
+            "cover"            => $this->cover?->toArray(),
+            "properties"       => array_map(fn($p) => $p->toArray(), $this->properties),
             "parent"           => $this->parent->toArray(),
             "url"              => $this->url,
         ];
@@ -98,7 +112,7 @@ class Page
         return $this->archived;
     }
 
-    public function icon(): Emoji|File
+    public function icon(): Emoji|File|null
     {
         return $this->icon;
     }
@@ -106,6 +120,11 @@ class Page
     public function cover(): File|null
     {
         return $this->cover;
+    }
+
+    public function properties(): array
+    {
+        return $this->properties;
     }
 
     public function parent(): PageParent
