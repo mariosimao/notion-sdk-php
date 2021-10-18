@@ -1,5 +1,7 @@
 <?php
 
+namespace Notion\Test\Blocks;
+
 use Notion\Blocks\Heading2;
 use Notion\Common\RichText;
 use PHPUnit\Framework\TestCase;

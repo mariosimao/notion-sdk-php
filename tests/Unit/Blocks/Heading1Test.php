@@ -1,24 +1,25 @@
 <?php
 
-use Notion\Blocks\Paragraph;
+namespace Notion\Test\Blocks;
+
+use Notion\Blocks\Heading1;
 use Notion\Common\RichText;
 use PHPUnit\Framework\TestCase;
 
-class ParagraphTest extends TestCase
+class Heading1Test extends TestCase
 {
-    public function test_create_empty_paragraph(): void
+    public function test_create_empty_heading(): void
     {
-        $paragraph = Paragraph::create();
+        $heading = Heading1::create();
 
-        $this->assertEmpty($paragraph->text());
-        $this->assertEmpty($paragraph->children());
+        $this->assertEmpty($heading->text());
     }
 
     public function test_create_from_string(): void
     {
-        $paragraph = Paragraph::fromString("Dummy paragraph.");
+        $heading = Heading1::fromString("Dummy heading.");
 
-        $this->assertEquals("Dummy paragraph.", $paragraph->toString());
+        $this->assertEquals("Dummy heading.", $heading->toString());
     }
 
     public function test_create_from_array(): void
@@ -30,15 +31,15 @@ class ParagraphTest extends TestCase
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
             "archived"         => false,
             "has_children"     => false,
-            "type"             => "paragraph",
-            "paragraph"        => [
+            "type"             => "heading_1",
+            "heading_1"        => [
                 "text" => [
                     [
-                        "plain_text"  => "Notion paragraphs ",
+                        "plain_text"  => "Notion headings ",
                         "href"        => null,
                         "type"        => "text",
                         "text"        => [
-                            "content" => "Notion paragraphs ",
+                            "content" => "Notion headings ",
                             "link" => null,
                         ],
                         "annotations" => [
@@ -72,12 +73,11 @@ class ParagraphTest extends TestCase
             ],
         ];
 
-        $paragraph = Paragraph::fromArray($array);
+        $heading = Heading1::fromArray($array);
 
-        $this->assertCount(2, $paragraph->text());
-        $this->assertEmpty($paragraph->children());
-        $this->assertEquals("Notion paragraphs rock!", $paragraph->toString());
-        $this->assertFalse($paragraph->block()->archived());
+        $this->assertCount(2, $heading->text());
+        $this->assertEquals("Notion headings rock!", $heading->toString());
+        $this->assertFalse($heading->block()->archived());
     }
 
     public function test_error_on_wrong_type(): void
@@ -91,33 +91,32 @@ class ParagraphTest extends TestCase
             "archived"         => false,
             "has_children"     => false,
             "type"             => "wrong-type",
-            "paragraph"        => [
+            "heading_1"        => [
                 "text"     => [],
-                "children" => [],
             ],
         ];
 
-        $paragraph = Paragraph::fromArray($array);
+        Heading1::fromArray($array);
     }
 
     public function test_transform_in_array(): void
     {
-        $p = Paragraph::fromString("Simple paragraph");
+        $h = Heading1::fromString("Simple heading");
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $p->block()->createdTime()->format(DATE_ISO8601),
-            "last_edited_time" => $p->block()->lastEditedType()->format(DATE_ISO8601),
+            "created_time"     => $h->block()->createdTime()->format(DATE_ISO8601),
+            "last_edited_time" => $h->block()->lastEditedType()->format(DATE_ISO8601),
             "archived"         => false,
             "has_children"      => false,
-            "type"             => "paragraph",
-            "paragraph"        => [
+            "type"             => "heading_1",
+            "heading_1"        => [
                 "text" => [[
-                    "plain_text"  => "Simple paragraph",
+                    "plain_text"  => "Simple heading",
                     "href"        => null,
                     "type"        => "text",
                     "text"        => [
-                        "content" => "Simple paragraph",
+                        "content" => "Simple heading",
                         "link" => null,
                     ],
                     "annotations" => [
@@ -129,56 +128,34 @@ class ParagraphTest extends TestCase
                         "color"         => "default",
                     ],
                 ]],
-                "children" => [],
             ],
         ];
 
-        $this->assertEquals($expected, $p->toArray());
+        $this->assertEquals($expected, $h->toArray());
     }
 
     public function test_replace_text(): void
     {
-        $oldParagraph = Paragraph::fromString("This is an old paragraph");
+        $oldHeading = Heading1::fromString("This is an old heading");
 
-        $newParagraph = $oldParagraph->withText(
+        $newHeading = $oldHeading->withText(
             RichText::createText("This is a "),
-            RichText::createText("new paragraph"),
+            RichText::createText("new heading"),
         );
 
-        $this->assertEquals("This is an old paragraph", $oldParagraph->toString());
-        $this->assertEquals("This is a new paragraph", $newParagraph->toString());
+        $this->assertEquals("This is an old heading", $oldHeading->toString());
+        $this->assertEquals("This is a new heading", $newHeading->toString());
     }
 
     public function test_append_text(): void
     {
-        $oldParagraph = Paragraph::fromString("A paragraph");
+        $oldHeading = Heading1::fromString("A heading");
 
-        $newParagraph = $oldParagraph->appendText(
+        $newHeading = $oldHeading->appendText(
             RichText::createText(" can be extended.")
         );
 
-        $this->assertEquals("A paragraph", $oldParagraph->toString());
-        $this->assertEquals("A paragraph can be extended.", $newParagraph->toString());
-    }
-
-    public function test_replace_children(): void
-    {
-        $paragraph = Paragraph::fromString("Simple paragraph.")->withChildren(
-            Paragraph::fromString("Nested paragraph 1"),
-            Paragraph::fromString("Nested paragraph 2"),
-        );
-
-        $this->assertCount(2, $paragraph->children());
-        $this->assertEquals("Nested paragraph 1", $paragraph->children()[0]->toString());
-        $this->assertEquals("Nested paragraph 2", $paragraph->children()[1]->toString());
-    }
-
-    public function test_append_child(): void
-    {
-        $paragraph = Paragraph::fromString("Simple paragraph.");
-        $paragraph = $paragraph->appendChild(Paragraph::fromString("Nested paragraph"));
-
-        $this->assertCount(1, $paragraph->children());
-        $this->assertEquals("Nested paragraph", $paragraph->children()[0]->toString());
+        $this->assertEquals("A heading", $oldHeading->toString());
+        $this->assertEquals("A heading can be extended.", $newHeading->toString());
     }
 }
