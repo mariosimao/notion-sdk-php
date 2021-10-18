@@ -6,7 +6,6 @@ use Throwable;
 
 class NotionException extends \Exception
 {
-    private string $message;
     private string $errorCode;
 
     public function __construct($message, $errorCode)
@@ -14,5 +13,9 @@ class NotionException extends \Exception
         $this->errorCode = $errorCode;
 
         parent::__construct($message);
+    }
+
+    public function errorCode(): string {
+        return $this->errorCode;
     }
 }
