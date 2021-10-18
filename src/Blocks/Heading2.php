@@ -41,7 +41,9 @@ class Heading2 implements BlockInterface
     {
         $block = Block::fromArray($array);
 
-        $text = array_map(fn($t) => RichText::fromArray($t), $array["text"]);
+        $heading = $array[self::TYPE];
+
+        $text = array_map(fn($t) => RichText::fromArray($t), $heading["text"]);
 
         return new self($block, $text);
     }
