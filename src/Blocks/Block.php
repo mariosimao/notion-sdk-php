@@ -73,7 +73,8 @@ class Block
     public function toArray(): array
     {
         return [
-            "id"               => $this->id,
+            // "id"               => $this->id,
+            "object"           => "block",
             "created_time"     => $this->createdTime->format(DATE_ISO8601),
             "last_edited_time" => $this->lastEditedTime->format(DATE_ISO8601),
             "archived"         => $this->archived,
