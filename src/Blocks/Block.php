@@ -13,7 +13,7 @@ class Block
     public const TYPE_CALLOUT = "callout";
     public const TYPE_QUOTE = "quote";
     public const TYPE_BULLETED_LIST_ITEM = "bulleted_list_item";
-    public const TYPE_NUMBERED_LIST = "numbered_list";
+    public const TYPE_NUMBERED_LIST_ITEM = "numbered_list_item";
     public const TYPE_TO_DO = "to_do";
     public const TYPE_TOGGLE = "toggle";
     public const TYPE_CODE = "code";
@@ -159,9 +159,9 @@ class Block
         return $this->type === self::TYPE_BULLETED_LIST_ITEM;
     }
 
-    public function isNumberedList(): bool
+    public function isNumberedListItem(): bool
     {
-        return $this->type === self::TYPE_NUMBERED_LIST;
+        return $this->type === self::TYPE_NUMBERED_LIST_ITEM;
     }
 
     public function isToDo(): bool
