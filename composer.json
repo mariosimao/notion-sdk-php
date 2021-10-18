@@ -29,5 +29,8 @@
         "guzzlehttp/guzzle": "^7.3",
         "symfony/http-client": "^5.3",
         "phpunit/phpunit": "^9.5"
+    },
+    "scripts": {
+        "ci-test": "phpunit --coverage-clover dist/phpunit/clover.xml"
     }
 }
