@@ -27,9 +27,7 @@ class Annotations
         bool $code,
         string $color,
     ) {
-        if (!in_array($color, self::ALLOWED_COLORS)) {
-            throw new \Exception("Invalid color: '{$color}'.");
-        }
+        $this->checkColor($color);
 
         $this->bold = $bold;
         $this->italic = $italic;
@@ -37,6 +35,11 @@ class Annotations
         $this->underline = $underline;
         $this->code = $code;
         $this->color = $color;
+    }
+
+    public static function create(): self
+    {
+        return new self(false, false, false, false, false, "default");
     }
 
     public static function fromArray(array $array): self
@@ -56,34 +59,34 @@ class Annotations
         return [
             "bold"          => $this->bold,
             "italic"        => $this->italic,
-            "strikeThrough" => $this->strikeThrough,
+            "strikethrough" => $this->strikeThrough,
             "underline"     => $this->underline,
             "code"          => $this->code,
             "color"         => $this->color,
         ];
     }
 
-    public function bold(): bool
+    public function isBold(): bool
     {
         return $this->bold;
     }
 
-    public function italic(): bool
+    public function isItalic(): bool
     {
         return $this->italic;
     }
 
-    public function strikeThrough(): bool
+    public function isStrikeThrough(): bool
     {
         return $this->strikeThrough;
     }
 
-    public function underline(): bool
+    public function isUnderline(): bool
     {
         return $this->underline;
     }
 
-    public function code(): bool
+    public function isCode(): bool
     {
         return $this->code;
     }
@@ -91,5 +94,84 @@ class Annotations
     public function color(): string
     {
         return $this->color;
+    }
+
+    public function bold($bold = true): self
+    {
+        return new self(
+            $bold,
+            $this->italic,
+            $this->strikeThrough,
+            $this->underline,
+            $this->code,
+            $this->color,
+        );
+    }
+
+    public function italic($italic = true): self
+    {
+        return new self(
+            $this->bold,
+            $italic,
+            $this->strikeThrough,
+            $this->underline,
+            $this->code,
+            $this->color,
+        );
+    }
+
+    public function strikeThrough($strikeThrough = true): self
+    {
+        return new self(
+            $this->bold,
+            $this->italic,
+            $strikeThrough,
+            $this->underline,
+            $this->code,
+            $this->color,
+        );
+    }
+
+    public function underline($underline = true): self
+    {
+        return new self(
+            $this->bold,
+            $this->italic,
+            $this->strikeThrough,
+            $underline,
+            $this->code,
+            $this->color,
+        );
+    }
+
+    public function code($code = true): self
+    {
+        return new self(
+            $this->bold,
+            $this->italic,
+            $this->strikeThrough,
+            $this->underline,
+            $code,
+            $this->color,
+        );
+    }
+
+    public function withColor(string $color): self
+    {
+        return new self(
+            $this->bold,
+            $this->italic,
+            $this->strikeThrough,
+            $this->underline,
+            $this->code,
+            $color,
+        );
+    }
+
+    private function checkColor(string $color): void
+    {
+        if (!in_array($color, self::ALLOWED_COLORS)) {
+            throw new \Exception("Invalid color: '{$color}'.");
+        }
     }
 }
