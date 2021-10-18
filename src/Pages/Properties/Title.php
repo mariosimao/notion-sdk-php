@@ -17,6 +17,13 @@ class Title
         $this->title = $title;
     }
 
+    public static function create(string $title): self
+    {
+        $richText = RichText::createText($title);
+
+        return new self($richText);
+    }
+
     public static function fromArray(array $array)
     {
         if ($array["id"] !== "title") {

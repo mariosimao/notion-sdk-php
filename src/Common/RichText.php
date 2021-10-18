@@ -32,6 +32,14 @@ class RichText
         $this->equation = $equation;
     }
 
+    public static function createText($content): self
+    {
+        $annotations = Annotations::create();
+        $text = Text::create($content);
+
+        return new self($content, null, $annotations, "text", $text, null, null);
+    }
+
     public static function fromArray(array $array): self
     {
         return new self(

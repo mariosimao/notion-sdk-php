@@ -6,6 +6,7 @@ use DateTimeImmutable;
 use Notion\Common\Emoji;
 use Notion\Common\File;
 use Notion\Pages\Properties\Factory;
+use Notion\Pages\Properties\Title;
 
 class Page
 {
@@ -43,6 +44,13 @@ class Page
         $this->properties = $properties;
         $this->parent = $parent;
         $this->url = $url;
+    }
+
+    public static function create(PageParent $parent): self
+    {
+        $now = new DateTimeImmutable("now");
+
+        return new self("", $now, $now, false, null, null, [], $parent, "");
     }
 
     public static function fromArray(array $array): self
@@ -135,5 +143,133 @@ class Page
     public function url(): string
     {
         return $this->url;
+    }
+
+    public function withArchived(bool $archived): self
+    {
+        return new self(
+            $this->id,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $archived,
+            $this->icon,
+            $this->cover,
+            $this->properties,
+            $this->parent,
+            $this->url,
+        );
+    }
+
+    public function withIcon(Emoji|File $icon): self
+    {
+        return new self(
+            $this->id,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $this->archived,
+            $icon,
+            $this->cover,
+            $this->properties,
+            $this->parent,
+            $this->url,
+        );
+    }
+
+    public function withoutIcon(): self
+    {
+        return new self(
+            $this->id,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $this->archived,
+            null,
+            $this->cover,
+            $this->properties,
+            $this->parent,
+            $this->url,
+        );
+    }
+
+    public function withCover(File $cover): self
+    {
+        return new self(
+            $this->id,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $this->archived,
+            $this->icon,
+            $cover,
+            $this->properties,
+            $this->parent,
+            $this->url,
+        );
+    }
+
+    public function withoutCover(): self
+    {
+        return new self(
+            $this->id,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $this->archived,
+            $this->icon,
+            null,
+            $this->properties,
+            $this->parent,
+            $this->url,
+        );
+    }
+
+    public function withAddedProperty(string $name, $property): self
+    {
+        $properties = $this->properties;
+        $properties[$name] = $property;
+
+        return new self(
+            $this->id,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $this->archived,
+            $this->icon,
+            $this->cover,
+            $properties,
+            $this->parent,
+            $this->url,
+        );
+    }
+
+    public function withProperties(array $properties): self
+    {
+        return new self(
+            $this->id,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $this->archived,
+            $this->icon,
+            $this->cover,
+            $properties,
+            $this->parent,
+            $this->url,
+        );
+    }
+
+    public function withTitle(string $title): self
+    {
+        return $this->withAddedProperty("title", Title::create($title));
+    }
+
+    public function withParent(PageParent $parent): self
+    {
+        return new self(
+            $this->id,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $this->archived,
+            $this->icon,
+            $this->cover,
+            $this->properties,
+            $parent,
+            $this->url,
+        );
     }
 }

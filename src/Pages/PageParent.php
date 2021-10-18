@@ -4,7 +4,7 @@ namespace Notion\Pages;
 
 class PageParent
 {
-    private const ALLOWED_TYPES = [ "page", "database", "workspace" ];
+    private const ALLOWED_TYPES = [ "page_id", "database_id", "workspace" ];
 
     private string $type;
     private string|null $id;
@@ -21,12 +21,12 @@ class PageParent
 
     public static function database(string $databaseId): self
     {
-        return new self("database", $databaseId);
+        return new self("database_id", $databaseId);
     }
 
     public static function page(string $pageId): self
     {
-        return new self("page", $pageId);
+        return new self("page_id", $pageId);
     }
 
     public static function workspace(): self
@@ -39,9 +39,9 @@ class PageParent
         $type = $array["type"];
 
         $id = match($type) {
-            "page"      => $array["page_id"],
-            "database"  => $array["database_id"],
-            "workspace" => null,
+            "page_id"      => $array["page_id"],
+            "database_id"  => $array["database_id"],
+            "workspace"    => null,
         };
 
         return new self($type, $id);
@@ -49,7 +49,7 @@ class PageParent
 
     public function toArray(): array
     {
-        $array = [ "type" => $this->type ];
+        $array = [];
 
         if ($this->isDatabase()) {
             $array["database_id"] = $this->id;
@@ -76,12 +76,12 @@ class PageParent
 
     public function isDatabase(): bool
     {
-        return $this->type === "database";
+        return $this->type === "database_id";
     }
 
     public function isPage(): bool
     {
-        return $this->type === "page";
+        return $this->type === "page_id";
     }
 
     public function isWorkspace(): bool
