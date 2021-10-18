@@ -65,7 +65,7 @@ class Block
             new DateTimeImmutable($array["created_time"]),
             new DateTimeImmutable($array["last_edited_time"]),
             $array["archived"],
-            $array["hasChildren"],
+            $array["has_children"],
             $array["type"],
         );
     }
