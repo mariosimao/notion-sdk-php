@@ -6,9 +6,13 @@ use Notion\Common\RichText;
 
 class Quote implements BlockInterface
 {
+    private const TYPE = Block::TYPE_QUOTE;
+
     private Block $block;
+
     /** @var \Notion\Common\RichText[] */
     private array $text;
+
     /** @var \Notion\Blocks\BlockInterface[] */
     private array $children;
 
@@ -18,7 +22,7 @@ class Quote implements BlockInterface
         array $children,
     ) {
         if (!$block->isQuote()) {
-            throw new \Exception("Block must be of type " . Block::TYPE_QUOTE);
+            throw new \Exception("Block must be of type " . self::TYPE);
         }
 
         $this->block = $block;
@@ -28,14 +32,14 @@ class Quote implements BlockInterface
 
     public static function create(): self
     {
-        $block = Block::create(Block::TYPE_QUOTE);
+        $block = Block::create(self::TYPE);
 
         return new self($block, [], []);
     }
 
     public static function fromString($content): self
     {
-        $block = Block::create(Block::TYPE_QUOTE);
+        $block = Block::create(self::TYPE);
         $text = [ RichText::createText($content) ];
 
         return new self($block, $text, []);
@@ -45,9 +49,11 @@ class Quote implements BlockInterface
     {
         $block = Block::fromArray($array);
 
-        $text = array_map(fn($t) => RichText::fromArray($t), $array["text"]);
+        $quote = $array[self::TYPE];
 
-        $children = array_map(fn($b) => BlockFactory::fromArray($b), $array["children"]);
+        $text = array_map(fn($t) => RichText::fromArray($t), $quote["text"]);
+
+        $children = array_map(fn($b) => BlockFactory::fromArray($b), $quote["children"]);
 
         return new self($block, $text, $children);
     }
@@ -56,8 +62,10 @@ class Quote implements BlockInterface
     {
         $array = $this->block->toArray();
 
-        $array["text"] = array_map(fn(RichText $t) => $t->toArray(), $this->text);
-        $array["children"] = array_map(fn(BlockInterface $b) => $b->toArray(), $this->children);
+        $array[self::TYPE] = [
+            "text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
+        ];
 
         return $array;
     }

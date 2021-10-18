@@ -6,13 +6,16 @@ use Notion\Common\RichText;
 
 class Heading3 implements BlockInterface
 {
+    private const TYPE = Block::TYPE_HEADING_3;
+
     private Block $block;
+
     /** @var \Notion\Common\RichText[] */
     private array $text;
 
     private function __construct(Block $block, array $text) {
         if (!$block->isHeading3()) {
-            throw new \Exception("Block must be of type " . Block::TYPE_HEADING_3);
+            throw new \Exception("Block must be of type " . self::TYPE);
         }
 
         $this->block = $block;
@@ -21,14 +24,14 @@ class Heading3 implements BlockInterface
 
     public static function create(): self
     {
-        $block = Block::create(Block::TYPE_HEADING_3);
+        $block = Block::create(self::TYPE);
 
         return new self($block, []);
     }
 
     public static function fromString($content): self
     {
-        $block = Block::create(Block::TYPE_HEADING_3);
+        $block = Block::create(self::TYPE);
         $text = [ RichText::createText($content) ];
 
         return new self($block, $text);
@@ -47,7 +50,7 @@ class Heading3 implements BlockInterface
     {
         $array = $this->block->toArray();
 
-        $array[Block::TYPE_HEADING_3] = [
+        $array[self::TYPE] = [
             "text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
         ];
 

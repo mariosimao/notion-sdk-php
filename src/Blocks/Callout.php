@@ -9,6 +9,8 @@ use Notion\Common\RichText;
 
 class Callout implements BlockInterface
 {
+    private const TYPE = Block::TYPE_CALLOUT;
+
     private Block $block;
 
     /** @var \Notion\Common\RichText[] */
@@ -26,7 +28,7 @@ class Callout implements BlockInterface
         array $children,
     ) {
         if (!$block->isCallout()) {
-            throw new \Exception("Block must be of type " . Block::TYPE_CALLOUT);
+            throw new \Exception("Block must be of type " . self::TYPE);
         }
 
         $this->block = $block;
@@ -37,7 +39,7 @@ class Callout implements BlockInterface
 
     public static function create(): self
     {
-        $block = Block::create(Block::TYPE_CALLOUT);
+        $block = Block::create(self::TYPE);
         $icon = Emoji::create("⭐");
 
         return new self($block, [], $icon, []);
@@ -47,15 +49,17 @@ class Callout implements BlockInterface
     {
         $block = Block::fromArray($array);
 
-        $text = array_map(fn($t) => RichText::fromArray($t), $array["text"]);
+        $callout = $array[self::TYPE];
 
-        $icon = match($array["icon"]["type"]) {
+        $text = array_map(fn($t) => RichText::fromArray($t), $callout["text"]);
+
+        $icon = match($callout["icon"]["type"]) {
             "emoji" => Emoji::fromArray($array["icon"]),
             "file"  => File::fromArray($array["icon"]),
             default => throw new Exception("Invalid icon type"),
         };
 
-        $children = array_map(fn($b) => BlockFactory::fromArray($b), $array["children"]);
+        $children = array_map(fn($b) => BlockFactory::fromArray($b), $callout["children"]);
 
         return new self($block, $text, $icon, $children);
     }
@@ -64,9 +68,11 @@ class Callout implements BlockInterface
     {
         $array = $this->block->toArray();
 
-        $array["text"] = array_map(fn(RichText $t) => $t->toArray(), $this->text);
-        $array["icon"] = $this->icon->toArray();
-        $array["children"] = array_map(fn(BlockInterface $b) => $b->toArray(), $this->children);
+        $array[self::TYPE] = [
+            "text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "icon"     => $this->icon->toArray(),
+            "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
+        ];
 
         return $array;
     }
