@@ -3,43 +3,35 @@
 namespace Notion\Blocks;
 
 use Notion\Common\RichText;
-use SessionHandlerInterface;
 
-class Paragraph implements BlockInterface
+class Heading3 implements BlockInterface
 {
     private Block $block;
     /** @var \Notion\Common\RichText[] */
     private array $text;
-    /** @var \Notion\Blocks\BlockInterface[] */
-    private array $children;
 
-    private function __construct(
-        Block $block,
-        array $text,
-        array $children,
-    ) {
-        if (!$block->isParagraph()) {
-            throw new \Exception("Block must be of type " . Block::TYPE_PARAGRAPH);
+    private function __construct(Block $block, array $text) {
+        if (!$block->isHeading3()) {
+            throw new \Exception("Block must be of type " . Block::TYPE_HEADING_3);
         }
 
         $this->block = $block;
         $this->text = $text;
-        $this->children = $children;
     }
 
     public static function create(): self
     {
-        $block = Block::create(Block::TYPE_PARAGRAPH);
+        $block = Block::create(Block::TYPE_HEADING_3);
 
-        return new self($block, [], []);
+        return new self($block, []);
     }
 
     public static function fromString($content): self
     {
-        $block = Block::create(Block::TYPE_PARAGRAPH);
+        $block = Block::create(Block::TYPE_HEADING_3);
         $text = [ RichText::createText($content) ];
 
-        return new self($block, $text, []);
+        return new self($block, $text);
     }
 
     public static function fromArray(array $array): self
@@ -48,9 +40,7 @@ class Paragraph implements BlockInterface
 
         $text = array_map(fn($t) => RichText::fromArray($t), $array["text"]);
 
-        $children = array_map(fn($b) => BlockFactory::fromArray($b), $array["children"]);
-
-        return new self($block, $text, $children);
+        return new self($block, $text);
     }
 
     public function toArray(): array
@@ -58,7 +48,6 @@ class Paragraph implements BlockInterface
         $array = $this->block->toArray();
 
         $array["text"] = array_map(fn(RichText $t) => $t->toArray(), $this->text);
-        $array["children"] = array_map(fn(BlockInterface $b) => $b->toArray(), $this->children);
 
         return $array;
     }
@@ -89,28 +78,5 @@ class Paragraph implements BlockInterface
         $texts[] = $text;
 
         return new self($this->block, $texts, $this->children);
-    }
-
-    public function withChildren(BlockInterface ...$children): self
-    {
-        $hasChildren = (count($children) > 0);
-
-        return new self(
-            $this->block->withHasChildren($hasChildren),
-            $this->text,
-            $children,
-        );
-    }
-
-    public function appendChild(BlockInterface $child): self
-    {
-        $children = $this->children;
-        $children[] = $child;
-
-        return new self(
-            $this->block->withHasChildren(true),
-            $this->text,
-            $children,
-        );
     }
 }
