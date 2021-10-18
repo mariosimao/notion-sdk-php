@@ -79,4 +79,39 @@ class Client
 
         return Page::fromArray($body);
     }
+
+    public function update(Page $page): Page
+    {
+        $data = json_encode([
+            "archived" => $page->archived(),
+            "icon" => $page->icon()?->toArray(),
+            "cover" => $page->cover()?->toArray(),
+            "properties" => array_map(fn($p) => $p->toArray(), $page->properties()),
+            "parent" => $page->parent()->toArray(),
+        ]);
+
+        $pageId = $page->id();
+        $request = new Request(
+            "PATCH",
+            "https://api.notion.com/v1/pages/{$pageId}",
+            [
+                "Authorization"  => "Bearer {$this->token}",
+                "Notion-Version" => $this->version,
+                "Content-Type"   => "application/json",
+            ],
+            $data,
+        );
+
+        $response = $this->psrClient->sendRequest($request);
+        $body = json_decode((string) $response->getBody(), true);
+
+        if ($response->getStatusCode() !== 200) {
+            $message = $body["message"];
+            $code = $body["code"];
+
+            throw new NotionException($message, $code);
+        }
+
+        return Page::fromArray($body);
+    }
 }
