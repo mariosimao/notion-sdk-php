@@ -28,4 +28,9 @@ class Emoji
             "emoji" => $this->emoji,
         ];
     }
+
+    public function emoji(): string
+    {
+        return $this->emoji;
+    }
 }

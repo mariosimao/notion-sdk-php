@@ -28,10 +28,12 @@ class File
 
     public static function fromArray(array $array): self
     {
+        $type = $array["type"];
+
         return new self(
-            $array["type"],
-            $array["url"],
-            isset($array["expiryTime"]) ? new DateTimeImmutable($array["expiryTime"]) : null,
+            $type,
+            $array[$type]["url"],
+            isset($array[$type]["expiryTime"]) ? new DateTimeImmutable($array["expiryTime"]) : null,
         );
     }
 

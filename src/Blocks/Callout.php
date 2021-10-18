@@ -45,6 +45,15 @@ class Callout implements BlockInterface
         return new self($block, [], $icon, []);
     }
 
+    public static function fromString(string $emoji, string $content)
+    {
+        $block = Block::create(self::TYPE);
+        $text = [ RichText::createText($content) ];
+        $icon = Emoji::create($emoji);
+
+        return new self($block, $text, $icon, []);
+    }
+
     public static function fromArray(array $array): self
     {
         $block = Block::fromArray($array);
@@ -54,8 +63,8 @@ class Callout implements BlockInterface
         $text = array_map(fn($t) => RichText::fromArray($t), $callout["text"]);
 
         $icon = match($callout["icon"]["type"]) {
-            "emoji" => Emoji::fromArray($array["icon"]),
-            "file"  => File::fromArray($array["icon"]),
+            "emoji" => Emoji::fromArray($callout["icon"]),
+            "internal", "external" => File::fromArray($callout["icon"]),
             default => throw new Exception("Invalid icon type"),
         };
 
