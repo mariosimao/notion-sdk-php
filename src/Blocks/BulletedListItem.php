@@ -63,7 +63,7 @@ class BulletedListItem implements BlockInterface
     {
         $array = $this->block->toArray();
 
-        $array = [
+        $array[self::TYPE] = [
             "text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
         ];
