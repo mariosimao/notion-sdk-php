@@ -47,7 +47,9 @@ class Heading2 implements BlockInterface
     {
         $array = $this->block->toArray();
 
-        $array["text"] = array_map(fn(RichText $t) => $t->toArray(), $this->text);
+        $array[Block::TYPE_HEADING_2] = [
+            "text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+        ];
 
         return $array;
     }
@@ -74,7 +76,7 @@ class Heading2 implements BlockInterface
 
     public function withText(RichText ...$text): self
     {
-        return new self($this->block, $text, $this->children);
+        return new self($this->block, $text);
     }
 
     public function appendText(RichText $text): self
@@ -82,6 +84,6 @@ class Heading2 implements BlockInterface
         $texts = $this->text;
         $texts[] = $text;
 
-        return new self($this->block, $texts, $this->children);
+        return new self($this->block, $texts);
     }
 }
