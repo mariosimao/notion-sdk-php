@@ -56,8 +56,10 @@ class Paragraph implements BlockInterface
     {
         $array = $this->block->toArray();
 
-        $array["text"] = array_map(fn(RichText $t) => $t->toArray(), $this->text);
-        $array["children"] = array_map(fn(BlockInterface $b) => $b->toArray(), $this->children);
+        $array[Block::TYPE_PARAGRAPH] = [
+            "text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
+        ];
 
         return $array;
     }
