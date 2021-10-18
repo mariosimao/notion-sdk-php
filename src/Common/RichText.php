@@ -139,4 +139,46 @@ class RichText
             $this->equation,
         );
     }
+
+    public function bold(bool $bold = true): self
+    {
+        $annotations = $this->annotations->bold($bold);
+
+        return $this->withAnnotations($annotations);
+    }
+
+    public function italic(bool $italic = true): self
+    {
+        $annotations = $this->annotations->italic($italic);
+
+        return $this->withAnnotations($annotations);
+    }
+
+    public function strikeThrough(bool $strikeThrough = true): self
+    {
+        $annotations = $this->annotations->strikeThrough($strikeThrough);
+
+        return $this->withAnnotations($annotations);
+    }
+
+    public function underline(bool $underline = true): self
+    {
+        $annotations = $this->annotations->underline($underline);
+
+        return $this->withAnnotations($annotations);
+    }
+
+    public function code(bool $code = true): self
+    {
+        $annotations = $this->annotations->code($code);
+
+        return $this->withAnnotations($annotations);
+    }
+
+    public function color(string $color): self
+    {
+        $annotations = $this->annotations->withColor($color);
+
+        return $this->withAnnotations($annotations);
+    }
 }
