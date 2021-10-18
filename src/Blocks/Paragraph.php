@@ -3,7 +3,6 @@
 namespace Notion\Blocks;
 
 use Notion\Common\RichText;
-use SessionHandlerInterface;
 
 class Paragraph implements BlockInterface
 {
@@ -76,6 +75,16 @@ class Paragraph implements BlockInterface
     public function block(): Block
     {
         return $this->block;
+    }
+
+    public function text(): array
+    {
+        return $this->text;
+    }
+
+    public function children(): array
+    {
+        return $this->children;
     }
 
     public function withText(RichText ...$text): self

@@ -67,6 +67,11 @@ class Heading1 implements BlockInterface
         return $this->block;
     }
 
+    public function text(): array
+    {
+        return $this->text;
+    }
+
     public function withText(RichText ...$text): self
     {
         return new self($this->block, $text, $this->children);
