@@ -46,7 +46,7 @@ class Client
         return Page::fromArray($body);
     }
 
-    public function create(Page $page): Page
+    public function create(Page $page, BlockInterface ...$content): Page
     {
         $data = json_encode([
             "archived" => $page->archived(),
@@ -54,6 +54,7 @@ class Client
             "cover" => $page->cover()?->toArray(),
             "properties" => array_map(fn($p) => $p->toArray(), $page->properties()),
             "parent" => $page->parent()->toArray(),
+            "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $content),
         ]);
 
         $request = new Request(
