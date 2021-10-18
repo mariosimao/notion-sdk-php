@@ -1,0 +1,98 @@
+on:
+  - pull_request
+  - push
+
+name: CI
+
+jobs:
+  tests:
+    name: Tests
+
+    runs-on: ${{ matrix.os }}
+
+#     env:
+#       PHP_EXTENSIONS: #dom, json, libxml, mbstring, pdo_sqlite, soap, xml, xmlwriter, :apcu, :imagick
+#       PHP_INI_VALUES: #memory_limit=-1, assert.exception=1, zend.assertions=1, error_reporting=-1, log_errors_max_len=0, display_errors=On
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+
+        php-version:
+          - "8.0"
+
+        dependencies:
+          - lowest
+          - highest
+
+    steps:
+      - name: Configure git to avoid issues with line endings
+        if: matrix.os == 'windows-latest'
+        run: git config --global core.autocrlf false
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP with extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: xdebug3
+#           extensions: ${{ env.PHP_EXTENSIONS }}
+#           ini-values: ${{ env.PHP_INI_VALUES }}
+          tools: none
+
+      - name: Install lowest dependencies with composer
+        if: matrix.dependencies == 'lowest'
+        run: php ./tools/composer update --no-ansi --no-interaction --no-progress --prefer-lowest
+
+      - name: Install highest dependencies with composer
+        if: matrix.dependencies == 'highest'
+        run: php ./tools/composer update --no-ansi --no-interaction --no-progress
+
+      - name: Run tests with phpunit/phpunit
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml
+
+      - name: Send code coverage report to Codecov.io
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+# name: PHP Composer
+
+# on:
+#   push:
+#     branches: [ master ]
+#   pull_request:
+#     branches: [ master ]
+
+# jobs:
+#   build:
+
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     - uses: actions/checkout@v2
+
+#     - name: Validate composer.json and composer.lock
+#       run: composer validate --strict
+
+#     - name: Cache Composer packages
+#       id: composer-cache
+#       uses: actions/cache@v2
+#       with:
+#         path: vendor
+#         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+#         restore-keys: |
+#           ${{ runner.os }}-php-
+
+#     - name: Install dependencies
+#       run: composer install --prefer-dist --no-progress
+
+#     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
+#     # Docs: https://getcomposer.org/doc/articles/scripts.md
+
+#     # - name: Run test suite
+#     #   run: composer run-script test
