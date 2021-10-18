@@ -8,6 +8,11 @@
             "Notion\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Notion\\Test\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Mario Simão",
@@ -22,6 +27,7 @@
     "require-dev": {
         "vimeo/psalm": "^4.10",
         "guzzlehttp/guzzle": "^7.3",
-        "symfony/http-client": "^5.3"
+        "symfony/http-client": "^5.3",
+        "phpunit/phpunit": "^9.5"
     }
 }
