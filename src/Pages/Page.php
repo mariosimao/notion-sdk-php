@@ -258,6 +258,11 @@ class Page
         return $this->withAddedProperty("title", Title::create($title));
     }
 
+    public function title(): Title|null
+    {
+        return $this->properties["title"] ?? null;
+    }
+
     public function withParent(PageParent $parent): self
     {
         return new self(

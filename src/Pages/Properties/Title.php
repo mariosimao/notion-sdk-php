@@ -26,12 +26,12 @@ class Title
 
     public static function fromArray(array $array)
     {
-        if ($array["id"] !== "title") {
-            throw new \Exception("Not valid title id. Title properties should have ID 'title'.");
-        }
-
         if ($array["type"] !== "title") {
             throw new \Exception("Not valid title type. Title properties should have type 'title'.");
+        }
+
+        if (isset($array["title"]["type"])) {
+            $array["title"] = [ $array["title"] ];
         }
 
         $title = array_map(
@@ -51,5 +51,26 @@ class Title
             "type"  => $this->type,
             "title" => array_map(fn(RichText $richText) => $richText->toArray(), $this->title),
         ];
+    }
+
+    /** @return RichText[] */
+    public function richTexts(): array
+    {
+        return $this->title;
+    }
+
+    public function withRichTexts(RichText ...$richTexts): self
+    {
+        return new self(...$richTexts);
+    }
+
+    public function toString(): string
+    {
+        $string = "";
+        foreach ($this->title as $richText) {
+            $string = $string . $richText->plainText();
+        }
+
+        return $string;
     }
 }
