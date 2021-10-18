@@ -32,7 +32,7 @@ class RichText
         $this->equation = $equation;
     }
 
-    public static function createText($content): self
+    public static function createText(string $content): self
     {
         $annotations = Annotations::create();
         $text = Text::create($content);
