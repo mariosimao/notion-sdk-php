@@ -63,8 +63,8 @@ class Client
         }
 
         throw new \Exception(
-            "You cannot use 'Notion\\Client' as no PSR-18 has been found.
-            Try running 'composer require guzzlehttp/guzzle"
+            "You cannot use 'Notion\\Client' as no PSR-18 has been found. " .
+            "Try running 'composer require guzzlehttp/guzzle'."
         );
     }
 }
