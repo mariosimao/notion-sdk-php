@@ -2,6 +2,7 @@
 
 namespace Notion\Common;
 
+/** @psalm-type EmojiJson = array{ type: "emoji", emoji: string } */
 class Emoji
 {
     private string $emoji;
@@ -16,6 +17,7 @@ class Emoji
         return new self($emoji);
     }
 
+    /** @param EmojiJson $array */
     public static function fromArray(array $array): self
     {
         return new self($array["emoji"]);

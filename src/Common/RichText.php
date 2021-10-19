@@ -2,6 +2,22 @@
 
 namespace Notion\Common;
 
+/**
+ * @psalm-import-type AnnotationsJson from Annotations
+ * @psalm-import-type TextJson from Text
+ * @psalm-import-type MentionJson from Mention
+ * @psalm-import-type EquationJson from Equation
+ *
+ * @psalm-type RichTextJson = array{
+ *      plain_text: string,
+ *      href: string|null,
+ *      annotations: AnnotationsJson,
+ *      type: "text"|"mention"|"equation",
+ *      text?: TextJson,
+ *      mention?: MentionJson,
+ *      equation?: EquationJson,
+ * }
+ */
 class RichText
 {
     private const ALLOWED_TYPES = [ "text", "mention", "equation" ];
@@ -40,6 +56,11 @@ class RichText
         return new self($content, null, $annotations, "text", $text, null, null);
     }
 
+    /**
+     * @param RichTextJson $array
+     *
+     * @internal
+     */
     public static function fromArray(array $array): self
     {
         return new self(
@@ -47,9 +68,9 @@ class RichText
             isset($array["href"]) ? $array["href"] : null,
             Annotations::fromArray($array["annotations"]),
             $array["type"],
-            $array["type"] === "text" ? Text::fromArray($array["text"]) : null,
-            $array["type"] === "mention" ? Mention::fromArray($array["mention"]) : null,
-            $array["type"] === "equation" ? Equation::fromArray($array["equation"]) : null,
+            array_key_exists("text", $array) ? Text::fromArray($array["text"]) : null,
+            array_key_exists("mention", $array) ? Mention::fromArray($array["mention"]) : null,
+            array_key_exists("equation", $array) ? Equation::fromArray($array["equation"]) : null,
         );
     }
 
@@ -112,16 +133,28 @@ class RichText
         return $this->equation;
     }
 
+    /**
+     * @psalm-assert-if-true Text $this->text
+     * @psalm-assert-if-true Text $this->text()
+     */
     public function isText(): bool
     {
         return $this->type === "text";
     }
 
+    /**
+     * @psalm-assert-if-true Mention $this->mention
+     * @psalm-assert-if-true Mention $this->mention()
+     */
     public function isMention(): bool
     {
         return $this->type === "mention";
     }
 
+    /**
+     * @psalm-assert-if-true Equation $this->equation
+     * @psalm-assert-if-true Equation $this->equation()
+     */
     public function isEquation(): bool
     {
         return $this->type === "equation";

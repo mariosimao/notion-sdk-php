@@ -2,6 +2,9 @@
 
 namespace Notion\Common;
 
+/**
+ * @psalm-type TextJson = array{ content: string, link?: array{ url: string } }
+ */
 class Text
 {
     private string $content;
@@ -18,6 +21,11 @@ class Text
         return new self($content, null);
     }
 
+    /**
+     * @param TextJson $array
+     *
+     * @internal
+     */
     public static function fromArray(array $array): self
     {
         $url = isset($array["link"]) ? $array["link"]["url"] : null;

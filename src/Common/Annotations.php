@@ -2,8 +2,18 @@
 
 namespace Notion\Common;
 
+/** @psalm-type AnnotationsJson = array{
+ *      bold: bool,
+ *      italic: bool,
+ *      strikethrough: bool,
+ *      underline: bool,
+ *      code: bool,
+ *      color: string,
+ * }
+ */
 class Annotations
 {
+    /** @var string[] */
     private const ALLOWED_COLORS = [
         "default", "gray", "brown", "orange", "yellow", "green", "blue",
         "purple", "pink", "red", "gray_background", "brown_background",
@@ -42,6 +52,11 @@ class Annotations
         return new self(false, false, false, false, false, "default");
     }
 
+    /**
+     * @param AnnotationsJson $array
+     *
+     * @internal
+    */
     public static function fromArray(array $array): self
     {
         return new self(
@@ -96,7 +111,7 @@ class Annotations
         return $this->color;
     }
 
-    public function bold($bold = true): self
+    public function bold(bool $bold = true): self
     {
         return new self(
             $bold,
@@ -108,7 +123,7 @@ class Annotations
         );
     }
 
-    public function italic($italic = true): self
+    public function italic(bool $italic = true): self
     {
         return new self(
             $this->bold,
@@ -120,7 +135,7 @@ class Annotations
         );
     }
 
-    public function strikeThrough($strikeThrough = true): self
+    public function strikeThrough(bool $strikeThrough = true): self
     {
         return new self(
             $this->bold,
@@ -132,7 +147,7 @@ class Annotations
         );
     }
 
-    public function underline($underline = true): self
+    public function underline(bool $underline = true): self
     {
         return new self(
             $this->bold,
@@ -144,7 +159,7 @@ class Annotations
         );
     }
 
-    public function code($code = true): self
+    public function code(bool $code = true): self
     {
         return new self(
             $this->bold,

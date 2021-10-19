@@ -4,6 +4,9 @@ namespace Notion\Common;
 
 use DateTimeImmutable;
 
+/**
+ * @psalm-type DateJson = array{ start: string, end?: string }
+ */
 class Date
 {
     private DateTimeImmutable $start;
@@ -15,6 +18,11 @@ class Date
         $this->end = $end;
     }
 
+    /**
+     * @param DateJson $array
+     *
+     * @internal
+     */
     public static function fromArray(array $array): self
     {
         $start = new DateTimeImmutable($array["start"]);

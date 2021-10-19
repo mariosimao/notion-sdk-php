@@ -4,6 +4,18 @@ namespace Notion\Common;
 
 use Notion\Users\User;
 
+/**
+ * @psalm-import-type UserJson from \Notion\Users\User
+ * @psalm-import-type DateJson from Date
+ *
+ * @psalm-type MentionJson = array{
+ *      type: string,
+ *      page?: array{ id: string },
+ *      database?: array{ id: string },
+ *      user?: UserJson,
+ *      date?: DateJson,
+ * }
+ */
 class Mention
 {
     private const ALLOWED_TYPES = [ "page", "database", "user", "date" ];
@@ -32,14 +44,19 @@ class Mention
         $this->date = $date;
     }
 
+    /**
+     * @param MentionJson $array
+     *
+     * @internal
+     */
     public static function fromArray(array $array): self
     {
         $type = $array["type"];
 
-        $pageId = $type === "page" ? $array["page"]["id"] : null;
-        $databaseId = $type === "database" ? $array["database"]["id"] : null;
-        $user = $type === "user" ? User::fromArray($array["user"]) : null;
-        $date = $type === "date" ? Date::fromArray($array["date"]) : null;
+        $pageId = array_key_exists("page", $array) ? $array["page"]["id"] : null;
+        $databaseId = array_key_exists("database", $array) ? $array["database"]["id"] : null;
+        $user = array_key_exists("user", $array) ? User::fromArray($array["user"]) : null;
+        $date = array_key_exists("date", $array) ? Date::fromArray($array["date"]) : null;
 
         return new self($type, $pageId, $databaseId, $user, $date);
     }
@@ -48,16 +65,16 @@ class Mention
     {
         $array = [ "type" => $this->type ];
 
-        if ($this->type === "page") {
+        if ($this->isPage()) {
             $array["page"] = [ "id" => $this->pageId ];
         }
-        if ($this->type === "database") {
+        if ($this->isDatabase()) {
             $array["database"] = [ "id" => $this->databaseId ];
         }
-        if ($this->type === "user") {
+        if ($this->isUser()) {
             $array["user"] = $this->user->toArray();
         }
-        if ($this->type === "date") {
+        if ($this->isDate()) {
             $array["date"] = $this->date->toArray();
         }
 
@@ -89,21 +106,37 @@ class Mention
         return $this->date;
     }
 
+    /**
+     * @psalm-assert-if-true string $this->pageId
+     * @psalm-assert-if-true string $this->pageId()
+     */
     public function isPage(): bool
     {
         return $this->type === "page";
     }
 
+    /**
+     * @psalm-assert-if-true string $this->databaseId
+     * @psalm-assert-if-true string $this->databaseId()
+     */
     public function isDatabase(): bool
     {
         return $this->type === "database";
     }
 
+    /**
+     * @psalm-assert-if-true User $this->user
+     * @psalm-assert-if-true User $this->user()
+     */
     public function isUser(): bool
     {
         return $this->type === "user";
     }
 
+    /**
+     * @psalm-assert-if-true Date $this->date
+     * @psalm-assert-if-true Date $this->date()
+     */
     public function isDate(): bool
     {
         return $this->type === "date";

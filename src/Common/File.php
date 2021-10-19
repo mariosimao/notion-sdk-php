@@ -4,6 +4,13 @@ namespace Notion\Common;
 
 use DateTimeImmutable;
 
+/**
+ * @psalm-type FileJson = array{
+ *      type: "external"|"internal",
+ *      internal?: array{ url: string, expiry_time: string },
+ *      external?: array{ url: string },
+ * }
+ */
 class File
 {
     private const ALLOWED_TYPES = [ "external", "file" ];
@@ -26,14 +33,21 @@ class File
         $this->expiryTime = $expiryTime;
     }
 
+    /**
+     * @param FileJson $array
+     *
+     * @internal
+     */
     public static function fromArray(array $array): self
     {
         $type = $array["type"];
 
+        $file = $array[$type] ?? [];
+
         return new self(
             $type,
-            $array[$type]["url"],
-            isset($array[$type]["expiryTime"]) ? new DateTimeImmutable($array["expiryTime"]) : null,
+            $file["url"] ?? "",
+            isset($file["expiry_time"]) ? new DateTimeImmutable($file["expiry_time"]) : null,
         );
     }
 

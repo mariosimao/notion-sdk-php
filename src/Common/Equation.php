@@ -2,6 +2,9 @@
 
 namespace Notion\Common;
 
+/**
+ * @psalm-type EquationJson = array{ expression: string }
+ */
 class Equation
 {
     private string $expression;
@@ -11,6 +14,11 @@ class Equation
         $this->expression = $expression;
     }
 
+    /**
+     * @param EquationJson $array
+     *
+     * @internal
+     */
     public static function fromArray(array $array): self
     {
         return new self($array["expression"]);
