@@ -45,7 +45,7 @@ jobs:
           dependency-versions: ${{ matrix.dependencies }}
           composer-options: --no-ansi --no-interaction --no-progress
 
-      - name: Run tests with phpunit/phpunit
+      - name: Run tests with phpunit
         run: vendor/bin/phpunit --coverage-clover dist/phpunit/clover.xml
 
       - name: Send code coverage report to Codecov.io
@@ -87,5 +87,5 @@ jobs:
           dependency-versions: ${{ matrix.dependencies }}
           composer-options: --no-ansi --no-interaction --no-progress
 
-      - name: Run tests with phpunit/phpunit
-        run: vendor/bin/pslam --shepherd
+      - name: Run tests with psalm and send coverage report
+        run: vendor/bin/psalm --shepherd
