@@ -8,7 +8,7 @@ class NotionException extends \Exception
 {
     private string $errorCode;
 
-    public function __construct($message, $errorCode)
+    public function __construct(string $message, string $errorCode)
     {
         $this->errorCode = $errorCode;
 

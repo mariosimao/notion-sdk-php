@@ -30,7 +30,7 @@ class Client
     public static function createWithPsrClient(
         ClientInterface $psrClient,
         string $token,
-    ) {
+    ): self {
         return new self($psrClient, $token);
     }
 
