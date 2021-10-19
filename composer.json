@@ -22,7 +22,8 @@
     "require": {
         "php": ">=8.0",
         "psr/http-client": "^1.0",
-        "nyholm/psr7": "^1.4"
+        "nyholm/psr7": "^1.4",
+        "beberlei/assert": "^3.3"
     },
     "require-dev": {
         "vimeo/psalm": "^4.10",
