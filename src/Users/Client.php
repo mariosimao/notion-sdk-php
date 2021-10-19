@@ -6,6 +6,7 @@ use Notion\NotionException;
 use Nyholm\Psr7\Request;
 use Psr\Http\Client\ClientInterface;
 
+/** @psalm-import-type UserJson from User */
 class Client
 {
     private ClientInterface $psrClient;
@@ -34,15 +35,19 @@ class Client
         );
 
         $response = $this->psrClient->sendRequest($request);
+
+        /** @var array */
         $body = json_decode((string) $response->getBody(), true);
 
         if ($response->getStatusCode() !== 200) {
+            /** @var array{ message: string, code: string} $body */
             $message = $body["message"];
             $code = $body["code"];
 
             throw new NotionException($message, $code);
         }
 
+        /** @psalm-var UserJson $body */
         return User::fromArray($body);
     }
 
@@ -61,15 +66,18 @@ class Client
         );
 
         $response = $this->psrClient->sendRequest($request);
+        /** @var array $body */
         $body = json_decode((string) $response->getBody(), true);
 
         if ($response->getStatusCode() !== 200) {
+            /** @var array{ message: string, code: string} $body */
             $message = $body["message"];
             $code = $body["code"];
 
             throw new NotionException($message, $code);
         }
 
+        /** @var array{ results: UserJson[] } $body */
         return array_map(
             function (array $userData): User {
                 return User::fromArray($userData);
@@ -90,15 +98,18 @@ class Client
         );
 
         $response = $this->psrClient->sendRequest($request);
+        /** @var array $body */
         $body = json_decode((string) $response->getBody(), true);
 
         if ($response->getStatusCode() !== 200) {
+            /** @var array{ message: string, code: string } $body */
             $message = $body["message"];
             $code = $body["code"];
 
             throw new NotionException($message, $code);
         }
 
+        /** @psalm-var UserJson $body */
         return User::fromArray($body);
     }
 }

@@ -2,6 +2,21 @@
 
 namespace Notion\Users;
 
+use Assert\Assert;
+
+/**
+ * @psalm-import-type PersonJson from Person
+ * @psalm-import-type BotJson from Bot
+ *
+ * @psalm-type UserJson = array{
+ *     id: string,
+ *     name: string,
+ *     avatar_url: string|null,
+ *     type: string,
+ *     person?: PersonJson,
+ *     bot?: BotJson,
+ * }
+ */
 class User
 {
     private const ALLOWED_TYPES = [ "person", "bot" ];
@@ -33,8 +48,19 @@ class User
         $this->bot = $bot;
     }
 
+    /** @param UserJson $array */
     public static function fromArray(array $array): self
     {
+        Assert::that($array)->keyExists("id");
+        Assert::that($array)->keyExists("name");
+        Assert::that($array)->keyExists("avatar_url");
+        Assert::that($array)->keyExists("type");
+
+        Assert::that($array["id"])->string();
+        Assert::that($array["name"])->string();
+        Assert::that($array["avatar_url"])->string();
+        Assert::that($array["type"])->string();
+
         $person = array_key_exists("person", $array) ? Person::fromArray($array["person"]) : null;
         $bot = array_key_exists("bot", $array) ? Bot::fromArray($array["bot"]) : null;
 
@@ -48,6 +74,7 @@ class User
         );
     }
 
+    /** @return UserJson */
     public function toArray(): array
     {
         $array = [
@@ -97,11 +124,19 @@ class User
         return $this->bot;
     }
 
+    /**
+     * @psalm-assert-if-true Person $this->person
+     * @psalm-assert-if-true Person $this->person()
+     */
     public function isPerson(): bool
     {
         return $this->type === "person";
     }
 
+    /**
+     * @psalm-assert-if-true Bot $this->bot
+     * @psalm-assert-if-true Bot $this->bot()
+     */
     public function isBot(): bool
     {
         return $this->type === "bot";
