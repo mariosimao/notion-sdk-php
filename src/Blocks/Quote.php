@@ -4,6 +4,17 @@ namespace Notion\Blocks;
 
 use Notion\Common\RichText;
 
+/**
+ * @psalm-import-type BlockJson from Block
+ * @psalm-import-type RichTextJson from \Notion\Common\RichText
+ *
+ * @psalm-type QuoteJson = array{
+ *      quote: array{
+ *          text: RichTextJson[],
+ *          children: array{ type: BlockJson },
+ *      },
+ * }
+ */
 class Quote implements BlockInterface
 {
     private const TYPE = Block::TYPE_QUOTE;
@@ -16,6 +27,10 @@ class Quote implements BlockInterface
     /** @var \Notion\Blocks\BlockInterface[] */
     private array $children;
 
+    /**
+     * @param \Notion\Common\RichText[] $text
+     * @param \Notion\Blocks\BlockInterface[] $children
+     */
     private function __construct(
         Block $block,
         array $text,
@@ -37,7 +52,7 @@ class Quote implements BlockInterface
         return new self($block, [], []);
     }
 
-    public static function fromString($content): self
+    public static function fromString(string $content): self
     {
         $block = Block::create(self::TYPE);
         $text = [ RichText::createText($content) ];
@@ -47,8 +62,10 @@ class Quote implements BlockInterface
 
     public static function fromArray(array $array): self
     {
+        /** @psalm-var BlockJson $array */
         $block = Block::fromArray($array);
 
+        /** @psalm-var QuoteJson $array */
         $quote = $array[self::TYPE];
 
         $text = array_map(fn($t) => RichText::fromArray($t), $quote["text"]);

@@ -4,6 +4,18 @@ namespace Notion\Blocks;
 
 use Notion\Common\RichText;
 
+/**
+ * @psalm-import-type BlockJson from Block
+ * @psalm-import-type RichTextJson from \Notion\Common\RichText
+ *
+ * @psalm-type ToDoJson = array{
+ *      to_do: array{
+ *          checked: bool,
+ *          text: RichTextJson[],
+ *          children: array{ type: BlockJson },
+ *      },
+ * }
+ */
 class ToDo implements BlockInterface
 {
     private const TYPE = Block::TYPE_TO_DO;
@@ -18,6 +30,10 @@ class ToDo implements BlockInterface
     /** @var \Notion\Blocks\BlockInterface[] */
     private array $children;
 
+    /**
+     * @param \Notion\Common\RichText[] $text
+     * @param \Notion\Blocks\BlockInterface[] $children
+     */
     private function __construct(
         Block $block,
         array $text,
@@ -41,7 +57,7 @@ class ToDo implements BlockInterface
         return new self($block, [], false, []);
     }
 
-    public static function fromString($content): self
+    public static function fromString(string $content): self
     {
         $block = Block::create(self::TYPE);
         $text = [ RichText::createText($content) ];
@@ -51,8 +67,10 @@ class ToDo implements BlockInterface
 
     public static function fromArray(array $array): self
     {
+        /** @psalm-var BlockJson $array */
         $block = Block::fromArray($array);
 
+        /** @psalm-var ToDoJson $array */
         $todo = $array[self::TYPE];
 
         $text = array_map(fn($t) => RichText::fromArray($t), $todo["text"]);

@@ -4,6 +4,16 @@ namespace Notion\Blocks;
 
 use Notion\Common\RichText;
 
+/**
+ * @psalm-import-type BlockJson from Block
+ * @psalm-import-type RichTextJson from \Notion\Common\RichText
+ *
+ * @psalm-type Heading1Json = array{
+ *      heading_1: array{
+ *          text: RichTextJson[],
+ *      },
+ * }
+ */
 class Heading1 implements BlockInterface
 {
     private const TYPE = Block::TYPE_HEADING_1;
@@ -13,6 +23,9 @@ class Heading1 implements BlockInterface
     /** @var \Notion\Common\RichText[] */
     private array $text;
 
+    /**
+     * @param \Notion\Common\RichText[] $text
+     */
     private function __construct(Block $block, array $text) {
         if (!$block->isHeading1()) {
             throw new \Exception("Block must be of type " . self::TYPE);
@@ -29,7 +42,7 @@ class Heading1 implements BlockInterface
         return new self($block, []);
     }
 
-    public static function fromString($content): self
+    public static function fromString(string $content): self
     {
         $block = Block::create(self::TYPE);
         $text = [ RichText::createText($content) ];
@@ -39,8 +52,10 @@ class Heading1 implements BlockInterface
 
     public static function fromArray(array $array): self
     {
+        /** @psalm-var BlockJson $array */
         $block = Block::fromArray($array);
 
+        /** @psalm-var Heading1Json $array */
         $heading = $array[self::TYPE];
 
         $text = array_map(fn($t) => RichText::fromArray($t), $heading["text"]);

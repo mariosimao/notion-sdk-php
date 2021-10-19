@@ -7,6 +7,20 @@ use Notion\Common\Emoji;
 use Notion\Common\File;
 use Notion\Common\RichText;
 
+/**
+ * @psalm-import-type BlockJson from Block
+ * @psalm-import-type RichTextJson from \Notion\Common\RichText
+ * @psalm-import-type EmojiJson from \Notion\Common\Emoji
+ * @psalm-import-type FileJson from \Notion\Common\File
+ *
+ * @psalm-type CalloutJson = array{
+ *      callout: array{
+ *          text: RichTextJson[],
+ *          children: array{ type: BlockJson },
+ *          icon: EmojiJson|FileJson,
+ *      },
+ * }
+ */
 class Callout implements BlockInterface
 {
     private const TYPE = Block::TYPE_CALLOUT;
@@ -21,6 +35,10 @@ class Callout implements BlockInterface
     /** @var \Notion\Blocks\BlockInterface[] */
     private array $children;
 
+    /**
+     * @param \Notion\Common\RichText[] $text
+     * @param \Notion\Blocks\BlockInterface[] $children
+     */
     private function __construct(
         Block $block,
         array $text,
@@ -45,7 +63,7 @@ class Callout implements BlockInterface
         return new self($block, [], $icon, []);
     }
 
-    public static function fromString(string $emoji, string $content)
+    public static function fromString(string $emoji, string $content): self
     {
         $block = Block::create(self::TYPE);
         $text = [ RichText::createText($content) ];
@@ -56,17 +74,22 @@ class Callout implements BlockInterface
 
     public static function fromArray(array $array): self
     {
+        /** @psalm-var BlockJson $array */
         $block = Block::fromArray($array);
 
+        /** @psalm-var CalloutJson $array */
         $callout = $array[self::TYPE];
 
         $text = array_map(fn($t) => RichText::fromArray($t), $callout["text"]);
 
-        $icon = match($callout["icon"]["type"]) {
-            "emoji" => Emoji::fromArray($callout["icon"]),
-            "internal", "external" => File::fromArray($callout["icon"]),
-            default => throw new Exception("Invalid icon type"),
-        };
+        $iconArray = $callout["icon"];
+        if ($iconArray["type"] === "emoji") {
+            /** @psalm-var EmojiJson $iconArray */
+            $icon = Emoji::fromArray($iconArray);
+        } else {
+            /** @psalm-var FileJson $iconArray */
+            $icon = File::fromArray($iconArray);
+        }
 
         $children = array_map(fn($b) => BlockFactory::fromArray($b), $callout["children"]);
 

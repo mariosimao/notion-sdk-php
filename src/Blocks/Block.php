@@ -4,6 +4,16 @@ namespace Notion\Blocks;
 
 use DateTimeImmutable;
 
+/**
+ * @psalm-type BlockJson = array{
+ *      type: string,
+ *      id: string,
+ *      created_time: string,
+ *      last_edited_time: string,
+ *      archived: bool,
+ *      has_children: bool,
+ * }
+ */
 class Block
 {
     public const TYPE_PARAGRAPH = "paragraph";
@@ -58,6 +68,11 @@ class Block
         return new self("", $now, $now, false, false, $type);
     }
 
+    /**
+     * @param BlockJson $array
+     *
+     * @internal
+     */
     public static function fromArray(array $array): self
     {
         return new self(
@@ -73,7 +88,7 @@ class Block
     public function toArray(): array
     {
         return [
-            // "id"               => $this->id,
+            // "id"               => $this->id !== "" ? $this->id : null,
             "object"           => "block",
             "created_time"     => $this->createdTime->format(DATE_ISO8601),
             "last_edited_time" => $this->lastEditedTime->format(DATE_ISO8601),

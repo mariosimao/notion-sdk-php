@@ -6,6 +6,9 @@ use Exception;
 
 class BlockFactory
 {
+    /**
+     * @param array{ type: string } $array
+     */
     public static function fromArray(array $array): BlockInterface
     {
         $type = $array["type"];
