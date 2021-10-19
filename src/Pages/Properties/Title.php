@@ -4,35 +4,42 @@ namespace Notion\Pages\Properties;
 
 use Notion\Common\RichText;
 
-class Title
+/**
+ * @psalm-import-type RichTextJson from \Notion\Common\RichText
+ *
+ * @psalm-type TitleJson = array{
+ *      id: "title",
+ *      type: "title",
+ *      title: RichTextJson[],
+ * }
+ */
+class Title implements PropertyInterface
 {
-    private string $id = "title";
-    private string $type = "title";
+    private Property $property;
 
     /** @var \Notion\Common\RichText[] */
     private array $title;
 
-    private function __construct(RichText ...$title)
+
+    private function __construct(Property $property, RichText ...$title)
     {
+        $this->property = $property;
         $this->title = $title;
     }
 
     public static function create(string $title): self
     {
+        $property = Property::create("title", "title");
         $richText = RichText::createText($title);
 
-        return new self($richText);
+        return new self($property, $richText);
     }
 
-    public static function fromArray(array $array)
+    public static function fromArray(array $array): self
     {
-        if ($array["type"] !== "title") {
-            throw new \Exception("Not valid title type. Title properties should have type 'title'.");
-        }
+        /** @psalm-var TitleJson $array */
 
-        if (isset($array["title"]["type"])) {
-            $array["title"] = [ $array["title"] ];
-        }
+        $property = Property::fromArray($array);
 
         $title = array_map(
             function (array $richTextArray): RichText {
@@ -41,16 +48,21 @@ class Title
             $array["title"],
         );
 
-        return new self(...$title);
+        return new self($property, ...$title);
     }
 
     public function toArray(): array
     {
-        return [
-            "id"    => $this->id,
-            "type"  => $this->type,
-            "title" => array_map(fn(RichText $richText) => $richText->toArray(), $this->title),
-        ];
+        $array = $this->property->toArray();
+
+        $array["title"] = array_map(fn(RichText $richText) => $richText->toArray(), $this->title);
+
+        return $array;
+    }
+
+    public function property(): Property
+    {
+        return $this->property;
     }
 
     /** @return RichText[] */
@@ -61,7 +73,7 @@ class Title
 
     public function withRichTexts(RichText ...$richTexts): self
     {
-        return new self(...$richTexts);
+        return new self($this->property, ...$richTexts);
     }
 
     public function toString(): string

@@ -2,6 +2,13 @@
 
 namespace Notion\Pages;
 
+/**
+ * @psalm-type PageParentJson = array{
+ *      type: "page_id", "database_id", "workspace",
+ *      page_id?: string,
+ *      database_id?: string,
+ * }
+ */
 class PageParent
 {
     private const ALLOWED_TYPES = [ "page_id", "database_id", "workspace" ];
@@ -34,15 +41,16 @@ class PageParent
         return new self("workspace", null);
     }
 
+    /**
+     * @param PageParentJson $array
+     *
+     * @internal
+     */
     public static function fromArray(array $array): self
     {
         $type = $array["type"];
 
-        $id = match($type) {
-            "page_id"      => $array["page_id"],
-            "database_id"  => $array["database_id"],
-            "workspace"    => null,
-        };
+        $id = $array["page_id"] ?? $array["database_id"] ?? null;
 
         return new self($type, $id);
     }

@@ -2,10 +2,15 @@
 
 namespace Notion\Pages;
 
+use Notion\Blocks\BlockInterface;
 use Notion\NotionException;
+use Notion\Pages\Properties\PropertyInterface;
 use Nyholm\Psr7\Request;
 use Psr\Http\Client\ClientInterface;
 
+/**
+ * @psalm-import-type PageJson from Page
+ */
 class Client
 {
     private ClientInterface $psrClient;
@@ -34,15 +39,19 @@ class Client
         );
 
         $response = $this->psrClient->sendRequest($request);
+
+        /** @var array */
         $body = json_decode((string) $response->getBody(), true);
 
         if ($response->getStatusCode() !== 200) {
+            /** @var array{ message: string, code: string} $body */
             $message = $body["message"];
             $code = $body["code"];
 
             throw new NotionException($message, $code);
         }
 
+        /** @psalm-var PageJson $body */
         return Page::fromArray($body);
     }
 
@@ -52,7 +61,7 @@ class Client
             "archived" => $page->archived(),
             "icon" => $page->icon()?->toArray(),
             "cover" => $page->cover()?->toArray(),
-            "properties" => array_map(fn($p) => $p->toArray(), $page->properties()),
+            "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $page->properties()),
             "parent" => $page->parent()->toArray(),
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $content),
         ]);
@@ -69,15 +78,19 @@ class Client
         );
 
         $response = $this->psrClient->sendRequest($request);
+
+        /** @var array */
         $body = json_decode((string) $response->getBody(), true);
 
         if ($response->getStatusCode() !== 200) {
+            /** @var array{ message: string, code: string} $body */
             $message = $body["message"];
             $code = $body["code"];
 
             throw new NotionException($message, $code);
         }
 
+        /** @psalm-var PageJson $body */
         return Page::fromArray($body);
     }
 
@@ -87,7 +100,7 @@ class Client
             "archived" => $page->archived(),
             "icon" => $page->icon()?->toArray(),
             "cover" => $page->cover()?->toArray(),
-            "properties" => array_map(fn($p) => $p->toArray(), $page->properties()),
+            "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $page->properties()),
             "parent" => $page->parent()->toArray(),
         ]);
 
@@ -104,15 +117,19 @@ class Client
         );
 
         $response = $this->psrClient->sendRequest($request);
+
+        /** @var array */
         $body = json_decode((string) $response->getBody(), true);
 
         if ($response->getStatusCode() !== 200) {
+            /** @var array{ message: string, code: string} $body */
             $message = $body["message"];
             $code = $body["code"];
 
             throw new NotionException($message, $code);
         }
 
+        /** @psalm-var PageJson $body */
         return Page::fromArray($body);
     }
 }

@@ -6,7 +6,10 @@ use Exception;
 
 class Factory
 {
-    public static function fromArray(array $array): Title
+    /**
+     * @param array{ type: string } $array
+     */
+    public static function fromArray(array $array): PropertyInterface
     {
         $type = $array["type"];
 

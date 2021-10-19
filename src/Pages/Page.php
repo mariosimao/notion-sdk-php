@@ -6,8 +6,27 @@ use DateTimeImmutable;
 use Notion\Common\Emoji;
 use Notion\Common\File;
 use Notion\Pages\Properties\Factory;
+use Notion\Pages\Properties\PropertyInterface;
 use Notion\Pages\Properties\Title;
 
+/**
+ * @psalm-import-type EmojiJson from \Notion\Common\Emoji
+ * @psalm-import-type FileJson from \Notion\Common\File
+ * @psalm-import-type PropertyJson from \Notion\Pages\Properties\Property
+ * @psalm-import-type PageParentJson from PageParent
+ *
+ * @psalm-type PageJson = array{
+ *      id: string,
+ *      created_time: string,
+ *      last_edited_time: string,
+ *      archived: bool,
+ *      icon: EmojiJson|FileJson|null,
+ *      cover: FileJson|null,
+ *      properties: array<string, PropertyJson>,
+ *      parent: PageParentJson,
+ *      url: string,
+ * }
+ */
 class Page
 {
     private string $id;
@@ -16,10 +35,14 @@ class Page
     private bool $archived;
     private Emoji|File|null $icon;
     private File|null $cover;
+    /** @var array<string, PropertyInterface> */
     private array $properties;
     private PageParent $parent;
     private string $url;
 
+    /**
+     * @param array<string, PropertyInterface> $properties
+     */
     private function __construct(
         string $id,
         DateTimeImmutable $createdTime,
@@ -53,14 +76,28 @@ class Page
         return new self("", $now, $now, false, null, null, [], $parent, "");
     }
 
+
+    /**
+     * @param PageJson $array
+     *
+     * @internal
+     */
     public static function fromArray(array $array): self
     {
         $icon = null;
         if (is_array($array["icon"])) {
-            $icon = match($array["icon"]["type"]) {
-                "emoji" => Emoji::fromArray($array["icon"]),
-                "file"  => File::fromArray($array["icon"]),
-            };
+            $iconArray = $array["icon"];
+            $iconType = $iconArray["type"];
+
+            if ($iconType === "emoji") {
+                /** @psalm-var EmojiJson $iconArray */
+                $icon = Emoji::fromArray($iconArray);
+            }
+
+            if ($iconType === "internal" || $iconType === "external") {
+                /** @psalm-var FileJson $iconArray */
+                $icon = File::fromArray($iconArray);
+            }
         }
 
         $cover = isset($array["cover"]) ? File::fromArray($array["cover"]) : null;
@@ -220,7 +257,7 @@ class Page
         );
     }
 
-    public function withAddedProperty(string $name, $property): self
+    public function withAddedProperty(string $name, PropertyInterface $property): self
     {
         $properties = $this->properties;
         $properties[$name] = $property;
@@ -238,6 +275,7 @@ class Page
         );
     }
 
+    /** @param array<string, PropertyInterface> $properties */
     public function withProperties(array $properties): self
     {
         return new self(
@@ -260,7 +298,9 @@ class Page
 
     public function title(): Title|null
     {
-        return $this->properties["title"] ?? null;
+        $title = $this->properties["title"];
+
+        return $title instanceof Title ? $title : null;
     }
 
     public function withParent(PageParent $parent): self
