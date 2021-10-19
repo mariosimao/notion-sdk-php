@@ -1,1 +1,2 @@
-[![codecov](https://codecov.io/gh/mariosimao/notion-sdk/branch/master/graph/badge.svg?token=ZKKCWDY4QX)](https://codecov.io/gh/mariosimao/notion-sdk)
+[![Codecov](https://img.shields.io/codecov/c/github/mariosimao/notion-sdk)](https://app.codecov.io/gh/mariosimao/notion-sdk)
+[![Type coverage](https://shepherd.dev/github/mariosimao/notion-sdk/coverage.svg)](https://shepherd.dev/github/mariosimao/notion-sdk)
