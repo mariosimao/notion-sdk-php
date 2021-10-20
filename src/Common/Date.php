@@ -18,6 +18,13 @@ class Date
         $this->end = $end;
     }
 
+    public static function create(
+        DateTimeImmutable $start,
+        DateTimeImmutable $end = null,
+    ): self {
+        return new self($start, $end);
+    }
+
     /**
      * @param DateJson $array
      *
@@ -52,5 +59,20 @@ class Date
     public function isRange(): bool
     {
         return $this->end !== null;
+    }
+
+    public function withStart(DateTimeImmutable $start): self
+    {
+        return new self($start, $this->end);
+    }
+
+    public function withEnd(DateTimeImmutable $end): self
+    {
+        return new self($this->start, $end);
+    }
+
+    public function withoutEnd(): self
+    {
+        return new self($this->start, null);
     }
 }
