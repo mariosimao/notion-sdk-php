@@ -173,6 +173,8 @@ class Annotations
 
     public function withColor(string $color): self
     {
+        $this->checkColor($color);
+
         return new self(
             $this->bold,
             $this->italic,
