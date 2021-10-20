@@ -58,7 +58,7 @@ class User
 
         Assert::that($array["id"])->string();
         Assert::that($array["name"])->string();
-        Assert::that($array["avatar_url"])->string();
+        Assert::that($array["avatar_url"])->nullOr()->string();
         Assert::that($array["type"])->string();
 
         $person = array_key_exists("person", $array) ? Person::fromArray($array["person"]) : null;
