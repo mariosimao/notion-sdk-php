@@ -65,13 +65,24 @@ class File
 
     public function toArray(): array
     {
-        $array = [
-            "type" => $this->type,
-            "url"  => $this->url,
-        ];
+        $array = [];
+        $type = $this->type;
 
-        if ($this->expiryTime !== null) {
-            $array["expiry_time"] = $this->expiryTime;
+        if ($type === "file") {
+            $array = [
+                "type" => "file",
+                "file" => [
+                    "url" => $this->url,
+                    "expiry_time" => $this->expiryTime?->format(DATE_ISO8601),
+                ],
+            ];
+        }
+
+        if ($type === "external") {
+            $array = [
+                "type" => "external",
+                "external" => [ "url" => $this->url ],
+            ];
         }
 
         return $array;
