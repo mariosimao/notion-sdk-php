@@ -14,6 +14,11 @@ class Equation
         $this->expression = $expression;
     }
 
+    public static function create(string $expression): self
+    {
+        return new self($expression);
+    }
+
     /**
      * @param EquationJson $array
      *
@@ -34,5 +39,10 @@ class Equation
     public function expression(): string
     {
         return $this->expression;
+    }
+
+    public function withExpression(string $expression): self
+    {
+        return new self($expression);
     }
 }
