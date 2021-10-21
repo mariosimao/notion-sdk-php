@@ -44,6 +44,26 @@ class Mention
         $this->date = $date;
     }
 
+    public static function createPage(string $pageId): self
+    {
+        return new self("page", $pageId, null, null, null);
+    }
+
+    public static function createDatabase(string $databaseId): self
+    {
+        return new self("database", null, $databaseId, null, null);
+    }
+
+    public static function createUser(User $user): self
+    {
+        return new self("user", null, null, $user, null);
+    }
+
+    public static function createDate(Date $date): self
+    {
+        return new self("date", null, null, null, $date);
+    }
+
     /**
      * @param MentionJson $array
      *
