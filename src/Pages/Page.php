@@ -94,7 +94,7 @@ class Page
                 $icon = Emoji::fromArray($iconArray);
             }
 
-            if ($iconType === "internal" || $iconType === "external") {
+            if ($iconType === "file" || $iconType === "external") {
                 /** @psalm-var FileJson $iconArray */
                 $icon = File::fromArray($iconArray);
             }
