@@ -71,98 +71,98 @@ class Property
         return $this->type;
     }
 
-    public function isRichText(): bool
-    {
-        return $this->type === self::TYPE_RICH_TEXT;
-    }
+    // public function isRichText(): bool
+    // {
+    //     return $this->type === self::TYPE_RICH_TEXT;
+    // }
 
-    public function isNumber(): bool
-    {
-        return $this->type === self::TYPE_NUMBER;
-    }
+    // public function isNumber(): bool
+    // {
+    //     return $this->type === self::TYPE_NUMBER;
+    // }
 
-    public function isSelect(): bool
-    {
-        return $this->type === self::TYPE_SELECT;
-    }
+    // public function isSelect(): bool
+    // {
+    //     return $this->type === self::TYPE_SELECT;
+    // }
 
-    public function isMultiSelect(): bool
-    {
-        return $this->type === self::TYPE_MULTI_SELECT;
-    }
+    // public function isMultiSelect(): bool
+    // {
+    //     return $this->type === self::TYPE_MULTI_SELECT;
+    // }
 
-    public function isDate(): bool
-    {
-        return $this->type === self::TYPE_DATE;
-    }
+    // public function isDate(): bool
+    // {
+    //     return $this->type === self::TYPE_DATE;
+    // }
 
-    public function isFormula(): bool
-    {
-        return $this->type === self::TYPE_FORMULA;
-    }
+    // public function isFormula(): bool
+    // {
+    //     return $this->type === self::TYPE_FORMULA;
+    // }
 
-    public function isRelation(): bool
-    {
-        return $this->type === self::TYPE_RELATION;
-    }
+    // public function isRelation(): bool
+    // {
+    //     return $this->type === self::TYPE_RELATION;
+    // }
 
-    public function isRollup(): bool
-    {
-        return $this->type === self::TYPE_ROLLUP;
-    }
+    // public function isRollup(): bool
+    // {
+    //     return $this->type === self::TYPE_ROLLUP;
+    // }
 
     public function isTitle(): bool
     {
         return $this->type === self::TYPE_TITLE;
     }
 
-    public function isPeople(): bool
-    {
-        return $this->type === self::TYPE_PEOPLE;
-    }
+    // public function isPeople(): bool
+    // {
+    //     return $this->type === self::TYPE_PEOPLE;
+    // }
 
-    public function isFiles(): bool
-    {
-        return $this->type === self::TYPE_FILES;
-    }
+    // public function isFiles(): bool
+    // {
+    //     return $this->type === self::TYPE_FILES;
+    // }
 
-    public function isCheckbox(): bool
-    {
-        return $this->type === self::TYPE_CHECKBOX;
-    }
+    // public function isCheckbox(): bool
+    // {
+    //     return $this->type === self::TYPE_CHECKBOX;
+    // }
 
-    public function isUrl(): bool
-    {
-        return $this->type === self::TYPE_URL;
-    }
+    // public function isUrl(): bool
+    // {
+    //     return $this->type === self::TYPE_URL;
+    // }
 
-    public function isEmail(): bool
-    {
-        return $this->type === self::TYPE_EMAIL;
-    }
+    // public function isEmail(): bool
+    // {
+    //     return $this->type === self::TYPE_EMAIL;
+    // }
 
-    public function isPhoneNumber(): bool
-    {
-        return $this->type === self::TYPE_PHONE_NUMBER;
-    }
+    // public function isPhoneNumber(): bool
+    // {
+    //     return $this->type === self::TYPE_PHONE_NUMBER;
+    // }
 
-    public function isCreatedTime(): bool
-    {
-        return $this->type === self::TYPE_CREATED_TIME;
-    }
+    // public function isCreatedTime(): bool
+    // {
+    //     return $this->type === self::TYPE_CREATED_TIME;
+    // }
 
-    public function isCreatedBy(): bool
-    {
-        return $this->type === self::TYPE_CREATED_BY;
-    }
+    // public function isCreatedBy(): bool
+    // {
+    //     return $this->type === self::TYPE_CREATED_BY;
+    // }
 
-    public function isLastEditedTime(): bool
-    {
-        return $this->type === self::TYPE_LAST_EDITED_TIME;
-    }
+    // public function isLastEditedTime(): bool
+    // {
+    //     return $this->type === self::TYPE_LAST_EDITED_TIME;
+    // }
 
-    public function isLastEditedBy(): bool
-    {
-        return $this->type === self::TYPE_LAST_EDITED_BY;
-    }
+    // public function isLastEditedBy(): bool
+    // {
+    //     return $this->type === self::TYPE_LAST_EDITED_BY;
+    // }
 }
