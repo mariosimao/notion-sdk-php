@@ -32,6 +32,7 @@ class BlockFactory
             Block::TYPE_VIDEO              => Video::fromArray($array),
             Block::TYPE_FILE               => FileBlock::fromArray($array),
             Block::TYPE_PDF                => Pdf::fromArray($array),
+            Block::TYPE_BOOKMARK           => Bookmark::fromArray($array),
             default => throw new Exception("Invalid block type '{$type}'"),
         };
     }
