@@ -27,6 +27,7 @@ class BlockFactory
             Block::TYPE_CODE               => Code::fromArray($array),
             Block::TYPE_CHILD_PAGE         => ChildPage::fromArray($array),
             Block::TYPE_CHILD_DATABASE     => ChildDatabase::fromArray($array),
+            Block::TYPE_EMBED              => Embed::fromArray($array),
             default => throw new Exception("Invalid block type '{$type}'"),
         };
     }
