@@ -1,6 +1,6 @@
 <?php
 
-namespace Notion\Test\Pages\Properties;
+namespace Notion\Test\Unit\Pages\Properties;
 
 use Notion\Common\RichText;
 use Notion\Pages\Properties\Title;

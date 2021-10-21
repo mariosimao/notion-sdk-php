@@ -1,6 +1,6 @@
 <?php
 
-namespace Notion\Test\Common;
+namespace Notion\Test\Unit\Common;
 
 use Notion\Common\Annotations;
 use PHPUnit\Framework\TestCase;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Notion\Test\Common;
+namespace Notion\Test\Unit\Common;
 
 use DateTimeImmutable;
 use Notion\Common\Date;

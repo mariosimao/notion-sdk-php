@@ -1,6 +1,6 @@
 <?php
 
-namespace Notion\Test\Blocks;
+namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\Heading1;
 use Notion\Common\RichText;

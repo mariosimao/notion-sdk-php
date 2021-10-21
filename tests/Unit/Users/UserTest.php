@@ -1,6 +1,6 @@
 <?php
 
-namespace Notion\Test\Users;
+namespace Notion\Test\Unit\Users;
 
 use Notion\Users\User;
 use PHPUnit\Framework\TestCase;
