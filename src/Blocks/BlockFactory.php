@@ -33,6 +33,7 @@ class BlockFactory
             Block::TYPE_FILE               => FileBlock::fromArray($array),
             Block::TYPE_PDF                => Pdf::fromArray($array),
             Block::TYPE_BOOKMARK           => Bookmark::fromArray($array),
+            Block::TYPE_EQUATION           => EquationBlock::fromArray($array),
             default => throw new Exception("Invalid block type '{$type}'"),
         };
     }
