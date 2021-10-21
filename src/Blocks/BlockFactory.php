@@ -25,6 +25,7 @@ class BlockFactory
             Block::TYPE_TO_DO              => ToDo::fromArray($array),
             Block::TYPE_TOGGLE             => Toggle::fromArray($array),
             Block::TYPE_CODE               => Code::fromArray($array),
+            Block::TYPE_CHILD_PAGE         => ChildPage::fromArray($array),
             default => throw new Exception("Invalid block type '{$type}'"),
         };
     }
