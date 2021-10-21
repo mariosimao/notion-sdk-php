@@ -73,7 +73,7 @@ class File
                 "type" => "file",
                 "file" => [
                     "url" => $this->url,
-                    "expiry_time" => $this->expiryTime?->format(DATE_ISO8601),
+                    "expiry_time" => $this->expiryTime?->format(Date::FORMAT),
                 ],
             ];
         }

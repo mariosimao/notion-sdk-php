@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\Heading2;
+use Notion\Common\Date;
 use Notion\Common\RichText;
 use PHPUnit\Framework\TestCase;
 
@@ -105,8 +106,8 @@ class Heading2Test extends TestCase
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $h->block()->createdTime()->format(DATE_ISO8601),
-            "last_edited_time" => $h->block()->lastEditedType()->format(DATE_ISO8601),
+            "created_time"     => $h->block()->createdTime()->format(Date::FORMAT),
+            "last_edited_time" => $h->block()->lastEditedType()->format(Date::FORMAT),
             "archived"         => false,
             "has_children"      => false,
             "type"             => "heading_2",

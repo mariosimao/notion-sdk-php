@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\Quote;
+use Notion\Common\Date;
 use Notion\Common\RichText;
 use PHPUnit\Framework\TestCase;
 
@@ -108,8 +109,8 @@ class QuoteTest extends TestCase
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $q->block()->createdTime()->format(DATE_ISO8601),
-            "last_edited_time" => $q->block()->lastEditedType()->format(DATE_ISO8601),
+            "created_time"     => $q->block()->createdTime()->format(Date::FORMAT),
+            "last_edited_time" => $q->block()->lastEditedType()->format(Date::FORMAT),
             "archived"         => false,
             "has_children"      => false,
             "type"             => "quote",

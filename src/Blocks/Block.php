@@ -3,6 +3,7 @@
 namespace Notion\Blocks;
 
 use DateTimeImmutable;
+use Notion\Common\Date;
 
 /**
  * @psalm-type BlockJson = array{
@@ -90,8 +91,8 @@ class Block
         return [
             // "id"               => $this->id !== "" ? $this->id : null,
             "object"           => "block",
-            "created_time"     => $this->createdTime->format(DATE_ISO8601),
-            "last_edited_time" => $this->lastEditedTime->format(DATE_ISO8601),
+            "created_time"     => $this->createdTime->format(Date::FORMAT),
+            "last_edited_time" => $this->lastEditedTime->format(Date::FORMAT),
             "archived"         => $this->archived,
             "has_children"     => $this->hasChildren,
             "type"             => $this->type,

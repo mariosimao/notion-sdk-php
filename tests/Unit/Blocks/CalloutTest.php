@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\Callout;
+use Notion\Common\Date;
 use Notion\Common\Emoji;
 use Notion\Common\RichText;
 use PHPUnit\Framework\TestCase;
@@ -205,8 +206,8 @@ class CalloutTest extends TestCase
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $c->block()->createdTime()->format(DATE_ISO8601),
-            "last_edited_time" => $c->block()->lastEditedType()->format(DATE_ISO8601),
+            "created_time"     => $c->block()->createdTime()->format(Date::FORMAT),
+            "last_edited_time" => $c->block()->lastEditedType()->format(Date::FORMAT),
             "archived"         => false,
             "has_children"      => false,
             "type"             => "callout",

@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\ToDo;
+use Notion\Common\Date;
 use Notion\Common\RichText;
 use PHPUnit\Framework\TestCase;
 
@@ -112,8 +113,8 @@ class ToDoTest extends TestCase
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $p->block()->createdTime()->format(DATE_ISO8601),
-            "last_edited_time" => $p->block()->lastEditedType()->format(DATE_ISO8601),
+            "created_time"     => $p->block()->createdTime()->format(Date::FORMAT),
+            "last_edited_time" => $p->block()->lastEditedType()->format(Date::FORMAT),
             "archived"         => false,
             "has_children"     => false,
             "type"             => "to_do",

@@ -3,6 +3,7 @@
 namespace Notion\Pages;
 
 use DateTimeImmutable;
+use Notion\Common\Date;
 use Notion\Common\Emoji;
 use Notion\Common\File;
 use Notion\Pages\Properties\Factory;
@@ -126,8 +127,8 @@ class Page
     {
         return [
             "id"               => $this->id,
-            "created_time"     => $this->createdTime->format(DATE_ISO8601),
-            "last_edited_time" => $this->lastEditedTime->format(DATE_ISO8601),
+            "created_time"     => $this->createdTime->format(Date::FORMAT),
+            "last_edited_time" => $this->lastEditedTime->format(Date::FORMAT),
             "archived"         => $this->archived,
             "icon"             => $this->icon?->toArray(),
             "cover"            => $this->cover?->toArray(),

@@ -9,6 +9,8 @@ use DateTimeImmutable;
  */
 class Date
 {
+    public const FORMAT = "Y-m-d\TH:i:s.up";
+
     private DateTimeImmutable $start;
     private DateTimeImmutable|null $end;
 
