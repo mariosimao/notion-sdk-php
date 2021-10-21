@@ -176,6 +176,19 @@ class RichText
         return $this->type === "equation";
     }
 
+    public function withHref(string $href): self
+    {
+        return new self(
+            $this->plainText,
+            $href,
+            $this->annotations,
+            $this->type,
+            $this->text,
+            $this->mention,
+            $this->equation,
+        );
+    }
+
     public function withAnnotations(Annotations $annotations): self
     {
         return new self(
