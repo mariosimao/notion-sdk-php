@@ -3,3 +3,4 @@ vendor
 .phpunit.cache
 coverage
 dist
+test.php
