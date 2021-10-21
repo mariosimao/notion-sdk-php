@@ -19,7 +19,7 @@ class PageParent
     private function __construct(string $type, string|null $id)
     {
         if (!in_array($type, self::ALLOWED_TYPES)) {
-            throw new \Exception("Invalid user type: '{$type}'.");
+            throw new \Exception("Invalid parent type: '{$type}'.");
         }
 
         $this->type = $type;
@@ -57,7 +57,7 @@ class PageParent
 
     public function toArray(): array
     {
-        $array = [];
+        $array = [ "type" => $this->type ];
 
         if ($this->isDatabase()) {
             $array["database_id"] = $this->id;
