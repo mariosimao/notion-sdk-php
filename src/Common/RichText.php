@@ -56,6 +56,22 @@ class RichText
         return new self($content, null, $annotations, "text", $text, null, null);
     }
 
+    public static function createEquation(string $expression): self
+    {
+        $annotations = Annotations::create();
+        $equation = Equation::create($expression);
+
+        return new self(
+            $expression,
+            null,
+            $annotations,
+            "equation",
+            null,
+            null,
+            $equation,
+        );
+    }
+
     /**
      * @param RichTextJson $array
      *
