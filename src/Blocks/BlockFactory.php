@@ -29,6 +29,7 @@ class BlockFactory
             Block::TYPE_CHILD_DATABASE     => ChildDatabase::fromArray($array),
             Block::TYPE_EMBED              => Embed::fromArray($array),
             Block::TYPE_IMAGE              => Image::fromArray($array),
+            Block::TYPE_VIDEO              => Video::fromArray($array),
             default => throw new Exception("Invalid block type '{$type}'"),
         };
     }
