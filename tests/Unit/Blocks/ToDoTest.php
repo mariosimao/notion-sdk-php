@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Unit\Blocks;
 
+use Notion\Blocks\BlockFactory;
 use Notion\Blocks\ToDo;
 use Notion\Common\Date;
 use Notion\Common\RichText;
@@ -84,6 +85,8 @@ class ToDoTest extends TestCase
         $this->assertEquals("Notion to dos rock!", $toDo->toString());
         $this->assertTrue($toDo->checked());
         $this->assertFalse($toDo->block()->archived());
+
+        $this->assertEquals($toDo, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void

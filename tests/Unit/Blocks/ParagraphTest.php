@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Unit\Blocks;
 
+use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Paragraph;
 use Notion\Common\Date;
 use Notion\Common\RichText;
@@ -81,6 +82,8 @@ class ParagraphTest extends TestCase
         $this->assertEmpty($paragraph->children());
         $this->assertEquals("Notion paragraphs rock!", $paragraph->toString());
         $this->assertFalse($paragraph->block()->archived());
+
+        $this->assertEquals($paragraph, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void

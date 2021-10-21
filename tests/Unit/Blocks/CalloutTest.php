@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Unit\Blocks;
 
+use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Callout;
 use Notion\Common\Date;
 use Notion\Common\Emoji;
@@ -87,6 +88,8 @@ class CalloutTest extends TestCase
         $this->assertEquals("Notion callouts rock!", $callout->toString());
         $this->assertEquals("☀️", $callout->icon()->emoji());
         $this->assertFalse($callout->block()->archived());
+
+        $this->assertEquals($callout, BlockFactory::fromArray($array));
     }
 
     public function test_create_from_array_with_icon_file(): void

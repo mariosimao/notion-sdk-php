@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Unit\Blocks;
 
+use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Code;
 use Notion\Common\Date;
 use Notion\Common\RichText;
@@ -55,6 +56,7 @@ class CodeTest extends TestCase
 
         $this->assertCount(1, $code->text());
         $this->assertEquals("<?php\necho 'Hello World!';", $code->toString());
+        $this->assertEquals($code, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void

@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Unit\Blocks;
 
+use Notion\Blocks\BlockFactory;
 use Notion\Blocks\BulletedListItem;
 use Notion\Common\Date;
 use Notion\Common\RichText;
@@ -81,6 +82,8 @@ class BulletedListItemTest extends TestCase
         $this->assertEmpty($item->children());
         $this->assertEquals("Notion items rock!", $item->toString());
         $this->assertFalse($item->block()->archived());
+
+        $this->assertEquals($item, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void

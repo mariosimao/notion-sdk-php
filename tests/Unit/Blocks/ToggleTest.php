@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Unit\Blocks;
 
+use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Toggle;
 use Notion\Common\Date;
 use Notion\Common\RichText;
@@ -81,6 +82,8 @@ class ToggleTest extends TestCase
         $this->assertEmpty($toggle->children());
         $this->assertEquals("Notion toggles rock!", $toggle->toString());
         $this->assertFalse($toggle->block()->archived());
+
+        $this->assertEquals($toggle, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void

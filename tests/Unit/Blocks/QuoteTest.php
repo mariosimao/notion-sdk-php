@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Unit\Blocks;
 
+use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Quote;
 use Notion\Common\Date;
 use Notion\Common\RichText;
@@ -81,6 +82,8 @@ class QuoteTest extends TestCase
         $this->assertEmpty($quote->children());
         $this->assertEquals("Notion quotes rock!", $quote->toString());
         $this->assertFalse($quote->block()->archived());
+
+        $this->assertEquals($quote, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void

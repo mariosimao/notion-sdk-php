@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Unit\Blocks;
 
+use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Heading1;
 use Notion\Common\Date;
 use Notion\Common\RichText;
@@ -79,6 +80,8 @@ class Heading1Test extends TestCase
         $this->assertCount(2, $heading->text());
         $this->assertEquals("Notion headings rock!", $heading->toString());
         $this->assertFalse($heading->block()->archived());
+
+        $this->assertEquals($heading, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void
