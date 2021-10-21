@@ -33,6 +33,18 @@ class File
         $this->expiryTime = $expiryTime;
     }
 
+    public static function createExternal(string $url): self
+    {
+        return new self("external", $url, null);
+    }
+
+    public static function createInternal(
+        string $url,
+        DateTimeImmutable|null $expiryTime = null
+    ): self {
+        return new self("internal", $url, $expiryTime);
+    }
+
     /**
      * @param FileJson $array
      *
@@ -88,5 +100,10 @@ class File
     public function isInternal(): bool
     {
         return $this->type === "file";
+    }
+
+    public function withUrl(string $url): self
+    {
+        return new self($this->type, $url, $this->expiryTime);
     }
 }
