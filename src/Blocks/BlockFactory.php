@@ -35,6 +35,7 @@ class BlockFactory
             Block::TYPE_BOOKMARK           => Bookmark::fromArray($array),
             Block::TYPE_EQUATION           => EquationBlock::fromArray($array),
             Block::TYPE_DIVIDER            => Divider::fromArray($array),
+            Block::TYPE_TABLE_OF_CONTENTS  => TableOfContents::fromArray($array),
             default => throw new Exception("Invalid block type '{$type}'"),
         };
     }
