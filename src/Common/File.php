@@ -6,8 +6,8 @@ use DateTimeImmutable;
 
 /**
  * @psalm-type FileJson = array{
- *      type: "external"|"internal",
- *      internal?: array{ url: string, expiry_time: string },
+ *      type: "external"|"file",
+ *      file?: array{ url: string, expiry_time: string },
  *      external?: array{ url: string },
  * }
  */
@@ -42,7 +42,7 @@ class File
         string $url,
         DateTimeImmutable|null $expiryTime = null
     ): self {
-        return new self("internal", $url, $expiryTime);
+        return new self("file", $url, $expiryTime);
     }
 
     /**
