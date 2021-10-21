@@ -183,13 +183,28 @@ class Page
         return $this->url;
     }
 
-    public function withArchived(bool $archived): self
+    public function archive(): self
     {
         return new self(
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
-            $archived,
+            true,
+            $this->icon,
+            $this->cover,
+            $this->properties,
+            $this->parent,
+            $this->url,
+        );
+    }
+
+    public function unarchive(): self
+    {
+        return new self(
+            $this->id,
+            $this->createdTime,
+            $this->lastEditedTime,
+            false,
             $this->icon,
             $this->cover,
             $this->properties,
