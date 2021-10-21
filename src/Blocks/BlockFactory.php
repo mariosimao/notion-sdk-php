@@ -34,6 +34,7 @@ class BlockFactory
             Block::TYPE_PDF                => Pdf::fromArray($array),
             Block::TYPE_BOOKMARK           => Bookmark::fromArray($array),
             Block::TYPE_EQUATION           => EquationBlock::fromArray($array),
+            Block::TYPE_DIVIDER            => Divider::fromArray($array),
             default => throw new Exception("Invalid block type '{$type}'"),
         };
     }
