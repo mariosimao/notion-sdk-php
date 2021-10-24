@@ -132,4 +132,11 @@ class Client
         /** @psalm-var PageJson $body */
         return Page::fromArray($body);
     }
+
+    public function delete(Page $page): Page
+    {
+        $archivedPage = $page->archive();
+
+        return $this->update($archivedPage);
+    }
 }
