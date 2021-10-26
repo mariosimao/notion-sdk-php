@@ -14,6 +14,9 @@
         <testsuite name="Unit">
             <directory>tests/Unit</directory>
         </testsuite>
+        <testsuite name="Integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
     </testsuites>
 
     <coverage cacheDirectory=".phpunit.cache/code-coverage">
