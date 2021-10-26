@@ -6,7 +6,7 @@ name: Tests
 
 jobs:
   unit:
-    name: Unit tests
+    name: Unit and Integration tests
 
     runs-on: ${{ matrix.os }}
 
@@ -46,6 +46,7 @@ jobs:
           composer-options: --no-ansi --no-interaction --no-progress
 
       - name: Run tests with phpunit
+        env: ${{ secrets.NOTION_TOKEN }}
         run: vendor/bin/phpunit --coverage-clover dist/phpunit/clover.xml
 
       - name: Send code coverage report to Codecov.io
