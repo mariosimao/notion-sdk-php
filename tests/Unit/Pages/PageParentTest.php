@@ -39,7 +39,7 @@ class PageParentTest extends TestCase
         ];
         $parent = PageParent::fromArray($array);
 
-        $this->assertEquals($array, $parent->toArray());
+        $this->assertEquals($array["page_id"], $parent->toArray()["page_id"]);
     }
 
     public function test_database_array_conversion(): void
@@ -50,7 +50,7 @@ class PageParentTest extends TestCase
         ];
         $parent = PageParent::fromArray($array);
 
-        $this->assertEquals($array, $parent->toArray());
+        $this->assertEquals($array["database_id"], $parent->toArray()["database_id"]);
     }
 
     public function test_workspace_array_conversion(): void
@@ -61,7 +61,7 @@ class PageParentTest extends TestCase
         ];
         $parent = PageParent::fromArray($array);
 
-        $this->assertEquals($array, $parent->toArray());
+        $this->assertEquals($array["workspace"], $parent->toArray()["workspace"]);
     }
 
     public function test_invalid_type_array(): void

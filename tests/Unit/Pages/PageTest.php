@@ -149,7 +149,10 @@ class PageTest extends TestCase
         ];
         $page = Page::fromArray($array);
 
-        $this->assertSame($array, $page->toArray());
+        $outArray = $array;
+        unset($outArray["parent"]["type"]);
+
+        $this->assertSame($outArray, $page->toArray());
         $this->assertSame("a7e80c0b-a766-43c3-a9e9-21ce94595e0e", $page->id());
         $this->assertSame("https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e", $page->url());
         $this->assertEquals(

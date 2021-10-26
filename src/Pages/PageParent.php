@@ -57,7 +57,7 @@ class PageParent
 
     public function toArray(): array
     {
-        $array = [ "type" => $this->type ];
+        $array = [];
 
         if ($this->isDatabase()) {
             $array["database_id"] = $this->id;
