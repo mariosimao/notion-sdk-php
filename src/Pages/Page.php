@@ -168,6 +168,7 @@ class Page
         return $this->cover;
     }
 
+    /** @return array<string, PropertyInterface> */
     public function properties(): array
     {
         return $this->properties;
