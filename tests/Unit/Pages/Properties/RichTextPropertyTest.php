@@ -1,0 +1,62 @@
+<?php
+
+namespace Notion\Test\Unit\Pages\Properties;
+
+use Notion\Common\RichText;
+use Notion\Pages\Properties\RichTextProperty;
+use PHPUnit\Framework\TestCase;
+
+class RichTextPropertyTest extends TestCase
+{
+    public function test_create(): void
+    {
+        $text = RichTextProperty::create("Dummy text");
+
+        $this->assertEquals("Dummy text", $text->text()[0]->text()->content());
+        $this->assertEquals("", $text->property()->id());
+        $this->assertEquals("rich_text", $text->property()->type());
+        $this->assertTrue($text->property()->isRichText());
+    }
+
+    public function test_array_conversion(): void
+    {
+        $array = [
+            "id"    => "a7ede3b7-c7ae-4eb8-b415-a7f80ac4dfe5",
+            "type"  => "rich_text",
+            "rich_text" => [[
+                "plain_text" => "Dummy text",
+                "href" => null,
+                "annotations" => [
+                    "bold"          => false,
+                    "italic"        => false,
+                    "strikethrough" => false,
+                    "underline"     => false,
+                    "code"          => false,
+                    "color"         => "default",
+                ],
+                "type" => "text",
+                "text" => [
+                    "content" => "Dummy text",
+                    "link"    => null,
+                ],
+            ]],
+        ];
+
+        $text = RichTextProperty::fromArray($array);
+        $this->assertEquals($array, $text->toArray());
+    }
+
+    public function test_string_conversion(): void
+    {
+        $text = RichTextProperty::create("Dummy text");
+        $this->assertEquals("Dummy text", $text->toString());
+    }
+
+    public function test_change_text(): void
+    {
+        $text = RichTextProperty::create("")->withText(
+            RichText::createText("Dummy text")
+        );
+        $this->assertEquals("Dummy text", $text->toString());
+    }
+}
