@@ -76,10 +76,10 @@ class Property
         return $this->type === self::TYPE_RICH_TEXT;
     }
 
-    // public function isNumber(): bool
-    // {
-    //     return $this->type === self::TYPE_NUMBER;
-    // }
+    public function isNumber(): bool
+    {
+        return $this->type === self::TYPE_NUMBER;
+    }
 
     // public function isSelect(): bool
     // {

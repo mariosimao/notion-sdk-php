@@ -8,8 +8,8 @@ use Notion\Common\RichText;
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
  *
  * @psalm-type RichTextPropertyJson = array{
- *      id: "title",
- *      type: "title",
+ *      id: string,
+ *      type: "rich_text",
  *      rich_text: RichTextJson[],
  * }
  */
