@@ -86,10 +86,10 @@ class Property
         return $this->type === self::TYPE_SELECT;
     }
 
-    // public function isMultiSelect(): bool
-    // {
-    //     return $this->type === self::TYPE_MULTI_SELECT;
-    // }
+    public function isMultiSelect(): bool
+    {
+        return $this->type === self::TYPE_MULTI_SELECT;
+    }
 
     // public function isDate(): bool
     // {

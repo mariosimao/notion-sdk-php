@@ -18,6 +18,7 @@ class Factory
             Property::TYPE_RICH_TEXT => RichTextProperty::fromArray($array),
             Property::TYPE_NUMBER    => Number::fromArray($array),
             Property::TYPE_SELECT    => Select::fromArray($array),
+            Property::TYPE_MULTI_SELECT => MultiSelect::fromArray($array),
             default => throw new Exception("Invalid property type: '{$type}'"),
         };
     }
