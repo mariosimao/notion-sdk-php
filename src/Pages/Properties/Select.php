@@ -11,49 +11,32 @@ namespace Notion\Pages\Properties;
  */
 class Select implements PropertyInterface
 {
-    public const COLOR_DEFAULT = "default";
-    public const COLOR_GRAY    = "gray";
-    public const COLOR_BROWN   = "brown";
-    public const COLOR_RED     = "red";
-    public const COLOR_ORANGE  = "orange";
-    public const COLOR_YELLOW  = "yellow";
-    public const COLOR_GREEN   = "green";
-    public const COLOR_BLUE    = "blue";
-    public const COLOR_PURPLE  = "purple";
-    public const COLOR_PINK    = "pink";
-
     private const TYPE = Property::TYPE_SELECT;
 
     private Property $property;
 
-    private string|null $id;
-    private string|null $name;
-    private string $color;
+    private Option $option;
 
-    private function __construct(
-        Property $property,
-        string|null $id,
-        string|null $name,
-        string $color,
-    ) {
+    private function __construct(Property $property, Option $option)
+    {
         $this->property = $property;
-        $this->id = $id;
-        $this->name = $name;
-        $this->color = $color;
+        $this->option = $option;
     }
 
     public static function fromId(string $id): self
     {
         $property = Property::create("", self::TYPE);
+        $option = Option::fromId($id);
 
-        return new self($property, $id, null, self::COLOR_DEFAULT);
+        return new self($property, $option);
     }
 
     public static function fromName(string $name): self
     {
         $property = Property::create("", self::TYPE);
+        $option = Option::fromName($name);
 
-        return new self($property, null, $name, self::COLOR_DEFAULT);
+        return new self($property, $option);
     }
 
     public static function fromArray(array $array): self
@@ -61,25 +44,15 @@ class Select implements PropertyInterface
         /** @psalm-var SelectJson $array */
         $property = Property::fromArray($array);
 
-        $id = $array[self::TYPE]["id"] ?? null;
-        $name = $array[self::TYPE]["name"] ?? null;
-        $color = $array[self::TYPE]["color"];
+        $option = Option::fromArray($array[self::TYPE]);
 
-        return new self($property, $id, $name, $color);
+        return new self($property, $option);
     }
 
     public function toArray(): array
     {
         $array = $this->property->toArray();
-
-        $select = [ "color" => $this->color ];
-        if ($this->name !== null) {
-            $select["name"] = $this->name;
-        }
-        if ($this->id !== null) {
-            $select["id"] = $this->id;
-        }
-        $array[self::TYPE] = $select;
+        $array[self::TYPE] = $this->option->toArray();
 
         return $array;
     }
@@ -91,31 +64,37 @@ class Select implements PropertyInterface
 
     public function id(): string|null
     {
-        return $this->id;
+        return $this->option->id();
     }
 
     public function withId(string $id): self
     {
-        return new self($this->property, $id, $this->name, $this->color);
+        $option = $this->option->withId($id);
+
+        return new self($this->property, $option);
     }
 
     public function name(): string|null
     {
-        return $this->name;
+        return $this->option->name();
     }
 
     public function withName(string $name): self
     {
-        return new self($this->property, $this->id, $name, $this->color);
+        $option = $this->option->withName($name);
+
+        return new self($this->property, $option);
     }
 
     public function color(): string
     {
-        return $this->color;
+        return $this->option->color();
     }
 
     public function withColor(string $color): self
     {
-        return new self($this->property, $this->id, $this->name, $color);
+        $option = $this->option->withColor($color);
+
+        return new self($this->property, $option);
     }
 }
