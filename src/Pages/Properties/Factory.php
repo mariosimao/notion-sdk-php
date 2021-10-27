@@ -14,8 +14,10 @@ class Factory
         $type = $array["type"];
 
         return match($type) {
-            Property::TYPE_TITLE => Title::fromArray($array),
+            Property::TYPE_TITLE     => Title::fromArray($array),
             Property::TYPE_RICH_TEXT => RichTextProperty::fromArray($array),
+            Property::TYPE_NUMBER    => Number::fromArray($array),
+            Property::TYPE_SELECT    => Select::fromArray($array),
             default => throw new Exception("Invalid property type: '{$type}'"),
         };
     }
