@@ -28,45 +28,51 @@ class Select implements PropertyInterface
 
     private string|null $id;
     private string|null $name;
+    private string $color;
 
-    private function __construct(Property $property, string|null $id, string|null $name)
-    {
+    private function __construct(
+        Property $property,
+        string|null $id,
+        string|null $name,
+        string $color,
+    ) {
         $this->property = $property;
         $this->id = $id;
         $this->name = $name;
+        $this->color = $color;
     }
 
     public static function fromId(string $id): self
     {
         $property = Property::create("", self::TYPE);
 
-        return new self($property, $id, null);
+        return new self($property, $id, null, self::COLOR_DEFAULT);
     }
 
     public static function fromName(string $name): self
     {
         $property = Property::create("", self::TYPE);
 
-        return new self($property, null, $name);
+        return new self($property, null, $name, self::COLOR_DEFAULT);
     }
 
     public static function fromArray(array $array): self
     {
         /** @psalm-var SelectJson $array */
-
         $property = Property::fromArray($array);
 
         $id = $array[self::TYPE]["id"] ?? null;
         $name = $array[self::TYPE]["name"] ?? null;
+        $color = $array[self::TYPE]["color"];
 
-        return new self($property, $id, $name);
+        return new self($property, $id, $name, $color);
     }
 
     public function toArray(): array
     {
         $array = $this->property->toArray();
 
-        $select = [];
+        $select = [ "color" => $this->color ];
         if ($this->name !== null) {
             $select["name"] = $this->name;
         }
@@ -90,7 +96,7 @@ class Select implements PropertyInterface
 
     public function withId(string $id): self
     {
-        return new self($this->property, $id, $this->name);
+        return new self($this->property, $id, $this->name, $this->color);
     }
 
     public function name(): string|null
@@ -100,6 +106,16 @@ class Select implements PropertyInterface
 
     public function withName(string $name): self
     {
-        return new self($this->property, $this->id, $name);
+        return new self($this->property, $this->id, $name, $this->color);
+    }
+
+    public function color(): string
+    {
+        return $this->color;
+    }
+
+    public function withColor(string $color): self
+    {
+        return new self($this->property, $this->id, $this->name, $color);
     }
 }

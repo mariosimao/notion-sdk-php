@@ -36,8 +36,9 @@ class SelectTest extends TestCase
             "id"     => "a7ede3b7-c7ae-4eb8-b415-a7f80ac4dfe5",
             "type"   => "select",
             "select" => [
-                "name" => "Option A",
-                "id"   => "ad762674-9280-444b-96a7-3a0fb0aefff9",
+                "name"  => "Option A",
+                "id"    => "ad762674-9280-444b-96a7-3a0fb0aefff9",
+                "color" => "default",
             ],
         ];
 
@@ -60,5 +61,12 @@ class SelectTest extends TestCase
             ->withId("ad762674-9280-444b-96a7-3a0fb0aefff9");
 
         $this->assertEquals("ad762674-9280-444b-96a7-3a0fb0aefff9", $select->id());
+    }
+
+    public function test_change_option_color(): void
+    {
+        $select = Select::fromName("Option A")->withColor("red");
+
+        $this->assertEquals("red", $select->color());
     }
 }
