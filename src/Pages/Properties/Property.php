@@ -151,10 +151,10 @@ class Property
         return $this->type === self::TYPE_CREATED_TIME;
     }
 
-    // public function isCreatedBy(): bool
-    // {
-    //     return $this->type === self::TYPE_CREATED_BY;
-    // }
+    public function isCreatedBy(): bool
+    {
+        return $this->type === self::TYPE_CREATED_BY;
+    }
 
     public function isLastEditedTime(): bool
     {
