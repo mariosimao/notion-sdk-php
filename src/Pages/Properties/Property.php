@@ -101,10 +101,10 @@ class Property
     //     return $this->type === self::TYPE_FORMULA;
     // }
 
-    // public function isRelation(): bool
-    // {
-    //     return $this->type === self::TYPE_RELATION;
-    // }
+    public function isRelation(): bool
+    {
+        return $this->type === self::TYPE_RELATION;
+    }
 
     // public function isRollup(): bool
     // {
