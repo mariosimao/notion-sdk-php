@@ -21,7 +21,7 @@ class Title implements PropertyInterface
         $this->property = $property;
     }
 
-    public static function create(string $propertyName): self
+    public static function create(string $propertyName = "Title"): self
     {
         $property = Property::create("", $propertyName, self::TYPE);
 
