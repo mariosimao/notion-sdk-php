@@ -26,6 +26,7 @@ class Factory
             Property::TYPE_URL => Url::fromArray($array),
             Property::TYPE_EMAIL => Email::fromArray($array),
             Property::TYPE_PHONE_NUMBER => PhoneNumber::fromArray($array),
+            Property::TYPE_CREATED_TIME => CreatedTime::fromArray($array),
             default => throw new Exception("Invalid property type: '{$type}'"),
         };
     }

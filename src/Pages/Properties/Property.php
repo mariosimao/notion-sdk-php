@@ -146,10 +146,10 @@ class Property
         return $this->type === self::TYPE_PHONE_NUMBER;
     }
 
-    // public function isCreatedTime(): bool
-    // {
-    //     return $this->type === self::TYPE_CREATED_TIME;
-    // }
+    public function isCreatedTime(): bool
+    {
+        return $this->type === self::TYPE_CREATED_TIME;
+    }
 
     // public function isCreatedBy(): bool
     // {
