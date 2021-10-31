@@ -15,6 +15,7 @@ class Factory
 
         return match($type) {
             Property::TYPE_TITLE => Title::fromArray($array),
+            Property::TYPE_RICH_TEXT => RichText::fromArray($array),
             default => throw new Exception("Invalid property type: '{$type}'"),
         };
     }

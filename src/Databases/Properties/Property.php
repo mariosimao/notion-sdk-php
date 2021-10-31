@@ -80,10 +80,10 @@ class Property
         return $this->type;
     }
 
-    // public function isRichText(): bool
-    // {
-    //     return $this->type === self::TYPE_RICH_TEXT;
-    // }
+    public function isRichText(): bool
+    {
+        return $this->type === self::TYPE_RICH_TEXT;
+    }
 
     // public function isNumber(): bool
     // {
