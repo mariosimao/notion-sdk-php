@@ -156,10 +156,10 @@ class Property
     //     return $this->type === self::TYPE_CREATED_BY;
     // }
 
-    // public function isLastEditedTime(): bool
-    // {
-    //     return $this->type === self::TYPE_LAST_EDITED_TIME;
-    // }
+    public function isLastEditedTime(): bool
+    {
+        return $this->type === self::TYPE_LAST_EDITED_TIME;
+    }
 
     // public function isLastEditedBy(): bool
     // {
