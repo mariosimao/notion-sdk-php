@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Pages\Properties;
 
 use Notion\Common\RichText;
+use Notion\Pages\Properties\Factory;
 use Notion\Pages\Properties\RichTextProperty;
 use PHPUnit\Framework\TestCase;
 
@@ -43,7 +44,10 @@ class RichTextPropertyTest extends TestCase
         ];
 
         $text = RichTextProperty::fromArray($array);
+        $fromFactory = Factory::fromArray($array);
+
         $this->assertEquals($array, $text->toArray());
+        $this->assertEquals($array, $fromFactory->toArray());
     }
 
     public function test_string_conversion(): void

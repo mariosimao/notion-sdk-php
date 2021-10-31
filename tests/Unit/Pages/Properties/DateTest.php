@@ -4,6 +4,7 @@ namespace Notion\Test\Unit\Pages\Properties;
 
 use DateTimeImmutable;
 use Notion\Pages\Properties\Date;
+use Notion\Pages\Properties\Factory;
 use PHPUnit\Framework\TestCase;
 
 class DateTest extends TestCase
@@ -17,7 +18,7 @@ class DateTest extends TestCase
         $this->assertEquals($someday, $date->start());
         $this->assertNull($date->end());
         $this->assertFalse($date->isRange());
-        $this->assertEquals("date", $date->property()->type());
+        $this->assertTrue($date->property()->isDate());
     }
 
     public function test_create_range(): void
@@ -74,7 +75,9 @@ class DateTest extends TestCase
             ],
         ];
         $date = Date::fromArray($array);
+        $fromFactory = Factory::fromArray($array);
 
         $this->assertEquals($array, $date->toArray());
+        $this->assertEquals($array, $fromFactory->toArray());
     }
 }

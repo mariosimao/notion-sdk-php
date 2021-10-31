@@ -22,7 +22,7 @@ class FormulaTest extends TestCase
 
         $formula = Formula::fromArray($array);
 
-        $this->assertEquals("formula", $formula->property()->type());
+        $this->assertTrue($formula->property()->isFormula());
         $this->assertEquals($array, $formula->toArray());
         $this->assertEquals($array, Factory::fromArray($array)->toArray());
         $this->assertTrue($formula->isString());

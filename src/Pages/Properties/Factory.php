@@ -14,13 +14,14 @@ class Factory
         $type = $array["type"];
 
         return match($type) {
-            Property::TYPE_TITLE     => Title::fromArray($array),
             Property::TYPE_RICH_TEXT => RichTextProperty::fromArray($array),
             Property::TYPE_NUMBER    => Number::fromArray($array),
             Property::TYPE_SELECT    => Select::fromArray($array),
             Property::TYPE_MULTI_SELECT => MultiSelect::fromArray($array),
+            Property::TYPE_DATE => Date::fromArray($array),
             Property::TYPE_FORMULA => Formula::fromArray($array),
             Property::TYPE_RELATION => Relation::fromArray($array),
+            Property::TYPE_TITLE     => Title::fromArray($array),
             Property::TYPE_PEOPLE => People::fromArray($array),
             Property::TYPE_CHECKBOX => Checkbox::fromArray($array),
             Property::TYPE_URL => Url::fromArray($array),

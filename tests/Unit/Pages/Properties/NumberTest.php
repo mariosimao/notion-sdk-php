@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Pages\Properties;
 
 use Notion\Common\RichText;
+use Notion\Pages\Properties\Factory;
 use Notion\Pages\Properties\Number;
 use PHPUnit\Framework\TestCase;
 
@@ -27,7 +28,10 @@ class NumberTest extends TestCase
         ];
 
         $text = Number::fromArray($array);
+        $fromFactory = Factory::fromArray($array);
+
         $this->assertEquals($array, $text->toArray());
+        $this->assertEquals($array, $fromFactory->toArray());
     }
 
     public function test_change_value(): void
