@@ -60,6 +60,7 @@ class Property
     {
         return [
             "id"   => $this->id,
+            "name" => $this->name,
             "type" => $this->type,
         ];
     }
@@ -119,10 +120,10 @@ class Property
     //     return $this->type === self::TYPE_ROLLUP;
     // }
 
-    // public function isTitle(): bool
-    // {
-    //     return $this->type === self::TYPE_TITLE;
-    // }
+    public function isTitle(): bool
+    {
+        return $this->type === self::TYPE_TITLE;
+    }
 
     // public function isPeople(): bool
     // {
