@@ -90,15 +90,15 @@ class Property
         return $this->type === self::TYPE_NUMBER;
     }
 
-    // public function isSelect(): bool
-    // {
-    //     return $this->type === self::TYPE_SELECT;
-    // }
+    public function isSelect(): bool
+    {
+        return $this->type === self::TYPE_SELECT;
+    }
 
-    // public function isMultiSelect(): bool
-    // {
-    //     return $this->type === self::TYPE_MULTI_SELECT;
-    // }
+    public function isMultiSelect(): bool
+    {
+        return $this->type === self::TYPE_MULTI_SELECT;
+    }
 
     // public function isDate(): bool
     // {
