@@ -126,10 +126,10 @@ class Property
     //     return $this->type === self::TYPE_FILES;
     // }
 
-    // public function isCheckbox(): bool
-    // {
-    //     return $this->type === self::TYPE_CHECKBOX;
-    // }
+    public function isCheckbox(): bool
+    {
+        return $this->type === self::TYPE_CHECKBOX;
+    }
 
     // public function isUrl(): bool
     // {

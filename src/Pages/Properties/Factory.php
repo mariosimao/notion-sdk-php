@@ -22,6 +22,7 @@ class Factory
             Property::TYPE_FORMULA => Formula::fromArray($array),
             Property::TYPE_RELATION => Relation::fromArray($array),
             Property::TYPE_PEOPLE => People::fromArray($array),
+            Property::TYPE_CHECKBOX => Checkbox::fromArray($array),
             default => throw new Exception("Invalid property type: '{$type}'"),
         };
     }
