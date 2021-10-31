@@ -137,6 +137,7 @@ class Database
     public function toArray(): array
     {
         return [
+            "object"           => "database",
             "id"               => $this->id,
             "created_time"     => $this->createdTime->format(Date::FORMAT),
             "last_edited_time" => $this->lastEditedTime->format(Date::FORMAT),
@@ -271,9 +272,10 @@ class Database
         );
     }
 
-    public function withAddedProperty(string $name, PropertyInterface $property): self
+    public function addProperty(PropertyInterface $property): self
     {
         $properties = $this->properties;
+        $name = $property->property()->name();
         $properties[$name] = $property;
 
         return new self(
