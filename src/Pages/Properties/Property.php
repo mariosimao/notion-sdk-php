@@ -161,8 +161,8 @@ class Property
         return $this->type === self::TYPE_LAST_EDITED_TIME;
     }
 
-    // public function isLastEditedBy(): bool
-    // {
-    //     return $this->type === self::TYPE_LAST_EDITED_BY;
-    // }
+    public function isLastEditedBy(): bool
+    {
+        return $this->type === self::TYPE_LAST_EDITED_BY;
+    }
 }
