@@ -100,10 +100,10 @@ class Property
         return $this->type === self::TYPE_MULTI_SELECT;
     }
 
-    // public function isDate(): bool
-    // {
-    //     return $this->type === self::TYPE_DATE;
-    // }
+    public function isDate(): bool
+    {
+        return $this->type === self::TYPE_DATE;
+    }
 
     // public function isFormula(): bool
     // {
