@@ -105,10 +105,10 @@ class Property
         return $this->type === self::TYPE_DATE;
     }
 
-    // public function isFormula(): bool
-    // {
-    //     return $this->type === self::TYPE_FORMULA;
-    // }
+    public function isFormula(): bool
+    {
+        return $this->type === self::TYPE_FORMULA;
+    }
 
     // public function isRelation(): bool
     // {
