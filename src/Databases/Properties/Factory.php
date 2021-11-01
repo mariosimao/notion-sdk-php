@@ -23,6 +23,7 @@ class Factory
             Property::TYPE_PEOPLE => People::fromArray($array),
             Property::TYPE_FILES => Files::fromArray($array),
             Property::TYPE_CHECKBOX => Checkbox::fromArray($array),
+            Property::TYPE_URL => Url::fromArray($array),
             default => throw new Exception("Invalid property type: '{$type}'"),
         };
     }

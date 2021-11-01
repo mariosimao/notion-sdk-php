@@ -140,10 +140,10 @@ class Property
         return $this->type === self::TYPE_CHECKBOX;
     }
 
-    // public function isUrl(): bool
-    // {
-    //     return $this->type === self::TYPE_URL;
-    // }
+    public function isUrl(): bool
+    {
+        return $this->type === self::TYPE_URL;
+    }
 
     // public function isEmail(): bool
     // {
