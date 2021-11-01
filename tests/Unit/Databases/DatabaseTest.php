@@ -8,6 +8,7 @@ use Notion\Common\File;
 use Notion\Common\RichText;
 use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
+use Notion\Databases\Properties\CreatedBy;
 use Notion\Databases\Properties\Title;
 use PHPUnit\Framework\TestCase;
 
@@ -19,7 +20,7 @@ class DatabaseTest extends TestCase
         $database = Database::create($parent);
 
         $this->assertEquals("1ce62b6f-b7f3-4201-afd0-08acb02e61c6", $database->parent()->id());
-        $this->assertEmpty($database->properties());
+        $this->assertCount(1, $database->properties()); // Title property
     }
 
     public function test_add_title(): void
@@ -99,10 +100,10 @@ class DatabaseTest extends TestCase
     {
         $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
         $database = Database::create($parent)->addProperty(
-            Title::create("Dummy prop name")
+            CreatedBy::create("Dummy prop name")
         );
 
-        $this->assertCount(1, $database->properties());
+        $this->assertCount(2, $database->properties()); // Title + CreatedBy
     }
 
     public function test_array_conversion(): void

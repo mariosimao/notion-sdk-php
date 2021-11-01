@@ -10,6 +10,7 @@ use Notion\Common\RichText;
 use Notion\Databases\Properties\Factory;
 use Notion\Databases\Properties\PropertyInterface;
 use Notion\Databases\Properties\Title;
+use Notion\NotionException;
 
 /**
  * @psalm-import-type EmojiJson from \Notion\Common\Emoji
@@ -78,7 +79,17 @@ class Database
     {
         $now = new DateTimeImmutable("now");
 
-        return new self("", $now, $now, [], null, null, [], $parent, "");
+        return new self(
+            "",
+            $now,
+            $now,
+            [],
+            null,
+            null,
+            [ "Title" => Title::create() ],
+            $parent,
+            ""
+        );
     }
 
 
@@ -294,6 +305,8 @@ class Database
     /** @param array<string, PropertyInterface> $properties */
     public function withProperties(array $properties): self
     {
+        $this->checkTitleProperty($properties);
+
         return new self(
             $this->id,
             $this->createdTime,
@@ -320,5 +333,17 @@ class Database
             $parent,
             $this->url,
         );
+    }
+
+    /** @param array<string, PropertyInterface> $properties */
+    private function checkTitleProperty(array $properties): void
+    {
+        foreach ($properties as $property) {
+            if ($property instanceof Title) {
+                return;
+            }
+        }
+
+        throw new NotionException("A database must have a title property", "validation_error");
     }
 }
