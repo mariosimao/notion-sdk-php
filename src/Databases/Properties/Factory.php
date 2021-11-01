@@ -29,6 +29,7 @@ class Factory
             Property::TYPE_CREATED_TIME => CreatedTime::fromArray($array),
             Property::TYPE_CREATED_BY => CreatedBy::fromArray($array),
             Property::TYPE_LAST_EDITED_TIME => LastEditedTime::fromArray($array),
+            Property::TYPE_LAST_EDITED_BY => LastEditedBy::fromArray($array),
             default => throw new Exception("Invalid property type: '{$type}'"),
         };
     }
