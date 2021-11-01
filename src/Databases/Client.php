@@ -58,11 +58,8 @@ class Client
 
     public function create(Database $database): Database
     {
-        $data = json_encode([
-            "title" => array_map(fn(RichText $t) => $t->toArray(), $database->title()),
-            "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $database->properties()),
-            "parent" => $database->parent()->toArray(),
-        ]);
+        $data = $database->toArray();
+        unset($data["id"]);
 
         $request = new Request(
             "POST",
@@ -72,7 +69,7 @@ class Client
                 "Notion-Version" => $this->version,
                 "Content-Type"   => "application/json",
             ],
-            $data,
+            json_encode($data),
         );
 
         $response = $this->psrClient->sendRequest($request);
@@ -94,13 +91,10 @@ class Client
 
     public function update(Database $database): Database
     {
-        $data = json_encode([
-            "title" => array_map(fn(RichText $t) => $t->toArray(), $database->title()),
-            "icon" => $database->icon()?->toArray(),
-            "cover" => $database->cover()?->toArray(),
-            "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $database->properties()),
-            "parent" => $database->parent()->toArray(),
-        ]);
+        $data = $database->toArray();
+        unset($data["parent"]);
+        unset($data["created_time"]);
+        unset($data["last_edited_time"]);
 
         $databaseId = $database->id();
         $request = new Request(
@@ -111,7 +105,7 @@ class Client
                 "Notion-Version" => $this->version,
                 "Content-Type"   => "application/json",
             ],
-            $data,
+            json_encode($data),
         );
 
         $response = $this->psrClient->sendRequest($request);
@@ -129,5 +123,29 @@ class Client
 
         /** @psalm-var DatabaseJson $body */
         return Database::fromArray($body);
+    }
+
+    public function delete(Database $database): void
+    {
+        $databaseId = $database->id();
+        $request = new Request(
+            "DELETE",
+            "https://api.notion.com/v1/blocks/{$databaseId}",
+            [
+                "Authorization"  => "Bearer {$this->token}",
+                "Notion-Version" => $this->version,
+            ],
+        );
+
+        $response = $this->psrClient->sendRequest($request);
+
+        if ($response->getStatusCode() !== 200) {
+            /** @var array{ message: string, code: string} $body */
+            $body = json_decode((string) $response->getBody(), true);
+            $message = $body["message"];
+            $code = $body["code"];
+
+            throw new NotionException($message, $code);
+        }
     }
 }

@@ -3,6 +3,7 @@
 namespace Notion;
 
 use GuzzleHttp\Client as GuzzleClient;
+use Notion\Databases\Client as DatabasesClient;
 use Notion\Pages\Client as PagesClient;
 use Notion\Users\Client as UsersClient;
 use Psr\Http\Client\ClientInterface;
@@ -49,6 +50,15 @@ class Client
             $this->psrClient,
             $this->token,
             self::NOTION_VERSION
+        );
+    }
+
+    public function databases(): DatabasesClient
+    {
+        return new DatabasesClient(
+            $this->psrClient,
+            $this->token,
+            self::NOTION_VERSION,
         );
     }
 
