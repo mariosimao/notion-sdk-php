@@ -24,6 +24,7 @@ class Factory
             Property::TYPE_FILES => Files::fromArray($array),
             Property::TYPE_CHECKBOX => Checkbox::fromArray($array),
             Property::TYPE_URL => Url::fromArray($array),
+            Property::TYPE_EMAIL => Email::fromArray($array),
             default => throw new Exception("Invalid property type: '{$type}'"),
         };
     }

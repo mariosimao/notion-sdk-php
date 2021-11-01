@@ -145,10 +145,10 @@ class Property
         return $this->type === self::TYPE_URL;
     }
 
-    // public function isEmail(): bool
-    // {
-    //     return $this->type === self::TYPE_EMAIL;
-    // }
+    public function isEmail(): bool
+    {
+        return $this->type === self::TYPE_EMAIL;
+    }
 
     // public function isPhoneNumber(): bool
     // {
