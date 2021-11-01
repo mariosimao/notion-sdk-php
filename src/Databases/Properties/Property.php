@@ -150,10 +150,10 @@ class Property
         return $this->type === self::TYPE_EMAIL;
     }
 
-    // public function isPhoneNumber(): bool
-    // {
-    //     return $this->type === self::TYPE_PHONE_NUMBER;
-    // }
+    public function isPhoneNumber(): bool
+    {
+        return $this->type === self::TYPE_PHONE_NUMBER;
+    }
 
     // public function isCreatedTime(): bool
     // {
