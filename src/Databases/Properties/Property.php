@@ -130,10 +130,10 @@ class Property
         return $this->type === self::TYPE_PEOPLE;
     }
 
-    // public function isFiles(): bool
-    // {
-    //     return $this->type === self::TYPE_FILES;
-    // }
+    public function isFiles(): bool
+    {
+        return $this->type === self::TYPE_FILES;
+    }
 
     // public function isCheckbox(): bool
     // {

@@ -21,6 +21,7 @@ class Factory
             Property::TYPE_MULTI_SELECT => MultiSelect::fromArray($array),
             Property::TYPE_DATE => Date::fromArray($array),
             Property::TYPE_PEOPLE => People::fromArray($array),
+            Property::TYPE_FILES => Files::fromArray($array),
             default => throw new Exception("Invalid property type: '{$type}'"),
         };
     }
