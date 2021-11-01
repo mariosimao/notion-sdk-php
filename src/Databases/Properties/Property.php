@@ -125,10 +125,10 @@ class Property
         return $this->type === self::TYPE_TITLE;
     }
 
-    // public function isPeople(): bool
-    // {
-    //     return $this->type === self::TYPE_PEOPLE;
-    // }
+    public function isPeople(): bool
+    {
+        return $this->type === self::TYPE_PEOPLE;
+    }
 
     // public function isFiles(): bool
     // {
