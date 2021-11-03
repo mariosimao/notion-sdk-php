@@ -5,6 +5,8 @@ namespace Notion\Blocks;
 use Notion\Common\RichText;
 
 /**
+ * Bulleted list item
+ *
  * @psalm-import-type BlockJson from Block
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
  *
@@ -46,6 +48,9 @@ class BulletedListItem implements BlockInterface
         $this->children = $children;
     }
 
+    /**
+     * Create empty bulleted list item
+     */
     public static function create(): self
     {
         $block = Block::create(self::TYPE);
@@ -53,6 +58,9 @@ class BulletedListItem implements BlockInterface
         return new self($block, [], []);
     }
 
+    /**
+     * Create bulleted list item from a string
+     */
     public static function fromString(string $content): self
     {
         $block = Block::create(self::TYPE);
@@ -61,6 +69,7 @@ class BulletedListItem implements BlockInterface
         return new self($block, $text, []);
     }
 
+    /** @internal */
     public static function fromArray(array $array): self
     {
         /** @psalm-var BlockJson $array */
@@ -76,6 +85,7 @@ class BulletedListItem implements BlockInterface
         return new self($block, $text, $children);
     }
 
+    /** @internal */
     public function toArray(): array
     {
         $array = $this->block->toArray();
@@ -88,6 +98,7 @@ class BulletedListItem implements BlockInterface
         return $array;
     }
 
+    /** Get item content as string */
     public function toString(): string
     {
         $string = "";
@@ -98,26 +109,43 @@ class BulletedListItem implements BlockInterface
         return $string;
     }
 
+    /** Get block common object */
     public function block(): Block
     {
         return $this->block;
     }
 
+    /**
+     *  Get list item text
+     *
+     * @return RichText[]
+     */
     public function text(): array
     {
         return $this->text;
     }
 
+    /**
+     * Get children blocks
+     *
+     * @return BlockInterface[]
+     */
     public function children(): array
     {
         return $this->children;
     }
 
+    /**
+     * Change list item text
+     */
     public function withText(RichText ...$text): self
     {
         return new self($this->block, $text, $this->children);
     }
 
+    /**
+     * Append text to list item
+     */
     public function appendText(RichText $text): self
     {
         $texts = $this->text;
@@ -126,6 +154,7 @@ class BulletedListItem implements BlockInterface
         return new self($this->block, $texts, $this->children);
     }
 
+    /** Change list item children blocks */
     public function withChildren(BlockInterface ...$children): self
     {
         $hasChildren = (count($children) > 0);
@@ -137,6 +166,7 @@ class BulletedListItem implements BlockInterface
         );
     }
 
+    /** Append child block */
     public function appendChild(BlockInterface $child): self
     {
         $children = $this->children;
