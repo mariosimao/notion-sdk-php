@@ -5,6 +5,8 @@ namespace Notion\Blocks;
 use Notion\Common\RichText;
 
 /**
+ * Bookmark block
+ *
  * @psalm-import-type BlockJson from Block
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
  *
@@ -37,6 +39,9 @@ class Bookmark implements BlockInterface
         $this->caption = $caption;
     }
 
+    /**
+     * Create a bookmark from a URL
+     */
     public static function create(string $url): self
     {
         $block = Block::create(self::TYPE);
@@ -44,6 +49,7 @@ class Bookmark implements BlockInterface
         return new self($block, $url, []);
     }
 
+    /** @internal */
     public static function fromArray(array $array): self
     {
         /** @psalm-var BlockJson $array */
@@ -57,6 +63,7 @@ class Bookmark implements BlockInterface
         return new self($block, $url, $caption);
     }
 
+    /** @internal */
     public function toArray(): array
     {
         $array = $this->block->toArray();
@@ -69,27 +76,39 @@ class Bookmark implements BlockInterface
         return $array;
     }
 
+    /** Get block common object */
     public function block(): Block
     {
         return $this->block;
     }
 
+    /** Get bookmark URL */
     public function url(): string
     {
         return $this->url;
     }
 
-    /** @return \Notion\Common\RichText[] */
+    /**
+     * Get bookmark caption
+     *
+     * @return \Notion\Common\RichText[]
+     */
     public function caption(): array
     {
         return $this->caption;
     }
 
+    /**
+     * Change bookmark URL
+     */
     public function withUrl(string $url): self
     {
         return new self($this->block, $url, $this->caption);
     }
 
+    /**
+     * Change bookmark caption
+     */
     public function withCaption(RichText ...$caption): self
     {
         return new self($this->block, $this->url, $caption);
