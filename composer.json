@@ -1,5 +1,5 @@
 {
-    "name": "mariosimao/notion-sdk",
+    "name": "mariosimao/notion-sdk-php",
     "description": "Notion SDK",
     "type": "library",
     "license": "MIT",
