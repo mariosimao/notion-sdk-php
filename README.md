@@ -8,7 +8,7 @@ A complete Notion SDK for PHP developers.
 ## Installation
 
 ```
-composer require mariosimao/notion-php
+composer require mariosimao/notion-sdk-php
 ```
 
 ## Getting started
