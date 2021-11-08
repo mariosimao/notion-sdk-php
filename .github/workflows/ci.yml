@@ -2,11 +2,11 @@ on:
   - pull_request
   - push
 
-name: Tests
+name: Continuous Integration
 
 jobs:
-  unit:
-    name: Unit and Integration tests
+  phpunit:
+    name: PHPUnit
 
     runs-on: ${{ matrix.os }}
 
@@ -22,6 +22,7 @@ jobs:
         dependencies:
           - lowest
           - highest
+          - locked
 
     steps:
       - name: Checkout
@@ -41,31 +42,27 @@ jobs:
           composer-options: --no-ansi --no-interaction --no-progress
 
       - name: Run tests with phpunit
+        if: matrix.dependencies == 'lowest' || matrix.dependencies == 'highest'
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        run: vendor/bin/phpunit
+
+      - name: Calculate test coverage
+        if: matrix.dependencies == 'locked'
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         run: vendor/bin/phpunit --coverage-clover dist/phpunit/clover.xml
 
       - name: Send code coverage report to Codecov.io
+        if: matrix.dependencies == 'locked'
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
-  types-psalm:
-    name: Type tests (Psalm)
+  psalm:
+    name: Psalm
 
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-
-        php-version:
-          - "8.0"
-
-        dependencies:
-          - lowest
-          - highest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -74,14 +71,14 @@ jobs:
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
+          php-version: "8.0"
           coverage: xdebug3
           tools: none
 
       - name: Install composer dependencies
         uses: ramsey/composer-install@1.3.0
         with:
-          dependency-versions: ${{ matrix.dependencies }}
+          dependency-versions: locked
           composer-options: --no-ansi --no-interaction --no-progress
 
       - name: Run tests with psalm and send coverage report
