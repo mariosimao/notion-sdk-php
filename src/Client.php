@@ -30,7 +30,7 @@ class Client
 
     public static function create(string $token): self
     {
-        $psrClient = self::resolvePsrClient();
+        $psrClient = Psr18ClientDiscovery::find();
         $requestFactory = Psr17FactoryDiscovery::findRequestFactory();
 
         return new self($psrClient, $requestFactory, $token);
@@ -71,22 +71,6 @@ class Client
             $this->requestFactory,
             $this->token,
             self::NOTION_VERSION,
-        );
-    }
-
-    private static function resolvePsrClient(): ClientInterface
-    {
-        if (class_exists(GuzzleClient::class)) {
-            return new GuzzleClient();
-        }
-
-        if (class_exists(SymfonyClient::class)) {
-            return new SymfonyClient();
-        }
-
-        throw new \Exception(
-            "You cannot use 'Notion\\Client' as no PSR-18 has been found. " .
-            "Try running 'composer require guzzlehttp/guzzle'."
         );
     }
 }
