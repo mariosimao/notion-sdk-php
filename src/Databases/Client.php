@@ -2,12 +2,9 @@
 
 namespace Notion\Databases;
 
-use Notion\Blocks\BlockInterface;
-use Notion\Common\RichText;
 use Notion\NotionException;
-use Notion\Databases\Properties\PropertyInterface;
-use Nyholm\Psr7\Request;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 
 /**
  * @psalm-import-type DatabaseJson from Database
@@ -15,29 +12,31 @@ use Psr\Http\Client\ClientInterface;
 class Client
 {
     private ClientInterface $psrClient;
+    private RequestFactoryInterface $requestFactory;
     private string $token;
     private string $version;
 
+    /**
+     * @internal Use `\Notion\Notion::databases()` instead
+     */
     public function __construct(
         ClientInterface $psrClient,
+        RequestFactoryInterface $requestFactory,
         string $token,
         string $version
     ) {
         $this->psrClient = $psrClient;
+        $this->requestFactory = $requestFactory;
         $this->token = $token;
         $this->version = $version;
     }
 
     public function find(string $databaseId): Database
     {
-        $request = new Request(
-            "GET",
-            "https://api.notion.com/v1/databases/{$databaseId}",
-            [
-                "Authorization"  => "Bearer {$this->token}",
-                "Notion-Version" => $this->version,
-            ]
-        );
+        $url = "https://api.notion.com/v1/databases/{$databaseId}";
+        $request = $this->requestFactory->createRequest("GET", $url)
+            ->withHeader("Authorization", "Bearer {$this->token}")
+            ->withHeader("Notion-Version", $this->version);
 
         $response = $this->psrClient->sendRequest($request);
 
@@ -61,16 +60,13 @@ class Client
         $data = $database->toArray();
         unset($data["id"]);
 
-        $request = new Request(
-            "POST",
-            "https://api.notion.com/v1/databases",
-            [
-                "Authorization"  => "Bearer {$this->token}",
-                "Notion-Version" => $this->version,
-                "Content-Type"   => "application/json",
-            ],
-            json_encode($data),
-        );
+        $url = "https://api.notion.com/v1/databases";
+        $request = $this->requestFactory->createRequest("POST", $url)
+            ->withHeader("Authorization", "Bearer {$this->token}")
+            ->withHeader("Notion-Version", $this->version)
+            ->withHeader("Content-Type", "application/json");
+
+        $request->getBody()->write(json_encode($data));
 
         $response = $this->psrClient->sendRequest($request);
 
@@ -97,16 +93,13 @@ class Client
         unset($data["last_edited_time"]);
 
         $databaseId = $database->id();
-        $request = new Request(
-            "PATCH",
-            "https://api.notion.com/v1/databases/{$databaseId}",
-            [
-                "Authorization"  => "Bearer {$this->token}",
-                "Notion-Version" => $this->version,
-                "Content-Type"   => "application/json",
-            ],
-            json_encode($data),
-        );
+        $url = "https://api.notion.com/v1/databases/{$databaseId}";
+        $request = $this->requestFactory->createRequest("PATCH", $url)
+            ->withHeader("Authorization", "Bearer {$this->token}")
+            ->withHeader("Notion-Version", $this->version)
+            ->withHeader("Content-Type", "application/json");
+
+        $request->getBody()->write(json_encode($data));
 
         $response = $this->psrClient->sendRequest($request);
 
@@ -128,14 +121,10 @@ class Client
     public function delete(Database $database): void
     {
         $databaseId = $database->id();
-        $request = new Request(
-            "DELETE",
-            "https://api.notion.com/v1/blocks/{$databaseId}",
-            [
-                "Authorization"  => "Bearer {$this->token}",
-                "Notion-Version" => $this->version,
-            ],
-        );
+        $url = "https://api.notion.com/v1/blocks/{$databaseId}";
+        $request = $this->requestFactory->createRequest("DELETE", $url)
+            ->withHeader("Authorization", "Bearer {$this->token}")
+            ->withHeader("Notion-Version", $this->version);
 
         $response = $this->psrClient->sendRequest($request);
 
