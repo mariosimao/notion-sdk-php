@@ -10,7 +10,7 @@ use Notion\Users\Client as UsersClient;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 
-class Client
+class Notion
 {
     public const NOTION_VERSION = "2021-08-16";
 

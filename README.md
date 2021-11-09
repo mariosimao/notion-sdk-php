@@ -21,13 +21,13 @@ A simple example on how to create a page with some content:
 ```php
 <?php
 
-use Notion\Client;
+use Notion\Notion;
 use Notion\Blocks\Paragraph;
 use Notion\Pages\Page;
 use Notion\Pages\PageParent;
 
 $token = getenv("NOTION_TOKEN");
-$client = Client::create($token);
+$notion = Notion::create($token);
 
 $parent = PageParent::page("c986d7b0-7051-4f18-b165-cc0b9503ffc2");
 $page = Page::create($parent)
@@ -36,7 +36,7 @@ $page = Page::create($parent)
 
 $content = Paragraph::fromString("This is a simple paragraph.");
 
-$client->pages()->create($page, $content);
+$notion->pages()->create($page, $content);
 ```
 
 ## Documentation
