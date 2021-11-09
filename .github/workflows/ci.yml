@@ -20,8 +20,8 @@ jobs:
           - "8.0"
 
         dependencies:
-          - lowest
-          - highest
+          # - lowest
+          # - highest
           - locked
 
     steps:
