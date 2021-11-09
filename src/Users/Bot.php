@@ -2,8 +2,6 @@
 
 namespace Notion\Users;
 
-use Assert\Assert;
-
 /**
  * @psalm-type BotJson = array<empty, empty>
  */
