@@ -146,10 +146,10 @@ class NumberedListItemTest extends TestCase
     {
         $oldItem = NumberedListItem::fromString("This is an old item");
 
-        $newItem = $oldItem->withText(
+        $newItem = $oldItem->withText([
             RichText::createText("This is a "),
             RichText::createText("new item"),
-        );
+        ]);
 
         $this->assertEquals("This is an old item", $oldItem->toString());
         $this->assertEquals("This is a new item", $newItem->toString());
@@ -169,10 +169,10 @@ class NumberedListItemTest extends TestCase
 
     public function test_replace_children(): void
     {
-        $item = NumberedListItem::fromString("Simple item.")->withChildren(
+        $item = NumberedListItem::fromString("Simple item.")->withChildren([
             NumberedListItem::fromString("Nested item 1"),
             NumberedListItem::fromString("Nested item 2"),
-        );
+        ]);
 
         $this->assertCount(2, $item->children());
         $this->assertEquals("Nested item 1", $item->children()[0]->toString());

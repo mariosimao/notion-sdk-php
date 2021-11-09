@@ -6,7 +6,7 @@ namespace Notion\Pages\Properties;
  * @psalm-type RelationJson = array{
  *      id: string,
  *      type: "relation",
- *      relation: array{ id: string }[],
+ *      relation: list<array{ id: non-empty-string }>,
  * }
  */
 class Relation implements PropertyInterface
@@ -15,20 +15,22 @@ class Relation implements PropertyInterface
 
     private Property $property;
 
-    /** @var string[] */
+    /** @var list<non-empty-string> */
     private array $pageIds;
 
-    private function __construct(Property $property, string ...$pageIds)
+    /** @param list<non-empty-string> $pageIds */
+    private function __construct(Property $property, array $pageIds)
     {
         $this->property = $property;
         $this->pageIds = $pageIds;
     }
 
-    public static function create(string ...$pageIds): self
+    /** @param list<non-empty-string> $pageIds */
+    public static function create(array $pageIds): self
     {
         $property = Property::create("", self::TYPE);
 
-        return new self($property, ...$pageIds);
+        return new self($property, $pageIds);
     }
 
     public static function fromArray(array $array): self
@@ -44,7 +46,7 @@ class Relation implements PropertyInterface
             $array[self::TYPE],
         );
 
-        return new self($property, ...$pageIds);
+        return new self($property, $pageIds);
     }
 
     public function toArray(): array
@@ -72,16 +74,18 @@ class Relation implements PropertyInterface
         return $this->pageIds;
     }
 
-    public function withRelations(string ...$pageIds): self
+    /** @param list<non-empty-string> $pageIds */
+    public function withRelations(array $pageIds): self
     {
-        return new self($this->property, ...$pageIds);
+        return new self($this->property, $pageIds);
     }
 
+    /** @param non-empty-string $pageId */
     public function addRelation(string $pageId): self
     {
         $pageIds = $this->pageIds;
         $pageIds[] = $pageId;
 
-        return new self($this->property, ...$pageIds);
+        return new self($this->property, $pageIds);
     }
 }

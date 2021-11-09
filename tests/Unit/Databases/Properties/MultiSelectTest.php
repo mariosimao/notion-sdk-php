@@ -20,10 +20,10 @@ class MultiSelectTest extends TestCase
 
     public function test_replace_options(): void
     {
-        $select = MultiSelect::create()->withOptions(
+        $select = MultiSelect::create()->withOptions([
             SelectOption::create("Option A"),
             SelectOption::create("Option B"),
-        );
+        ]);
 
         $this->assertCount(2, $select->options());
     }

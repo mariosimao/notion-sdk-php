@@ -26,7 +26,9 @@ class DatabaseTest extends TestCase
     public function test_add_title(): void
     {
         $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
-        $database = Database::create($parent)->withTitle(RichText::createText("Database title"));
+        $database = Database::create($parent)->withAdvancedTitle([
+            RichText::createText("Database title")
+        ]);
 
         $this->assertEquals("Database title", $database->title()[0]->plainText());
     }

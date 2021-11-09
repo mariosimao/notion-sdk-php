@@ -151,10 +151,10 @@ class ToDoTest extends TestCase
     {
         $oldToDo = ToDo::fromString("This is an old to do");
 
-        $newToDo = $oldToDo->withText(
+        $newToDo = $oldToDo->withText([
             RichText::createText("This is a "),
             RichText::createText("new to do"),
-        );
+        ]);
 
         $this->assertEquals("This is an old to do", $oldToDo->toString());
         $this->assertEquals("This is a new to do", $newToDo->toString());
@@ -174,10 +174,10 @@ class ToDoTest extends TestCase
 
     public function test_replace_children(): void
     {
-        $toDo = ToDo::fromString("Simple to do.")->withChildren(
+        $toDo = ToDo::fromString("Simple to do.")->withChildren([
             ToDo::fromString("Nested to do 1"),
             ToDo::fromString("Nested to do 2"),
-        );
+        ]);
 
         $this->assertCount(2, $toDo->children());
         $this->assertEquals("Nested to do 1", $toDo->children()[0]->toString());

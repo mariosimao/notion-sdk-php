@@ -14,7 +14,7 @@ class MultiSelectTest extends TestCase
         $id1 = "d69f85ae-9425-4851-beeb-4b4831f5786c";
         $id2 = "af65b5c5-8034-4ef9-91af-05b8bc01642e";
 
-        $multiSelect = MultiSelect::fromIds($id1, $id2);
+        $multiSelect = MultiSelect::fromIds([ $id1, $id2 ]);
 
         $this->assertEquals($id1, $multiSelect->options()[0]->id());
         $this->assertEquals($id2, $multiSelect->options()[1]->id());
@@ -27,7 +27,7 @@ class MultiSelectTest extends TestCase
         $optionA = "Option A";
         $optionC = "Option C";
 
-        $multiSelect = MultiSelect::fromNames($optionA, $optionC);
+        $multiSelect = MultiSelect::fromNames([ $optionA, $optionC ]);
 
         $this->assertEquals($optionA, $multiSelect->options()[0]->name());
         $this->assertEquals($optionC, $multiSelect->options()[1]->name());
@@ -53,7 +53,7 @@ class MultiSelectTest extends TestCase
 
     public function test_add_option(): void
     {
-        $multiSelect = MultiSelect::fromNames("Option A", "Option B")
+        $multiSelect = MultiSelect::fromNames(["Option A", "Option B"])
             ->addOption(Option::fromName("Option C"));
 
         $this->assertCount(3, $multiSelect->options());

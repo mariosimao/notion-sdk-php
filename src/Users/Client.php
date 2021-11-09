@@ -75,7 +75,7 @@ class Client
             throw new NotionException($message, $code);
         }
 
-        /** @var array{ results: UserJson[] } $body */
+        /** @var array{ results: list<UserJson> } $body */
         return array_map(
             function (array $userData): User {
                 return User::fromArray($userData);

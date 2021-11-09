@@ -54,9 +54,9 @@ class TitleTest extends TestCase
 
     public function test_change_text(): void
     {
-        $title = Title::create("")->withRichTexts(
+        $title = Title::create("")->withRichTexts([
             RichText::createText("Dummy title")
-        );
+        ]);
         $this->assertEquals("Dummy title", $title->toString());
     }
 }

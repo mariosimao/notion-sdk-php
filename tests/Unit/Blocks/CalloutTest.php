@@ -247,10 +247,10 @@ class CalloutTest extends TestCase
     {
         $oldCallout = Callout::fromString("☀️", "This is an old callout");
 
-        $newCallout = $oldCallout->withText(
+        $newCallout = $oldCallout->withText([
             RichText::createText("This is a "),
             RichText::createText("new callout"),
-        );
+        ]);
 
         $this->assertEquals("This is an old callout", $oldCallout->toString());
         $this->assertEquals("This is a new callout", $newCallout->toString());
@@ -270,10 +270,10 @@ class CalloutTest extends TestCase
 
     public function test_replace_children(): void
     {
-        $callout = Callout::fromString("☀️", "Simple callout.")->withChildren(
+        $callout = Callout::fromString("☀️", "Simple callout.")->withChildren([
             Callout::fromString("☀️", "Nested callout 1"),
             Callout::fromString("☀️", "Nested callout 2"),
-        );
+        ]);
 
         $this->assertCount(2, $callout->children());
         $this->assertEquals("Nested callout 1", $callout->children()[0]->toString());

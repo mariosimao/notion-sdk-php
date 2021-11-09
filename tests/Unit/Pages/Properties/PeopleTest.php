@@ -14,7 +14,7 @@ class PeopleTest extends TestCase
         $user1 = $this->user1();
         $user2 = $this->user2();
 
-        $people = People::create($user1, $user2);
+        $people = People::create([ $user1, $user2 ]);
 
         $this->assertEquals([ $user1, $user2 ], $people->users());
         $this->assertTrue($people->property()->isPeople());
@@ -25,7 +25,7 @@ class PeopleTest extends TestCase
         $user1 = $this->user1();
         $user2 = $this->user2();
 
-        $people = People::create($user1)->withPeople($user2);
+        $people = People::create([ $user1 ])->withPeople([ $user2 ]);
 
         $this->assertEquals([ $user2 ], $people->users());
     }
@@ -35,7 +35,7 @@ class PeopleTest extends TestCase
         $user1 = $this->user1();
         $user2 = $this->user2();
 
-        $people = People::create($user1)->addPerson($user2);
+        $people = People::create([ $user1 ])->addPerson($user2);
 
         $this->assertEquals([ $user1, $user2 ], $people->users());
     }

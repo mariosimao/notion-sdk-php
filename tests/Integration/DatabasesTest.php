@@ -22,7 +22,7 @@ class DatabasesTest extends TestCase
         $client = Notion::create($token);
 
         $database = Database::create(DatabaseParent::page(self::DEFAULT_PARENT_ID))
-            ->withTitle(RichText::createText("Empty database"))
+            ->withAdvancedTitle([ RichText::createText("Empty database") ])
             ->withIcon(Emoji::create("🌻"));
 
         $database = $client->databases()->create($database);
@@ -93,7 +93,7 @@ class DatabasesTest extends TestCase
         $client = Notion::create($token);
 
         $database = Database::create(DatabaseParent::page(self::DEFAULT_PARENT_ID))
-            ->withTitle(RichText::createText("Dummy database"));
+            ->withAdvancedTitle([ RichText::createText("Dummy database") ]);
 
         $database = $client->databases()->create($database);
 
@@ -109,7 +109,7 @@ class DatabasesTest extends TestCase
         $client = Notion::create($token);
 
         $database = Database::create(DatabaseParent::page(self::DEFAULT_PARENT_ID))
-            ->withTitle(RichText::createText("Dummy database"));
+            ->withAdvancedTitle([ RichText::createText("Dummy database") ]);
 
         $database = $client->databases()->create($database);
 

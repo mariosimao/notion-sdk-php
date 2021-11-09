@@ -146,10 +146,10 @@ class BulletedListItemTest extends TestCase
     {
         $oldItem = BulletedListItem::fromString("This is an old item");
 
-        $newItem = $oldItem->withText(
+        $newItem = $oldItem->withText([
             RichText::createText("This is a "),
             RichText::createText("new item"),
-        );
+        ]);
 
         $this->assertEquals("This is an old item", $oldItem->toString());
         $this->assertEquals("This is a new item", $newItem->toString());
@@ -169,10 +169,10 @@ class BulletedListItemTest extends TestCase
 
     public function test_replace_children(): void
     {
-        $item = BulletedListItem::fromString("Simple item.")->withChildren(
+        $item = BulletedListItem::fromString("Simple item.")->withChildren([
             BulletedListItem::fromString("Nested item 1"),
             BulletedListItem::fromString("Nested item 2"),
-        );
+        ]);
 
         $this->assertCount(2, $item->children());
         $this->assertEquals("Nested item 1", $item->children()[0]->toString());

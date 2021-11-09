@@ -146,10 +146,10 @@ class ParagraphTest extends TestCase
     {
         $oldParagraph = Paragraph::fromString("This is an old paragraph");
 
-        $newParagraph = $oldParagraph->withText(
+        $newParagraph = $oldParagraph->withText([
             RichText::createText("This is a "),
             RichText::createText("new paragraph"),
-        );
+        ]);
 
         $this->assertEquals("This is an old paragraph", $oldParagraph->toString());
         $this->assertEquals("This is a new paragraph", $newParagraph->toString());
@@ -169,10 +169,10 @@ class ParagraphTest extends TestCase
 
     public function test_replace_children(): void
     {
-        $paragraph = Paragraph::fromString("Simple paragraph.")->withChildren(
+        $paragraph = Paragraph::fromString("Simple paragraph.")->withChildren([
             Paragraph::fromString("Nested paragraph 1"),
             Paragraph::fromString("Nested paragraph 2"),
-        );
+        ]);
 
         $this->assertCount(2, $paragraph->children());
         $this->assertEquals("Nested paragraph 1", $paragraph->children()[0]->toString());

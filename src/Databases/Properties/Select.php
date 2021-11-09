@@ -9,7 +9,9 @@ namespace Notion\Databases\Properties;
  *      id: string,
  *      name: string,
  *      type: "select",
- *      select: array{ options: SelectOptionJson[] },
+ *      select: array{
+ *          options: list<SelectOptionJson>
+ *      },
  * }
  */
 class Select implements PropertyInterface
@@ -17,17 +19,17 @@ class Select implements PropertyInterface
     private const TYPE = Property::TYPE_SELECT;
 
     private Property $property;
-    /** @var SelectOption[] */
+    /** @var list<SelectOption> */
     private array $options;
 
-    /** @param SelectOption[] $options */
+    /** @param list<SelectOption> $options */
     private function __construct(Property $property, array $options)
     {
         $this->property = $property;
         $this->options = $options;
     }
 
-    /** @param SelectOption[] $options */
+    /** @param list<SelectOption> $options */
     public static function create(string $propertyName = "Select", array $options = []): self
     {
         $property = Property::create("", $propertyName, self::TYPE);
@@ -40,13 +42,14 @@ class Select implements PropertyInterface
         return $this->property;
     }
 
-    /** @return SelectOption[] */
+    /** @return list<SelectOption> */
     public function options(): array
     {
         return $this->options;
     }
 
-    public function withOptions(SelectOption ...$options): self
+    /** @param list<SelectOption> $options */
+    public function withOptions(array $options): self
     {
         return new self($this->property, $options);
     }

@@ -13,7 +13,7 @@ class RelationTest extends TestCase
         $id1 = "5604389a-8de1-4ba6-a07f-ca346ff98f00";
         $id2 = "03d71291-5ca3-4daa-a1e8-f012d513e8c8";
 
-        $relation = Relation::create($id1, $id2);
+        $relation = Relation::create([ $id1, $id2 ]);
 
         $this->assertEquals([$id1, $id2], $relation->pageIds());
         $this->assertTrue($relation->property()->isRelation());
@@ -24,7 +24,7 @@ class RelationTest extends TestCase
         $id1 = "5604389a-8de1-4ba6-a07f-ca346ff98f00";
         $id2 = "03d71291-5ca3-4daa-a1e8-f012d513e8c8";
 
-        $relation = Relation::create($id1)->withRelations($id2);
+        $relation = Relation::create([ $id1 ])->withRelations([ $id2 ]);
 
         $this->assertEquals([$id2], $relation->pageIds());
     }
@@ -34,7 +34,7 @@ class RelationTest extends TestCase
         $id1 = "5604389a-8de1-4ba6-a07f-ca346ff98f00";
         $id2 = "03d71291-5ca3-4daa-a1e8-f012d513e8c8";
 
-        $relation = Relation::create($id1)->addRelation($id2);
+        $relation = Relation::create([ $id1 ])->addRelation($id2);
 
         $this->assertEquals([$id1, $id2], $relation->pageIds());
     }

@@ -12,8 +12,8 @@ use Notion\Common\RichText;
  *
  * @psalm-type BulletedListItemJson = array{
  *      bulleted_list_item: array{
- *          text: RichTextJson[],
- *          children: array{ type: BlockJson },
+ *          text: list<RichTextJson>,
+ *          children: list<BlockJson>,
  *      },
  * }
  */
@@ -23,16 +23,16 @@ class BulletedListItem implements BlockInterface
 
     private Block $block;
 
-    /** @var \Notion\Common\RichText[] */
+    /** @var list<RichText> */
 
     private array $text;
 
-    /** @var \Notion\Blocks\BlockInterface[] */
+    /** @var list<\Notion\Blocks\BlockInterface> */
     private array $children;
 
     /**
-     * @param \Notion\Common\RichText[] $text
-     * @param \Notion\Blocks\BlockInterface[] $children
+     * @param list<RichText> $text
+     * @param list<\Notion\Blocks\BlockInterface> $children
      */
     private function __construct(
         Block $block,
@@ -118,7 +118,7 @@ class BulletedListItem implements BlockInterface
     /**
      *  Get list item text
      *
-     * @return RichText[]
+     * @return list<RichText>
      */
     public function text(): array
     {
@@ -138,7 +138,8 @@ class BulletedListItem implements BlockInterface
     /**
      * Change list item text
      */
-    public function withText(RichText ...$text): self
+    /** @param list<RichText> $text */
+    public function withText(array $text): self
     {
         return new self($this->block, $text, $this->children);
     }
@@ -155,7 +156,8 @@ class BulletedListItem implements BlockInterface
     }
 
     /** Change list item children blocks */
-    public function withChildren(BlockInterface ...$children): self
+    /** @param list<BlockInterface> $children */
+    public function withChildren(array $children): self
     {
         $hasChildren = (count($children) > 0);
 
