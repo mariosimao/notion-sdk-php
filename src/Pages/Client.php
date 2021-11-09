@@ -58,7 +58,7 @@ class Client
     }
 
     /** @param list<BlockInterface> $content */
-    public function create(Page $page, array $content): Page
+    public function create(Page $page, array $content = []): Page
     {
         $data = json_encode([
             "archived" => $page->archived(),
