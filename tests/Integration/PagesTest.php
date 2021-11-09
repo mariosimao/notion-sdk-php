@@ -2,7 +2,7 @@
 
 namespace Notion\Test\Integration;
 
-use Notion\Client;
+use Notion\Notion;
 use Notion\Common\Emoji;
 use Notion\NotionException;
 use Notion\Pages\Page;
@@ -16,7 +16,7 @@ class PagesTest extends TestCase
     public function test_create_empty_page(): void
     {
         $token = getenv("NOTION_TOKEN");
-        $client = Client::create($token);
+        $client = Notion::create($token);
 
         $page = Page::create(PageParent::page(self::DEFAULT_PARENT_ID))
             ->withTitle("Empty page")
@@ -35,7 +35,7 @@ class PagesTest extends TestCase
     public function test_find_page(): void
     {
         $token = getenv("NOTION_TOKEN");
-        $client = Client::create($token);
+        $client = Notion::create($token);
 
         $page = $client->pages()->find("3f4c46dee17f43b79587094b61407a31");
 
@@ -46,7 +46,7 @@ class PagesTest extends TestCase
     public function test_find_inexistent_page(): void
     {
         $token = getenv("NOTION_TOKEN");
-        $client = Client::create($token);
+        $client = Notion::create($token);
 
         $this->expectException(NotionException::class);
         $this->expectErrorMessage("Could not find page with ID: 60e79d42-4742-41ca-8d70-cc51660cbd3c.");
@@ -56,7 +56,7 @@ class PagesTest extends TestCase
     public function test_create_with_inexistent_parent(): void
     {
         $token = getenv("NOTION_TOKEN");
-        $client = Client::create($token);
+        $client = Notion::create($token);
 
         $page = Page::create(PageParent::page("60e79d42-4742-41ca-8d70-cc51660cbd3c"));
 
@@ -68,7 +68,7 @@ class PagesTest extends TestCase
     public function test_update_archived_page(): void
     {
         $token = getenv("NOTION_TOKEN");
-        $client = Client::create($token);
+        $client = Notion::create($token);
 
         $page = Page::create(PageParent::page(self::DEFAULT_PARENT_ID))
             ->withTitle("Deleted page");
