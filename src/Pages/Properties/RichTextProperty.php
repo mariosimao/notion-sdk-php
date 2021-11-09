@@ -10,7 +10,7 @@ use Notion\Common\RichText;
  * @psalm-type RichTextPropertyJson = array{
  *      id: string,
  *      type: "rich_text",
- *      rich_text: RichTextJson[],
+ *      rich_text: list<RichTextJson>,
  * }
  */
 class RichTextProperty implements PropertyInterface
@@ -19,10 +19,11 @@ class RichTextProperty implements PropertyInterface
 
     private Property $property;
 
-    /** @var \Notion\Common\RichText[] */
+    /** @var list<RichText> */
     private array $text;
 
-    private function __construct(Property $property, RichText ...$text)
+    /** @param list<RichText> $text */
+    private function __construct(Property $property, array $text)
     {
         $this->property = $property;
         $this->text = $text;
@@ -31,7 +32,7 @@ class RichTextProperty implements PropertyInterface
     public static function create(string $text): self
     {
         $property = Property::create("", self::TYPE);
-        $richText = RichText::createText($text);
+        $richText = [ RichText::createText($text) ];
 
         return new self($property, $richText);
     }
@@ -49,7 +50,7 @@ class RichTextProperty implements PropertyInterface
             $array[self::TYPE],
         );
 
-        return new self($property, ...$text);
+        return new self($property, $text);
     }
 
     public function toArray(): array
@@ -66,15 +67,16 @@ class RichTextProperty implements PropertyInterface
         return $this->property;
     }
 
-    /** @return RichText[] */
+    /** @return list<RichText> */
     public function text(): array
     {
         return $this->text;
     }
 
-    public function withText(RichText ...$text): self
+    /** @param list<RichText> $text */
+    public function withText(array $text): self
     {
-        return new self($this->property, ...$text);
+        return new self($this->property, $text);
     }
 
     public function toString(): string

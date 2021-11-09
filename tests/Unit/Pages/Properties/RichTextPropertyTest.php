@@ -58,9 +58,9 @@ class RichTextPropertyTest extends TestCase
 
     public function test_change_text(): void
     {
-        $text = RichTextProperty::create("")->withText(
+        $text = RichTextProperty::create("")->withText([
             RichText::createText("Dummy text")
-        );
+        ]);
         $this->assertEquals("Dummy text", $text->toString());
     }
 }

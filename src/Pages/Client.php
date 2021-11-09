@@ -57,7 +57,8 @@ class Client
         return Page::fromArray($body);
     }
 
-    public function create(Page $page, BlockInterface ...$content): Page
+    /** @param list<BlockInterface> $content */
+    public function create(Page $page, array $content): Page
     {
         $data = json_encode([
             "archived" => $page->archived(),

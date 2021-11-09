@@ -11,8 +11,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Clients require implementations of `RequestFactoryInterface`
-- Renamed `Notion\Client::createWithPsrClient()` to `createWithPsrImplementations()`
-- Renamed `Notion\Client` to `Notion\Notion`
+- Rename `Notion\Client::createWithPsrClient()` to `createWithPsrImplementations()`
+- Rename `Notion\Client` to `Notion\Notion`
+- Rename `Notion\Databases\Database::withTitle()` to `withAdvancedTitle()`
+- Use `list<RichText>` instead of `...RichText` on
+  - `Bookmark::withCaption()`
+  - `BulletedListItem::withText()`
+  - `Callout::withText()`
+  - `Code::withText()`
+  - `Heading1::withText()`
+  - `Heading2::withText()`
+  - `Heading3::withText()`
+  - `NumberedListItem::withText()`
+  - `Paragraph::withText()`
+  - `Quote::withText()`
+  - `ToDo::withText()`
+  - `Toggle::withText()`
+  - `Database::withAdvancedTitle()`
+  - `Title::withRichTexts()`
+  - `RichTextProperty::withText()`
+- Use `list<BlockInterface>` instead of `...BlockInterface` on
+  - `BulletedListItem::withChildren()`
+  - `Callout::withChildren()`
+  - `NumberedListItem::withChildren()`
+  - `Paragraph::withChildren()`
+  - `Quote::withChildren()`
+  - `ToDo::withChildren()`
+  - `Toggle::withChildren()`
+  - `Notion\Pages\Client::create()`
+- Use `list<SelectOption>` instead of `...SelectOption` on
+  - `Select::withOptions()`
+  - `MultiSelect::withOptions()`
+- Use `list<non-empty-string>` instead of `...string` on
+  - `MultiSelect::fromIds()` and `MultiSelect::fromNames()`
+  - `Relation::create()` and `Relation::withRelations()`
+- Use `list<User>` instead of `...User` on
+  - `People::create()` and `People::withPeople()`
 
 ## [0.1.0] - 2021-11-03
 ### Added

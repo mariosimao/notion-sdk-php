@@ -40,7 +40,7 @@ $text = [
     RichText::createText(" and much more!"),
 ];
 
-$paragraph = Paragraph::create()->withText(...$text);
+$paragraph = Paragraph::create()->withText($text);
 ```
 
 Note that `withText()` will replace the text on a new instance of `Paragraph`.

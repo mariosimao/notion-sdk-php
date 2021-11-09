@@ -146,10 +146,10 @@ class QuoteTest extends TestCase
     {
         $oldQuote = Quote::fromString("This is an old quote");
 
-        $newQuote = $oldQuote->withText(
+        $newQuote = $oldQuote->withText([
             RichText::createText("This is a "),
             RichText::createText("new quote"),
-        );
+        ]);
 
         $this->assertEquals("This is an old quote", $oldQuote->toString());
         $this->assertEquals("This is a new quote", $newQuote->toString());
@@ -169,10 +169,10 @@ class QuoteTest extends TestCase
 
     public function test_replace_children(): void
     {
-        $quote = Quote::fromString("Simple quote.")->withChildren(
+        $quote = Quote::fromString("Simple quote.")->withChildren([
             Quote::fromString("Nested quote 1"),
             Quote::fromString("Nested quote 2"),
-        );
+        ]);
 
         $this->assertCount(2, $quote->children());
         $this->assertEquals("Nested quote 1", $quote->children()[0]->toString());

@@ -142,10 +142,10 @@ class Heading3Test extends TestCase
     {
         $oldHeading = Heading3::fromString("This is an old heading");
 
-        $newHeading = $oldHeading->withText(
+        $newHeading = $oldHeading->withText([
             RichText::createText("This is a "),
             RichText::createText("new heading"),
-        );
+        ]);
 
         $this->assertEquals("This is an old heading", $oldHeading->toString());
         $this->assertEquals("This is a new heading", $newHeading->toString());

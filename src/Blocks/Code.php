@@ -10,7 +10,7 @@ use Notion\Common\RichText;
  *
  * @psalm-type CodeJson = array{
  *      code: array{
- *          text: RichTextJson[],
+ *          text: list<RichTextJson>,
  *          language: string,
  *      },
  * }
@@ -93,12 +93,12 @@ class Code implements BlockInterface
 
     private Block $block;
 
-    /** @var \Notion\Common\RichText[] */
+    /** @var list<RichText> */
     private array $text;
 
     private string $language;
 
-    /** @param \Notion\Common\RichText[] $text */
+    /** @param list<RichText> $text */
     private function __construct(Block $block, array $text, string $language) {
         if (!$block->isCode()) {
             throw new \Exception("Block must be of type " . self::TYPE);
@@ -175,7 +175,8 @@ class Code implements BlockInterface
         return $this->language;
     }
 
-    public function withText(RichText ...$text): self
+    /** @param list<RichText> $text */
+    public function withText(array $text): self
     {
         return new self($this->block, $text, $this->language);
     }

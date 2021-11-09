@@ -10,18 +10,19 @@ use Notion\Common\RichText;
  * @psalm-type TitleJson = array{
  *      id: "title",
  *      type: "title",
- *      title: RichTextJson[],
+ *      title: list<RichTextJson>,
  * }
  */
 class Title implements PropertyInterface
 {
     private Property $property;
 
-    /** @var \Notion\Common\RichText[] */
+    /** @var list<RichText> */
     private array $title;
 
 
-    private function __construct(Property $property, RichText ...$title)
+    /** @param list<RichText> $title */
+    private function __construct(Property $property, array $title)
     {
         $this->property = $property;
         $this->title = $title;
@@ -30,7 +31,7 @@ class Title implements PropertyInterface
     public static function create(string $title): self
     {
         $property = Property::create("title", "title");
-        $richText = RichText::createText($title);
+        $richText = [ RichText::createText($title) ];
 
         return new self($property, $richText);
     }
@@ -48,7 +49,7 @@ class Title implements PropertyInterface
             $array["title"],
         );
 
-        return new self($property, ...$title);
+        return new self($property, $title);
     }
 
     public function toArray(): array
@@ -65,15 +66,16 @@ class Title implements PropertyInterface
         return $this->property;
     }
 
-    /** @return RichText[] */
+    /** @return list<RichText> */
     public function richTexts(): array
     {
         return $this->title;
     }
 
-    public function withRichTexts(RichText ...$richTexts): self
+    /** @param list<RichText> $richTexts */
+    public function withRichTexts(array $richTexts): self
     {
-        return new self($this->property, ...$richTexts);
+        return new self($this->property, $richTexts);
     }
 
     public function toString(): string

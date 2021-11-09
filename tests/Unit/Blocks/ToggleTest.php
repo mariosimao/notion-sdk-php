@@ -146,10 +146,10 @@ class ToggleTest extends TestCase
     {
         $oldToggle = Toggle::fromString("This is an old toggle");
 
-        $newToggle = $oldToggle->withText(
+        $newToggle = $oldToggle->withText([
             RichText::createText("This is a "),
             RichText::createText("new toggle"),
-        );
+        ]);
 
         $this->assertEquals("This is an old toggle", $oldToggle->toString());
         $this->assertEquals("This is a new toggle", $newToggle->toString());
@@ -169,10 +169,10 @@ class ToggleTest extends TestCase
 
     public function test_replace_children(): void
     {
-        $toggle = Toggle::fromString("Simple toggle.")->withChildren(
+        $toggle = Toggle::fromString("Simple toggle.")->withChildren([
             Toggle::fromString("Nested toggle 1"),
             Toggle::fromString("Nested toggle 2"),
-        );
+        ]);
 
         $this->assertCount(2, $toggle->children());
         $this->assertEquals("Nested toggle 1", $toggle->children()[0]->toString());

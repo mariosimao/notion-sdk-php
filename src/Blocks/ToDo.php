@@ -11,8 +11,8 @@ use Notion\Common\RichText;
  * @psalm-type ToDoJson = array{
  *      to_do: array{
  *          checked: bool,
- *          text: RichTextJson[],
- *          children: array{ type: BlockJson },
+ *          text: list<RichTextJson>,
+ *          children: list<BlockJson>,
  *      },
  * }
  */
@@ -22,17 +22,17 @@ class ToDo implements BlockInterface
 
     private Block $block;
 
-    /** @var \Notion\Common\RichText[] */
+    /** @var list<RichText> */
     private array $text;
 
     private bool $checked;
 
-    /** @var \Notion\Blocks\BlockInterface[] */
+    /** @var list<\Notion\Blocks\BlockInterface> */
     private array $children;
 
     /**
-     * @param \Notion\Common\RichText[] $text
-     * @param \Notion\Blocks\BlockInterface[] $children
+     * @param list<RichText> $text
+     * @param list<\Notion\Blocks\BlockInterface> $children
      */
     private function __construct(
         Block $block,
@@ -125,7 +125,8 @@ class ToDo implements BlockInterface
         return $this->children;
     }
 
-    public function withText(RichText ...$text): self
+    /** @param list<RichText> $text */
+    public function withText(array $text): self
     {
         return new self($this->block, $text, $this->checked, $this->children);
     }
@@ -148,7 +149,8 @@ class ToDo implements BlockInterface
         return new self($this->block, $this->text, false, $this->children);
     }
 
-    public function withChildren(BlockInterface ...$children): self
+    /** @param list<BlockInterface> $children */
+    public function withChildren(array $children): self
     {
         $hasChildren = (count($children) > 0);
 

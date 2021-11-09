@@ -23,7 +23,7 @@ use Notion\NotionException;
  *      id: string,
  *      created_time: string,
  *      last_edited_time: string,
- *      title: RichTextJson[],
+ *      title: list<RichTextJson>,
  *      icon: EmojiJson|FileJson|null,
  *      cover: FileJson|null,
  *      properties: array<string, PropertyJson>,
@@ -36,7 +36,7 @@ class Database
     private string $id;
     private DateTimeImmutable $createdTime;
     private DateTimeImmutable $lastEditedTime;
-    /** @var RichText[] */
+    /** @var list<RichText> */
     private array $title;
     private Emoji|File|null $icon;
     private File|null $cover;
@@ -46,7 +46,7 @@ class Database
     private string $url;
 
     /**
-     * @param RichText[] $title
+     * @param list<RichText> $title
      * @param array<string, PropertyInterface> $properties
      */
     private function __construct(
@@ -176,7 +176,7 @@ class Database
         return $this->lastEditedTime;
     }
 
-    /** @return RichText[] */
+    /** @return list<RichText> */
     public function title(): array
     {
         return $this->title;
@@ -208,7 +208,8 @@ class Database
         return $this->url;
     }
 
-    public function withTitle(RichText ...$title): self
+    /** @param list<RichText> $title */
+    public function withAdvancedTitle(array $title): self
     {
         return new self(
             $this->id,

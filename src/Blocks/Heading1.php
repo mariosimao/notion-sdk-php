@@ -10,7 +10,7 @@ use Notion\Common\RichText;
  *
  * @psalm-type Heading1Json = array{
  *      heading_1: array{
- *          text: RichTextJson[],
+ *          text: list<RichTextJson>,
  *      },
  * }
  */
@@ -20,11 +20,11 @@ class Heading1 implements BlockInterface
 
     private Block $block;
 
-    /** @var \Notion\Common\RichText[] */
+    /** @var list<RichText> */
     private array $text;
 
     /**
-     * @param \Notion\Common\RichText[] $text
+     * @param list<RichText> $text
      */
     private function __construct(Block $block, array $text) {
         if (!$block->isHeading1()) {
@@ -94,7 +94,8 @@ class Heading1 implements BlockInterface
         return $this->text;
     }
 
-    public function withText(RichText ...$text): self
+    /** @param list<RichText> $text */
+    public function withText(array $text): self
     {
         return new self($this->block, $text);
     }
