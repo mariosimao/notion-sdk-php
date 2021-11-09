@@ -5,8 +5,8 @@ namespace Notion\Pages;
 use Notion\Blocks\BlockInterface;
 use Notion\NotionException;
 use Notion\Pages\Properties\PropertyInterface;
-use Nyholm\Psr7\Request;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 
 /**
  * @psalm-import-type PageJson from Page
@@ -14,29 +14,31 @@ use Psr\Http\Client\ClientInterface;
 class Client
 {
     private ClientInterface $psrClient;
+    private RequestFactoryInterface $requestFactory;
     private string $token;
     private string $version;
 
+    /**
+     * @internal Use `\Notion\Notion::pages()` instead
+     */
     public function __construct(
         ClientInterface $psrClient,
+        RequestFactoryInterface $requestFactory,
         string $token,
-        string $version
+        string $version,
     ) {
         $this->psrClient = $psrClient;
+        $this->requestFactory = $requestFactory;
         $this->token = $token;
         $this->version = $version;
     }
 
     public function find(string $pageId): Page
     {
-        $request = new Request(
-            "GET",
-            "https://api.notion.com/v1/pages/{$pageId}",
-            [
-                "Authorization"  => "Bearer {$this->token}",
-                "Notion-Version" => $this->version,
-            ]
-        );
+        $url = "https://api.notion.com/v1/pages/{$pageId}";
+        $request = $this->requestFactory->createRequest("GET", $url)
+            ->withHeader("Authorization", "Bearer {$this->token}")
+            ->withHeader("Notion-Version", $this->version);
 
         $response = $this->psrClient->sendRequest($request);
 
@@ -66,16 +68,13 @@ class Client
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $content),
         ]);
 
-        $request = new Request(
-            "POST",
-            "https://api.notion.com/v1/pages",
-            [
-                "Authorization"  => "Bearer {$this->token}",
-                "Notion-Version" => $this->version,
-                "Content-Type"   => "application/json",
-            ],
-            $data,
-        );
+        $url = "https://api.notion.com/v1/pages";
+        $request = $this->requestFactory->createRequest("POST", $url)
+            ->withHeader("Authorization", "Bearer {$this->token}")
+            ->withHeader("Notion-Version", $this->version)
+            ->withHeader("Content-Type", "application/json");
+
+        $request->getBody()->write($data);
 
         $response = $this->psrClient->sendRequest($request);
 
@@ -105,16 +104,13 @@ class Client
         ]);
 
         $pageId = $page->id();
-        $request = new Request(
-            "PATCH",
-            "https://api.notion.com/v1/pages/{$pageId}",
-            [
-                "Authorization"  => "Bearer {$this->token}",
-                "Notion-Version" => $this->version,
-                "Content-Type"   => "application/json",
-            ],
-            $data,
-        );
+        $url = "https://api.notion.com/v1/pages/{$pageId}";
+        $request = $this->requestFactory->createRequest("PATCH", $url)
+            ->withHeader("Authorization", "Bearer {$this->token}")
+            ->withHeader("Notion-Version", $this->version)
+            ->withHeader("Content-Type", "application/json");
+
+        $request->getBody()->write($data);
 
         $response = $this->psrClient->sendRequest($request);
 

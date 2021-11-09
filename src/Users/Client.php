@@ -3,36 +3,38 @@
 namespace Notion\Users;
 
 use Notion\NotionException;
-use Nyholm\Psr7\Request;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 
 /** @psalm-import-type UserJson from User */
 class Client
 {
     private ClientInterface $psrClient;
+    private RequestFactoryInterface $requestFactory;
     private string $token;
     private string $version;
 
+    /**
+     * @internal Use `\Notion\Notion::pages()` instead
+     */
     public function __construct(
         ClientInterface $psrClient,
+        RequestFactoryInterface $requestFactory,
         string $token,
-        string $version
+        string $version,
     ) {
         $this->psrClient = $psrClient;
+        $this->requestFactory = $requestFactory;
         $this->token = $token;
         $this->version = $version;
     }
 
     public function find(string $userId): User
     {
-        $request = new Request(
-            "GET",
-            "https://api.notion.com/v1/users/{$userId}",
-            [
-                "Authorization"  => "Bearer {$this->token}",
-                "Notion-Version" => $this->version,
-            ]
-        );
+        $url = "https://api.notion.com/v1/users/{$userId}";
+        $request = $this->requestFactory->createRequest("GET", $url)
+            ->withHeader("Authorization", "Bearer {$this->token}")
+            ->withHeader("Notion-Version", $this->version);
 
         $response = $this->psrClient->sendRequest($request);
 
@@ -56,14 +58,10 @@ class Client
      */
     public function findAll(): array
     {
-        $request = new Request(
-            "GET",
-            "https://api.notion.com/v1/users",
-            [
-                "Authorization"  => "Bearer {$this->token}",
-                "Notion-Version" => $this->version,
-            ]
-        );
+        $url = "https://api.notion.com/v1/users";
+        $request = $this->requestFactory->createRequest("GET", $url)
+            ->withHeader("Authorization", "Bearer {$this->token}")
+            ->withHeader("Notion-Version", $this->version);
 
         $response = $this->psrClient->sendRequest($request);
         /** @var array $body */
@@ -88,14 +86,10 @@ class Client
 
     public function me(): User
     {
-        $request = new Request(
-            "GET",
-            "https://api.notion.com/v1/users/me",
-            [
-                "Authorization"  => "Bearer {$this->token}",
-                "Notion-Version" => $this->version,
-            ]
-        );
+        $url = "https://api.notion.com/v1/users/me";
+        $request = $this->requestFactory->createRequest("GET", $url)
+            ->withHeader("Authorization", "Bearer {$this->token}")
+            ->withHeader("Notion-Version", $this->version);
 
         $response = $this->psrClient->sendRequest($request);
         /** @var array $body */
