@@ -5,6 +5,30 @@ on:
 name: Continuous Integration
 
 jobs:
+  phpcs:
+    name: PHP CodeSniffer
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.0"
+          tools: none
+
+      - name: Install composer dependencies
+        uses: ramsey/composer-install@1.3.0
+        with:
+          dependency-versions: locked
+          composer-options: --no-ansi --no-interaction --no-progress
+
+      - name: Run phpcs checks
+        run: vendor/bin/phpcs
+
   phpunit:
     name: PHPUnit
 
@@ -72,7 +96,6 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.0"
-          coverage: xdebug3
           tools: none
 
       - name: Install composer dependencies
