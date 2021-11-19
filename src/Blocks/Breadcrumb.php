@@ -15,7 +15,8 @@ class Breadcrumb implements BlockInterface
 
     private Block $block;
 
-    private function __construct(Block $block) {
+    private function __construct(Block $block)
+    {
         if (!$block->isBreadcrumb()) {
             throw new \Exception("Block must be of type " . self::TYPE);
         }

@@ -64,7 +64,8 @@ class Block
         $this->type = $type;
     }
 
-    public static function create(string $type): self {
+    public static function create(string $type): self
+    {
         $now = new DateTimeImmutable("now");
 
         return new self("", $now, $now, false, false, $type);

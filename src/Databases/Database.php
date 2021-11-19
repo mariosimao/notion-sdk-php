@@ -101,7 +101,7 @@ class Database
     public static function fromArray(array $array): self
     {
         $title = array_map(
-            function(array $richTextArray): RichText {
+            function (array $richTextArray): RichText {
                 return RichText::fromArray($richTextArray);
             },
             $array["title"],

@@ -20,7 +20,8 @@ class EquationBlock implements BlockInterface
 
     private Equation $equation;
 
-    private function __construct(Block $block, Equation $equation) {
+    private function __construct(Block $block, Equation $equation)
+    {
         if (!$block->isEquation()) {
             throw new \Exception("Block must be of type " . self::TYPE);
         }

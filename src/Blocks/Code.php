@@ -99,7 +99,8 @@ class Code implements BlockInterface
     private string $language;
 
     /** @param list<RichText> $text */
-    private function __construct(Block $block, array $text, string $language) {
+    private function __construct(Block $block, array $text, string $language)
+    {
         if (!$block->isCode()) {
             throw new \Exception("Block must be of type " . self::TYPE);
         }

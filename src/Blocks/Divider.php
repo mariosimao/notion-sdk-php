@@ -15,7 +15,8 @@ class Divider implements BlockInterface
 
     private Block $block;
 
-    private function __construct(Block $block) {
+    private function __construct(Block $block)
+    {
         if (!$block->isDivider()) {
             throw new \Exception("Block must be of type " . self::TYPE);
         }
