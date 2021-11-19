@@ -18,7 +18,8 @@ class Pdf implements BlockInterface
 
     private File $file;
 
-    private function __construct(Block $block, File $file) {
+    private function __construct(Block $block, File $file)
+    {
         if (!$block->isPdf()) {
             throw new \Exception("Block must be of type " . self::TYPE);
         }

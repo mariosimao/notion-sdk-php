@@ -29,7 +29,8 @@ class Bookmark implements BlockInterface
     private array $caption;
 
     /** @param list<RichText> $caption */
-    private function __construct(Block $block, string $url, array $caption) {
+    private function __construct(Block $block, string $url, array $caption)
+    {
         if (!$block->isBookmark()) {
             throw new \Exception("Block must be of type " . self::TYPE);
         }

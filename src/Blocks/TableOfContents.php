@@ -15,7 +15,8 @@ class TableOfContents implements BlockInterface
 
     private Block $block;
 
-    private function __construct(Block $block) {
+    private function __construct(Block $block)
+    {
         if (!$block->isTableOfContents()) {
             throw new \Exception("Block must be of type " . self::TYPE);
         }

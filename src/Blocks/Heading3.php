@@ -26,7 +26,8 @@ class Heading3 implements BlockInterface
     /**
      * @param list<RichText> $text
      */
-    private function __construct(Block $block, array $text) {
+    private function __construct(Block $block, array $text)
+    {
         if (!$block->isHeading3()) {
             throw new \Exception("Block must be of type " . self::TYPE);
         }

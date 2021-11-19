@@ -13,7 +13,7 @@ class BlockFactory
     {
         $type = $array["type"];
 
-        return match($type) {
+        return match ($type) {
             Block::TYPE_PARAGRAPH          => Paragraph::fromArray($array),
             Block::TYPE_HEADING_1          => Heading1::fromArray($array),
             Block::TYPE_HEADING_2          => Heading2::fromArray($array),

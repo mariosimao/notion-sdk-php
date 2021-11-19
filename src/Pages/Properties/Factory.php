@@ -13,7 +13,7 @@ class Factory
     {
         $type = $array["type"];
 
-        return match($type) {
+        return match ($type) {
             Property::TYPE_RICH_TEXT => RichTextProperty::fromArray($array),
             Property::TYPE_NUMBER    => Number::fromArray($array),
             Property::TYPE_SELECT    => Select::fromArray($array),

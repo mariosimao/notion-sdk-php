@@ -19,7 +19,8 @@ class ChildPage implements BlockInterface
 
     private string $pageTitle;
 
-    private function __construct(Block $block, string $pageTitle) {
+    private function __construct(Block $block, string $pageTitle)
+    {
         if (!$block->isChildPage()) {
             throw new \Exception("Block must be of type " . self::TYPE);
         }
