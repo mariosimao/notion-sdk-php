@@ -6,6 +6,7 @@
     beStrictAboutOutputDuringTests="true"
     beStrictAboutTodoAnnotatedTests="true"
     beStrictAboutChangesToGlobalState="true"
+    convertDeprecationsToExceptions="true"
     failOnRisky="true"
     failOnWarning="true"
     verbose="true"
