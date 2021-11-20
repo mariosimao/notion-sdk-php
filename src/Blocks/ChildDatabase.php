@@ -10,6 +10,8 @@ use Notion\Common\RichText;
  * @psalm-type ChildDatabaseJson = array{
  *      child_database: array{ title: string },
  * }
+ *
+ * @psalm-immutable
  */
 class ChildDatabase implements BlockInterface
 {

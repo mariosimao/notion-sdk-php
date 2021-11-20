@@ -16,6 +16,8 @@ use Notion\Common\RichText;
  *          caption: list<RichTextJson>,
  *      },
  * }
+ *
+ * @psalm-immutable
  */
 class Bookmark implements BlockInterface
 {

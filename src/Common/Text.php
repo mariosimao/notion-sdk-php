@@ -4,6 +4,8 @@ namespace Notion\Common;
 
 /**
  * @psalm-type TextJson = array{ content: string, link?: array{ url: string } }
+ *
+ * @psalm-immutable
  */
 class Text
 {
@@ -16,6 +18,7 @@ class Text
         $this->url = $url;
     }
 
+    /** @psalm-mutation-free */
     public static function create(string $content): self
     {
         return new self($content, null);

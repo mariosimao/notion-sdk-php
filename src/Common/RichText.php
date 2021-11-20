@@ -17,6 +17,8 @@ namespace Notion\Common;
  *      mention?: MentionJson,
  *      equation?: EquationJson,
  * }
+ *
+ * @psalm-immutable
  */
 class RichText
 {
@@ -48,6 +50,7 @@ class RichText
         $this->equation = $equation;
     }
 
+    /** @psalm-mutation-free */
     public static function createText(string $content): self
     {
         $annotations = Annotations::create();
@@ -237,6 +240,7 @@ class RichText
         return $this->withAnnotations($annotations);
     }
 
+    /** @param Annotations::COLOR_* $color */
     public function color(string $color): self
     {
         $annotations = $this->annotations->withColor($color);

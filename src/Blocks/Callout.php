@@ -20,6 +20,8 @@ use Notion\Common\RichText;
  *          icon: EmojiJson|FileJson,
  *      },
  * }
+ *
+ * @psalm-immutable
  */
 class Callout implements BlockInterface
 {
@@ -134,6 +136,25 @@ class Callout implements BlockInterface
         return $this->icon;
     }
 
+    /**
+     * @psalm-assert-if-true Emoji $this->icon
+     * @psalm-assert-if-true Emoji $this->icon()
+     */
+    public function iconIsEmoji(): bool
+    {
+        return $this->icon::class === Emoji::class;
+    }
+
+    /**
+     * @psalm-assert-if-true File $this->icon
+     * @psalm-assert-if-true File $this->icon()
+     */
+    public function iconIsFile(): bool
+    {
+        return $this->icon::class === File::class;
+    }
+
+    /** @return list<BlockInterface> */
     public function children(): array
     {
         return $this->children;

@@ -9,6 +9,8 @@ namespace Notion\Databases\Properties;
  *      type: "url",
  *      url: array<empty, empty>,
  * }
+ *
+ * @psalm-immutable
  */
 class Url implements PropertyInterface
 {

@@ -9,6 +9,8 @@ namespace Notion\Databases\Properties;
  *      type: "rich_text",
  *      rich_text: array<empty, empty>,
  * }
+ *
+ * @psalm-immutable
  */
 class RichText implements PropertyInterface
 {

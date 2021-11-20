@@ -8,6 +8,8 @@ namespace Notion\Databases\Properties;
  *      name: string,
  *      color: string,
  * }
+ *
+ * @psalm-immutable
  */
 class SelectOption
 {

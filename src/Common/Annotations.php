@@ -8,27 +8,42 @@ namespace Notion\Common;
  *      strikethrough: bool,
  *      underline: bool,
  *      code: bool,
- *      color: string,
+ *      color: self::COLOR_*,
  * }
+ *
+ * @psalm-immutable
  */
 class Annotations
 {
-    /** @var string[] */
-    private const ALLOWED_COLORS = [
-        "default", "gray", "brown", "orange", "yellow", "green", "blue",
-        "purple", "pink", "red", "gray_background", "brown_background",
-        "orange_background", "yellow_background", "green_background",
-        "blue_background", "purple_background", "pink_background",
-        "red_background",
-    ];
+    public const COLOR_DEFAULT = "default";
+    public const COLOR_GRAY = "gray";
+    public const COLOR_BROWN = "brown";
+    public const COLOR_ORANGE = "orange";
+    public const COLOR_YELLOW = "yellow";
+    public const COLOR_GREEN = "green";
+    public const COLOR_BLUE = "blue";
+    public const COLOR_PURPLE = "purple";
+    public const COLOR_PINK = "pink";
+    public const COLOR_RED = "red";
+    public const COLOR_GRAY_BACKGROUND = "gray_background";
+    public const COLOR_BROWN_BACKGROUND = "brown_background";
+    public const COLOR_ORANGE_BACKGROUND = "orange_background";
+    public const COLOR_YELLOW_BACKGROUND = "yellow_background";
+    public const COLOR_GREEN_BACKGROUND = "green_background";
+    public const COLOR_BLUE_BACKGROUND = "blue_background";
+    public const COLOR_PURPLE_BACKGROUND = "purple_background";
+    public const COLOR_PINK_BACKGROUND = "pink_background";
+    public const COLOR_RED_BACKGROUND = "red_background";
 
     private bool $bold;
     private bool $italic;
     private bool $strikeThrough;
     private bool $underline;
     private bool $code;
+    /** @var self::COLOR_* */
     private string $color;
 
+    /** @param self::COLOR_* $color */
     private function __construct(
         bool $bold,
         bool $italic,
@@ -37,8 +52,6 @@ class Annotations
         bool $code,
         string $color,
     ) {
-        $this->checkColor($color);
-
         $this->bold = $bold;
         $this->italic = $italic;
         $this->strikeThrough = $strikeThrough;
@@ -47,6 +60,7 @@ class Annotations
         $this->color = $color;
     }
 
+    /** @psalm-mutation-free */
     public static function create(): self
     {
         return new self(false, false, false, false, false, "default");
@@ -171,10 +185,9 @@ class Annotations
         );
     }
 
+    /** @param self::COLOR_* $color */
     public function withColor(string $color): self
     {
-        $this->checkColor($color);
-
         return new self(
             $this->bold,
             $this->italic,
@@ -183,12 +196,5 @@ class Annotations
             $this->code,
             $color,
         );
-    }
-
-    private function checkColor(string $color): void
-    {
-        if (!in_array($color, self::ALLOWED_COLORS)) {
-            throw new \Exception("Invalid color: '{$color}'.");
-        }
     }
 }

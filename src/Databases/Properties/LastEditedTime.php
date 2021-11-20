@@ -9,6 +9,8 @@ namespace Notion\Databases\Properties;
  *      type: "last_edited_time",
  *      last_edited_time: array<empty, empty>,
  * }
+ *
+ * @psalm-immutable
  */
 class LastEditedTime implements PropertyInterface
 {

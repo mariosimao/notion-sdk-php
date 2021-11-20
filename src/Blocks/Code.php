@@ -14,6 +14,8 @@ use Notion\Common\RichText;
  *          language: string,
  *      },
  * }
+ *
+ * @psalm-immutable
  */
 class Code implements BlockInterface
 {

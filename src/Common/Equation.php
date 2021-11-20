@@ -4,6 +4,8 @@ namespace Notion\Common;
 
 /**
  * @psalm-type EquationJson = array{ expression: string }
+ *
+ * @psalm-immutable
  */
 class Equation
 {

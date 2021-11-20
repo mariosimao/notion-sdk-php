@@ -8,6 +8,8 @@ namespace Notion\Blocks;
  * @psalm-type TableOfContentsJson = array{
  *      table_of_contents: array<empty, empty>
  * }
+ *
+ * @psalm-immutable
  */
 class TableOfContents implements BlockInterface
 {

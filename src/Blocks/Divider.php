@@ -8,6 +8,7 @@ namespace Notion\Blocks;
  * @psalm-type DividerJson = array{
  *      divider: array<empty, empty>
  * }
+ * @psalm-immutable
  */
 class Divider implements BlockInterface
 {

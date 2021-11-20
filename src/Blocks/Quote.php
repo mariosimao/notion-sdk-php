@@ -14,6 +14,8 @@ use Notion\Common\RichText;
  *          children: list<BlockJson>,
  *      },
  * }
+ *
+ * @psalm-immutable
  */
 class Quote implements BlockInterface
 {
@@ -107,6 +109,7 @@ class Quote implements BlockInterface
         return $this->text;
     }
 
+    /** @return list<BlockInterface> */
     public function children(): array
     {
         return $this->children;

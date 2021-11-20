@@ -9,6 +9,8 @@ namespace Notion\Databases\Properties;
  *      type: "phone_number",
  *      phone_number: array<empty, empty>,
  * }
+ *
+ * @psalm-immutable
  */
 class PhoneNumber implements PropertyInterface
 {

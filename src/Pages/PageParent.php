@@ -4,10 +4,13 @@ namespace Notion\Pages;
 
 /**
  * @psalm-type PageParentJson = array{
- *      type: "page_id", "database_id", "workspace",
+ *      type: "page_id"|"database_id"|"workspace",
  *      page_id?: string,
  *      database_id?: string,
+ *      workspace?: true,
  * }
+ *
+ * @psalm-immutable
  */
 class PageParent
 {

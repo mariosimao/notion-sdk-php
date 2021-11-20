@@ -14,6 +14,8 @@ use Notion\Common\Date;
  *      archived: bool,
  *      has_children: bool,
  * }
+ *
+ * @psalm-immutable
  */
 class Block
 {

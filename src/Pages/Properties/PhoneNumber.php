@@ -8,6 +8,8 @@ namespace Notion\Pages\Properties;
  *      type: "phone_number",
  *      phone_number: string,
  * }
+ *
+ * @psalm-immutable
  */
 class PhoneNumber implements PropertyInterface
 {

@@ -9,6 +9,8 @@ namespace Notion\Databases\Properties;
  *      type: "file",
  *      file: array<empty, empty>,
  * }
+ *
+ * @psalm-immutable
  */
 class Files implements PropertyInterface
 {

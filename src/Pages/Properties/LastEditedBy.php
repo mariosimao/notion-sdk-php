@@ -12,6 +12,8 @@ use Notion\Users\User;
  *      type: "last_edited_by",
  *      "last_edited_by": UserJson,
  * }
+ *
+ * @psalm-immutable
  */
 class LastEditedBy implements PropertyInterface
 {

@@ -8,6 +8,8 @@ namespace Notion\Pages\Properties;
  *      type: "checkbox",
  *      checkbox: bool,
  * }
+ *
+ * @psalm-immutable
  */
 class Checkbox implements PropertyInterface
 {

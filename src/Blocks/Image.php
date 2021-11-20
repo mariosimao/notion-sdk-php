@@ -9,6 +9,8 @@ use Notion\Common\File;
  * @psalm-import-type FileJson from \Notion\Common\File
  *
  * @psalm-type ImageJson = array{ image: FileJson }
+ *
+ * @psalm-immutable
  */
 class Image implements BlockInterface
 {

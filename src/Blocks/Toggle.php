@@ -14,6 +14,8 @@ use Notion\Common\RichText;
  *          children: list<BlockJson>,
  *      },
  * }
+ *
+ * @psalm-immutable
  */
 class Toggle implements BlockInterface
 {
@@ -107,6 +109,7 @@ class Toggle implements BlockInterface
         return $this->text;
     }
 
+    /** @return list<BlockInterface> */
     public function children(): array
     {
         return $this->children;

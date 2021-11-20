@@ -9,6 +9,8 @@ namespace Notion\Databases\Properties;
  *      type: "date",
  *      date: array<empty, empty>,
  * }
+ *
+ * @psalm-immutable
  */
 class Date implements PropertyInterface
 {

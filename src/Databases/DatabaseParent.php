@@ -4,9 +4,11 @@ namespace Notion\Databases;
 
 /**
  * @psalm-type DatabaseParentJson = array{
- *      type: "page_id", "workspace",
+ *      type: "page_id"|"workspace",
  *      page_id?: string,
  * }
+ *
+ * @psalm-immutable
  */
 class DatabaseParent
 {

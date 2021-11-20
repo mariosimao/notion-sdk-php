@@ -8,6 +8,8 @@ namespace Notion\Blocks;
  * @psalm-type BreadcrumbJson = array{
  *      breadcrumb: array<empty, empty>
  * }
+ *
+ * @psalm-immutable
  */
 class Breadcrumb implements BlockInterface
 {

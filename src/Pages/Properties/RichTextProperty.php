@@ -12,6 +12,8 @@ use Notion\Common\RichText;
  *      type: "rich_text",
  *      rich_text: list<RichTextJson>,
  * }
+ *
+ * @psalm-immutable
  */
 class RichTextProperty implements PropertyInterface
 {

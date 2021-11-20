@@ -15,6 +15,8 @@ use Notion\Users\User;
  *      user?: UserJson,
  *      date?: DateJson,
  * }
+ *
+ * @psalm-immutable
  */
 class Mention
 {

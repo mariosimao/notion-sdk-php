@@ -12,6 +12,8 @@ use Notion\Common\RichText;
  *      type: "title",
  *      title: list<RichTextJson>,
  * }
+ *
+ * @psalm-immutable
  */
 class Title implements PropertyInterface
 {
@@ -28,6 +30,7 @@ class Title implements PropertyInterface
         $this->title = $title;
     }
 
+    /** @psalm-mutation-free */
     public static function create(string $title): self
     {
         $property = Property::create("title", "title");

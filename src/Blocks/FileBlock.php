@@ -9,6 +9,8 @@ use Notion\Common\File;
  * @psalm-import-type FileJson from \Notion\Common\File
  *
  * @psalm-type FileBlockJson = array{ file: FileJson }
+ *
+ * @psalm-immutable
  */
 class FileBlock implements BlockInterface
 {

@@ -14,6 +14,8 @@ namespace Notion\Users;
  *     person?: PersonJson,
  *     bot?: BotJson,
  * }
+ *
+ * @psalm-immutable
  */
 class User
 {

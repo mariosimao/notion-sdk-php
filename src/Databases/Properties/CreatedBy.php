@@ -9,6 +9,8 @@ namespace Notion\Databases\Properties;
  *      type: "created_by",
  *      created_by: array<empty, empty>,
  * }
+ *
+ * @psalm-immutable
  */
 class CreatedBy implements PropertyInterface
 {

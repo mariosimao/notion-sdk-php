@@ -12,6 +12,8 @@ use Notion\Users\User;
  *      type: "created_by",
  *      "created_by": UserJson,
  * }
+ *
+ * @psalm-immutable
  */
 class CreatedBy implements PropertyInterface
 {
