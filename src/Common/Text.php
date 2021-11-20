@@ -38,12 +38,12 @@ class Text
 
     public function toArray(): array
     {
-        $link = ($this->url !== null) ? [ "url" => $this->url ] : null;
+        $array = [ "content" => $this->content ];
+        if ($this->url !== null) {
+            $array["link"] = [ "url" => $this->url ];
+        }
 
-        return [
-            "content" => $this->content,
-            "link"    => $link,
-        ];
+        return $array;
     }
 
     public function content(): string

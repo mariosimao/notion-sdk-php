@@ -139,7 +139,7 @@ class PageTest extends TestCase
                             "color"         => "default",
                         ],
                         "type" => "text",
-                        "text" => [ "content" => "Page title", "link" => null ],
+                        "text" => [ "content" => "Page title", ],
                     ]],
                 ],
             ],

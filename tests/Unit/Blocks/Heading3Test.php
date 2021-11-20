@@ -42,7 +42,6 @@ class Heading3Test extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "Notion headings ",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => false,
@@ -59,7 +58,6 @@ class Heading3Test extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "rock!",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => true,
@@ -121,7 +119,6 @@ class Heading3Test extends TestCase
                     "type"        => "text",
                     "text"        => [
                         "content" => "Simple heading",
-                        "link" => null,
                     ],
                     "annotations" => [
                         "bold"          => false,

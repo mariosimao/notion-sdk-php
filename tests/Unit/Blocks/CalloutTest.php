@@ -44,7 +44,6 @@ class CalloutTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "Notion callouts ",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => false,
@@ -61,7 +60,6 @@ class CalloutTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "rock!",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => true,
@@ -112,7 +110,6 @@ class CalloutTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "Notion callouts ",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => false,
@@ -129,7 +126,6 @@ class CalloutTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "rock!",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => true,
@@ -223,7 +219,6 @@ class CalloutTest extends TestCase
                     "type"        => "text",
                     "text"        => [
                         "content" => "Simple callout",
-                        "link" => null,
                     ],
                     "annotations" => [
                         "bold"          => false,

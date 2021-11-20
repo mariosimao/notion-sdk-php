@@ -43,7 +43,6 @@ class ParagraphTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "Notion paragraphs ",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => false,
@@ -60,7 +59,6 @@ class ParagraphTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "rock!",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => true,
@@ -123,7 +121,6 @@ class ParagraphTest extends TestCase
                     "type"        => "text",
                     "text"        => [
                         "content" => "Simple paragraph",
-                        "link" => null,
                     ],
                     "annotations" => [
                         "bold"          => false,

@@ -43,7 +43,6 @@ class ToggleTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "Notion toggles ",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => false,
@@ -60,7 +59,6 @@ class ToggleTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "rock!",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => true,
@@ -123,7 +121,6 @@ class ToggleTest extends TestCase
                     "type"        => "text",
                     "text"        => [
                         "content" => "Simple toggle",
-                        "link" => null,
                     ],
                     "annotations" => [
                         "bold"          => false,

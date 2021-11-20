@@ -38,7 +38,6 @@ class RichTextPropertyTest extends TestCase
                 "type" => "text",
                 "text" => [
                     "content" => "Dummy text",
-                    "link"    => null,
                 ],
             ]],
         ];

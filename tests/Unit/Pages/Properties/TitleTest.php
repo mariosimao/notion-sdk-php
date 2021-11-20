@@ -37,7 +37,6 @@ class TitleTest extends TestCase
                 "type" => "text",
                 "text" => [
                     "content" => "Dummy title",
-                    "link"    => null,
                 ],
             ]],
         ];

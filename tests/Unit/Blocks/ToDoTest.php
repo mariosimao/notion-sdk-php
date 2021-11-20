@@ -45,7 +45,6 @@ class ToDoTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "Notion to dos ",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => false,
@@ -62,7 +61,6 @@ class ToDoTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "rock!",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => true,
@@ -129,7 +127,6 @@ class ToDoTest extends TestCase
                     "type"        => "text",
                     "text"        => [
                         "content" => "Simple to do",
-                        "link" => null,
                     ],
                     "annotations" => [
                         "bold"          => false,

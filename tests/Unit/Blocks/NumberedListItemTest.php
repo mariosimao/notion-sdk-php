@@ -43,7 +43,6 @@ class NumberedListItemTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "Notion items ",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => false,
@@ -60,7 +59,6 @@ class NumberedListItemTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "rock!",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => true,
@@ -124,7 +122,6 @@ class NumberedListItemTest extends TestCase
                     "type"        => "text",
                     "text"        => [
                         "content" => "Simple item",
-                        "link" => null,
                     ],
                     "annotations" => [
                         "bold"          => false,

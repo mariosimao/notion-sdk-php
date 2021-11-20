@@ -191,7 +191,14 @@ class DatabaseTest extends TestCase
                 "emoji" => "⭐",
             ],
             "cover" => null,
-            "properties" => [],
+            "properties" => [
+                "Title" => [
+                    "id"    => "title",
+                    "name"  => "Title",
+                    "type"  => "title",
+                    "title" => [],
+                ],
+            ],
             "parent" => [
                 "type" => "page_id",
                 "page_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
@@ -230,7 +237,14 @@ class DatabaseTest extends TestCase
                 "external" => [ "url" => "https://my-site.com/image.png" ],
             ],
             "cover" => null,
-            "properties" => [],
+            "properties" => [
+                "Title" => [
+                    "id"    => "title",
+                    "name"  => "Title",
+                    "type"  => "title",
+                    "title" => [],
+                ],
+            ],
             "parent" => [
                 "type" => "page_id",
                 "page_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
