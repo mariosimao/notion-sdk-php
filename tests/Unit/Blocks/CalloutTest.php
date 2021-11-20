@@ -86,7 +86,9 @@ class CalloutTest extends TestCase
         $this->assertCount(2, $callout->text());
         $this->assertEmpty($callout->children());
         $this->assertEquals("Notion callouts rock!", $callout->toString());
-        $this->assertEquals("☀️", $callout->icon()->emoji());
+        if ($callout->iconIsEmoji()) {
+            $this->assertEquals("☀️", $callout->icon()->emoji());
+        }
         $this->assertFalse($callout->block()->archived());
 
         $this->assertEquals($callout, BlockFactory::fromArray($array));
@@ -270,23 +272,23 @@ class CalloutTest extends TestCase
 
     public function test_replace_children(): void
     {
-        $callout = Callout::fromString("☀️", "Simple callout.")->withChildren([
-            Callout::fromString("☀️", "Nested callout 1"),
-            Callout::fromString("☀️", "Nested callout 2"),
-        ]);
+        $nested1 = Callout::fromString("☀️", "Nested callout 1");
+        $nested2 = Callout::fromString("☀️", "Nested callout 2");
+        $callout = Callout::fromString("☀️", "Simple callout.")->withChildren([$nested1, $nested2]);
 
         $this->assertCount(2, $callout->children());
-        $this->assertEquals("Nested callout 1", $callout->children()[0]->toString());
-        $this->assertEquals("Nested callout 2", $callout->children()[1]->toString());
+        $this->assertEquals($nested1, $callout->children()[0]);
+        $this->assertEquals($nested2, $callout->children()[1]);
     }
 
     public function test_append_child(): void
     {
         $callout = Callout::fromString("☀️", "Simple callout.");
-        $callout = $callout->appendChild(Callout::fromString("☀️", "Nested callout"));
+        $nested = Callout::fromString("☀️", "Nested callout");
+        $callout = $callout->appendChild($nested);
 
         $this->assertCount(1, $callout->children());
-        $this->assertEquals("Nested callout", $callout->children()[0]->toString());
+        $this->assertEquals($nested, $callout->children()[0]);
     }
 
     public function test_replace_icon(): void
@@ -294,6 +296,8 @@ class CalloutTest extends TestCase
         $callout = Callout::fromString("☀️", "Simple callout.")
             ->withIcon(Emoji::create("🌙"));
 
-        $this->assertEquals("🌙", $callout->icon()->emoji());
+        if ($callout->iconIsEmoji()) {
+            $this->assertEquals("🌙", $callout->icon()->emoji());
+        }
     }
 }

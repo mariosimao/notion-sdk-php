@@ -103,7 +103,7 @@ class NumberedListItemTest extends TestCase
             ],
         ];
 
-        $item = NumberedListItem::fromArray($array);
+        NumberedListItem::fromArray($array);
     }
 
     public function test_transform_in_array(): void
@@ -169,22 +169,22 @@ class NumberedListItemTest extends TestCase
 
     public function test_replace_children(): void
     {
-        $item = NumberedListItem::fromString("Simple item.")->withChildren([
-            NumberedListItem::fromString("Nested item 1"),
-            NumberedListItem::fromString("Nested item 2"),
-        ]);
+        $nested1 = NumberedListItem::fromString("Nested item 1");
+        $nested2 = NumberedListItem::fromString("Nested item 2");
+        $item = NumberedListItem::fromString("Simple item.")->withChildren([ $nested1, $nested2 ]);
 
         $this->assertCount(2, $item->children());
-        $this->assertEquals("Nested item 1", $item->children()[0]->toString());
-        $this->assertEquals("Nested item 2", $item->children()[1]->toString());
+        $this->assertEquals($nested1, $item->children()[0]);
+        $this->assertEquals($nested2, $item->children()[1]);
     }
 
     public function test_append_child(): void
     {
         $item = NumberedListItem::fromString("Simple item.");
-        $item = $item->appendChild(NumberedListItem::fromString("Nested item"));
+        $nested = NumberedListItem::fromString("Nested item");
+        $item = $item->appendChild($nested);
 
         $this->assertCount(1, $item->children());
-        $this->assertEquals("Nested item", $item->children()[0]->toString());
+        $this->assertEquals($nested, $item->children()[0]);
     }
 }

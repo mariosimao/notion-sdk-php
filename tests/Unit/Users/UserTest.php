@@ -24,7 +24,7 @@ class UserTest extends TestCase
         $this->assertEquals("b0688871-85db-4637-8fc9-043a240fcaec", $user->id());
         $this->assertEquals("Mario Simao", $user->name());
         $this->assertEquals("person", $user->type());
-        $this->assertEquals("mariosimao@email.com", $user->person()->email());
+        $this->assertEquals("mariosimao@email.com", $user->person()?->email());
     }
 
     public function test_bot_from_array(): void

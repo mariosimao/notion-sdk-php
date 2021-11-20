@@ -13,7 +13,7 @@ class RichTextPropertyTest extends TestCase
     {
         $text = RichTextProperty::create("Dummy text");
 
-        $this->assertEquals("Dummy text", $text->text()[0]->text()->content());
+        $this->assertEquals("Dummy text", $text->text()[0]->text()?->content());
         $this->assertEquals("", $text->property()->id());
         $this->assertEquals("rich_text", $text->property()->type());
         $this->assertTrue($text->property()->isRichText());

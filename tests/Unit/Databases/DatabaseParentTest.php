@@ -48,6 +48,7 @@ class DatabaseParentTest extends TestCase
     public function test_invalid_type_array(): void
     {
         $this->expectException(\Exception::class);
+        /** @psalm-suppress InvalidArgument */
         DatabaseParent::fromArray([ "type" => "invalid-type" ]);
     }
 }

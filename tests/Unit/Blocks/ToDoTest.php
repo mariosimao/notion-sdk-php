@@ -174,23 +174,23 @@ class ToDoTest extends TestCase
 
     public function test_replace_children(): void
     {
-        $toDo = ToDo::fromString("Simple to do.")->withChildren([
-            ToDo::fromString("Nested to do 1"),
-            ToDo::fromString("Nested to do 2"),
-        ]);
+        $nested1 = ToDo::fromString("Nested to do 1");
+        $nested2 = ToDo::fromString("Nested to do 2");
+        $toDo = ToDo::fromString("Simple to do.")->withChildren([ $nested1, $nested2 ]);
 
         $this->assertCount(2, $toDo->children());
-        $this->assertEquals("Nested to do 1", $toDo->children()[0]->toString());
-        $this->assertEquals("Nested to do 2", $toDo->children()[1]->toString());
+        $this->assertEquals($nested1, $toDo->children()[0]);
+        $this->assertEquals($nested2, $toDo->children()[1]);
     }
 
     public function test_append_child(): void
     {
         $toDo = ToDo::fromString("Simple to do.");
-        $toDo = $toDo->appendChild(ToDo::fromString("Nested to do"));
+        $nested = ToDo::fromString("Nested to do");
+        $toDo = $toDo->appendChild($nested);
 
         $this->assertCount(1, $toDo->children());
-        $this->assertEquals("Nested to do", $toDo->children()[0]->toString());
+        $this->assertEquals($nested, $toDo->children()[0]);
     }
 
     public function test_check_item(): void

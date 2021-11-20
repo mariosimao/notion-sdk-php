@@ -169,22 +169,22 @@ class QuoteTest extends TestCase
 
     public function test_replace_children(): void
     {
-        $quote = Quote::fromString("Simple quote.")->withChildren([
-            Quote::fromString("Nested quote 1"),
-            Quote::fromString("Nested quote 2"),
-        ]);
+        $nested1 = Quote::fromString("Nested quote 1");
+        $nested2 = Quote::fromString("Nested quote 2");
+        $quote = Quote::fromString("Simple quote.")->withChildren([ $nested1, $nested2 ]);
 
         $this->assertCount(2, $quote->children());
-        $this->assertEquals("Nested quote 1", $quote->children()[0]->toString());
-        $this->assertEquals("Nested quote 2", $quote->children()[1]->toString());
+        $this->assertEquals($nested1, $quote->children()[0]);
+        $this->assertEquals($nested2, $quote->children()[1]);
     }
 
     public function test_append_child(): void
     {
         $quote = Quote::fromString("Simple quote.");
-        $quote = $quote->appendChild(Quote::fromString("Nested quote"));
+        $nested = Quote::fromString("Nested quote");
+        $quote = $quote->appendChild($nested);
 
         $this->assertCount(1, $quote->children());
-        $this->assertEquals("Nested quote", $quote->children()[0]->toString());
+        $this->assertEquals($nested, $quote->children()[0]);
     }
 }

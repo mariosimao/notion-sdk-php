@@ -38,7 +38,9 @@ class DatabaseTest extends TestCase
         $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
         $database = Database::create($parent)->withIcon(Emoji::create("⭐"));
 
-        $this->assertEquals("⭐", $database->icon()->emoji());
+        if ($database->iconIsEmoji()) {
+            $this->assertEquals("⭐", $database->icon()->emoji());
+        }
     }
 
     public function test_remove_icon(): void
@@ -84,6 +86,7 @@ class DatabaseTest extends TestCase
         $cover = FIle::createInternal("https://notion.so/image.png");
 
         $this->expectException(\Exception::class);
+        /** @psalm-suppress UnusedMethodCall */
         Database::create($parent)->withCover($cover);
     }
 
@@ -127,7 +130,7 @@ class DatabaseTest extends TestCase
                     "color"         => "default",
                 ],
                 "type" => "text",
-                "text" => [ "content" => "Database title", "link" => null ],
+                "text" => [ "content" => "Database title" ],
             ]],
             "icon" => null,
             "cover" => null,
@@ -181,7 +184,7 @@ class DatabaseTest extends TestCase
                     "color"         => "default",
                 ],
                 "type" => "text",
-                "text" => [ "content" => "Database title", "link" => null ],
+                "text" => [ "content" => "Database title" ],
             ]],
             "icon" => [
                 "type" => "emoji",
@@ -197,7 +200,9 @@ class DatabaseTest extends TestCase
         ];
         $database = Database::fromArray($array);
 
-        $this->assertEquals("⭐", $database->icon()->emoji());
+        if ($database->iconIsEmoji()) {
+            $this->assertEquals("⭐", $database->icon()->emoji());
+        }
     }
 
     public function test_from_array_with_file_icon(): void
@@ -218,7 +223,7 @@ class DatabaseTest extends TestCase
                     "color"         => "default",
                 ],
                 "type" => "text",
-                "text" => [ "content" => "Database title", "link" => null ],
+                "text" => [ "content" => "Database title" ],
             ]],
             "icon" => [
                 "type" => "external",
@@ -234,6 +239,8 @@ class DatabaseTest extends TestCase
         ];
         $database = Database::fromArray($array);
 
-        $this->assertEquals("https://my-site.com/image.png", $database->icon()->url());
+        if ($database->iconIsFile()) {
+            $this->assertEquals("https://my-site.com/image.png", $database->icon()->url());
+        }
     }
 }

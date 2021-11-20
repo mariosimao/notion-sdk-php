@@ -2,8 +2,6 @@
 
 namespace Notion\Test\Unit\Pages;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use Notion\Common\Date;
 use Notion\Common\Emoji;
 use Notion\Common\File;
@@ -28,7 +26,7 @@ class PageTest extends TestCase
         $parent = PageParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
         $page = Page::create($parent)->withTitle("Page title");
 
-        $this->assertEquals("Page title", $page->title()->toString());
+        $this->assertEquals("Page title", $page->title()?->toString());
     }
 
     public function test_add_icon(): void
@@ -36,7 +34,10 @@ class PageTest extends TestCase
         $parent = PageParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
         $page = Page::create($parent)->withIcon(Emoji::create("⭐"));
 
-        $this->assertEquals("⭐", $page->icon()->emoji());
+        if ($page->iconIsEmoji()) {
+            $this->assertEquals("⭐", $page->icon()->emoji());
+        }
+        $this->assertTrue($page->iconIsEmoji());
     }
 
     public function test_remove_icon(): void
@@ -98,6 +99,7 @@ class PageTest extends TestCase
         $cover = FIle::createInternal("https://notion.so/image.png");
 
         $this->expectException(\Exception::class);
+        /** @psalm-suppress UnusedMethodCall */
         Page::create($parent)->withCover($cover);
     }
 
@@ -186,7 +188,10 @@ class PageTest extends TestCase
         ];
         $page = Page::fromArray($array);
 
-        $this->assertEquals("⭐", $page->icon()->emoji());
+        if ($page->iconIsEmoji()) {
+            $this->assertEquals("⭐", $page->icon()->emoji());
+        }
+        $this->assertTrue($page->iconIsEmoji());
     }
 
     public function test_from_array_with_file_icon(): void
@@ -210,6 +215,9 @@ class PageTest extends TestCase
         ];
         $page = Page::fromArray($array);
 
-        $this->assertEquals("https://my-site.com/image.png", $page->icon()->url());
+        if ($page->iconIsFile()) {
+            $this->assertEquals("https://my-site.com/image.png", $page->icon()->url());
+        }
+        $this->assertTrue($page->iconIsFile());
     }
 }

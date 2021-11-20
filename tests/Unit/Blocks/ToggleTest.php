@@ -102,8 +102,7 @@ class ToggleTest extends TestCase
                 "children" => [],
             ],
         ];
-
-        $toggle = Toggle::fromArray($array);
+        Toggle::fromArray($array);
     }
 
     public function test_transform_in_array(): void
@@ -169,22 +168,22 @@ class ToggleTest extends TestCase
 
     public function test_replace_children(): void
     {
-        $toggle = Toggle::fromString("Simple toggle.")->withChildren([
-            Toggle::fromString("Nested toggle 1"),
-            Toggle::fromString("Nested toggle 2"),
-        ]);
+        $nested1 = Toggle::fromString("Nested toggle 1");
+        $nested2 = Toggle::fromString("Nested toggle 2");
+        $toggle = Toggle::fromString("Simple toggle.")->withChildren([ $nested1, $nested2 ]);
 
         $this->assertCount(2, $toggle->children());
-        $this->assertEquals("Nested toggle 1", $toggle->children()[0]->toString());
-        $this->assertEquals("Nested toggle 2", $toggle->children()[1]->toString());
+        $this->assertEquals($nested1, $toggle->children()[0]);
+        $this->assertEquals($nested2, $toggle->children()[1]);
     }
 
     public function test_append_child(): void
     {
         $toggle = Toggle::fromString("Simple toggle.");
-        $toggle = $toggle->appendChild(Toggle::fromString("Nested toggle"));
+        $nestedToggle = Toggle::fromString("Nested toggle");
+        $toggle = $toggle->appendChild($nestedToggle);
 
         $this->assertCount(1, $toggle->children());
-        $this->assertEquals("Nested toggle", $toggle->children()[0]->toString());
+        $this->assertEquals($nestedToggle, $toggle->children()[0]);
     }
 }

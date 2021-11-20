@@ -19,6 +19,9 @@ class DatabasesTest extends TestCase
     public function test_create_empty_database(): void
     {
         $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
         $client = Notion::create($token);
 
         $database = Database::create(DatabaseParent::page(self::DEFAULT_PARENT_ID))
@@ -30,7 +33,9 @@ class DatabasesTest extends TestCase
         $databaseFound = $client->databases()->find($database->id());
 
         $this->assertEquals("Empty database", $database->title()[0]->plainText());
-        $this->assertEquals("🌻", $databaseFound->icon()->emoji());
+        if ($databaseFound->iconIsEmoji()) {
+            $this->assertEquals("🌻", $databaseFound->icon()->emoji());
+        }
 
         $client->databases()->delete($database);
     }
@@ -38,6 +43,9 @@ class DatabasesTest extends TestCase
     public function test_find_database(): void
     {
         $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
         $client = Notion::create($token);
 
         $database = $client->databases()->find("a1acab7aeea2438bb0e9b23b73fb4a25");
@@ -48,6 +56,9 @@ class DatabasesTest extends TestCase
     public function test_update_database(): void
     {
         $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
         $client = Notion::create($token);
 
         $database = $client->databases()->find("a1acab7aeea2438bb0e9b23b73fb4a25");
@@ -68,6 +79,9 @@ class DatabasesTest extends TestCase
     public function test_find_inexistent_database(): void
     {
         $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
         $client = Notion::create($token);
 
         $this->expectException(NotionException::class);
@@ -78,6 +92,9 @@ class DatabasesTest extends TestCase
     public function test_create_with_inexistent_parent(): void
     {
         $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
         $client = Notion::create($token);
 
         $database = Database::create(DatabaseParent::page("60e79d42-4742-41ca-8d70-cc51660cbd3c"));
@@ -90,6 +107,9 @@ class DatabasesTest extends TestCase
     public function test_update_deleted_database(): void
     {
         $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
         $client = Notion::create($token);
 
         $database = Database::create(DatabaseParent::page(self::DEFAULT_PARENT_ID))
@@ -106,6 +126,9 @@ class DatabasesTest extends TestCase
     public function test_delete_database_twice(): void
     {
         $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
         $client = Notion::create($token);
 
         $database = Database::create(DatabaseParent::page(self::DEFAULT_PARENT_ID))

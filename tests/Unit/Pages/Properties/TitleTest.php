@@ -12,7 +12,7 @@ class TitleTest extends TestCase
     {
         $title = Title::create("Dummy title");
 
-        $this->assertEquals("Dummy title", $title->richTexts()[0]->text()->content());
+        $this->assertEquals("Dummy title", $title->richTexts()[0]->text()?->content());
         $this->assertEquals("title", $title->property()->id());
         $this->assertEquals("title", $title->property()->type());
         $this->assertTrue($title->property()->isTitle());
