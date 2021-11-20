@@ -10,6 +10,8 @@ use Notion\Common\RichText;
  * @psalm-type ChildPageJson = array{
  *      child_page: array{ title: string },
  * }
+ *
+ * @psalm-immutable
  */
 class ChildPage implements BlockInterface
 {
@@ -19,7 +21,8 @@ class ChildPage implements BlockInterface
 
     private string $pageTitle;
 
-    private function __construct(Block $block, string $pageTitle) {
+    private function __construct(Block $block, string $pageTitle)
+    {
         if (!$block->isChildPage()) {
             throw new \Exception("Block must be of type " . self::TYPE);
         }

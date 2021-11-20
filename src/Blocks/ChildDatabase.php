@@ -10,6 +10,8 @@ use Notion\Common\RichText;
  * @psalm-type ChildDatabaseJson = array{
  *      child_database: array{ title: string },
  * }
+ *
+ * @psalm-immutable
  */
 class ChildDatabase implements BlockInterface
 {
@@ -19,7 +21,8 @@ class ChildDatabase implements BlockInterface
 
     private string $databaseTitle;
 
-    private function __construct(Block $block, string $databaseTitle) {
+    private function __construct(Block $block, string $databaseTitle)
+    {
         if (!$block->isChildDatabase()) {
             throw new \Exception("Block must be of type " . self::TYPE);
         }

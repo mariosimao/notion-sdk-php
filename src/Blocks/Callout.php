@@ -15,11 +15,13 @@ use Notion\Common\RichText;
  *
  * @psalm-type CalloutJson = array{
  *      callout: array{
- *          text: RichTextJson[],
- *          children: array{ type: BlockJson },
+ *          text: list<RichTextJson>,
+ *          children: list<BlockJson>,
  *          icon: EmojiJson|FileJson,
  *      },
  * }
+ *
+ * @psalm-immutable
  */
 class Callout implements BlockInterface
 {
@@ -27,17 +29,17 @@ class Callout implements BlockInterface
 
     private Block $block;
 
-    /** @var \Notion\Common\RichText[] */
+    /** @var list<RichText> */
     private array $text;
 
     private Emoji|File $icon;
 
-    /** @var \Notion\Blocks\BlockInterface[] */
+    /** @var list<\Notion\Blocks\BlockInterface> */
     private array $children;
 
     /**
-     * @param \Notion\Common\RichText[] $text
-     * @param \Notion\Blocks\BlockInterface[] $children
+     * @param list<RichText> $text
+     * @param list<\Notion\Blocks\BlockInterface> $children
      */
     private function __construct(
         Block $block,
@@ -134,12 +136,32 @@ class Callout implements BlockInterface
         return $this->icon;
     }
 
+    /**
+     * @psalm-assert-if-true Emoji $this->icon
+     * @psalm-assert-if-true Emoji $this->icon()
+     */
+    public function iconIsEmoji(): bool
+    {
+        return $this->icon::class === Emoji::class;
+    }
+
+    /**
+     * @psalm-assert-if-true File $this->icon
+     * @psalm-assert-if-true File $this->icon()
+     */
+    public function iconIsFile(): bool
+    {
+        return $this->icon::class === File::class;
+    }
+
+    /** @return list<BlockInterface> */
     public function children(): array
     {
         return $this->children;
     }
 
-    public function withText(RichText ...$text): self
+    /** @param list<RichText> $text */
+    public function withText(array $text): self
     {
         return new self($this->block, $text, $this->icon, $this->children);
     }
@@ -157,7 +179,8 @@ class Callout implements BlockInterface
         return new self($this->block, $this->text, $icon, $this->children);
     }
 
-    public function withChildren(BlockInterface ...$children): self
+    /** @param list<BlockInterface> $children */
+    public function withChildren(array $children): self
     {
         $hasChildren = (count($children) > 0);
 

@@ -9,6 +9,8 @@ namespace Notion\Databases\Properties;
  *      type: "email",
  *      email: array<empty, empty>,
  * }
+ *
+ * @psalm-immutable
  */
 class Email implements PropertyInterface
 {

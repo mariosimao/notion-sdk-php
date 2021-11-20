@@ -13,9 +13,11 @@ use Notion\Common\RichText;
  * @psalm-type BookmarkJson = array{
  *      bookmark: array{
  *          url: string,
- *          caption: RichTextJson[],
+ *          caption: list<RichTextJson>,
  *      },
  * }
+ *
+ * @psalm-immutable
  */
 class Bookmark implements BlockInterface
 {
@@ -25,11 +27,12 @@ class Bookmark implements BlockInterface
 
     private string $url;
 
-    /** @var \Notion\Common\RichText[] */
+    /** @var list<RichText> */
     private array $caption;
 
-    /** @param \Notion\Common\RichText[] $caption */
-    private function __construct(Block $block, string $url, array $caption) {
+    /** @param list<RichText> $caption */
+    private function __construct(Block $block, string $url, array $caption)
+    {
         if (!$block->isBookmark()) {
             throw new \Exception("Block must be of type " . self::TYPE);
         }
@@ -91,7 +94,7 @@ class Bookmark implements BlockInterface
     /**
      * Get bookmark caption
      *
-     * @return \Notion\Common\RichText[]
+     * @return list<RichText>
      */
     public function caption(): array
     {
@@ -108,8 +111,10 @@ class Bookmark implements BlockInterface
 
     /**
      * Change bookmark caption
+     *
+     * @param list<RichText> $caption
      */
-    public function withCaption(RichText ...$caption): self
+    public function withCaption(array $caption): self
     {
         return new self($this->block, $this->url, $caption);
     }

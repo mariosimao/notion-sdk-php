@@ -9,6 +9,8 @@ namespace Notion\Databases\Properties;
  *      type: "formula",
  *      formula: array{ expression: string },
  * }
+ *
+ * @psalm-immutable
  */
 class Formula implements PropertyInterface
 {

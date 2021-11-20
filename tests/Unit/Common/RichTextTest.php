@@ -13,7 +13,7 @@ class RichTextTest extends TestCase
 
         $this->assertTrue($richText->isText());
         $this->assertEquals("text", $richText->type());
-        $this->assertEquals("Simple text", $richText->text()->content());
+        $this->assertEquals("Simple text", $richText->text()?->content());
     }
 
     public function test_create_equation(): void
@@ -22,7 +22,7 @@ class RichTextTest extends TestCase
 
         $this->assertTrue($richText->isEquation());
         $this->assertEquals("equation", $richText->type());
-        $this->assertEquals("a^2 + b^2 = c^2", $richText->equation()->expression());
+        $this->assertEquals("a^2 + b^2 = c^2", $richText->equation()?->expression());
     }
 
     public function test_change_to_bold(): void

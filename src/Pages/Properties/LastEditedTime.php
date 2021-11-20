@@ -11,6 +11,8 @@ use Notion\Common\Date;
  *      type: "last_edited_time",
  *      last_edited_time: string,
  * }
+ *
+ * @psalm-immutable
  */
 class LastEditedTime implements PropertyInterface
 {

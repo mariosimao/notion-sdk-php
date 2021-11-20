@@ -2,8 +2,6 @@
 
 namespace Notion\Users;
 
-use Assert\Assert;
-
 /**
  * @psalm-import-type PersonJson from Person
  * @psalm-import-type BotJson from Bot
@@ -16,6 +14,8 @@ use Assert\Assert;
  *     person?: PersonJson,
  *     bot?: BotJson,
  * }
+ *
+ * @psalm-immutable
  */
 class User
 {
@@ -51,16 +51,6 @@ class User
     /** @param UserJson $array */
     public static function fromArray(array $array): self
     {
-        Assert::that($array)->keyExists("id");
-        Assert::that($array)->keyExists("name");
-        Assert::that($array)->keyExists("avatar_url");
-        Assert::that($array)->keyExists("type");
-
-        Assert::that($array["id"])->string();
-        Assert::that($array["name"])->string();
-        Assert::that($array["avatar_url"])->nullOr()->string();
-        Assert::that($array["type"])->string();
-
         $person = array_key_exists("person", $array) ? Person::fromArray($array["person"]) : null;
         $bot = array_key_exists("bot", $array) ? Bot::fromArray($array["bot"]) : null;
 

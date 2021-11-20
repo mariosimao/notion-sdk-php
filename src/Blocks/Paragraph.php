@@ -10,10 +10,12 @@ use Notion\Common\RichText;
  *
  * @psalm-type ParagraphJson = array{
  *      paragraph: array{
- *          text: RichTextJson[],
- *          children: array{ type: BlockJson },
+ *          text: list<RichTextJson>,
+ *          children: list<BlockJson>,
  *      },
  * }
+ *
+ * @psalm-immutable
  */
 class Paragraph implements BlockInterface
 {
@@ -21,15 +23,15 @@ class Paragraph implements BlockInterface
 
     private Block $block;
 
-    /** @var \Notion\Common\RichText[] */
+    /** @var list<RichText> */
     private array $text;
 
-    /** @var \Notion\Blocks\BlockInterface[] */
+    /** @var list<\Notion\Blocks\BlockInterface> */
     private array $children;
 
     /**
-     * @param \Notion\Common\RichText[] $text
-     * @param \Notion\Blocks\BlockInterface[] $children
+     * @param list<RichText> $text
+     * @param list<\Notion\Blocks\BlockInterface> $children
      */
     private function __construct(
         Block $block,
@@ -107,12 +109,14 @@ class Paragraph implements BlockInterface
         return $this->text;
     }
 
+    /** @return list<BlockInterface> */
     public function children(): array
     {
         return $this->children;
     }
 
-    public function withText(RichText ...$text): self
+    /** @param list<RichText> $text */
+    public function withText(array $text): self
     {
         return new self($this->block, $text, $this->children);
     }
@@ -125,7 +129,8 @@ class Paragraph implements BlockInterface
         return new self($this->block, $texts, $this->children);
     }
 
-    public function withChildren(BlockInterface ...$children): self
+    /** @param list<BlockInterface> $children */
+    public function withChildren(array $children): self
     {
         $hasChildren = (count($children) > 0);
 

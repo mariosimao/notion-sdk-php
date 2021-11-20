@@ -21,6 +21,8 @@ use Notion\Common\RichText;
  *          },
  *      },
  * }
+ *
+ * @psalm-immutable
  */
 class Formula implements PropertyInterface
 {

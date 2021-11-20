@@ -43,7 +43,6 @@ class QuoteTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "Notion quotes ",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => false,
@@ -60,7 +59,6 @@ class QuoteTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "rock!",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => true,
@@ -124,7 +122,6 @@ class QuoteTest extends TestCase
                     "type"        => "text",
                     "text"        => [
                         "content" => "Simple quote",
-                        "link" => null,
                     ],
                     "annotations" => [
                         "bold"          => false,
@@ -146,10 +143,10 @@ class QuoteTest extends TestCase
     {
         $oldQuote = Quote::fromString("This is an old quote");
 
-        $newQuote = $oldQuote->withText(
+        $newQuote = $oldQuote->withText([
             RichText::createText("This is a "),
             RichText::createText("new quote"),
-        );
+        ]);
 
         $this->assertEquals("This is an old quote", $oldQuote->toString());
         $this->assertEquals("This is a new quote", $newQuote->toString());
@@ -169,22 +166,22 @@ class QuoteTest extends TestCase
 
     public function test_replace_children(): void
     {
-        $quote = Quote::fromString("Simple quote.")->withChildren(
-            Quote::fromString("Nested quote 1"),
-            Quote::fromString("Nested quote 2"),
-        );
+        $nested1 = Quote::fromString("Nested quote 1");
+        $nested2 = Quote::fromString("Nested quote 2");
+        $quote = Quote::fromString("Simple quote.")->withChildren([ $nested1, $nested2 ]);
 
         $this->assertCount(2, $quote->children());
-        $this->assertEquals("Nested quote 1", $quote->children()[0]->toString());
-        $this->assertEquals("Nested quote 2", $quote->children()[1]->toString());
+        $this->assertEquals($nested1, $quote->children()[0]);
+        $this->assertEquals($nested2, $quote->children()[1]);
     }
 
     public function test_append_child(): void
     {
         $quote = Quote::fromString("Simple quote.");
-        $quote = $quote->appendChild(Quote::fromString("Nested quote"));
+        $nested = Quote::fromString("Nested quote");
+        $quote = $quote->appendChild($nested);
 
         $this->assertCount(1, $quote->children());
-        $this->assertEquals("Nested quote", $quote->children()[0]->toString());
+        $this->assertEquals($nested, $quote->children()[0]);
     }
 }

@@ -9,6 +9,8 @@ use Notion\Common\File;
  * @psalm-import-type FileJson from \Notion\Common\File
  *
  * @psalm-type FileBlockJson = array{ file: FileJson }
+ *
+ * @psalm-immutable
  */
 class FileBlock implements BlockInterface
 {
@@ -18,7 +20,8 @@ class FileBlock implements BlockInterface
 
     private File $file;
 
-    private function __construct(Block $block, File $file) {
+    private function __construct(Block $block, File $file)
+    {
         if (!$block->isFile()) {
             throw new \Exception("Block must be of type " . self::TYPE);
         }

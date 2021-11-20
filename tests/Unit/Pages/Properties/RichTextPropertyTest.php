@@ -13,7 +13,7 @@ class RichTextPropertyTest extends TestCase
     {
         $text = RichTextProperty::create("Dummy text");
 
-        $this->assertEquals("Dummy text", $text->text()[0]->text()->content());
+        $this->assertEquals("Dummy text", $text->text()[0]->text()?->content());
         $this->assertEquals("", $text->property()->id());
         $this->assertEquals("rich_text", $text->property()->type());
         $this->assertTrue($text->property()->isRichText());
@@ -38,7 +38,6 @@ class RichTextPropertyTest extends TestCase
                 "type" => "text",
                 "text" => [
                     "content" => "Dummy text",
-                    "link"    => null,
                 ],
             ]],
         ];
@@ -58,9 +57,9 @@ class RichTextPropertyTest extends TestCase
 
     public function test_change_text(): void
     {
-        $text = RichTextProperty::create("")->withText(
+        $text = RichTextProperty::create("")->withText([
             RichText::createText("Dummy text")
-        );
+        ]);
         $this->assertEquals("Dummy text", $text->toString());
     }
 }

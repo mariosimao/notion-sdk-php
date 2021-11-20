@@ -42,7 +42,6 @@ class Heading2Test extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "Notion headings ",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => false,
@@ -59,7 +58,6 @@ class Heading2Test extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "rock!",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => true,
@@ -121,7 +119,6 @@ class Heading2Test extends TestCase
                     "type"        => "text",
                     "text"        => [
                         "content" => "Simple heading",
-                        "link" => null,
                     ],
                     "annotations" => [
                         "bold"          => false,
@@ -142,10 +139,10 @@ class Heading2Test extends TestCase
     {
         $oldHeading = Heading2::fromString("This is an old heading");
 
-        $newHeading = $oldHeading->withText(
+        $newHeading = $oldHeading->withText([
             RichText::createText("This is a "),
             RichText::createText("new heading"),
-        );
+        ]);
 
         $this->assertEquals("This is an old heading", $oldHeading->toString());
         $this->assertEquals("This is a new heading", $newHeading->toString());

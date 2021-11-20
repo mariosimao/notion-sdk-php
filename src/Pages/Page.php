@@ -27,6 +27,8 @@ use Notion\Pages\Properties\Title;
  *      parent: PageParentJson,
  *      url: string,
  * }
+ *
+ * @psalm-immutable
  */
 class Page
 {
@@ -161,6 +163,33 @@ class Page
     public function icon(): Emoji|File|null
     {
         return $this->icon;
+    }
+
+    /**
+     * @psalm-assert-if-true Emoji $this->icon
+     * @psalm-assert-if-true Emoji $this->icon()
+     */
+    public function iconIsEmoji(): bool
+    {
+        return $this->icon::class === Emoji::class;
+    }
+
+    /**
+     * @psalm-assert-if-true File $this->icon
+     * @psalm-assert-if-true File $this->icon()
+     */
+    public function iconIsFile(): bool
+    {
+        return $this->icon::class === File::class;
+    }
+
+    /**
+     * @psalm-assert-if-false null $this->icon
+     * @psalm-assert-if-false null $this->icon()
+     */
+    public function hasIcon(): bool
+    {
+        return $this->icon !== null;
     }
 
     public function cover(): File|null
@@ -310,7 +339,8 @@ class Page
 
     public function withTitle(string $title): self
     {
-        return $this->withAddedProperty("title", Title::create($title));
+        $property = Title::create($title);
+        return $this->withAddedProperty("title", $property);
     }
 
     public function title(): Title|null

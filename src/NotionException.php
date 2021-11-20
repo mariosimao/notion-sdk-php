@@ -15,7 +15,8 @@ class NotionException extends \Exception
         parent::__construct($message);
     }
 
-    public function errorCode(): string {
+    public function errorCode(): string
+    {
         return $this->errorCode;
     }
 }

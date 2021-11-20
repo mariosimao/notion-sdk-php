@@ -20,10 +20,10 @@ class SelectTest extends TestCase
 
     public function test_replace_options(): void
     {
-        $select = Select::create()->withOptions(
+        $select = Select::create()->withOptions([
             SelectOption::create("Option A"),
             SelectOption::create("Option B"),
-        );
+        ]);
 
         $this->assertCount(2, $select->options());
     }

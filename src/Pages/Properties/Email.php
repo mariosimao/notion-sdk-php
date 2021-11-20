@@ -8,6 +8,8 @@ namespace Notion\Pages\Properties;
  *      type: "email",
  *      email: string,
  * }
+ *
+ * @psalm-immutable
  */
 class Email implements PropertyInterface
 {

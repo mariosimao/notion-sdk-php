@@ -35,7 +35,7 @@ class FileTest extends TestCase
             "type" => "file",
             "file" => [
                 "url" => "https://notion.so/image.png",
-                "expiry_time" => null,
+                "expiry_time" => "2020-12-08T12:00:00.000000Z",
             ],
         ];
         $file = File::fromArray($array);

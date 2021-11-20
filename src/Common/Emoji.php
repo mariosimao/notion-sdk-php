@@ -2,7 +2,11 @@
 
 namespace Notion\Common;
 
-/** @psalm-type EmojiJson = array{ type: "emoji", emoji: string } */
+/**
+ * @psalm-type EmojiJson = array{ type: "emoji", emoji: string }
+ *
+ * @psalm-immutable
+ */
 class Emoji
 {
     private string $emoji;

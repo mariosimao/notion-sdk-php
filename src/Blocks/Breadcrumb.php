@@ -5,21 +5,21 @@ namespace Notion\Blocks;
 /**
  * @psalm-import-type BlockJson from Block
  *
- * @psalm-type TableOfContentsJson = array{
- *      table_of_contents: array<empty, empty>
+ * @psalm-type BreadcrumbJson = array{
+ *      breadcrumb: array<empty, empty>
  * }
  *
  * @psalm-immutable
  */
-class TableOfContents implements BlockInterface
+class Breadcrumb implements BlockInterface
 {
-    private const TYPE = Block::TYPE_TABLE_OF_CONTENTS;
+    private const TYPE = Block::TYPE_BREADCRUMB;
 
     private Block $block;
 
     private function __construct(Block $block)
     {
-        if (!$block->isTableOfContents()) {
+        if (!$block->isBreadcrumb()) {
             throw new \Exception("Block must be of type " . self::TYPE);
         }
 

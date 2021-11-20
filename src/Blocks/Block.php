@@ -14,6 +14,8 @@ use Notion\Common\Date;
  *      archived: bool,
  *      has_children: bool,
  * }
+ *
+ * @psalm-immutable
  */
 class Block
 {
@@ -39,6 +41,7 @@ class Block
     public const TYPE_EQUATION = "equation";
     public const TYPE_DIVIDER = "divider";
     public const TYPE_TABLE_OF_CONTENTS = "table_of_contents";
+    public const TYPE_BREADCRUMB = "breadcrumb";
 
     private string $id;
     private DateTimeImmutable $createdTime;
@@ -63,7 +66,8 @@ class Block
         $this->type = $type;
     }
 
-    public static function create(string $type): self {
+    public static function create(string $type): self
+    {
         $now = new DateTimeImmutable("now");
 
         return new self("", $now, $now, false, false, $type);
@@ -249,5 +253,10 @@ class Block
     public function isTableOfContents(): bool
     {
         return $this->type === self::TYPE_TABLE_OF_CONTENTS;
+    }
+
+    public function isBreadcrumb(): bool
+    {
+        return $this->type === self::TYPE_BREADCRUMB;
     }
 }

@@ -11,6 +11,8 @@ use Notion\Common\Date;
  *      type: "created_time",
  *      created_time: string,
  * }
+ *
+ * @psalm-immutable
  */
 class CreatedTime implements PropertyInterface
 {

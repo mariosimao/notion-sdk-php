@@ -2,7 +2,7 @@
 
 namespace Notion\Test\Integration;
 
-use Notion\Client;
+use Notion\Notion;
 use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
@@ -11,7 +11,11 @@ class UsersTest extends TestCase
     public function test_find_current_user(): void
     {
         $token = getenv("NOTION_TOKEN");
-        $client = Client::create($token);
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
+
+        $client = Notion::create($token);
 
         $user = $client->users()->me();
         $sameUser = $client->users()->find($user->id());
@@ -23,7 +27,10 @@ class UsersTest extends TestCase
     public function test_find_all_users(): void
     {
         $token = getenv("NOTION_TOKEN");
-        $client = Client::create($token);
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
+        $client = Notion::create($token);
 
         $users = $client->users()->findAll();
 
@@ -35,7 +42,10 @@ class UsersTest extends TestCase
     public function test_find_inexistent_user(): void
     {
         $token = getenv("NOTION_TOKEN");
-        $client = Client::create($token);
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
+        $client = Notion::create($token);
 
         $this->expectException(NotionException::class);
         $this->expectExceptionMessage(

@@ -12,7 +12,7 @@ class TitleTest extends TestCase
     {
         $title = Title::create("Dummy title");
 
-        $this->assertEquals("Dummy title", $title->richTexts()[0]->text()->content());
+        $this->assertEquals("Dummy title", $title->richTexts()[0]->text()?->content());
         $this->assertEquals("title", $title->property()->id());
         $this->assertEquals("title", $title->property()->type());
         $this->assertTrue($title->property()->isTitle());
@@ -37,7 +37,6 @@ class TitleTest extends TestCase
                 "type" => "text",
                 "text" => [
                     "content" => "Dummy title",
-                    "link"    => null,
                 ],
             ]],
         ];
@@ -54,9 +53,9 @@ class TitleTest extends TestCase
 
     public function test_change_text(): void
     {
-        $title = Title::create("")->withRichTexts(
+        $title = Title::create("")->withRichTexts([
             RichText::createText("Dummy title")
-        );
+        ]);
         $this->assertEquals("Dummy title", $title->toString());
     }
 }

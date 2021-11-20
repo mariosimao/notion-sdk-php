@@ -4,6 +4,8 @@ namespace Notion\Users;
 
 /**
  * @psalm-type PersonJson = array{email: string}
+ *
+ * @psalm-immutable
  */
 class Person
 {

@@ -9,6 +9,8 @@ namespace Notion\Databases\Properties;
  *      type: "people",
  *      people: array<empty, empty>,
  * }
+ *
+ * @psalm-immutable
  */
 class People implements PropertyInterface
 {

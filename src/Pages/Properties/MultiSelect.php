@@ -8,8 +8,10 @@ namespace Notion\Pages\Properties;
  * @psalm-type MultiSelectJson = array{
  *      id: string,
  *      type: "multi_select",
- *      multi_select: OptionJson[],
+ *      multi_select: list<OptionJson>,
  * }
+ *
+ * @psalm-immutable
  */
 class MultiSelect implements PropertyInterface
 {
@@ -17,17 +19,18 @@ class MultiSelect implements PropertyInterface
 
     private Property $property;
 
-    /** @var Option[] */
+    /** @var list<Option> */
     private array $options;
 
-    /** @param Option[] $options */
+    /** @param list<Option> $options */
     private function __construct(Property $property, array $options)
     {
         $this->property = $property;
         $this->options = $options;
     }
 
-    public static function fromIds(string ...$ids): self
+    /** @param list<non-empty-string> $ids */
+    public static function fromIds(array $ids): self
     {
         $property = Property::create("", self::TYPE);
         $options = array_map(fn(string $id) => Option::fromId($id), $ids);
@@ -35,7 +38,8 @@ class MultiSelect implements PropertyInterface
         return new self($property, $options);
     }
 
-    public static function fromNames(string ...$names): self
+    /** @param list<non-empty-string> $names */
+    public static function fromNames(array $names): self
     {
         $property = Property::create("", self::TYPE);
         $options = array_map(fn(string $name) => Option::fromName($name), $names);
@@ -66,7 +70,7 @@ class MultiSelect implements PropertyInterface
         return $this->property;
     }
 
-    /** @return Option[] */
+    /** @return list<Option> */
     public function options(): array
     {
         return $this->options;

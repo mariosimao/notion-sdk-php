@@ -10,8 +10,10 @@ use Notion\Users\User;
  * @psalm-type PeopleJson = array{
  *      id: string,
  *      type: "people",
- *      people: UserJson[],
+ *      people: list<UserJson>,
  * }
+ *
+ * @psalm-immutable
  */
 class People implements PropertyInterface
 {
@@ -19,20 +21,22 @@ class People implements PropertyInterface
 
     private Property $property;
 
-    /** @var User[] */
+    /** @var list<User> */
     private array $users;
 
-    private function __construct(Property $property, User ...$users)
+    /** @param list<User> $users */
+    private function __construct(Property $property, array $users)
     {
         $this->property = $property;
         $this->users = $users;
     }
 
-    public static function create(User ...$users): self
+    /** @param list<User> $users */
+    public static function create(array $users): self
     {
         $property = Property::create("", self::TYPE);
 
-        return new self($property, ...$users);
+        return new self($property, $users);
     }
 
     public static function fromArray(array $array): self
@@ -48,7 +52,7 @@ class People implements PropertyInterface
             $array[self::TYPE],
         );
 
-        return new self($property, ...$users);
+        return new self($property, $users);
     }
 
     public function toArray(): array
@@ -70,15 +74,16 @@ class People implements PropertyInterface
         return $this->property;
     }
 
-    /** @return User[] */
+    /** @return list<User> */
     public function users(): array
     {
         return $this->users;
     }
 
-    public function withPeople(User ...$users): self
+    /** @param list<User> $users */
+    public function withPeople(array $users): self
     {
-        return new self($this->property, ...$users);
+        return new self($this->property, $users);
     }
 
     public function addPerson(User $user): self
@@ -86,6 +91,6 @@ class People implements PropertyInterface
         $users = $this->users;
         $users[] = $user;
 
-        return new self($this->property, ...$users);
+        return new self($this->property, $users);
     }
 }

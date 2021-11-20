@@ -13,7 +13,7 @@ class BlockFactory
     {
         $type = $array["type"];
 
-        return match($type) {
+        return match ($type) {
             Block::TYPE_PARAGRAPH          => Paragraph::fromArray($array),
             Block::TYPE_HEADING_1          => Heading1::fromArray($array),
             Block::TYPE_HEADING_2          => Heading2::fromArray($array),
@@ -36,6 +36,7 @@ class BlockFactory
             Block::TYPE_EQUATION           => EquationBlock::fromArray($array),
             Block::TYPE_DIVIDER            => Divider::fromArray($array),
             Block::TYPE_TABLE_OF_CONTENTS  => TableOfContents::fromArray($array),
+            Block::TYPE_BREADCRUMB         => Breadcrumb::fromArray($array),
             default => throw new Exception("Invalid block type '{$type}'"),
         };
     }

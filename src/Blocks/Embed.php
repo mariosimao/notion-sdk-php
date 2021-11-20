@@ -10,6 +10,8 @@ use Notion\Common\RichText;
  * @psalm-type EmbedJson = array{
  *      embed: array{ url: string },
  * }
+ *
+ * @psalm-immutable
  */
 class Embed implements BlockInterface
 {
@@ -19,7 +21,8 @@ class Embed implements BlockInterface
 
     private string $url;
 
-    private function __construct(Block $block, string $url) {
+    private function __construct(Block $block, string $url)
+    {
         if (!$block->isEmbed()) {
             throw new \Exception("Block must be of type " . self::TYPE);
         }

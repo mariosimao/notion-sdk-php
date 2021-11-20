@@ -36,7 +36,6 @@ class CodeTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "<?php\necho 'Hello World!';",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => false,
@@ -98,7 +97,6 @@ class CodeTest extends TestCase
                     "type"        => "text",
                     "text"        => [
                         "content" => "<?php\necho 'Hello World!';",
-                        "link" => null,
                     ],
                     "annotations" => [
                         "bold"          => false,
@@ -119,10 +117,10 @@ class CodeTest extends TestCase
     {
         $oldHeading = Code::create("This is an old code");
 
-        $newHeading = $oldHeading->withText(
+        $newHeading = $oldHeading->withText([
             RichText::createText("This is a "),
             RichText::createText("new code"),
-        );
+        ]);
 
         $this->assertEquals("This is an old code", $oldHeading->toString());
         $this->assertEquals("This is a new code", $newHeading->toString());
