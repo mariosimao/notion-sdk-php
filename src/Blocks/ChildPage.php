@@ -10,6 +10,8 @@ use Notion\Common\RichText;
  * @psalm-type ChildPageJson = array{
  *      child_page: array{ title: string },
  * }
+ *
+ * @psalm-immutable
  */
 class ChildPage implements BlockInterface
 {

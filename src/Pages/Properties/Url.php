@@ -8,6 +8,8 @@ namespace Notion\Pages\Properties;
  *      type: "url",
  *      url: string,
  * }
+ *
+ * @psalm-immutable
  */
 class Url implements PropertyInterface
 {

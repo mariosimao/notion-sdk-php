@@ -11,6 +11,8 @@ use Notion\Common\Equation;
  * @psalm-type EquationBlockJson = array{
  *      equation: EquationJson,
  * }
+ *
+ * @psalm-immutable
  */
 class EquationBlock implements BlockInterface
 {

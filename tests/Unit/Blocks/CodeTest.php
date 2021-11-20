@@ -36,7 +36,6 @@ class CodeTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "<?php\necho 'Hello World!';",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => false,
@@ -98,7 +97,6 @@ class CodeTest extends TestCase
                     "type"        => "text",
                     "text"        => [
                         "content" => "<?php\necho 'Hello World!';",
-                        "link" => null,
                     ],
                     "annotations" => [
                         "bold"          => false,

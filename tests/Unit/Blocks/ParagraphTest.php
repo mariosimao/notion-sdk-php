@@ -43,7 +43,6 @@ class ParagraphTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "Notion paragraphs ",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => false,
@@ -60,7 +59,6 @@ class ParagraphTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "rock!",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => true,
@@ -102,8 +100,7 @@ class ParagraphTest extends TestCase
                 "children" => [],
             ],
         ];
-
-        $paragraph = Paragraph::fromArray($array);
+        Paragraph::fromArray($array);
     }
 
     public function test_transform_in_array(): void
@@ -124,7 +121,6 @@ class ParagraphTest extends TestCase
                     "type"        => "text",
                     "text"        => [
                         "content" => "Simple paragraph",
-                        "link" => null,
                     ],
                     "annotations" => [
                         "bold"          => false,
@@ -169,22 +165,24 @@ class ParagraphTest extends TestCase
 
     public function test_replace_children(): void
     {
+        $nested1 = Paragraph::fromString("Nested paragraph 1");
+        $nested2 = Paragraph::fromString("Nested paragraph 2");
         $paragraph = Paragraph::fromString("Simple paragraph.")->withChildren([
-            Paragraph::fromString("Nested paragraph 1"),
-            Paragraph::fromString("Nested paragraph 2"),
+            $nested1, $nested2
         ]);
 
         $this->assertCount(2, $paragraph->children());
-        $this->assertEquals("Nested paragraph 1", $paragraph->children()[0]->toString());
-        $this->assertEquals("Nested paragraph 2", $paragraph->children()[1]->toString());
+        $this->assertEquals($nested1, $paragraph->children()[0]);
+        $this->assertEquals($nested2, $paragraph->children()[1]);
     }
 
     public function test_append_child(): void
     {
         $paragraph = Paragraph::fromString("Simple paragraph.");
-        $paragraph = $paragraph->appendChild(Paragraph::fromString("Nested paragraph"));
+        $nested = Paragraph::fromString("Nested paragraph");
+        $paragraph = $paragraph->appendChild($nested);
 
         $this->assertCount(1, $paragraph->children());
-        $this->assertEquals("Nested paragraph", $paragraph->children()[0]->toString());
+        $this->assertEquals($nested, $paragraph->children()[0]);
     }
 }

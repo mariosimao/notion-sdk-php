@@ -8,6 +8,8 @@ namespace Notion\Pages\Properties;
  *      name?: string,
  *      color: string
  * }
+ *
+ * @psalm-immutable
  */
 class Option
 {

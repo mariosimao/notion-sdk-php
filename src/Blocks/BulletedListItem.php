@@ -16,6 +16,8 @@ use Notion\Common\RichText;
  *          children: list<BlockJson>,
  *      },
  * }
+ *
+ * @psalm-immutable
  */
 class BulletedListItem implements BlockInterface
 {

@@ -5,7 +5,9 @@ namespace Notion\Common;
 use DateTimeImmutable;
 
 /**
- * @psalm-type DateJson = array{ start: string, end?: string }
+ * @psalm-type DateJson = array{ start: string, end?: string|null }
+ *
+ * @psalm-immutable
  */
 class Date
 {

@@ -4,6 +4,8 @@ namespace Notion\Pages\Properties;
 
 /**
  * @psalm-type PropertyJson = array{ id: string, type: string }
+ *
+ * @psalm-immutable
  */
 class Property
 {
@@ -38,6 +40,7 @@ class Property
         $this->type = $type;
     }
 
+    /** @psalm-mutation-free */
     public static function create(string $id, string $type): self
     {
         return new self($id, $type);

@@ -9,6 +9,8 @@ namespace Notion\Databases\Properties;
  *      type: "created_time",
  *      created_time: array<empty, empty>,
  * }
+ *
+ * @psalm-immutable
  */
 class CreatedTime implements PropertyInterface
 {

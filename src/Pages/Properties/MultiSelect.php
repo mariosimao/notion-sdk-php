@@ -10,6 +10,8 @@ namespace Notion\Pages\Properties;
  *      type: "multi_select",
  *      multi_select: list<OptionJson>,
  * }
+ *
+ * @psalm-immutable
  */
 class MultiSelect implements PropertyInterface
 {

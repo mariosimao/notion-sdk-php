@@ -8,6 +8,8 @@ namespace Notion\Pages\Properties;
  *      type: "select",
  *      select: array{ id: string, name: string, color: string }
  * }
+ *
+ * @psalm-immutable
  */
 class Select implements PropertyInterface
 {

@@ -10,6 +10,8 @@ use Notion\Common\RichText;
  *      type: "number",
  *      number: int|float,
  * }
+ *
+ * @psalm-immutable
  */
 class Number implements PropertyInterface
 {

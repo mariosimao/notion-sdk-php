@@ -13,6 +13,8 @@ use Notion\Common\RichText;
  *          text: list<RichTextJson>,
  *      },
  * }
+ *
+ * @psalm-immutable
  */
 class Heading3 implements BlockInterface
 {

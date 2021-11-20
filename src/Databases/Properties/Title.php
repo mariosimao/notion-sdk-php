@@ -9,6 +9,8 @@ namespace Notion\Databases\Properties;
  *      type: "title",
  *      title: array<empty, empty>,
  * }
+ *
+ * @psalm-immutable
  */
 class Title implements PropertyInterface
 {

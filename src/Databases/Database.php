@@ -30,6 +30,8 @@ use Notion\NotionException;
  *      parent: DatabaseParentJson,
  *      url: string,
  * }
+ *
+ * @psalm-immutable
  */
 class Database
 {
@@ -64,6 +66,10 @@ class Database
             throw new \Exception("Internal cover image is not supported");
         }
 
+        if (!$this->hasTitleProperty($properties)) {
+            throw new NotionException("A database must have a title property", "validation_error");
+        }
+
         $this->id = $id;
         $this->createdTime = $createdTime;
         $this->lastEditedTime = $lastEditedTime;
@@ -91,7 +97,6 @@ class Database
             ""
         );
     }
-
 
     /**
      * @param DatabaseJson $array
@@ -185,6 +190,33 @@ class Database
     public function icon(): Emoji|File|null
     {
         return $this->icon;
+    }
+
+    /**
+     * @psalm-assert-if-true Emoji $this->icon
+     * @psalm-assert-if-true Emoji $this->icon()
+     */
+    public function iconIsEmoji(): bool
+    {
+        return $this->icon::class === Emoji::class;
+    }
+
+    /**
+     * @psalm-assert-if-true File $this->icon
+     * @psalm-assert-if-true File $this->icon()
+     */
+    public function iconIsFile(): bool
+    {
+        return $this->icon::class === File::class;
+    }
+
+    /**
+     * @psalm-assert-if-false null $this->icon
+     * @psalm-assert-if-false null $this->icon()
+     */
+    public function hasIcon(): bool
+    {
+        return $this->icon !== null;
     }
 
     public function cover(): File|null
@@ -306,8 +338,6 @@ class Database
     /** @param array<string, PropertyInterface> $properties */
     public function withProperties(array $properties): self
     {
-        $this->checkTitleProperty($properties);
-
         return new self(
             $this->id,
             $this->createdTime,
@@ -337,14 +367,14 @@ class Database
     }
 
     /** @param array<string, PropertyInterface> $properties */
-    private function checkTitleProperty(array $properties): void
+    private function hasTitleProperty(array $properties): bool
     {
         foreach ($properties as $property) {
             if ($property instanceof Title) {
-                return;
+                return true;
             }
         }
 
-        throw new NotionException("A database must have a title property", "validation_error");
+        return false;
     }
 }

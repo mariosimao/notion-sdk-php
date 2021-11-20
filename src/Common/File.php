@@ -10,6 +10,8 @@ use DateTimeImmutable;
  *      file?: array{ url: string, expiry_time: string },
  *      external?: array{ url: string },
  * }
+ *
+ * @psalm-immutable
  */
 class File
 {

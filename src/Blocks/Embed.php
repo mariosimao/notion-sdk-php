@@ -10,6 +10,8 @@ use Notion\Common\RichText;
  * @psalm-type EmbedJson = array{
  *      embed: array{ url: string },
  * }
+ *
+ * @psalm-immutable
  */
 class Embed implements BlockInterface
 {

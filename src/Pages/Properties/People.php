@@ -12,6 +12,8 @@ use Notion\Users\User;
  *      type: "people",
  *      people: list<UserJson>,
  * }
+ *
+ * @psalm-immutable
  */
 class People implements PropertyInterface
 {

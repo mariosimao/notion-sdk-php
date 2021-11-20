@@ -9,6 +9,8 @@ use Notion\Common\File;
  * @psalm-import-type FileJson from \Notion\Common\File
  *
  * @psalm-type PdfJson = array{ pdf: FileJson }
+ *
+ * @psalm-immutable
  */
 class Pdf implements BlockInterface
 {

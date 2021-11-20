@@ -15,6 +15,8 @@ use Notion\Common\RichText;
  *          children: list<BlockJson>,
  *      },
  * }
+ *
+ * @psalm-immutable
  */
 class ToDo implements BlockInterface
 {
@@ -120,6 +122,7 @@ class ToDo implements BlockInterface
         return $this->checked;
     }
 
+    /** @return list<BlockInterface> */
     public function children(): array
     {
         return $this->children;

@@ -9,6 +9,8 @@ use Notion\Common\File;
  * @psalm-import-type FileJson from \Notion\Common\File
  *
  * @psalm-type VideoJson = array{ video: FileJson }
+ *
+ * @psalm-immutable
  */
 class Video implements BlockInterface
 {

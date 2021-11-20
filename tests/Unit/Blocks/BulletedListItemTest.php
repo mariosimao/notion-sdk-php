@@ -43,7 +43,6 @@ class BulletedListItemTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "Notion items ",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => false,
@@ -60,7 +59,6 @@ class BulletedListItemTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "rock!",
-                            "link" => null,
                         ],
                         "annotations" => [
                             "bold"          => true,
@@ -103,7 +101,7 @@ class BulletedListItemTest extends TestCase
             ],
         ];
 
-        $item = BulletedListItem::fromArray($array);
+        BulletedListItem::fromArray($array);
     }
 
     public function test_transform_in_array(): void
@@ -124,7 +122,6 @@ class BulletedListItemTest extends TestCase
                     "type"        => "text",
                     "text"        => [
                         "content" => "Simple item",
-                        "link" => null,
                     ],
                     "annotations" => [
                         "bold"          => false,
@@ -169,22 +166,22 @@ class BulletedListItemTest extends TestCase
 
     public function test_replace_children(): void
     {
-        $item = BulletedListItem::fromString("Simple item.")->withChildren([
-            BulletedListItem::fromString("Nested item 1"),
-            BulletedListItem::fromString("Nested item 2"),
-        ]);
+        $nested1 = BulletedListItem::fromString("Nested item 1");
+        $nested2 = BulletedListItem::fromString("Nested item 2");
+        $item = BulletedListItem::fromString("Simple item.")->withChildren([ $nested1, $nested2 ]);
 
         $this->assertCount(2, $item->children());
-        $this->assertEquals("Nested item 1", $item->children()[0]->toString());
-        $this->assertEquals("Nested item 2", $item->children()[1]->toString());
+        $this->assertEquals($nested1, $item->children()[0]);
+        $this->assertEquals($nested2, $item->children()[1]);
     }
 
     public function test_append_child(): void
     {
         $item = BulletedListItem::fromString("Simple item.");
-        $item = $item->appendChild(BulletedListItem::fromString("Nested item"));
+        $nested = BulletedListItem::fromString("Nested item");
+        $item = $item->appendChild($nested);
 
         $this->assertCount(1, $item->children());
-        $this->assertEquals("Nested item", $item->children()[0]->toString());
+        $this->assertEquals($nested, $item->children()[0]);
     }
 }

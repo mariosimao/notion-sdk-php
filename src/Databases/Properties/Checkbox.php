@@ -9,6 +9,8 @@ namespace Notion\Databases\Properties;
  *      type: "checkbox",
  *      checkbox: array<empty, empty>,
  * }
+ *
+ * @psalm-immutable
  */
 class Checkbox implements PropertyInterface
 {

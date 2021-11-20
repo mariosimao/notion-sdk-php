@@ -30,7 +30,8 @@
         "vimeo/psalm": "^4.10",
         "phpunit/phpunit": "^9.5",
         "guzzlehttp/guzzle": "^7.4",
-        "squizlabs/php_codesniffer": "^3.6"
+        "squizlabs/php_codesniffer": "^3.6",
+        "psalm/plugin-phpunit": "^0.16.1"
     },
     "scripts": {
         "ci-test": "phpunit --coverage-clover dist/phpunit/clover.xml",

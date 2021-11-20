@@ -67,6 +67,7 @@ class PageParentTest extends TestCase
     public function test_invalid_type_array(): void
     {
         $this->expectException(\Exception::class);
+        /** @psalm-suppress InvalidArgument */
         PageParent::fromArray([ "type" => "invalid-type" ]);
     }
 }

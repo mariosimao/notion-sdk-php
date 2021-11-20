@@ -15,6 +15,8 @@ use Notion\Common\RichText;
  *          end?: string,
  *      },
  * }
+ *
+ * @psalm-immutable
  */
 class Date implements PropertyInterface
 {

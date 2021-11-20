@@ -8,6 +8,8 @@ namespace Notion\Pages\Properties;
  *      type: "relation",
  *      relation: list<array{ id: non-empty-string }>,
  * }
+ *
+ * @psalm-immutable
  */
 class Relation implements PropertyInterface
 {

@@ -4,6 +4,8 @@ namespace Notion\Users;
 
 /**
  * @psalm-type BotJson = array<empty, empty>
+ *
+ * @psalm-immutable
  */
 class Bot
 {

@@ -11,6 +11,10 @@ class UsersTest extends TestCase
     public function test_find_current_user(): void
     {
         $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
+
         $client = Notion::create($token);
 
         $user = $client->users()->me();
@@ -23,6 +27,9 @@ class UsersTest extends TestCase
     public function test_find_all_users(): void
     {
         $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
         $client = Notion::create($token);
 
         $users = $client->users()->findAll();
@@ -35,6 +42,9 @@ class UsersTest extends TestCase
     public function test_find_inexistent_user(): void
     {
         $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
         $client = Notion::create($token);
 
         $this->expectException(NotionException::class);

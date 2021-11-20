@@ -60,10 +60,4 @@ class AnnotationsTest extends TestCase
 
         $this->assertEquals("red", $annotations->color());
     }
-
-    public function test_change_unsupported_color(): void
-    {
-        $this->expectException(\Exception::class);
-        Annotations::create()->withColor("not-a-color");
-    }
 }
