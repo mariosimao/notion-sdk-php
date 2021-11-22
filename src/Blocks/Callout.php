@@ -16,7 +16,7 @@ use Notion\Common\RichText;
  * @psalm-type CalloutJson = array{
  *      callout: array{
  *          text: list<RichTextJson>,
- *          children: list<BlockJson>,
+ *          children?: list<BlockJson>,
  *          icon: EmojiJson|FileJson,
  *      },
  * }
@@ -93,7 +93,7 @@ class Callout implements BlockInterface
             $icon = File::fromArray($iconArray);
         }
 
-        $children = array_map(fn($b) => BlockFactory::fromArray($b), $callout["children"]);
+        $children = array_map(fn($b) => BlockFactory::fromArray($b), $callout["children"] ?? []);
 
         return new self($block, $text, $icon, $children);
     }

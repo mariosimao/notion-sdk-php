@@ -7,12 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-
+- Find block children
 ### Fixed
 
 ### Changed
 
-## [0.2.0]
+## [0.2.0] - 2021-11-20
 ### Added
 - Breadcrumb block
 - Support discovery of more PSR clients with `php-http/discovery`

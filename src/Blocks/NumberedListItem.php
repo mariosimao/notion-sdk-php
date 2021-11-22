@@ -11,7 +11,7 @@ use Notion\Common\RichText;
  * @psalm-type NumberedListItemJson = array{
  *      numbered_list_item: array{
  *          text: list<RichTextJson>,
- *          children: list<BlockJson>,
+ *          children?: list<BlockJson>,
  *      },
  * }
  *
@@ -72,7 +72,7 @@ class NumberedListItem implements BlockInterface
 
         $text = array_map(fn($t) => RichText::fromArray($t), $item["text"]);
 
-        $children = array_map(fn($b) => BlockFactory::fromArray($b), $item["children"]);
+        $children = array_map(fn($b) => BlockFactory::fromArray($b), $item["children"] ?? []);
 
         return new self($block, $text, $children);
     }

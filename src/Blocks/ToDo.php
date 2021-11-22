@@ -12,7 +12,7 @@ use Notion\Common\RichText;
  *      to_do: array{
  *          checked: bool,
  *          text: list<RichTextJson>,
- *          children: list<BlockJson>,
+ *          children?: list<BlockJson>,
  *      },
  * }
  *
@@ -79,7 +79,7 @@ class ToDo implements BlockInterface
 
         $checked = $todo["checked"];
 
-        $children = array_map(fn($b) => BlockFactory::fromArray($b), $todo["children"]);
+        $children = array_map(fn($b) => BlockFactory::fromArray($b), $todo["children"] ?? []);
 
         return new self($block, $text, $checked, $children);
     }
