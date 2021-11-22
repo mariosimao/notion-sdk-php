@@ -37,6 +37,7 @@ class BlockFactory
             Block::TYPE_DIVIDER            => Divider::fromArray($array),
             Block::TYPE_TABLE_OF_CONTENTS  => TableOfContents::fromArray($array),
             Block::TYPE_BREADCRUMB         => Breadcrumb::fromArray($array),
+            Block::TYPE_LINK_PREVIEW       => LinkPreview::fromArray($array),
             default => throw new Exception("Invalid block type '{$type}'"),
         };
     }
