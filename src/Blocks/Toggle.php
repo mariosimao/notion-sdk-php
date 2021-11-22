@@ -11,7 +11,7 @@ use Notion\Common\RichText;
  * @psalm-type ToggleJson = array{
  *      toggle: array{
  *          text: list<RichTextJson>,
- *          children: list<BlockJson>,
+ *          children?: list<BlockJson>,
  *      },
  * }
  *
@@ -72,7 +72,7 @@ class Toggle implements BlockInterface
 
         $text = array_map(fn($t) => RichText::fromArray($t), $toggle["text"]);
 
-        $children = array_map(fn($b) => BlockFactory::fromArray($b), $toggle["children"]);
+        $children = array_map(fn($b) => BlockFactory::fromArray($b), $toggle["children"] ?? []);
 
         return new self($block, $text, $children);
     }

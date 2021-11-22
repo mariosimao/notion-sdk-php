@@ -11,7 +11,7 @@ use Notion\Common\RichText;
  * @psalm-type ParagraphJson = array{
  *      paragraph: array{
  *          text: list<RichTextJson>,
- *          children: list<BlockJson>,
+ *          children?: list<BlockJson>,
  *      },
  * }
  *
@@ -72,7 +72,7 @@ class Paragraph implements BlockInterface
 
         $text = array_map(fn($t) => RichText::fromArray($t), $paragraph["text"]);
 
-        $children = array_map(fn($b) => BlockFactory::fromArray($b), $paragraph["children"]);
+        $children = array_map(fn($b) => BlockFactory::fromArray($b), $paragraph["children"] ?? []);
 
         return new self($block, $text, $children);
     }
