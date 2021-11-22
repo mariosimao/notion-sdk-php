@@ -7,7 +7,7 @@ use Exception;
 class Factory
 {
     /**
-     * @param array{ type: string } $array
+     * @param array{ type: Property::TYPE_* } $array
      */
     public static function fromArray(array $array): PropertyInterface
     {

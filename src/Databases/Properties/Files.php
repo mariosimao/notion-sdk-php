@@ -6,7 +6,7 @@ namespace Notion\Databases\Properties;
  * @psalm-type FilesJson = array{
  *      id: string,
  *      name: string,
- *      type: "file",
+ *      type: "files",
  *      file: array<empty, empty>,
  * }
  *

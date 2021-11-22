@@ -11,7 +11,7 @@ use Notion\Common\RichText;
  * @psalm-type CodeJson = array{
  *      code: array{
  *          text: list<RichTextJson>,
- *          language: string,
+ *          language: self::LANG_*,
  *      },
  * }
  *
