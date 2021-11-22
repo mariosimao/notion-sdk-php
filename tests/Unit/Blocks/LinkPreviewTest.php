@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Unit\Blocks;
 
+use Notion\Blocks\BlockFactory;
 use Notion\Blocks\LinkPreview;
 use PHPUnit\Framework\TestCase;
 
@@ -49,5 +50,25 @@ class LinkPreviewTest extends TestCase
 
         $this->expectException(\Exception::class);
         LinkPreview::fromArray($array);
+    }
+
+    public function test_create_with_factory(): void
+    {
+        $array = [
+            "object"           => "block",
+            "id"               => "04a13895-f072-4814-8af7-cd11af127040",
+            "created_time"     => "2021-10-18T17:09:00.000000Z",
+            "last_edited_time" => "2021-10-18T17:09:00.000000Z",
+            "archived"         => false,
+            "has_children"     => false,
+            "type"             => "link_preview",
+            "link_preview"     => [
+                "url" => "https://github.com/mariosimao/notion-sdk-php/issues/1",
+            ],
+        ];
+
+        $block = BlockFactory::fromArray($array);
+
+        $this->assertInstanceOf(LinkPreview::class, $block);
     }
 }
