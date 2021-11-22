@@ -42,6 +42,7 @@ class Block
     public const TYPE_DIVIDER = "divider";
     public const TYPE_TABLE_OF_CONTENTS = "table_of_contents";
     public const TYPE_BREADCRUMB = "breadcrumb";
+    public const TYPE_LINK_PREVIEW = "link_preview";
 
     private string $id;
     private DateTimeImmutable $createdTime;
@@ -92,8 +93,7 @@ class Block
 
     public function toArray(): array
     {
-        return [
-            // "id"               => $this->id !== "" ? $this->id : null,
+        $array = [
             "object"           => "block",
             "created_time"     => $this->createdTime->format(Date::FORMAT),
             "last_edited_time" => $this->lastEditedTime->format(Date::FORMAT),
@@ -101,6 +101,12 @@ class Block
             "has_children"     => $this->hasChildren,
             "type"             => $this->type,
         ];
+
+        if ($this->id !== "") {
+            $array["id"] = $this->id;
+        }
+
+        return $array;
     }
 
     public function withHasChildren(bool $hasChildren): self
@@ -258,5 +264,10 @@ class Block
     public function isBreadcrumb(): bool
     {
         return $this->type === self::TYPE_BREADCRUMB;
+    }
+
+    public function isLinkPreview(): bool
+    {
+        return $this->type === self::TYPE_LINK_PREVIEW;
     }
 }
