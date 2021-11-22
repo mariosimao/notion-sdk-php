@@ -7,7 +7,7 @@ use Notion\Common\Date;
 
 /**
  * @psalm-type BlockJson = array{
- *      type: string,
+ *      type: self::TYPE_*,
  *      id: string,
  *      created_time: string,
  *      last_edited_time: string,

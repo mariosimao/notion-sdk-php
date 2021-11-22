@@ -55,6 +55,7 @@ class UserTest extends TestCase
         ];
 
         $this->expectException(\Exception::class);
+        /** @psalm-suppress InvalidArgument */
         User::fromArray($array);
     }
 }

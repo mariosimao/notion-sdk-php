@@ -9,7 +9,7 @@ use Notion\Users\User;
  * @psalm-import-type DateJson from Date
  *
  * @psalm-type MentionJson = array{
- *      type: string,
+ *      type: "page"|"database"|"user"|"date",
  *      page?: array{ id: string },
  *      database?: array{ id: string },
  *      user?: UserJson,
