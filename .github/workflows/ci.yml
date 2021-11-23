@@ -132,6 +132,7 @@ jobs:
         run: composer mutation-tests
 
       - name: Upload mutation test artifacts
+        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: mutation-test-reports
