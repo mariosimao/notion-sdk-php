@@ -36,7 +36,7 @@
     },
     "scripts": {
         "ci-test": "phpunit --coverage-clover dist/phpunit/clover.xml",
-        "mutation-test": "./vendor/bin/infection --threads=4",
+        "mutation-tests": "./vendor/bin/infection --threads=4",
         "test-coverage-html": "phpunit --coverage-html dist/phpunit/html"
     }
 }
