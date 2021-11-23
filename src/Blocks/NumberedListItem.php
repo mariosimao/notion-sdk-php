@@ -2,6 +2,7 @@
 
 namespace Notion\Blocks;
 
+use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Common\RichText;
 
 /**
@@ -39,7 +40,7 @@ class NumberedListItem implements BlockInterface
         array $children,
     ) {
         if (!$block->isNumberedListItem()) {
-            throw new \Exception("Block must be of type " . self::TYPE);
+            throw new BlockTypeException(self::TYPE);
         }
 
         $this->block = $block;

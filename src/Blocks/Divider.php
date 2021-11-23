@@ -2,6 +2,8 @@
 
 namespace Notion\Blocks;
 
+use Notion\Blocks\Exceptions\BlockTypeException;
+
 /**
  * @psalm-import-type BlockJson from Block
  *
@@ -19,7 +21,7 @@ class Divider implements BlockInterface
     private function __construct(Block $block)
     {
         if (!$block->isDivider()) {
-            throw new \Exception("Block must be of type " . self::TYPE);
+            throw new BlockTypeException(self::TYPE);
         }
 
         $this->block = $block;
