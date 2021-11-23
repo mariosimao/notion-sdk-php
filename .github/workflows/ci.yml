@@ -130,3 +130,9 @@ jobs:
 
       - name: Run mutation tests with Infection
         run: composer mutation-tests
+
+      - name: Upload mutation test artifacts
+      - uses: actions/upload-artifact@v2
+        with:
+          name: mutation-test-reports
+          path: .infection
