@@ -2,6 +2,7 @@
 
 namespace Notion\Blocks;
 
+use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Common\File;
 
 /**
@@ -23,7 +24,7 @@ class FileBlock implements BlockInterface
     private function __construct(Block $block, File $file)
     {
         if (!$block->isFile()) {
-            throw new \Exception("Block must be of type " . self::TYPE);
+            throw new BlockTypeException(self::TYPE);
         }
 
         $this->block = $block;

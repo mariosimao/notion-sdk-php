@@ -2,6 +2,8 @@
 
 namespace Notion\Blocks;
 
+use Notion\Blocks\Exceptions\BlockTypeException;
+
 /**
  * @psalm-import-type BlockJson from Block
  *
@@ -20,7 +22,7 @@ class Breadcrumb implements BlockInterface
     private function __construct(Block $block)
     {
         if (!$block->isBreadcrumb()) {
-            throw new \Exception("Block must be of type " . self::TYPE);
+            throw new BlockTypeException(self::TYPE);
         }
 
         $this->block = $block;
