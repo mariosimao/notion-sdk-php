@@ -1,5 +1,6 @@
-vendor
+.infection
 .phpunit.cache
 coverage
 dist
 test.php
+vendor
