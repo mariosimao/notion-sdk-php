@@ -8,7 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Find block children
+- Find block children recursively
 - Link preview block
+- Column and column list blocks
 ### Fixed
 
 ### Changed
