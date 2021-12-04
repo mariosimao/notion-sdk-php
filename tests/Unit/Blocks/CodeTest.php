@@ -6,6 +6,7 @@ use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Code;
 use Notion\Common\Date;
 use Notion\Common\RichText;
+use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class CodeTest extends TestCase
@@ -143,5 +144,14 @@ class CodeTest extends TestCase
         $code = Code::create("Simple code")->withLanguage("php");
 
         $this->assertEquals("php", $code->language());
+    }
+
+    public function test_no_children_support(): void
+    {
+        $block = Code::create();
+
+        $this->expectException(NotionException::class);
+        /** @psalm-suppress UnusedMethodCall */
+        $block->changeChildren([]);
     }
 }

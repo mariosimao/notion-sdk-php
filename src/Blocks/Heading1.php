@@ -3,6 +3,7 @@
 namespace Notion\Blocks;
 
 use Notion\Common\RichText;
+use Notion\NotionException;
 
 /**
  * @psalm-import-type BlockJson from Block
@@ -109,5 +110,13 @@ class Heading1 implements BlockInterface
         $texts[] = $text;
 
         return new self($this->block, $texts);
+    }
+
+    public function changeChildren(array $children): self
+    {
+        throw new NotionException(
+            "This block does not support children.",
+            "no_children_support",
+        );
     }
 }

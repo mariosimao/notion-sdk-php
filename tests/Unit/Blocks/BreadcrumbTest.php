@@ -5,6 +5,7 @@ namespace Notion\Test\Unit\Blocks;
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Breadcrumb;
 use Notion\Common\Date;
+use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class BreadcrumbTest extends TestCase
@@ -68,5 +69,14 @@ class BreadcrumbTest extends TestCase
         ];
 
         $this->assertEquals($expected, $breadcrumb->toArray());
+    }
+
+    public function test_no_children_support(): void
+    {
+        $block = Breadcrumb::create();
+
+        $this->expectException(NotionException::class);
+        /** @psalm-suppress UnusedMethodCall */
+        $block->changeChildren([]);
     }
 }

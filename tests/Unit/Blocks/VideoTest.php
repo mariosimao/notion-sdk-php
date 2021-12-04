@@ -6,6 +6,7 @@ use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Video;
 use Notion\Common\Date;
 use Notion\Common\File;
+use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class VideoTest extends TestCase
@@ -98,5 +99,15 @@ class VideoTest extends TestCase
 
         $this->assertEquals($file1, $old->file());
         $this->assertEquals($file2, $new->file());
+    }
+
+    public function test_no_children_support(): void
+    {
+        $file = File::createExternal("https://my-site.com/video.mp4");
+        $block = Video::create($file);
+
+        $this->expectException(NotionException::class);
+        /** @psalm-suppress UnusedMethodCall */
+        $block->changeChildren([]);
     }
 }

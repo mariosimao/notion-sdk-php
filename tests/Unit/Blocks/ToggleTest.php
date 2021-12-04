@@ -167,7 +167,7 @@ class ToggleTest extends TestCase
     {
         $nested1 = Toggle::fromString("Nested toggle 1");
         $nested2 = Toggle::fromString("Nested toggle 2");
-        $toggle = Toggle::fromString("Simple toggle.")->withChildren([ $nested1, $nested2 ]);
+        $toggle = Toggle::fromString("Simple toggle.")->changeChildren([ $nested1, $nested2 ]);
 
         $this->assertCount(2, $toggle->children());
         $this->assertEquals($nested1, $toggle->children()[0]);

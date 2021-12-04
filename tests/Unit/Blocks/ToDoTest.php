@@ -173,7 +173,7 @@ class ToDoTest extends TestCase
     {
         $nested1 = ToDo::fromString("Nested to do 1");
         $nested2 = ToDo::fromString("Nested to do 2");
-        $toDo = ToDo::fromString("Simple to do.")->withChildren([ $nested1, $nested2 ]);
+        $toDo = ToDo::fromString("Simple to do.")->changeChildren([ $nested1, $nested2 ]);
 
         $this->assertCount(2, $toDo->children());
         $this->assertEquals($nested1, $toDo->children()[0]);

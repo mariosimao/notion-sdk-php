@@ -157,9 +157,7 @@ class BulletedListItem implements BlockInterface
         return new self($this->block, $texts, $this->children);
     }
 
-    /** Change list item children blocks */
-    /** @param list<BlockInterface> $children */
-    public function withChildren(array $children): self
+    public function changeChildren(array $children): self
     {
         $hasChildren = (count($children) > 0);
 

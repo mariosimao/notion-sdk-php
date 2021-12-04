@@ -5,6 +5,7 @@ namespace Notion\Test\Unit\Blocks;
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\TableOfContents;
 use Notion\Common\Date;
+use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class TableOfContentsTest extends TestCase
@@ -68,5 +69,14 @@ class TableOfContentsTest extends TestCase
         ];
 
         $this->assertEquals($expected, $tableOfContents->toArray());
+    }
+
+    public function test_no_children_support(): void
+    {
+        $block = TableOfContents::create();
+
+        $this->expectException(NotionException::class);
+        /** @psalm-suppress UnusedMethodCall */
+        $block->changeChildren([]);
     }
 }

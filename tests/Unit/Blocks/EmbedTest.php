@@ -5,6 +5,7 @@ namespace Notion\Test\Unit\Blocks;
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Embed;
 use Notion\Common\Date;
+use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class EmbedTest extends TestCase
@@ -77,5 +78,14 @@ class EmbedTest extends TestCase
 
         $this->assertEquals("https://my-site.com", $old->url());
         $this->assertEquals("https://another-site.com", $new->url());
+    }
+
+    public function test_no_children_support(): void
+    {
+        $block = Embed::create();
+
+        $this->expectException(NotionException::class);
+        /** @psalm-suppress UnusedMethodCall */
+        $block->changeChildren([]);
     }
 }

@@ -65,7 +65,7 @@ class BlocksTest extends TestCase
 
         $newPage = $client->pages()->create($page, $content);
 
-        $newPageContent = $client->blocks()->findChildren($newPage->id());
+        $newPageContent = $client->blocks()->findChildrenRecursive($newPage->id());
 
         foreach ($content as $index => $block) {
             $this->assertInstanceOf($block::class, $newPageContent[$index]);

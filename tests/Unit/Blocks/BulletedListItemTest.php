@@ -168,7 +168,7 @@ class BulletedListItemTest extends TestCase
     {
         $nested1 = BulletedListItem::fromString("Nested item 1");
         $nested2 = BulletedListItem::fromString("Nested item 2");
-        $item = BulletedListItem::fromString("Simple item.")->withChildren([ $nested1, $nested2 ]);
+        $item = BulletedListItem::fromString("Simple item.")->changeChildren([ $nested1, $nested2 ]);
 
         $this->assertCount(2, $item->children());
         $this->assertEquals($nested1, $item->children()[0]);

@@ -6,6 +6,7 @@ use Notion\Blocks\BlockFactory;
 use Notion\Blocks\EquationBlock;
 use Notion\Common\Date;
 use Notion\Common\Equation;
+use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class EquationBlockTest extends TestCase
@@ -77,5 +78,14 @@ class EquationBlockTest extends TestCase
         $equationBlock = EquationBlock::create()->withEquation($equation);
 
         $this->assertEquals($equation, $equationBlock->equation());
+    }
+
+    public function test_no_children_support(): void
+    {
+        $block = EquationBlock::create();
+
+        $this->expectException(NotionException::class);
+        /** @psalm-suppress UnusedMethodCall */
+        $block->changeChildren([]);
     }
 }

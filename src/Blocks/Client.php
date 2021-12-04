@@ -56,4 +56,21 @@ class Client
             $body["results"],
         );
     }
+
+    /** @return list<BlockInterface> */
+    public function findChildrenRecursive(string $blockId): array
+    {
+        $children = $this->findChildren($blockId);
+        return array_map(
+            function(BlockInterface $block) {
+                if ($block->block()->hasChildren()) {
+                    $blockChildren = $this->findChildrenRecursive($block->block()->id());
+                    return $block->changeChildren($blockChildren);
+                }
+
+                return $block;
+            },
+            $children
+        );
+    }
 }
