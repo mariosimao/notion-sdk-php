@@ -2,6 +2,7 @@
 
 namespace Notion\Blocks;
 
+use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Common\RichText;
 use Notion\NotionException;
 
@@ -105,7 +106,7 @@ class Code implements BlockInterface
     private function __construct(Block $block, array $text, string $language)
     {
         if (!$block->isCode()) {
-            throw new \Exception("Block must be of type " . self::TYPE);
+            throw new BlockTypeException(self::TYPE);
         }
 
         $this->block = $block;

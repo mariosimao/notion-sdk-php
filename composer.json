@@ -31,10 +31,12 @@
         "phpunit/phpunit": "^9.5",
         "guzzlehttp/guzzle": "^7.4",
         "squizlabs/php_codesniffer": "^3.6",
-        "psalm/plugin-phpunit": "^0.16.1"
+        "psalm/plugin-phpunit": "^0.16.1",
+        "infection/infection": "^0.25.3"
     },
     "scripts": {
         "ci-test": "phpunit --coverage-clover dist/phpunit/clover.xml",
+        "mutation-tests": "./vendor/bin/infection --threads=4",
         "test-coverage-html": "phpunit --coverage-html dist/phpunit/html"
     }
 }

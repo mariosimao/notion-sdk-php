@@ -4,6 +4,7 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Code;
+use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Common\Date;
 use Notion\Common\RichText;
 use Notion\NotionException;
@@ -61,6 +62,7 @@ class CodeTest extends TestCase
 
     public function test_error_on_wrong_type(): void
     {
+        $this->expectException(BlockTypeException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",

@@ -3,6 +3,7 @@
 namespace Notion\Blocks;
 
 use Exception;
+use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Common\Emoji;
 use Notion\Common\File;
 use Notion\Common\RichText;
@@ -48,7 +49,7 @@ class Callout implements BlockInterface
         array $children,
     ) {
         if (!$block->isCallout()) {
-            throw new \Exception("Block must be of type " . self::TYPE);
+            throw new BlockTypeException(self::TYPE);
         }
 
         $this->block = $block;
