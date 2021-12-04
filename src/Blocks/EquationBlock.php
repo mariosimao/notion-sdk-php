@@ -4,6 +4,7 @@ namespace Notion\Blocks;
 
 use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Common\Equation;
+use Notion\NotionException;
 
 /**
  * @psalm-import-type BlockJson from Block
@@ -74,5 +75,13 @@ class EquationBlock implements BlockInterface
     public function withEquation(Equation $equation): self
     {
         return new self($this->block, $equation);
+    }
+
+    public function changeChildren(array $children): self
+    {
+        throw new NotionException(
+            "This block does not support children.",
+            "no_children_support",
+        );
     }
 }

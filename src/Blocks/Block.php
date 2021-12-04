@@ -42,6 +42,8 @@ class Block
     public const TYPE_DIVIDER = "divider";
     public const TYPE_TABLE_OF_CONTENTS = "table_of_contents";
     public const TYPE_BREADCRUMB = "breadcrumb";
+    public const TYPE_COLUMN = "column";
+    public const TYPE_COLUMN_LIST = "column_list";
     public const TYPE_LINK_PREVIEW = "link_preview";
 
     private string $id;
@@ -264,6 +266,16 @@ class Block
     public function isBreadcrumb(): bool
     {
         return $this->type === self::TYPE_BREADCRUMB;
+    }
+
+    public function isColumn(): bool
+    {
+        return $this->type === self::TYPE_COLUMN;
+    }
+
+    public function isColumnList(): bool
+    {
+        return $this->type === self::TYPE_COLUMN_LIST;
     }
 
     public function isLinkPreview(): bool

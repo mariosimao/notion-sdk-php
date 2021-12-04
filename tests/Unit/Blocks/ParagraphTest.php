@@ -168,7 +168,7 @@ class ParagraphTest extends TestCase
     {
         $nested1 = Paragraph::fromString("Nested paragraph 1");
         $nested2 = Paragraph::fromString("Nested paragraph 2");
-        $paragraph = Paragraph::fromString("Simple paragraph.")->withChildren([
+        $paragraph = Paragraph::fromString("Simple paragraph.")->changeChildren([
             $nested1, $nested2
         ]);
 

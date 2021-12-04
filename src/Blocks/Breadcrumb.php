@@ -2,6 +2,7 @@
 
 namespace Notion\Blocks;
 
+use Notion\NotionException;
 use Notion\Blocks\Exceptions\BlockTypeException;
 
 /**
@@ -55,5 +56,13 @@ class Breadcrumb implements BlockInterface
     public function block(): Block
     {
         return $this->block;
+    }
+
+    public function changeChildren(array $children): self
+    {
+        throw new NotionException(
+            "This block does not support children.",
+            "no_children_support",
+        );
     }
 }

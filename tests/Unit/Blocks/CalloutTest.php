@@ -270,7 +270,7 @@ class CalloutTest extends TestCase
     {
         $nested1 = Callout::fromString("☀️", "Nested callout 1");
         $nested2 = Callout::fromString("☀️", "Nested callout 2");
-        $callout = Callout::fromString("☀️", "Simple callout.")->withChildren([$nested1, $nested2]);
+        $callout = Callout::fromString("☀️", "Simple callout.")->changeChildren([$nested1, $nested2]);
 
         $this->assertCount(2, $callout->children());
         $this->assertEquals($nested1, $callout->children()[0]);

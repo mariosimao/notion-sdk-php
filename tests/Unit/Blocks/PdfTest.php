@@ -7,6 +7,7 @@ use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Blocks\Pdf;
 use Notion\Common\Date;
 use Notion\Common\File;
+use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class PdfTest extends TestCase
@@ -99,5 +100,15 @@ class PdfTest extends TestCase
 
         $this->assertEquals($file1, $old->file());
         $this->assertEquals($file2, $new->file());
+    }
+
+    public function test_no_children_support(): void
+    {
+        $file = File::createExternal("https://my-site.com/document.pdf");
+        $block = Pdf::create($file);
+
+        $this->expectException(NotionException::class);
+        /** @psalm-suppress UnusedMethodCall */
+        $block->changeChildren([]);
     }
 }

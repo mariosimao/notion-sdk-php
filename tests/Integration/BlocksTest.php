@@ -7,6 +7,8 @@ use Notion\Blocks\Breadcrumb;
 use Notion\Blocks\BulletedListItem;
 use Notion\Blocks\Callout;
 use Notion\Blocks\Code;
+use Notion\Blocks\Column;
+use Notion\Blocks\ColumnList;
 use Notion\Blocks\Divider;
 use Notion\Blocks\EquationBlock;
 use Notion\Blocks\Heading1;
@@ -61,11 +63,15 @@ class BlocksTest extends TestCase
             ToDo::fromString("To do item"),
             Toggle::fromString("Toggle"),
             // TODO: Video
+            ColumnList::create([
+                Column::create([ Paragraph::fromString("Paragraph") ]),
+                Column::create([ Paragraph::fromString("Paragraph") ]),
+            ]),
         ];
 
         $newPage = $client->pages()->create($page, $content);
 
-        $newPageContent = $client->blocks()->findChildren($newPage->id());
+        $newPageContent = $client->blocks()->findChildrenRecursive($newPage->id());
 
         foreach ($content as $index => $block) {
             $this->assertInstanceOf($block::class, $newPageContent[$index]);

@@ -131,7 +131,7 @@ class Paragraph implements BlockInterface
     }
 
     /** @param list<BlockInterface> $children */
-    public function withChildren(array $children): self
+    public function changeChildren(array $children): self
     {
         $hasChildren = (count($children) > 0);
 

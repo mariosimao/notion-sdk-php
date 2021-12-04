@@ -169,7 +169,7 @@ class QuoteTest extends TestCase
     {
         $nested1 = Quote::fromString("Nested quote 1");
         $nested2 = Quote::fromString("Nested quote 2");
-        $quote = Quote::fromString("Simple quote.")->withChildren([ $nested1, $nested2 ]);
+        $quote = Quote::fromString("Simple quote.")->changeChildren([ $nested1, $nested2 ]);
 
         $this->assertCount(2, $quote->children());
         $this->assertEquals($nested1, $quote->children()[0]);

@@ -4,6 +4,7 @@ namespace Notion\Blocks;
 
 use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Common\RichText;
+use Notion\NotionException;
 
 /**
  * @psalm-import-type BlockJson from Block
@@ -196,5 +197,13 @@ class Code implements BlockInterface
     public function withLanguage(string $language): self
     {
         return new self($this->block, $this->text, $language);
+    }
+
+    public function changeChildren(array $children): self
+    {
+        throw new NotionException(
+            "This block does not support children.",
+            "no_children_support",
+        );
     }
 }

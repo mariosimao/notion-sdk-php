@@ -2,6 +2,8 @@
 
 namespace Notion\Blocks;
 
+use Notion\NotionException;
+
 /**
  * Link Preview block.
  *
@@ -63,5 +65,13 @@ class LinkPreview implements BlockInterface
     public function url(): string
     {
         return $this->url;
+    }
+
+    public function changeChildren(array $children): self
+    {
+        throw new NotionException(
+            "This block does not support children.",
+            "no_children_support",
+        );
     }
 }

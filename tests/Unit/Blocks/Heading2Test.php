@@ -7,6 +7,7 @@ use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Blocks\Heading2;
 use Notion\Common\Date;
 use Notion\Common\RichText;
+use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class Heading2Test extends TestCase
@@ -159,5 +160,14 @@ class Heading2Test extends TestCase
 
         $this->assertEquals("A heading", $oldHeading->toString());
         $this->assertEquals("A heading can be extended.", $newHeading->toString());
+    }
+
+    public function test_no_children_support(): void
+    {
+        $block = Heading2::create();
+
+        $this->expectException(NotionException::class);
+        /** @psalm-suppress UnusedMethodCall */
+        $block->changeChildren([]);
     }
 }

@@ -4,6 +4,7 @@ namespace Notion\Blocks;
 
 use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Common\RichText;
+use Notion\NotionException;
 
 /**
  * @psalm-import-type BlockJson from Block
@@ -79,5 +80,13 @@ class ChildPage implements BlockInterface
     public function withPageTitle(string $pageTitle): self
     {
         return new self($this->block, $pageTitle);
+    }
+
+    public function changeChildren(array $children): self
+    {
+        throw new NotionException(
+            "This block does not support children.",
+            "no_children_support",
+        );
     }
 }

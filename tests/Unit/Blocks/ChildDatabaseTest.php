@@ -6,6 +6,7 @@ use Notion\Blocks\BlockFactory;
 use Notion\Blocks\ChildDatabase;
 use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Common\Date;
+use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class ChildDatabaseTest extends TestCase
@@ -87,5 +88,14 @@ class ChildDatabaseTest extends TestCase
 
         $this->assertEquals("Database 1", $oldHeading->databaseTitle());
         $this->assertEquals("Database 2", $newHeading->databaseTitle());
+    }
+
+    public function test_no_children_support(): void
+    {
+        $block = ChildDatabase::create();
+
+        $this->expectException(NotionException::class);
+        /** @psalm-suppress UnusedMethodCall */
+        $block->changeChildren([]);
     }
 }
