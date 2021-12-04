@@ -62,7 +62,7 @@ class Client
     {
         $children = $this->findChildren($blockId);
         return array_map(
-            function(BlockInterface $block) {
+            function (BlockInterface $block) {
                 if ($block->block()->hasChildren()) {
                     $blockChildren = $this->findChildrenRecursive($block->block()->id());
                     return $block->changeChildren($blockChildren);
