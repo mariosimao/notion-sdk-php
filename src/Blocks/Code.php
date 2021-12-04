@@ -2,7 +2,9 @@
 
 namespace Notion\Blocks;
 
+use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Common\RichText;
+use Notion\NotionException;
 
 /**
  * @psalm-import-type BlockJson from Block
@@ -11,7 +13,7 @@ use Notion\Common\RichText;
  * @psalm-type CodeJson = array{
  *      code: array{
  *          text: list<RichTextJson>,
- *          language: string,
+ *          language: self::LANG_*,
  *      },
  * }
  *
@@ -104,7 +106,7 @@ class Code implements BlockInterface
     private function __construct(Block $block, array $text, string $language)
     {
         if (!$block->isCode()) {
-            throw new \Exception("Block must be of type " . self::TYPE);
+            throw new BlockTypeException(self::TYPE);
         }
 
         $this->block = $block;
@@ -195,5 +197,13 @@ class Code implements BlockInterface
     public function withLanguage(string $language): self
     {
         return new self($this->block, $this->text, $language);
+    }
+
+    public function changeChildren(array $children): self
+    {
+        throw new NotionException(
+            "This block does not support children.",
+            "no_children_support",
+        );
     }
 }

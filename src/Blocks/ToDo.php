@@ -2,6 +2,7 @@
 
 namespace Notion\Blocks;
 
+use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Common\RichText;
 
 /**
@@ -12,7 +13,7 @@ use Notion\Common\RichText;
  *      to_do: array{
  *          checked: bool,
  *          text: list<RichTextJson>,
- *          children: list<BlockJson>,
+ *          children?: list<BlockJson>,
  *      },
  * }
  *
@@ -43,7 +44,7 @@ class ToDo implements BlockInterface
         array $children,
     ) {
         if (!$block->isToDo()) {
-            throw new \Exception("Block must be of type " . self::TYPE);
+            throw new BlockTypeException(self::TYPE);
         }
 
         $this->block = $block;
@@ -79,7 +80,7 @@ class ToDo implements BlockInterface
 
         $checked = $todo["checked"];
 
-        $children = array_map(fn($b) => BlockFactory::fromArray($b), $todo["children"]);
+        $children = array_map(fn($b) => BlockFactory::fromArray($b), $todo["children"] ?? []);
 
         return new self($block, $text, $checked, $children);
     }
@@ -153,7 +154,7 @@ class ToDo implements BlockInterface
     }
 
     /** @param list<BlockInterface> $children */
-    public function withChildren(array $children): self
+    public function changeChildren(array $children): self
     {
         $hasChildren = (count($children) > 0);
 

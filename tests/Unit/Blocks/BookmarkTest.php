@@ -4,8 +4,10 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Bookmark;
+use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Common\Date;
 use Notion\Common\RichText;
+use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class BookmarkTest extends TestCase
@@ -39,7 +41,7 @@ class BookmarkTest extends TestCase
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(BlockTypeException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -86,5 +88,14 @@ class BookmarkTest extends TestCase
         $bookmark = Bookmark::create("https://my-site.com")->withCaption($caption);
 
         $this->assertEquals($caption, $bookmark->caption());
+    }
+
+    public function test_no_children_support(): void
+    {
+        $bookmark = Bookmark::create("https://my-site.com");
+
+        $this->expectException(NotionException::class);
+        /** @psalm-suppress UnusedMethodCall */
+        $bookmark->changeChildren([]);
     }
 }

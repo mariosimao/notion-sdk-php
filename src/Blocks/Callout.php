@@ -3,6 +3,7 @@
 namespace Notion\Blocks;
 
 use Exception;
+use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Common\Emoji;
 use Notion\Common\File;
 use Notion\Common\RichText;
@@ -16,7 +17,7 @@ use Notion\Common\RichText;
  * @psalm-type CalloutJson = array{
  *      callout: array{
  *          text: list<RichTextJson>,
- *          children: list<BlockJson>,
+ *          children?: list<BlockJson>,
  *          icon: EmojiJson|FileJson,
  *      },
  * }
@@ -48,7 +49,7 @@ class Callout implements BlockInterface
         array $children,
     ) {
         if (!$block->isCallout()) {
-            throw new \Exception("Block must be of type " . self::TYPE);
+            throw new BlockTypeException(self::TYPE);
         }
 
         $this->block = $block;
@@ -93,7 +94,7 @@ class Callout implements BlockInterface
             $icon = File::fromArray($iconArray);
         }
 
-        $children = array_map(fn($b) => BlockFactory::fromArray($b), $callout["children"]);
+        $children = array_map(fn($b) => BlockFactory::fromArray($b), $callout["children"] ?? []);
 
         return new self($block, $text, $icon, $children);
     }
@@ -180,7 +181,7 @@ class Callout implements BlockInterface
     }
 
     /** @param list<BlockInterface> $children */
-    public function withChildren(array $children): self
+    public function changeChildren(array $children): self
     {
         $hasChildren = (count($children) > 0);
 

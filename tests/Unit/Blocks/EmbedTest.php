@@ -4,7 +4,9 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Embed;
+use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Common\Date;
+use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class EmbedTest extends TestCase
@@ -38,7 +40,7 @@ class EmbedTest extends TestCase
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(BlockTypeException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -77,5 +79,14 @@ class EmbedTest extends TestCase
 
         $this->assertEquals("https://my-site.com", $old->url());
         $this->assertEquals("https://another-site.com", $new->url());
+    }
+
+    public function test_no_children_support(): void
+    {
+        $block = Embed::create();
+
+        $this->expectException(NotionException::class);
+        /** @psalm-suppress UnusedMethodCall */
+        $block->changeChildren([]);
     }
 }

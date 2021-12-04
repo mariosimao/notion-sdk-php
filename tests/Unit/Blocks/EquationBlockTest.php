@@ -4,8 +4,10 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\EquationBlock;
+use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Common\Date;
 use Notion\Common\Equation;
+use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class EquationBlockTest extends TestCase
@@ -39,7 +41,7 @@ class EquationBlockTest extends TestCase
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(BlockTypeException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -77,5 +79,14 @@ class EquationBlockTest extends TestCase
         $equationBlock = EquationBlock::create()->withEquation($equation);
 
         $this->assertEquals($equation, $equationBlock->equation());
+    }
+
+    public function test_no_children_support(): void
+    {
+        $block = EquationBlock::create();
+
+        $this->expectException(NotionException::class);
+        /** @psalm-suppress UnusedMethodCall */
+        $block->changeChildren([]);
     }
 }

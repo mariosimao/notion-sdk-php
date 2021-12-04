@@ -50,7 +50,7 @@ $item = $item->appendChild(
 ```php
 $item = BulletedListItem::fromString("Item text");
 
-$item = $item->withChildren(
+$item = $item->changeChildren(
     Paragraph::fromString("Child paragraph 1"),
     Paragraph::fromString("Child paragraph 2"),
 );

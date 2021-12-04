@@ -2,6 +2,7 @@
 
 namespace Notion\Blocks;
 
+use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Common\RichText;
 
 /**
@@ -11,7 +12,7 @@ use Notion\Common\RichText;
  * @psalm-type NumberedListItemJson = array{
  *      numbered_list_item: array{
  *          text: list<RichTextJson>,
- *          children: list<BlockJson>,
+ *          children?: list<BlockJson>,
  *      },
  * }
  *
@@ -39,7 +40,7 @@ class NumberedListItem implements BlockInterface
         array $children,
     ) {
         if (!$block->isNumberedListItem()) {
-            throw new \Exception("Block must be of type " . self::TYPE);
+            throw new BlockTypeException(self::TYPE);
         }
 
         $this->block = $block;
@@ -72,7 +73,7 @@ class NumberedListItem implements BlockInterface
 
         $text = array_map(fn($t) => RichText::fromArray($t), $item["text"]);
 
-        $children = array_map(fn($b) => BlockFactory::fromArray($b), $item["children"]);
+        $children = array_map(fn($b) => BlockFactory::fromArray($b), $item["children"] ?? []);
 
         return new self($block, $text, $children);
     }
@@ -130,7 +131,7 @@ class NumberedListItem implements BlockInterface
     }
 
     /** @param list<BlockInterface> $children */
-    public function withChildren(array $children): self
+    public function changeChildren(array $children): self
     {
         $hasChildren = (count($children) > 0);
 

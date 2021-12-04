@@ -4,8 +4,10 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\ChildPage;
+use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Common\Date;
 use Notion\Common\RichText;
+use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class ChildPageTest extends TestCase
@@ -47,7 +49,7 @@ class ChildPageTest extends TestCase
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(BlockTypeException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -87,5 +89,14 @@ class ChildPageTest extends TestCase
 
         $this->assertEquals("Page 1", $oldHeading->pageTitle());
         $this->assertEquals("Page 2", $newHeading->pageTitle());
+    }
+
+    public function test_no_children_support(): void
+    {
+        $block = ChildPage::create();
+
+        $this->expectException(NotionException::class);
+        /** @psalm-suppress UnusedMethodCall */
+        $block->changeChildren([]);
     }
 }

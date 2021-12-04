@@ -4,6 +4,7 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\BulletedListItem;
+use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Common\Date;
 use Notion\Common\RichText;
 use PHPUnit\Framework\TestCase;
@@ -86,7 +87,7 @@ class BulletedListItemTest extends TestCase
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(BlockTypeException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -168,7 +169,7 @@ class BulletedListItemTest extends TestCase
     {
         $nested1 = BulletedListItem::fromString("Nested item 1");
         $nested2 = BulletedListItem::fromString("Nested item 2");
-        $item = BulletedListItem::fromString("Simple item.")->withChildren([ $nested1, $nested2 ]);
+        $item = BulletedListItem::fromString("Simple item.")->changeChildren([ $nested1, $nested2 ]);
 
         $this->assertCount(2, $item->children());
         $this->assertEquals($nested1, $item->children()[0]);

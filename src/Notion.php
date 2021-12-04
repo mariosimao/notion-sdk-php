@@ -4,6 +4,7 @@ namespace Notion;
 
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
+use Notion\Blocks\Client as BlocksClient;
 use Notion\Databases\Client as DatabasesClient;
 use Notion\Pages\Client as PagesClient;
 use Notion\Users\Client as UsersClient;
@@ -67,6 +68,16 @@ class Notion
     public function databases(): DatabasesClient
     {
         return new DatabasesClient(
+            $this->psrClient,
+            $this->requestFactory,
+            $this->token,
+            self::NOTION_VERSION,
+        );
+    }
+
+    public function blocks(): BlocksClient
+    {
+        return new BlocksClient(
             $this->psrClient,
             $this->requestFactory,
             $this->token,

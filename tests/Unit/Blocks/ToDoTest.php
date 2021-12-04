@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
+use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Blocks\ToDo;
 use Notion\Common\Date;
 use Notion\Common\RichText;
@@ -89,7 +90,7 @@ class ToDoTest extends TestCase
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(BlockTypeException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -173,7 +174,7 @@ class ToDoTest extends TestCase
     {
         $nested1 = ToDo::fromString("Nested to do 1");
         $nested2 = ToDo::fromString("Nested to do 2");
-        $toDo = ToDo::fromString("Simple to do.")->withChildren([ $nested1, $nested2 ]);
+        $toDo = ToDo::fromString("Simple to do.")->changeChildren([ $nested1, $nested2 ]);
 
         $this->assertCount(2, $toDo->children());
         $this->assertEquals($nested1, $toDo->children()[0]);

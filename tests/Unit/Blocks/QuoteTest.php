@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
+use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Blocks\Quote;
 use Notion\Common\Date;
 use Notion\Common\RichText;
@@ -86,7 +87,7 @@ class QuoteTest extends TestCase
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(BlockTypeException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -168,7 +169,7 @@ class QuoteTest extends TestCase
     {
         $nested1 = Quote::fromString("Nested quote 1");
         $nested2 = Quote::fromString("Nested quote 2");
-        $quote = Quote::fromString("Simple quote.")->withChildren([ $nested1, $nested2 ]);
+        $quote = Quote::fromString("Simple quote.")->changeChildren([ $nested1, $nested2 ]);
 
         $this->assertCount(2, $quote->children());
         $this->assertEquals($nested1, $quote->children()[0]);

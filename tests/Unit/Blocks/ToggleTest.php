@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
+use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Blocks\Toggle;
 use Notion\Common\Date;
 use Notion\Common\RichText;
@@ -86,7 +87,7 @@ class ToggleTest extends TestCase
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(BlockTypeException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -167,7 +168,7 @@ class ToggleTest extends TestCase
     {
         $nested1 = Toggle::fromString("Nested toggle 1");
         $nested2 = Toggle::fromString("Nested toggle 2");
-        $toggle = Toggle::fromString("Simple toggle.")->withChildren([ $nested1, $nested2 ]);
+        $toggle = Toggle::fromString("Simple toggle.")->changeChildren([ $nested1, $nested2 ]);
 
         $this->assertCount(2, $toggle->children());
         $this->assertEquals($nested1, $toggle->children()[0]);

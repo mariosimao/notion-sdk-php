@@ -10,7 +10,7 @@ namespace Notion\Users;
  *     id: string,
  *     name: string,
  *     avatar_url: string|null,
- *     type: string,
+ *     type: "person"|"bot",
  *     person?: PersonJson,
  *     bot?: BotJson,
  * }

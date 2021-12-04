@@ -2,7 +2,9 @@
 
 namespace Notion\Blocks;
 
+use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Common\RichText;
+use Notion\NotionException;
 
 /**
  * @psalm-import-type BlockJson from Block
@@ -24,7 +26,7 @@ class ChildDatabase implements BlockInterface
     private function __construct(Block $block, string $databaseTitle)
     {
         if (!$block->isChildDatabase()) {
-            throw new \Exception("Block must be of type " . self::TYPE);
+            throw new BlockTypeException(self::TYPE);
         }
 
         $this->block = $block;
@@ -78,5 +80,13 @@ class ChildDatabase implements BlockInterface
     public function withDatabaseTitle(string $databaseTitle): self
     {
         return new self($this->block, $databaseTitle);
+    }
+
+    public function changeChildren(array $children): self
+    {
+        throw new NotionException(
+            "This block does not support children.",
+            "no_children_support",
+        );
     }
 }

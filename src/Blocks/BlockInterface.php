@@ -9,4 +9,6 @@ interface BlockInterface
     public function toArray(): array;
 
     public function block(): Block;
+    /** @param list<BlockInterface> $children */
+    public function changeChildren(array $children): self;
 }

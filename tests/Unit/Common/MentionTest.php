@@ -110,6 +110,7 @@ class MentionTest extends TestCase
         $array = [ "type" => "wrong-type" ];
 
         $this->expectException(\Exception::class);
+        /** @psalm-suppress InvalidArgument */
         Mention::fromArray($array);
     }
 }

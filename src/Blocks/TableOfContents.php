@@ -2,6 +2,9 @@
 
 namespace Notion\Blocks;
 
+use Notion\NotionException;
+use Notion\Blocks\Exceptions\BlockTypeException;
+
 /**
  * @psalm-import-type BlockJson from Block
  *
@@ -20,7 +23,7 @@ class TableOfContents implements BlockInterface
     private function __construct(Block $block)
     {
         if (!$block->isTableOfContents()) {
-            throw new \Exception("Block must be of type " . self::TYPE);
+            throw new BlockTypeException(self::TYPE);
         }
 
         $this->block = $block;
@@ -53,5 +56,13 @@ class TableOfContents implements BlockInterface
     public function block(): Block
     {
         return $this->block;
+    }
+
+    public function changeChildren(array $children): self
+    {
+        throw new NotionException(
+            "This block does not support children.",
+            "no_children_support",
+        );
     }
 }
