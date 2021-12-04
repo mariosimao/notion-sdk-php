@@ -82,7 +82,6 @@ class ColumnList implements BlockInterface
                     "Column lists accept only columns as children.",
                     "validation_error",
                 );
-
             }
         }
 
