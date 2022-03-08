@@ -91,4 +91,46 @@ class BlocksTest extends TestCase
         $this->expectException(NotionException::class);
         $client->blocks()->findChildren("inexistentId");
     }
+
+    public function test_delete_block(): void
+    {
+        $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
+        $client = Notion::create($token);
+
+        $page = Page::create(PageParent::page(self::DEFAULT_PARENT_ID))->withTitle("Blocks test");
+
+        $content = [
+            Heading1::create()->withText([ RichText::createText("Heading 1") ]),
+        ];
+
+        $newPage = $client->pages()->create($page, $content);
+
+        $childrenBeforeDelete = $client->blocks()->findChildren($newPage->id());
+
+        $block = $childrenBeforeDelete[0];
+
+        $deletedBlock = $client->blocks()->delete($block->block()->id());
+
+        $childrenAfterDelete = $client->blocks()->findChildren($newPage->id());
+
+        $this->assertTrue($deletedBlock->block()->archived());
+        $this->assertEmpty($childrenAfterDelete);
+
+        $client->pages()->delete($newPage);
+    }
+
+    public function test_delete_inexistent(): void
+    {
+        $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
+        $client = Notion::create($token);
+
+        $this->expectException(NotionException::class);
+        $client->blocks()->delete("inexistentId");
+    }
 }

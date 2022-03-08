@@ -73,4 +73,28 @@ class Client
             $children
         );
     }
+
+    public function delete(string $blockId): BlockInterface
+    {
+        $url = "https://api.notion.com/v1/blocks/{$blockId}";
+        $request = $this->requestFactory->createRequest("DELETE", $url)
+            ->withHeader("Authorization", "Bearer {$this->token}")
+            ->withHeader("Notion-Version", $this->version);
+
+        $response = $this->psrClient->sendRequest($request);
+
+        /** @var array */
+        $body = json_decode((string) $response->getBody(), true);
+
+        if ($response->getStatusCode() !== 200) {
+            /** @var array{ message: string, code: string} $body */
+            $message = $body["message"];
+            $code = $body["code"];
+
+            throw new NotionException($message, $code);
+        }
+
+        /** @var array{ type: string } $body */
+        return BlockFactory::fromArray($body);
+    }
 }

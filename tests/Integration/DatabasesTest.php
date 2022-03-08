@@ -123,7 +123,7 @@ class DatabasesTest extends TestCase
         $client->databases()->update($database);
     }
 
-    public function test_delete_database_twice(): void
+    public function test_delete_inexistent(): void
     {
         $token = getenv("NOTION_TOKEN");
         if (!$token) {
@@ -131,12 +131,7 @@ class DatabasesTest extends TestCase
         }
         $client = Notion::create($token);
 
-        $database = Database::create(DatabaseParent::page(self::DEFAULT_PARENT_ID))
-            ->withAdvancedTitle([ RichText::createText("Dummy database") ]);
-
-        $database = $client->databases()->create($database);
-
-        $client->databases()->delete($database);
+        $database = Database::create(DatabaseParent::page(self::DEFAULT_PARENT_ID));
 
         $this->expectException(NotionException::class);
         $client->databases()->delete($database);
