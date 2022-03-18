@@ -209,4 +209,50 @@ class BlocksTest extends TestCase
             ]
         );
     }
+
+    public function test_update_block(): void
+    {
+        $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
+        $client = Notion::create($token);
+
+        $blocks = $client->blocks()->append(
+            self::DEFAULT_PARENT_ID,
+            [
+                Paragraph::fromString("This is a simple paragraph"),
+            ]
+        );
+
+        /** @var Paragraph $paragraph */
+        $paragraph = $blocks[0];
+        $paragraph = $paragraph->withText([
+            RichText::createText("This is a simple paragraph updated.")
+        ]);
+
+        /** @var Paragraph $updatedParagraph */
+        $updatedParagraph = $client->blocks()->update($paragraph);
+
+        $this->assertSame("This is a simple paragraph updated.", $updatedParagraph->toString());
+
+        // Teardown
+        foreach ($blocks as $block) {
+            $client->blocks()->delete($block->block()->id());
+        }
+    }
+
+    public function test_update_newly_created_block(): void
+    {
+        $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
+        $client = Notion::create($token);
+
+        $paragraph = Paragraph::fromString("This is a simple paragraph");
+
+        $this->expectException(NotionException::class);
+        $client->blocks()->update($paragraph);
+    }
 }
