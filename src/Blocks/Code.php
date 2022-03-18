@@ -158,10 +158,13 @@ class Code implements BlockInterface
     /** @internal */
     public function toUpdateArray(): array
     {
-        return [self::TYPE => [
-            "text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
-            "language" => $this->language,
-        ]];
+        return [
+            self::TYPE => [
+                "text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+                "language" => $this->language,
+            ],
+            "archived" => $this->block()->archived(),
+        ];
     }
 
     public function toString(): string

@@ -296,4 +296,13 @@ class CalloutTest extends TestCase
             $this->assertEquals("🌙", $callout->icon()->emoji());
         }
     }
+
+    public function test_array_for_update_operations(): void
+    {
+        $block = Callout::create();
+
+        $array = $block->toUpdateArray();
+
+        $this->assertCount(2, $array);
+    }
 }

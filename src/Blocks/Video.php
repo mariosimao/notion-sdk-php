@@ -62,7 +62,10 @@ class Video implements BlockInterface
     /** @internal */
     public function toUpdateArray(): array
     {
-        return [self::TYPE => $this->file->toArray()];
+        return [
+            self::TYPE => $this->file->toArray(),
+            "archived" => $this->block()->archived(),
+        ];
     }
 
     public function block(): Block

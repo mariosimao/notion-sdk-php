@@ -55,7 +55,10 @@ class Divider implements BlockInterface
     /** @internal */
     public function toUpdateArray(): array
     {
-        return [self::TYPE => []];
+        return [
+            self::TYPE => [],
+            "archived" => $this->block()->archived(),
+        ];
     }
 
     public function block(): Block

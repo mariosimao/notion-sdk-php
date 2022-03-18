@@ -101,10 +101,13 @@ class ToDo implements BlockInterface
     /** @internal */
     public function toUpdateArray(): array
     {
-        return [self::TYPE => [
-            "text"    => array_map(fn(RichText $t) => $t->toArray(), $this->text),
-            "checked" => $this->checked,
-        ]];
+        return [
+            self::TYPE => [
+                "text"    => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+                "checked" => $this->checked,
+            ],
+            "archived" => $this->block()->archived(),
+        ];
     }
 
     public function toString(): string

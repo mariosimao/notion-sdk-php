@@ -63,9 +63,12 @@ class Embed implements BlockInterface
     /** @internal */
     public function toUpdateArray(): array
     {
-        return [self::TYPE => [
-            "url" => $this->url
-        ]];
+        return [
+            self::TYPE => [
+                "url" => $this->url
+            ],
+            "archived" => $this->block()->archived(),
+        ];
     }
 
     public function block(): Block

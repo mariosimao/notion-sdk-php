@@ -111,4 +111,14 @@ class FileBlockTest extends TestCase
         /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren([]);
     }
+
+    public function test_array_for_update_operations(): void
+    {
+        $file = File::createExternal("https://example.com/file.doc");
+        $block = FileBlock::create($file);
+
+        $array = $block->toUpdateArray();
+
+        $this->assertCount(2, $array);
+    }
 }

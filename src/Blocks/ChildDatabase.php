@@ -70,9 +70,12 @@ class ChildDatabase implements BlockInterface
     /** @internal */
     public function toUpdateArray(): array
     {
-        return [self::TYPE => [
-            "title" => $this->databaseTitle,
-        ]];
+        return [
+            self::TYPE => [
+                "title" => $this->databaseTitle,
+            ],
+            "archived" => $this->block()->archived(),
+        ];
     }
 
     public function block(): Block

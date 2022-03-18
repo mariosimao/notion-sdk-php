@@ -70,9 +70,12 @@ class ChildPage implements BlockInterface
     /** @internal */
     public function toUpdateArray(): array
     {
-        return [self::TYPE => [
-            "title" => $this->databaseTitle,
-        ]];
+        return [
+            self::TYPE => [
+                "title" => $this->pageTitle,
+            ],
+            "archived" => $this->block()->archived(),
+        ];
     }
 
     public function block(): Block

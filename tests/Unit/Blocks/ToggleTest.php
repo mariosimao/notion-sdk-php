@@ -184,4 +184,13 @@ class ToggleTest extends TestCase
         $this->assertCount(1, $toggle->children());
         $this->assertEquals($nestedToggle, $toggle->children()[0]);
     }
+
+    public function test_array_for_update_operations(): void
+    {
+        $block = Toggle::create();
+
+        $array = $block->toUpdateArray();
+
+        $this->assertCount(2, $array);
+    }
 }
