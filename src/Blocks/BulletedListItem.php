@@ -27,7 +27,6 @@ class BulletedListItem implements BlockInterface
     private Block $block;
 
     /** @var list<RichText> */
-
     private array $text;
 
     /** @var list<\Notion\Blocks\BlockInterface> */
@@ -99,6 +98,14 @@ class BulletedListItem implements BlockInterface
         ];
 
         return $array;
+    }
+
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [self::TYPE => [
+            "text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+        ]];
     }
 
     /** Get item content as string */

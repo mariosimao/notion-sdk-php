@@ -79,6 +79,14 @@ class Heading1 implements BlockInterface
         return $array;
     }
 
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [self::TYPE => [
+            "text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+        ]];
+    }
+
     public function toString(): string
     {
         $string = "";

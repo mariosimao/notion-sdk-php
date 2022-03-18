@@ -59,6 +59,12 @@ class Pdf implements BlockInterface
         return $array;
     }
 
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [self::TYPE => $this->file->toArray()];
+    }
+
     public function block(): Block
     {
         return $this->block;

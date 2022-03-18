@@ -155,6 +155,15 @@ class Code implements BlockInterface
         return $array;
     }
 
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [self::TYPE => [
+            "text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "language" => $this->language,
+        ]];
+    }
+
     public function toString(): string
     {
         $string = "";

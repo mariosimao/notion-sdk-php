@@ -81,6 +81,15 @@ class Bookmark implements BlockInterface
         return $array;
     }
 
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [self::TYPE => [
+            "url" => $this->url,
+            "caption" => array_map(fn(RichText $t) => $t->toArray(), $this->caption),
+        ]];
+    }
+
     /** Get block common object */
     public function block(): Block
     {

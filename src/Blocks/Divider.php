@@ -52,6 +52,12 @@ class Divider implements BlockInterface
         return $array;
     }
 
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [self::TYPE => []];
+    }
+
     public function block(): Block
     {
         return $this->block;

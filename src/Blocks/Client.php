@@ -141,11 +141,7 @@ class Client
     {
         $blockId = $block->block()->id();
 
-        $data = $block->toArray();
-        unset($data[$block->block()->type()]["children"]);
-        $json = json_encode([
-            $block->block()->type() => $data[$block->block()->type()],
-        ]);
+        $json = json_encode($block->toUpdateArray());
 
         $url = "https://api.notion.com/v1/blocks/{$blockId}";
         $request = $this->requestFactory->createRequest("PATCH", $url)

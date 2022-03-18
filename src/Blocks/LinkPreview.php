@@ -57,6 +57,14 @@ class LinkPreview implements BlockInterface
         return $array;
     }
 
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [self::TYPE => [
+            "url" => $this->url
+        ]];
+    }
+
     public function block(): Block
     {
         return $this->block;

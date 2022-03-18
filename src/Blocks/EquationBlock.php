@@ -62,6 +62,12 @@ class EquationBlock implements BlockInterface
         return $array;
     }
 
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [self::TYPE => $this->equation->toArray()];
+    }
+
     public function block(): Block
     {
         return $this->block;

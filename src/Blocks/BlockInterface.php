@@ -7,6 +7,7 @@ interface BlockInterface
 {
     public static function fromArray(array $array): self;
     public function toArray(): array;
+    public function toUpdateArray(): array;
 
     public function block(): Block;
     /** @param list<BlockInterface> $children */
