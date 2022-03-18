@@ -97,4 +97,12 @@ class ColumnList implements BlockInterface
         /** @var list<Column> $children */
         return new self($this->block(), $children);
     }
+
+    public function archive(): BlockInterface
+    {
+        return new self(
+            $this->block->archive(),
+            $this->columns,
+        );
+    }
 }

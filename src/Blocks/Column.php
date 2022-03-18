@@ -104,4 +104,12 @@ class Column implements BlockInterface
     {
         return $this->children;
     }
+
+    public function archive(): BlockInterface
+    {
+        return new self(
+            $this->block->archive(),
+            $this->children,
+        );
+    }
 }

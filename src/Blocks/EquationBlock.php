@@ -93,4 +93,12 @@ class EquationBlock implements BlockInterface
             "no_children_support",
         );
     }
+
+    public function archive(): BlockInterface
+    {
+        return new self(
+            $this->block->archive(),
+            $this->equation,
+        );
+    }
 }

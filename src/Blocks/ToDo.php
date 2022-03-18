@@ -190,4 +190,14 @@ class ToDo implements BlockInterface
             $children,
         );
     }
+
+    public function archive(): BlockInterface
+    {
+        return new self(
+            $this->block->archive(),
+            $this->text,
+            $this->checked,
+            $this->children,
+        );
+    }
 }

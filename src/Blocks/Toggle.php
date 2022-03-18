@@ -164,4 +164,13 @@ class Toggle implements BlockInterface
             $children,
         );
     }
+
+    public function archive(): BlockInterface
+    {
+        return new self(
+            $this->block->archive(),
+            $this->text,
+            $this->children,
+        );
+    }
 }

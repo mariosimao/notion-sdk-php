@@ -12,4 +12,5 @@ interface BlockInterface
     public function block(): Block;
     /** @param list<BlockInterface> $children */
     public function changeChildren(array $children): self;
+    public function archive(): self;
 }
