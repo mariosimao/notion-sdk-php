@@ -80,6 +80,41 @@ class BlocksTest extends TestCase
         $client->pages()->delete($newPage);
     }
 
+    public function test_find_block(): void
+    {
+        $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
+        $client = Notion::create($token);
+
+        $page = Page::create(PageParent::page(self::DEFAULT_PARENT_ID))->withTitle("Blocks test");
+
+        $content = [
+            Heading1::create()->withText([ RichText::createText("Heading 1") ]),
+        ];
+
+        $newPage = $client->pages()->create($page, $content);
+
+        $children = $client->blocks()->findChildren($newPage->id());
+
+        $block = $client->blocks()->find($children[0]->block()->id());
+
+        $this->assertTrue($block->block()->isHeading1());
+    }
+
+    public function test_find_inexistent_block(): void
+    {
+        $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
+        $client = Notion::create($token);
+
+        $this->expectException(NotionException::class);
+        $client->blocks()->find("inexistentId");
+    }
+
     public function test_find_children_of_inexistent_block(): void
     {
         $token = getenv("NOTION_TOKEN");
