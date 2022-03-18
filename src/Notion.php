@@ -13,7 +13,7 @@ use Psr\Http\Message\RequestFactoryInterface;
 
 class Notion
 {
-    public const NOTION_VERSION = "2021-08-16";
+    public const NOTION_VERSION = "2022-02-22";
 
     private ClientInterface $psrClient;
     private RequestFactoryInterface $requestFactory;
