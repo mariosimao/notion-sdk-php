@@ -98,6 +98,45 @@ class Client
         );
     }
 
+    /**
+     * @param BlockInterface[] $blocks
+     *
+     * @return BlockInterface[] Newly created blocks
+     */
+    public function append(string $blockId, array $blocks): array
+    {
+        $data = json_encode([
+            "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $blocks),
+        ]);
+
+        $url = "https://api.notion.com/v1/blocks/{$blockId}/children";
+        $request = $this->requestFactory->createRequest("PATCH", $url)
+            ->withHeader("Authorization", "Bearer {$this->token}")
+            ->withHeader("Notion-Version", $this->version)
+            ->withHeader("Content-Type", "application/json");
+
+        $request->getBody()->write($data);
+
+        $response = $this->psrClient->sendRequest($request);
+
+        /** @var array */
+        $body = json_decode((string) $response->getBody(), true);
+
+        if ($response->getStatusCode() !== 200) {
+            /** @var array{ message: string, code: string} $body */
+            $message = $body["message"];
+            $code = $body["code"];
+
+            throw new NotionException($message, $code);
+        }
+
+        /** @var array{ results: list<array{ type: string }> } $body */
+        return array_map(
+            fn(array $blockArray): BlockInterface => BlockFactory::fromArray($blockArray),
+            $body["results"],
+        );
+    }
+
     public function delete(string $blockId): BlockInterface
     {
         $url = "https://api.notion.com/v1/blocks/{$blockId}";
