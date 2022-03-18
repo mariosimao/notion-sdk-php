@@ -100,6 +100,8 @@ class BlocksTest extends TestCase
 
         $block = $client->blocks()->find($children[0]->block()->id());
 
+        $client->pages()->delete($newPage);
+
         $this->assertTrue($block->block()->isHeading1());
     }
 
@@ -167,5 +169,44 @@ class BlocksTest extends TestCase
 
         $this->expectException(NotionException::class);
         $client->blocks()->delete("inexistentId");
+    }
+
+    public function test_append_block(): void
+    {
+        $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
+        $client = Notion::create($token);
+
+        $blocks = $client->blocks()->append(
+            self::DEFAULT_PARENT_ID,
+            [
+                Paragraph::fromString("This is a simple paragraph"),
+            ]
+        );
+
+        foreach ($blocks as $block) {
+            $client->blocks()->delete($block->block()->id());
+        }
+
+        $this->assertTrue($blocks[0]->block()->isParagraph());
+    }
+
+    public function test_append_to_inexistent_block(): void
+    {
+        $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
+        $client = Notion::create($token);
+
+        $this->expectException(NotionException::class);
+        $client->blocks()->append(
+            "inexistentId",
+            [
+                Paragraph::fromString("This is a simple paragraph"),
+            ]
+        );
     }
 }
