@@ -185,4 +185,13 @@ class BulletedListItemTest extends TestCase
         $this->assertCount(1, $item->children());
         $this->assertEquals($nested, $item->children()[0]);
     }
+
+    public function test_array_for_update_operations(): void
+    {
+        $block = BulletedListItem::create();
+
+        $array = $block->toUpdateArray();
+
+        $this->assertCount(2, $array);
+    }
 }

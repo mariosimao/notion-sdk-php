@@ -186,4 +186,13 @@ class ParagraphTest extends TestCase
         $this->assertCount(1, $paragraph->children());
         $this->assertEquals($nested, $paragraph->children()[0]);
     }
+
+    public function test_array_for_update_operations(): void
+    {
+        $block = Paragraph::create();
+
+        $array = $block->toUpdateArray();
+
+        $this->assertCount(2, $array);
+    }
 }

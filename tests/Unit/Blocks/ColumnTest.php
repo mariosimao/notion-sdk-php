@@ -74,4 +74,13 @@ class ColumnTest extends TestCase
 
         $this->assertEquals($array, $column->toArray());
     }
+
+    public function test_array_for_update_operations(): void
+    {
+        $block = Column::create([]);
+
+        $array = $block->toUpdateArray();
+
+        $this->assertCount(2, $array);
+    }
 }

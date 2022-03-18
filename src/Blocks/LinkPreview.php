@@ -57,6 +57,17 @@ class LinkPreview implements BlockInterface
         return $array;
     }
 
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [
+            self::TYPE => [
+                "url" => $this->url
+            ],
+            "archived" => $this->block()->archived(),
+        ];
+    }
+
     public function block(): Block
     {
         return $this->block;
@@ -72,6 +83,14 @@ class LinkPreview implements BlockInterface
         throw new NotionException(
             "This block does not support children.",
             "no_children_support",
+        );
+    }
+
+    public function archive(): BlockInterface
+    {
+        return new self(
+            $this->block->archive(),
+            $this->url,
         );
     }
 }

@@ -80,4 +80,13 @@ class BreadcrumbTest extends TestCase
         /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren([]);
     }
+
+    public function test_array_for_update_operations(): void
+    {
+        $block = Breadcrumb::create();
+
+        $array = $block->toUpdateArray();
+
+        $this->assertCount(2, $array);
+    }
 }

@@ -63,6 +63,15 @@ class ColumnList implements BlockInterface
         return $array;
     }
 
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [
+            self::TYPE => [],
+            "archived" => $this->block()->archived(),
+        ];
+    }
+
     public function block(): Block
     {
         return $this->block;
@@ -87,5 +96,13 @@ class ColumnList implements BlockInterface
 
         /** @var list<Column> $children */
         return new self($this->block(), $children);
+    }
+
+    public function archive(): BlockInterface
+    {
+        return new self(
+            $this->block->archive(),
+            $this->columns,
+        );
     }
 }

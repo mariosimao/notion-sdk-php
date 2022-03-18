@@ -79,6 +79,17 @@ class Heading1 implements BlockInterface
         return $array;
     }
 
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [
+            self::TYPE => [
+                "text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            ],
+            "archived" => $this->block()->archived(),
+        ];
+    }
+
     public function toString(): string
     {
         $string = "";
@@ -118,6 +129,14 @@ class Heading1 implements BlockInterface
         throw new NotionException(
             "This block does not support children.",
             "no_children_support",
+        );
+    }
+
+    public function archive(): BlockInterface
+    {
+        return new self(
+            $this->block->archive(),
+            $this->text,
         );
     }
 }

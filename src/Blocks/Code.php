@@ -155,6 +155,18 @@ class Code implements BlockInterface
         return $array;
     }
 
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [
+            self::TYPE => [
+                "text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+                "language" => $this->language,
+            ],
+            "archived" => $this->block()->archived(),
+        ];
+    }
+
     public function toString(): string
     {
         $string = "";
@@ -204,6 +216,15 @@ class Code implements BlockInterface
         throw new NotionException(
             "This block does not support children.",
             "no_children_support",
+        );
+    }
+
+    public function archive(): BlockInterface
+    {
+        return new self(
+            $this->block->archive(),
+            $this->text,
+            $this->language,
         );
     }
 }

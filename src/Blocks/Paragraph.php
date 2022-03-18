@@ -90,6 +90,17 @@ class Paragraph implements BlockInterface
         return $array;
     }
 
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [
+            self::TYPE => [
+                "text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            ],
+            "archived" => $this->block()->archived(),
+        ];
+    }
+
     public function toString(): string
     {
         $string = "";
@@ -151,6 +162,15 @@ class Paragraph implements BlockInterface
             $this->block->withHasChildren(true),
             $this->text,
             $children,
+        );
+    }
+
+    public function archive(): BlockInterface
+    {
+        return new self(
+            $this->block->archive(),
+            $this->text,
+            $this->children,
         );
     }
 }

@@ -85,6 +85,15 @@ class Column implements BlockInterface
         return $array;
     }
 
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [
+            self::TYPE => [],
+            "archived" => $this->block()->archived(),
+        ];
+    }
+
     public function block(): Block
     {
         return $this->block;
@@ -94,5 +103,13 @@ class Column implements BlockInterface
     public function children(): array
     {
         return $this->children;
+    }
+
+    public function archive(): BlockInterface
+    {
+        return new self(
+            $this->block->archive(),
+            $this->children,
+        );
     }
 }

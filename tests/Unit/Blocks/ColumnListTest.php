@@ -108,4 +108,13 @@ class ColumnListTest extends TestCase
         /** @psalm-suppress UnusedMethodCall */
         $list->changeChildren([ Paragraph::fromString("This should be a column.") ]);
     }
+
+    public function test_array_for_update_operations(): void
+    {
+        $block = ColumnList::create([]);
+
+        $array = $block->toUpdateArray();
+
+        $this->assertCount(2, $array);
+    }
 }

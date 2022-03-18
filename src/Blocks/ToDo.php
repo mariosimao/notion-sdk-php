@@ -98,6 +98,18 @@ class ToDo implements BlockInterface
         return $array;
     }
 
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [
+            self::TYPE => [
+                "text"    => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+                "checked" => $this->checked,
+            ],
+            "archived" => $this->block()->archived(),
+        ];
+    }
+
     public function toString(): string
     {
         $string = "";
@@ -176,6 +188,16 @@ class ToDo implements BlockInterface
             $this->text,
             $this->checked,
             $children,
+        );
+    }
+
+    public function archive(): BlockInterface
+    {
+        return new self(
+            $this->block->archive(),
+            $this->text,
+            $this->checked,
+            $this->children,
         );
     }
 }

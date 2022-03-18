@@ -112,6 +112,18 @@ class Callout implements BlockInterface
         return $array;
     }
 
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [
+            self::TYPE => [
+                "text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+                "icon"     => $this->icon->toArray(),
+            ],
+            "archived" => $this->block()->archived(),
+        ];
+    }
+
     public function toString(): string
     {
         $string = "";
@@ -203,6 +215,16 @@ class Callout implements BlockInterface
             $this->text,
             $this->icon,
             $children,
+        );
+    }
+
+    public function archive(): BlockInterface
+    {
+        return new self(
+            $this->block->archive(),
+            $this->text,
+            $this->icon,
+            $this->children,
         );
     }
 }

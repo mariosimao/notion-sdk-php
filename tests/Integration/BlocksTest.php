@@ -209,4 +209,62 @@ class BlocksTest extends TestCase
             ]
         );
     }
+
+    public function test_update_block(): void
+    {
+        $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
+        $client = Notion::create($token);
+
+        $blocks = $client->blocks()->append(
+            self::DEFAULT_PARENT_ID,
+            [
+                Bookmark::create("https://notion.so"),
+                Breadcrumb::create(),
+                BulletedListItem::create()->withText([ RichText::createText("List item ")]),
+                Callout::create()->withText([ RichText::createText("Callout") ]),
+                // TODO: Child database
+                // TODO: Child page
+                Code::create("<?php echo 'Hello world!';", Code::LANG_PHP),
+                Divider::create(),
+                // TODO: Embed
+                EquationBlock::create("a^2 + b^2 = c^2"),
+                // TODO: File
+                Heading1::create()->withText([ RichText::createText("Heading 1") ]),
+                Heading2::create()->withText([ RichText::createText("Heading 2") ]),
+                Heading3::create()->withText([ RichText::createText("Heading 3") ]),
+                // TODO: Image
+                NumberedListItem::create()->withText([ RichText::createText("List item ")]),
+                Paragraph::fromString("Paragraph"),
+                // TODO: PDF
+                TableOfContents::create(),
+                ToDo::fromString("To do item"),
+                Toggle::fromString("Toggle"),
+                // TODO: Video
+                // TODO: ColumnList
+            ]
+        );
+
+        foreach ($blocks as $block) {
+            $client->blocks()->update($block->archive());
+            $archivedBlock = $client->blocks()->find($block->block()->id());
+            $this->assertTrue($archivedBlock->block()->archived());
+        }
+    }
+
+    public function test_update_newly_created_block(): void
+    {
+        $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
+        $client = Notion::create($token);
+
+        $paragraph = Paragraph::fromString("This is a simple paragraph");
+
+        $this->expectException(NotionException::class);
+        $client->blocks()->update($paragraph);
+    }
 }
