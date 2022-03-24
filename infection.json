@@ -6,7 +6,7 @@
         ]
     },
     "logs": {
-        "rich_text": ".infection/infection.log",
+        "text": ".infection/infection.log",
         "summary": ".infection/summary.log",
         "json": ".infection/infection-log.json",
         "perMutator": ".infection/per-mutator.md"
