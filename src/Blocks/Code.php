@@ -12,7 +12,7 @@ use Notion\NotionException;
  *
  * @psalm-type CodeJson = array{
  *      code: array{
- *          text: list<RichTextJson>,
+ *          rich_text: list<RichTextJson>,
  *          language: self::LANG_*,
  *      },
  * }

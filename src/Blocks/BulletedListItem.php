@@ -13,7 +13,7 @@ use Notion\Common\RichText;
  *
  * @psalm-type BulletedListItemJson = array{
  *      bulleted_list_item: array{
- *          text: list<RichTextJson>,
+ *          rich_text: list<RichTextJson>,
  *          children?: list<BlockJson>,
  *      },
  * }

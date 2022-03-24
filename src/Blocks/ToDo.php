@@ -12,7 +12,7 @@ use Notion\Common\RichText;
  * @psalm-type ToDoJson = array{
  *      to_do: array{
  *          checked: bool,
- *          text: list<RichTextJson>,
+ *          rich_text: list<RichTextJson>,
  *          children?: list<BlockJson>,
  *      },
  * }

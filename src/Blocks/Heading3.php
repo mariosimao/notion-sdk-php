@@ -12,7 +12,7 @@ use Notion\NotionException;
  *
  * @psalm-type Heading3Json = array{
  *      heading_3: array{
- *          text: list<RichTextJson>,
+ *          rich_text: list<RichTextJson>,
  *      },
  * }
  *

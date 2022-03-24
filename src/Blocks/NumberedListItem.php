@@ -11,7 +11,7 @@ use Notion\Common\RichText;
  *
  * @psalm-type NumberedListItemJson = array{
  *      numbered_list_item: array{
- *          text: list<RichTextJson>,
+ *          rich_text: list<RichTextJson>,
  *          children?: list<BlockJson>,
  *      },
  * }

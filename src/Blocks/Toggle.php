@@ -11,7 +11,7 @@ use Notion\Common\RichText;
  *
  * @psalm-type ToggleJson = array{
  *      toggle: array{
- *          text: list<RichTextJson>,
+ *          rich_text: list<RichTextJson>,
  *          children?: list<BlockJson>,
  *      },
  * }

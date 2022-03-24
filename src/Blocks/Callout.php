@@ -16,7 +16,7 @@ use Notion\Common\RichText;
  *
  * @psalm-type CalloutJson = array{
  *      callout: array{
- *          text: list<RichTextJson>,
+ *          rich_text: list<RichTextJson>,
  *          children?: list<BlockJson>,
  *          icon: EmojiJson|FileJson,
  *      },

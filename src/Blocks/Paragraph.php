@@ -11,7 +11,7 @@ use Notion\Common\RichText;
  *
  * @psalm-type ParagraphJson = array{
  *      paragraph: array{
- *          text: list<RichTextJson>,
+ *          rich_text: list<RichTextJson>,
  *          children?: list<BlockJson>,
  *      },
  * }
