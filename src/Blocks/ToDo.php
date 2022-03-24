@@ -76,7 +76,7 @@ class ToDo implements BlockInterface
         /** @psalm-var ToDoJson $array */
         $todo = $array[self::TYPE];
 
-        $text = array_map(fn($t) => RichText::fromArray($t), $todo["text"]);
+        $text = array_map(fn($t) => RichText::fromArray($t), $todo["rich_text"]);
 
         $checked = $todo["checked"];
 
@@ -90,7 +90,7 @@ class ToDo implements BlockInterface
         $array = $this->block->toArray();
 
         $array[self::TYPE] = [
-            "text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
             "checked"  => $this->checked,
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
         ];
@@ -103,7 +103,7 @@ class ToDo implements BlockInterface
     {
         return [
             self::TYPE => [
-                "text"    => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+                "rich_text"    => array_map(fn(RichText $t) => $t->toArray(), $this->text),
                 "checked" => $this->checked,
             ],
             "archived" => $this->block()->archived(),

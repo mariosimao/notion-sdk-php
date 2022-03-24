@@ -37,12 +37,12 @@ class BulletedListItemTest extends TestCase
             "has_children"     => false,
             "type"             => "bulleted_list_item",
             "bulleted_list_item"        => [
-                "text" => [
+                "rich_text" => [
                     [
                         "plain_text"  => "Notion items ",
                         "href"        => null,
-                        "type"        => "text",
-                        "text"        => [
+                        "type"        => "rich_text",
+                        "rich_text"        => [
                             "content" => "Notion items ",
                         ],
                         "annotations" => [
@@ -57,8 +57,8 @@ class BulletedListItemTest extends TestCase
                     [
                         "plain_text"  => "rock!",
                         "href"        => null,
-                        "type"        => "text",
-                        "text"        => [
+                        "type"        => "rich_text",
+                        "rich_text"        => [
                             "content" => "rock!",
                         ],
                         "annotations" => [
@@ -97,7 +97,7 @@ class BulletedListItemTest extends TestCase
             "has_children"     => false,
             "type"             => "wrong-type",
             "bulleted_list_item"        => [
-                "text"     => [],
+                "rich_text"     => [],
                 "children" => [],
             ],
         ];
@@ -117,7 +117,7 @@ class BulletedListItemTest extends TestCase
             "has_children"     => false,
             "type"             => "bulleted_list_item",
             "bulleted_list_item" => [
-                "text" => [[
+                "rich_text" => [[
                     "plain_text"  => "Simple item",
                     "href"        => null,
                     "type"        => "text",

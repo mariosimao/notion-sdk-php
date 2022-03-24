@@ -134,7 +134,7 @@ class Code implements BlockInterface
 
         /** @psalm-var CodeJson $array */
         $code = $array[self::TYPE];
-        $text = array_map(fn($t) => RichText::fromArray($t), $code["text"]);
+        $text = array_map(fn($t) => RichText::fromArray($t), $code["rich_text"]);
         $language = $code["language"];
 
         return new self($block, $text, $language);
@@ -148,7 +148,7 @@ class Code implements BlockInterface
         $array = $this->block->toArray();
 
         $array[self::TYPE] = [
-            "text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
             "language" => $this->language,
         ];
 
@@ -160,7 +160,7 @@ class Code implements BlockInterface
     {
         return [
             self::TYPE => [
-                "text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+                "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
                 "language" => $this->language,
             ],
             "archived" => $this->block()->archived(),

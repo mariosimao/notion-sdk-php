@@ -71,7 +71,7 @@ class Toggle implements BlockInterface
         /** @psalm-var ToggleJson $array */
         $toggle = $array[self::TYPE];
 
-        $text = array_map(fn($t) => RichText::fromArray($t), $toggle["text"]);
+        $text = array_map(fn($t) => RichText::fromArray($t), $toggle["rich_text"]);
 
         $children = array_map(fn($b) => BlockFactory::fromArray($b), $toggle["children"] ?? []);
 
@@ -83,7 +83,7 @@ class Toggle implements BlockInterface
         $array = $this->block->toArray();
 
         $array[self::TYPE] = [
-            "text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
         ];
 
@@ -95,7 +95,7 @@ class Toggle implements BlockInterface
     {
         return [
             self::TYPE => [
-                "text"    => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+                "rich_text"    => array_map(fn(RichText $t) => $t->toArray(), $this->text),
             ],
             "archived" => $this->block()->archived(),
         ];

@@ -63,7 +63,7 @@ class Heading2 implements BlockInterface
         /** @psalm-var Heading2Json $array */
         $heading = $array[self::TYPE];
 
-        $text = array_map(fn($t) => RichText::fromArray($t), $heading["text"]);
+        $text = array_map(fn($t) => RichText::fromArray($t), $heading["rich_text"]);
 
         return new self($block, $text);
     }
@@ -73,7 +73,7 @@ class Heading2 implements BlockInterface
         $array = $this->block->toArray();
 
         $array[self::TYPE] = [
-            "text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
         ];
 
         return $array;
@@ -84,7 +84,7 @@ class Heading2 implements BlockInterface
     {
         return [
             self::TYPE => [
-                "text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+                "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
             ],
             "archived" => $this->block()->archived(),
         ];

@@ -183,8 +183,8 @@ class DatabaseTest extends TestCase
                     "code"          => false,
                     "color"         => "default",
                 ],
-                "type" => "text",
-                "text" => [ "content" => "Database title" ],
+                "type" => "rich_text",
+                "rich_text" => [ "content" => "Database title" ],
             ]],
             "icon" => [
                 "type" => "emoji",
@@ -229,8 +229,8 @@ class DatabaseTest extends TestCase
                     "code"          => false,
                     "color"         => "default",
                 ],
-                "type" => "text",
-                "text" => [ "content" => "Database title" ],
+                "type" => "rich_text",
+                "rich_text" => [ "content" => "Database title" ],
             ]],
             "icon" => [
                 "type" => "external",

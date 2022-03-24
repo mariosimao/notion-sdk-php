@@ -37,12 +37,12 @@ class ParagraphTest extends TestCase
             "has_children"     => false,
             "type"             => "paragraph",
             "paragraph"        => [
-                "text" => [
+                "rich_text" => [
                     [
                         "plain_text"  => "Notion paragraphs ",
                         "href"        => null,
-                        "type"        => "text",
-                        "text"        => [
+                        "type"        => "rich_text",
+                        "rich_text"        => [
                             "content" => "Notion paragraphs ",
                         ],
                         "annotations" => [
@@ -57,8 +57,8 @@ class ParagraphTest extends TestCase
                     [
                         "plain_text"  => "rock!",
                         "href"        => null,
-                        "type"        => "text",
-                        "text"        => [
+                        "type"        => "rich_text",
+                        "rich_text"        => [
                             "content" => "rock!",
                         ],
                         "annotations" => [
@@ -97,7 +97,7 @@ class ParagraphTest extends TestCase
             "has_children"     => false,
             "type"             => "wrong-type",
             "paragraph"        => [
-                "text"     => [],
+                "rich_text"     => [],
                 "children" => [],
             ],
         ];
@@ -116,7 +116,7 @@ class ParagraphTest extends TestCase
             "has_children"      => false,
             "type"             => "paragraph",
             "paragraph"        => [
-                "text" => [[
+                "rich_text" => [[
                     "plain_text"  => "Simple paragraph",
                     "href"        => null,
                     "type"        => "text",

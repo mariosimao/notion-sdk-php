@@ -31,12 +31,12 @@ class CodeTest extends TestCase
             "has_children"     => false,
             "type"             => "code",
             "code"        => [
-                "text" => [
+                "rich_text" => [
                     [
                         "plain_text"  => "<?php\necho 'Hello World!';",
                         "href"        => null,
-                        "type"        => "text",
-                        "text"        => [
+                        "type"        => "rich_text",
+                        "rich_text"        => [
                             "content" => "<?php\necho 'Hello World!';",
                         ],
                         "annotations" => [
@@ -73,7 +73,7 @@ class CodeTest extends TestCase
             "type"             => "wrong-type",
             "code"             => [
                 "language" => "php",
-                "text" => [],
+                "rich_text" => [],
             ],
         ];
 
@@ -94,7 +94,7 @@ class CodeTest extends TestCase
             "type"             => "code",
             "code"        => [
                 "language" => "php",
-                "text" => [[
+                "rich_text" => [[
                     "plain_text"  => "<?php\necho 'Hello World!';",
                     "href"        => null,
                     "type"        => "text",
