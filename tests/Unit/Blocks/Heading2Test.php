@@ -37,12 +37,12 @@ class Heading2Test extends TestCase
             "has_children"     => false,
             "type"             => "heading_2",
             "heading_2"        => [
-                "text" => [
+                "rich_text" => [
                     [
                         "plain_text"  => "Notion headings ",
                         "href"        => null,
-                        "type"        => "text",
-                        "text"        => [
+                        "type"        => "rich_text",
+                        "rich_text"        => [
                             "content" => "Notion headings ",
                         ],
                         "annotations" => [
@@ -57,8 +57,8 @@ class Heading2Test extends TestCase
                     [
                         "plain_text"  => "rock!",
                         "href"        => null,
-                        "type"        => "text",
-                        "text"        => [
+                        "type"        => "rich_text",
+                        "rich_text"        => [
                             "content" => "rock!",
                         ],
                         "annotations" => [
@@ -96,7 +96,7 @@ class Heading2Test extends TestCase
             "has_children"     => false,
             "type"             => "wrong-type",
             "heading_2"        => [
-                "text"     => [],
+                "rich_text"     => [],
             ],
         ];
 
@@ -115,7 +115,7 @@ class Heading2Test extends TestCase
             "has_children"      => false,
             "type"             => "heading_2",
             "heading_2"        => [
-                "text" => [[
+                "rich_text" => [[
                     "plain_text"  => "Simple heading",
                     "href"        => null,
                     "type"        => "text",

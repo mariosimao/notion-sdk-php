@@ -16,7 +16,7 @@ use Notion\Common\RichText;
  *
  * @psalm-type CalloutJson = array{
  *      callout: array{
- *          text: list<RichTextJson>,
+ *          rich_text: list<RichTextJson>,
  *          children?: list<BlockJson>,
  *          icon: EmojiJson|FileJson,
  *      },
@@ -83,7 +83,7 @@ class Callout implements BlockInterface
         /** @psalm-var CalloutJson $array */
         $callout = $array[self::TYPE];
 
-        $text = array_map(fn($t) => RichText::fromArray($t), $callout["text"]);
+        $text = array_map(fn($t) => RichText::fromArray($t), $callout["rich_text"]);
 
         $iconArray = $callout["icon"];
         if ($iconArray["type"] === "emoji") {
@@ -104,7 +104,7 @@ class Callout implements BlockInterface
         $array = $this->block->toArray();
 
         $array[self::TYPE] = [
-            "text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
             "icon"     => $this->icon->toArray(),
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
         ];
@@ -117,7 +117,7 @@ class Callout implements BlockInterface
     {
         return [
             self::TYPE => [
-                "text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+                "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
                 "icon"     => $this->icon->toArray(),
             ],
             "archived" => $this->block()->archived(),
