@@ -111,4 +111,14 @@ class VideoTest extends TestCase
         /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren([]);
     }
+
+    public function test_array_for_update_operations(): void
+    {
+        $file = File::createExternal("https://my-site.com/video.mp4");
+        $block = Video::create($file);
+
+        $array = $block->toUpdateArray();
+
+        $this->assertCount(2, $array);
+    }
 }

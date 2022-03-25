@@ -81,6 +81,18 @@ class Bookmark implements BlockInterface
         return $array;
     }
 
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [
+            self::TYPE => [
+                "url" => $this->url,
+                "caption" => array_map(fn(RichText $t) => $t->toArray(), $this->caption),
+            ],
+            "archived" => $this->block()->archived(),
+        ];
+    }
+
     /** Get block common object */
     public function block(): Block
     {
@@ -126,6 +138,15 @@ class Bookmark implements BlockInterface
         throw new NotionException(
             "This block does not support children.",
             "no_children_support",
+        );
+    }
+
+    public function archive(): BlockInterface
+    {
+        return new self(
+            $this->block->archive(),
+            $this->url,
+            $this->caption,
         );
     }
 }

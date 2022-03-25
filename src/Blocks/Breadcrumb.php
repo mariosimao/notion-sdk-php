@@ -53,6 +53,15 @@ class Breadcrumb implements BlockInterface
         return $array;
     }
 
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [
+            self::TYPE => [],
+            "archived" => $this->block()->archived(),
+        ];
+    }
+
     public function block(): Block
     {
         return $this->block;
@@ -64,5 +73,10 @@ class Breadcrumb implements BlockInterface
             "This block does not support children.",
             "no_children_support",
         );
+    }
+
+    public function archive(): BlockInterface
+    {
+        return new self($this->block->archive());
     }
 }

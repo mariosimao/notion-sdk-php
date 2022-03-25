@@ -39,12 +39,12 @@ class ToDoTest extends TestCase
             "type"             => "to_do",
             "to_do"        => [
                 "checked" => true,
-                "text" => [
+                "rich_text" => [
                     [
                         "plain_text"  => "Notion to dos ",
                         "href"        => null,
-                        "type"        => "text",
-                        "text"        => [
+                        "type"        => "rich_text",
+                        "rich_text"        => [
                             "content" => "Notion to dos ",
                         ],
                         "annotations" => [
@@ -59,8 +59,8 @@ class ToDoTest extends TestCase
                     [
                         "plain_text"  => "rock!",
                         "href"        => null,
-                        "type"        => "text",
-                        "text"        => [
+                        "type"        => "rich_text",
+                        "rich_text"        => [
                             "content" => "rock!",
                         ],
                         "annotations" => [
@@ -101,7 +101,7 @@ class ToDoTest extends TestCase
             "type"             => "wrong-type",
             "to_do"        => [
                 "checked"  => false,
-                "text"     => [],
+                "rich_text"     => [],
                 "children" => [],
             ],
         ];
@@ -122,7 +122,7 @@ class ToDoTest extends TestCase
             "type"             => "to_do",
             "to_do"            => [
                 "checked" => false,
-                "text" => [[
+                "rich_text" => [[
                     "plain_text"  => "Simple to do",
                     "href"        => null,
                     "type"        => "text",
@@ -204,5 +204,14 @@ class ToDoTest extends TestCase
         $toDo = ToDo::fromString("Simple to do.")->check()->uncheck();
 
         $this->assertFalse($toDo->checked());
+    }
+
+    public function test_array_for_update_operations(): void
+    {
+        $block = ToDo::create();
+
+        $array = $block->toUpdateArray();
+
+        $this->assertCount(2, $array);
     }
 }

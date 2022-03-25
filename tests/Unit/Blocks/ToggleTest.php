@@ -37,12 +37,12 @@ class ToggleTest extends TestCase
             "has_children"     => false,
             "type"             => "toggle",
             "toggle"        => [
-                "text" => [
+                "rich_text" => [
                     [
                         "plain_text"  => "Notion toggles ",
                         "href"        => null,
-                        "type"        => "text",
-                        "text"        => [
+                        "type"        => "rich_text",
+                        "rich_text"        => [
                             "content" => "Notion toggles ",
                         ],
                         "annotations" => [
@@ -57,8 +57,8 @@ class ToggleTest extends TestCase
                     [
                         "plain_text"  => "rock!",
                         "href"        => null,
-                        "type"        => "text",
-                        "text"        => [
+                        "type"        => "rich_text",
+                        "rich_text"        => [
                             "content" => "rock!",
                         ],
                         "annotations" => [
@@ -97,7 +97,7 @@ class ToggleTest extends TestCase
             "has_children"     => false,
             "type"             => "wrong-type",
             "toggle"        => [
-                "text"     => [],
+                "rich_text"     => [],
                 "children" => [],
             ],
         ];
@@ -116,7 +116,7 @@ class ToggleTest extends TestCase
             "has_children"      => false,
             "type"             => "toggle",
             "toggle"        => [
-                "text" => [[
+                "rich_text" => [[
                     "plain_text"  => "Simple toggle",
                     "href"        => null,
                     "type"        => "text",
@@ -183,5 +183,14 @@ class ToggleTest extends TestCase
 
         $this->assertCount(1, $toggle->children());
         $this->assertEquals($nestedToggle, $toggle->children()[0]);
+    }
+
+    public function test_array_for_update_operations(): void
+    {
+        $block = Toggle::create();
+
+        $array = $block->toUpdateArray();
+
+        $this->assertCount(2, $array);
     }
 }

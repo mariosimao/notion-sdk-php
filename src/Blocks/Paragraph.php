@@ -11,7 +11,7 @@ use Notion\Common\RichText;
  *
  * @psalm-type ParagraphJson = array{
  *      paragraph: array{
- *          text: list<RichTextJson>,
+ *          rich_text: list<RichTextJson>,
  *          children?: list<BlockJson>,
  *      },
  * }
@@ -71,7 +71,7 @@ class Paragraph implements BlockInterface
         /** @psalm-var ParagraphJson $array */
         $paragraph = $array[self::TYPE];
 
-        $text = array_map(fn($t) => RichText::fromArray($t), $paragraph["text"]);
+        $text = array_map(fn($t) => RichText::fromArray($t), $paragraph["rich_text"]);
 
         $children = array_map(fn($b) => BlockFactory::fromArray($b), $paragraph["children"] ?? []);
 
@@ -83,11 +83,22 @@ class Paragraph implements BlockInterface
         $array = $this->block->toArray();
 
         $array[self::TYPE] = [
-            "text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
         ];
 
         return $array;
+    }
+
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [
+            self::TYPE => [
+                "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            ],
+            "archived" => $this->block()->archived(),
+        ];
     }
 
     public function toString(): string
@@ -151,6 +162,15 @@ class Paragraph implements BlockInterface
             $this->block->withHasChildren(true),
             $this->text,
             $children,
+        );
+    }
+
+    public function archive(): BlockInterface
+    {
+        return new self(
+            $this->block->archive(),
+            $this->text,
+            $this->children,
         );
     }
 }

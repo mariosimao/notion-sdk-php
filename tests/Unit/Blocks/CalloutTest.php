@@ -38,12 +38,12 @@ class CalloutTest extends TestCase
             "has_children"     => false,
             "type"             => "callout",
             "callout"        => [
-                "text" => [
+                "rich_text" => [
                     [
                         "plain_text"  => "Notion callouts ",
                         "href"        => null,
-                        "type"        => "text",
-                        "text"        => [
+                        "type"        => "rich_text",
+                        "rich_text"        => [
                             "content" => "Notion callouts ",
                         ],
                         "annotations" => [
@@ -58,8 +58,8 @@ class CalloutTest extends TestCase
                     [
                         "plain_text"  => "rock!",
                         "href"        => null,
-                        "type"        => "text",
-                        "text"        => [
+                        "type"        => "rich_text",
+                        "rich_text"        => [
                             "content" => "rock!",
                         ],
                         "annotations" => [
@@ -104,12 +104,12 @@ class CalloutTest extends TestCase
             "has_children"     => false,
             "type"             => "callout",
             "callout"        => [
-                "text" => [
+                "rich_text" => [
                     [
                         "plain_text"  => "Notion callouts ",
                         "href"        => null,
-                        "type"        => "text",
-                        "text"        => [
+                        "type"        => "rich_text",
+                        "rich_text"        => [
                             "content" => "Notion callouts ",
                         ],
                         "annotations" => [
@@ -124,8 +124,8 @@ class CalloutTest extends TestCase
                     [
                         "plain_text"  => "rock!",
                         "href"        => null,
-                        "type"        => "text",
-                        "text"        => [
+                        "type"        => "rich_text",
+                        "rich_text"        => [
                             "content" => "rock!",
                         ],
                         "annotations" => [
@@ -169,7 +169,7 @@ class CalloutTest extends TestCase
             "has_children"     => false,
             "type"             => "wrong-type",
             "callout"        => [
-                "text"     => [],
+                "rich_text"     => [],
                 "children" => [],
                 "icon"     => [
                     "type"  => "emoji",
@@ -193,7 +193,7 @@ class CalloutTest extends TestCase
             "has_children"     => false,
             "type"             => "callout",
             "callout"        => [
-                "text"     => [],
+                "rich_text"     => [],
                 "children" => [],
                 "icon"     => [ "type"  => "wrong-type"],
             ],
@@ -214,7 +214,7 @@ class CalloutTest extends TestCase
             "has_children"      => false,
             "type"             => "callout",
             "callout"        => [
-                "text" => [[
+                "rich_text" => [[
                     "plain_text"  => "Simple callout",
                     "href"        => null,
                     "type"        => "text",
@@ -295,5 +295,14 @@ class CalloutTest extends TestCase
         if ($callout->iconIsEmoji()) {
             $this->assertEquals("🌙", $callout->icon()->emoji());
         }
+    }
+
+    public function test_array_for_update_operations(): void
+    {
+        $block = Callout::create();
+
+        $array = $block->toUpdateArray();
+
+        $this->assertCount(2, $array);
     }
 }

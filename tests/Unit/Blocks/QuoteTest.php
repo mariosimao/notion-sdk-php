@@ -37,12 +37,12 @@ class QuoteTest extends TestCase
             "has_children"     => false,
             "type"             => "quote",
             "quote"        => [
-                "text" => [
+                "rich_text" => [
                     [
                         "plain_text"  => "Notion quotes ",
                         "href"        => null,
-                        "type"        => "text",
-                        "text"        => [
+                        "type"        => "rich_text",
+                        "rich_text"        => [
                             "content" => "Notion quotes ",
                         ],
                         "annotations" => [
@@ -57,8 +57,8 @@ class QuoteTest extends TestCase
                     [
                         "plain_text"  => "rock!",
                         "href"        => null,
-                        "type"        => "text",
-                        "text"        => [
+                        "type"        => "rich_text",
+                        "rich_text"        => [
                             "content" => "rock!",
                         ],
                         "annotations" => [
@@ -97,7 +97,7 @@ class QuoteTest extends TestCase
             "has_children"     => false,
             "type"             => "wrong-type",
             "quote"        => [
-                "text"     => [],
+                "rich_text"     => [],
                 "children" => [],
             ],
         ];
@@ -117,7 +117,7 @@ class QuoteTest extends TestCase
             "has_children"      => false,
             "type"             => "quote",
             "quote"        => [
-                "text" => [[
+                "rich_text" => [[
                     "plain_text"  => "Simple quote",
                     "href"        => null,
                     "type"        => "text",
@@ -184,5 +184,14 @@ class QuoteTest extends TestCase
 
         $this->assertCount(1, $quote->children());
         $this->assertEquals($nested, $quote->children()[0]);
+    }
+
+    public function test_array_for_update_operations(): void
+    {
+        $block = Quote::create();
+
+        $array = $block->toUpdateArray();
+
+        $this->assertCount(2, $array);
     }
 }

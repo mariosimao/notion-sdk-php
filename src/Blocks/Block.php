@@ -111,6 +111,18 @@ class Block
         return $array;
     }
 
+    public function archive(): self
+    {
+        return new self(
+            $this->id,
+            $this->createdTime,
+            $this->lastEditedTime,
+            true,
+            $this->hasChildren,
+            $this->type,
+        );
+    }
+
     public function withHasChildren(bool $hasChildren): self
     {
         return new self(

@@ -12,7 +12,7 @@ use Notion\Common\RichText;
  * @psalm-type ToDoJson = array{
  *      to_do: array{
  *          checked: bool,
- *          text: list<RichTextJson>,
+ *          rich_text: list<RichTextJson>,
  *          children?: list<BlockJson>,
  *      },
  * }
@@ -76,7 +76,7 @@ class ToDo implements BlockInterface
         /** @psalm-var ToDoJson $array */
         $todo = $array[self::TYPE];
 
-        $text = array_map(fn($t) => RichText::fromArray($t), $todo["text"]);
+        $text = array_map(fn($t) => RichText::fromArray($t), $todo["rich_text"]);
 
         $checked = $todo["checked"];
 
@@ -90,12 +90,24 @@ class ToDo implements BlockInterface
         $array = $this->block->toArray();
 
         $array[self::TYPE] = [
-            "text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
             "checked"  => $this->checked,
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
         ];
 
         return $array;
+    }
+
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [
+            self::TYPE => [
+                "rich_text"    => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+                "checked" => $this->checked,
+            ],
+            "archived" => $this->block()->archived(),
+        ];
     }
 
     public function toString(): string
@@ -176,6 +188,16 @@ class ToDo implements BlockInterface
             $this->text,
             $this->checked,
             $children,
+        );
+    }
+
+    public function archive(): BlockInterface
+    {
+        return new self(
+            $this->block->archive(),
+            $this->text,
+            $this->checked,
+            $this->children,
         );
     }
 }

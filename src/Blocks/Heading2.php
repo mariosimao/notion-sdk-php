@@ -12,7 +12,7 @@ use Notion\NotionException;
  *
  * @psalm-type Heading2Json = array{
  *      heading_2: array{
- *          text: list<RichTextJson>,
+ *          rich_text: list<RichTextJson>,
  *      },
  * }
  *
@@ -63,7 +63,7 @@ class Heading2 implements BlockInterface
         /** @psalm-var Heading2Json $array */
         $heading = $array[self::TYPE];
 
-        $text = array_map(fn($t) => RichText::fromArray($t), $heading["text"]);
+        $text = array_map(fn($t) => RichText::fromArray($t), $heading["rich_text"]);
 
         return new self($block, $text);
     }
@@ -73,10 +73,21 @@ class Heading2 implements BlockInterface
         $array = $this->block->toArray();
 
         $array[self::TYPE] = [
-            "text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
         ];
 
         return $array;
+    }
+
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [
+            self::TYPE => [
+                "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            ],
+            "archived" => $this->block()->archived(),
+        ];
     }
 
     public function toString(): string
@@ -118,6 +129,14 @@ class Heading2 implements BlockInterface
         throw new NotionException(
             "This block does not support children.",
             "no_children_support",
+        );
+    }
+
+    public function archive(): BlockInterface
+    {
+        return new self(
+            $this->block->archive(),
+            $this->text,
         );
     }
 }

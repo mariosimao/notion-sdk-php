@@ -67,6 +67,17 @@ class ChildDatabase implements BlockInterface
         return $array;
     }
 
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [
+            self::TYPE => [
+                "title" => $this->databaseTitle,
+            ],
+            "archived" => $this->block()->archived(),
+        ];
+    }
+
     public function block(): Block
     {
         return $this->block;
@@ -87,6 +98,14 @@ class ChildDatabase implements BlockInterface
         throw new NotionException(
             "This block does not support children.",
             "no_children_support",
+        );
+    }
+
+    public function archive(): BlockInterface
+    {
+        return new self(
+            $this->block->archive(),
+            $this->databaseTitle,
         );
     }
 }

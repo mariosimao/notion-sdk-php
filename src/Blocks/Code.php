@@ -12,7 +12,7 @@ use Notion\NotionException;
  *
  * @psalm-type CodeJson = array{
  *      code: array{
- *          text: list<RichTextJson>,
+ *          rich_text: list<RichTextJson>,
  *          language: self::LANG_*,
  *      },
  * }
@@ -134,7 +134,7 @@ class Code implements BlockInterface
 
         /** @psalm-var CodeJson $array */
         $code = $array[self::TYPE];
-        $text = array_map(fn($t) => RichText::fromArray($t), $code["text"]);
+        $text = array_map(fn($t) => RichText::fromArray($t), $code["rich_text"]);
         $language = $code["language"];
 
         return new self($block, $text, $language);
@@ -148,11 +148,23 @@ class Code implements BlockInterface
         $array = $this->block->toArray();
 
         $array[self::TYPE] = [
-            "text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
             "language" => $this->language,
         ];
 
         return $array;
+    }
+
+    /** @internal */
+    public function toUpdateArray(): array
+    {
+        return [
+            self::TYPE => [
+                "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+                "language" => $this->language,
+            ],
+            "archived" => $this->block()->archived(),
+        ];
     }
 
     public function toString(): string
@@ -204,6 +216,15 @@ class Code implements BlockInterface
         throw new NotionException(
             "This block does not support children.",
             "no_children_support",
+        );
+    }
+
+    public function archive(): BlockInterface
+    {
+        return new self(
+            $this->block->archive(),
+            $this->text,
+            $this->language,
         );
     }
 }
