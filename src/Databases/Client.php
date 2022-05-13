@@ -168,7 +168,7 @@ class Client
             throw new NotionException($message, $code);
         }
 
-        /** @psalm-var QueryResultJson[] $body */
+        /** @psalm-var QueryResultJson $body */
         return Result::fromArray($body);
     }
 
