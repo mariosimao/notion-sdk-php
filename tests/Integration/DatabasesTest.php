@@ -7,8 +7,11 @@ use Notion\Common\Emoji;
 use Notion\Common\RichText;
 use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
-use Notion\Databases\Properties\CreatedBy;
-use Notion\Databases\Properties\Title;
+use Notion\Databases\Properties\RichText as PropertiesRichText;
+use Notion\Databases\Query;
+use Notion\Databases\Query\CompoundFilter;
+use Notion\Databases\Query\DateFilter;
+use Notion\Databases\Query\SelectFilter;
 use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
@@ -50,7 +53,7 @@ class DatabasesTest extends TestCase
 
         $database = $client->databases()->find("a1acab7aeea2438bb0e9b23b73fb4a25");
 
-        $this->assertEquals("Database Sample", $database->title()[0]->plainText());
+        $this->assertEquals("Movies", $database->title()[0]->plainText());
     }
 
     public function test_update_database(): void
@@ -62,17 +65,19 @@ class DatabasesTest extends TestCase
         $client = Notion::create($token);
 
         $database = $client->databases()->find("a1acab7aeea2438bb0e9b23b73fb4a25");
-        $database = $database->addProperty(CreatedBy::create());
+        $oldProperties = $database->properties();
+
+        $database = $database->addProperty(PropertiesRichText::create("Test"));
 
         $updatedDatabase = $client->databases()->update($database);
 
         $this->assertEquals(
-            "CreatedBy",
-            $updatedDatabase->properties()["CreatedBy"]->property()->name()
+            "Test",
+            $updatedDatabase->properties()["Test"]->property()->name()
         );
 
         // Back to original state
-        $original = $updatedDatabase->withProperties([ "Title" => Title::create() ]);
+        $original = $updatedDatabase->withProperties($oldProperties);
         $client->databases()->update($original);
     }
 
@@ -135,5 +140,77 @@ class DatabasesTest extends TestCase
 
         $this->expectException(NotionException::class);
         $client->databases()->delete($database);
+    }
+
+    public function test_query_all_pages_from_database(): void
+    {
+        $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
+        $client = Notion::create($token);
+
+        $database = $client->databases()->find("a1acab7aeea2438bb0e9b23b73fb4a25");
+
+        $pages = $client->databases()->queryAllPages($database);
+        $this->assertCount(6, $pages);
+    }
+
+    public function test_query_big_database(): void
+    {
+        $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
+        $client = Notion::create($token);
+
+        $database = $client->databases()->find("7b23ad4e145c41aea5604374406c2bc0");
+
+        $pages = $client->databases()->queryAllPages($database);
+        $this->assertCount(102, $pages);
+    }
+
+    public function test_query_database(): void
+    {
+        $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
+        $client = Notion::create($token);
+
+        $database = $client->databases()->find("a1acab7aeea2438bb0e9b23b73fb4a25");
+
+        // 70s and 90s movies
+        $query = Query::create()->withFilter(
+            CompoundFilter::or(
+                CompoundFilter::and(
+                    DateFilter::property("Release date")->onOrAfter("1990-01-01"),
+                    DateFilter::property("Release date")->onOrBefore("1999-12-31"),
+                ),
+                CompoundFilter::and(
+                    DateFilter::property("Release date")->onOrAfter("1970-01-01"),
+                    DateFilter::property("Release date")->onOrBefore("1979-12-31"),
+                ),
+            ),
+        );
+
+        $result = $client->databases()->query($database, $query);
+
+        $this->assertCount(3, $result->pages());
+    }
+
+    public function test_query_inexistent_database(): void
+    {
+        $token = getenv("NOTION_TOKEN");
+        if (!$token) {
+            $this->markTestSkipped("Notion token is required to run integration tests.");
+        }
+        $client = Notion::create($token);
+
+        $database = Database::create(DatabaseParent::page("a-page-id"));
+        $query = Query::create();
+
+        $this->expectException(NotionException::class);
+        $client->databases()->query($database, $query);
     }
 }
