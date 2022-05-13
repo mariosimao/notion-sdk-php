@@ -6,17 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2022-05-12
+
+### Added
+- Query database (#5 and #75)
+
 ## [0.4.0] - 2022-03-24
 
 ### Added
 - How to documentation for pages
-- Find block (!58)
-- Update block (!59)
-- Append blocks (!60)
-- Delete block (!61)
+- Find block (#58)
+- Update block (#59)
+- Append blocks (#60)
+- Delete block (#61)
 
 ## Changed
-- Notion version to `2022-02-22` (!69)
+- Notion version to `2022-02-22` (#69)
 
 ## [0.3.0] - 2021-12-04
 
@@ -123,3 +128,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.2.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v0.2.0
 [0.3.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v0.3.0
 [0.4.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v0.4.0
+[0.5.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v0.5.0
