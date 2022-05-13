@@ -10,6 +10,7 @@ class PeopleFilter implements Filter, Condition
     private const OPERATOR_IS_EMPTY = "is_empty";
     private const OPERATOR_IS_NOT_EMPTY = "is_not_empty";
 
+    /** @var "property" */
     private string $propertyType = "property";
     private string $propertyName;
     /** @var self::OPERATOR_* */
@@ -54,6 +55,7 @@ class PeopleFilter implements Filter, Condition
         );
     }
 
+    /** @return "property" */
     public function propertyType(): string
     {
         return $this->propertyType;
@@ -64,6 +66,7 @@ class PeopleFilter implements Filter, Condition
         return $this->propertyName;
     }
 
+    /** @return static::OPERATOR_* */
     public function operator(): string
     {
         return $this->operator;
@@ -77,7 +80,7 @@ class PeopleFilter implements Filter, Condition
     public function toArray(): array
     {
         return [
-            $this->propertyType => $this->propertyName,
+            $this->propertyType() => $this->propertyName,
             "people" => [
                 $this->operator => $this->value
             ],

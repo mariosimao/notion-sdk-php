@@ -11,7 +11,6 @@ class TextFilterTest extends TestCase
     {
         $filter = TextFilter::property("Title");
 
-        $this->assertSame("property", $filter->propertyType());
         $this->assertSame("Title", $filter->propertyName());
         $this->assertSame("contains", $filter->operator());
         $this->assertSame("", $filter->value());
@@ -21,7 +20,6 @@ class TextFilterTest extends TestCase
     {
         $filter = TextFilter::property("Title")->equals("Harry Potter");
 
-        $this->assertSame("property", $filter->propertyType());
         $this->assertSame("Title", $filter->propertyName());
         $this->assertSame("equals", $filter->operator());
         $this->assertSame("Harry Potter", $filter->value());

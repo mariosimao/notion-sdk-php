@@ -11,7 +11,6 @@ class MultiSelectFilterTest extends TestCase
     {
         $filter = MultiSelectFilter::property("Categories");
 
-        $this->assertSame("property", $filter->propertyType());
         $this->assertSame("Categories", $filter->propertyName());
         $this->assertSame("is_not_empty", $filter->operator());
         $this->assertTrue($filter->value());
@@ -22,7 +21,6 @@ class MultiSelectFilterTest extends TestCase
         $filter = MultiSelectFilter::property("Categories")
             ->contains("Comedy");
 
-        $this->assertSame("property", $filter->propertyType());
         $this->assertSame("Categories", $filter->propertyName());
         $this->assertSame("contains", $filter->operator());
         $this->assertSame("Comedy", $filter->value());

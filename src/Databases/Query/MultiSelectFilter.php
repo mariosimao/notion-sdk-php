@@ -10,6 +10,7 @@ class MultiSelectFilter implements Filter, Condition
     private const OPERATOR_IS_EMPTY = "is_empty";
     private const OPERATOR_IS_NOT_EMPTY = "is_not_empty";
 
+    /** @var "property" */
     private string $propertyType = "property";
     private string $propertyName;
     /** @var self::OPERATOR_* */
@@ -36,6 +37,7 @@ class MultiSelectFilter implements Filter, Condition
         );
     }
 
+    /** @return "property" */
     public function propertyType(): string
     {
         return $this->propertyType;
@@ -46,6 +48,7 @@ class MultiSelectFilter implements Filter, Condition
         return $this->propertyName;
     }
 
+    /** @return static::OPERATOR_* */
     public function operator(): string
     {
         return $this->operator;
@@ -59,7 +62,7 @@ class MultiSelectFilter implements Filter, Condition
     public function toArray(): array
     {
         return [
-            $this->propertyType => $this->propertyName,
+            $this->propertyType() => $this->propertyName,
             "multi_select" => [
                 $this->operator => $this->value
             ],

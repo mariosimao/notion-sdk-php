@@ -11,7 +11,6 @@ class NumberFilterTest extends TestCase
     {
         $filter = NumberFilter::property("Downloads");
 
-        $this->assertSame("property", $filter->propertyType());
         $this->assertSame("Downloads", $filter->propertyName());
         $this->assertSame("is_not_empty", $filter->operator());
         $this->assertTrue($filter->value());
@@ -85,7 +84,7 @@ class NumberFilterTest extends TestCase
 
     public function test_is_empty(): void
     {
-        $filter = NumberFilter::property("Downloads")->isEmpty(1000);
+        $filter = NumberFilter::property("Downloads")->isEmpty();
 
         $expected = [
             "property" => "Downloads",
@@ -96,7 +95,7 @@ class NumberFilterTest extends TestCase
 
     public function test_is_not_empty(): void
     {
-        $filter = NumberFilter::property("Downloads")->isNotEmpty(1000);
+        $filter = NumberFilter::property("Downloads")->isNotEmpty();
 
         $expected = [
             "property" => "Downloads",

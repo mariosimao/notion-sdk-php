@@ -85,6 +85,7 @@ class DateFilter implements Filter, Condition
         return $this->propertyName;
     }
 
+    /** @return static::OPERATOR_* */
     public function operator(): string
     {
         return $this->operator;
@@ -98,7 +99,7 @@ class DateFilter implements Filter, Condition
     public function toArray(): array
     {
         return [
-            $this->propertyType => $this->propertyName,
+            $this->propertyType() => $this->propertyName,
             "date" => [
                 $this->operator => $this->value
             ],

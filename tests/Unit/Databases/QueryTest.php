@@ -67,6 +67,7 @@ class QueryTest extends TestCase
     {
         $this->expectException(Exception::class);
 
+        /** @psalm-suppress UnusedMethodCall */
         Query::create()->withPageSize(100000000);
     }
 

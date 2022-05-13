@@ -11,7 +11,6 @@ class SelectFilterTest extends TestCase
     {
         $filter = SelectFilter::property("Category");
 
-        $this->assertSame("property", $filter->propertyType());
         $this->assertSame("Category", $filter->propertyName());
         $this->assertSame("is_not_empty", $filter->operator());
         $this->assertTrue($filter->value());
