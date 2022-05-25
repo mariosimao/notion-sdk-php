@@ -57,10 +57,6 @@ class Page
         PageParent $parent,
         string $url,
     ) {
-        if ($cover !== null && $cover->isInternal()) {
-            throw new \Exception("Internal cover image is not supported");
-        }
-
         $this->id = $id;
         $this->createdTime = $createdTime;
         $this->lastEditedTime = $lastEditedTime;
@@ -134,7 +130,7 @@ class Page
             "archived"         => $this->archived,
             "icon"             => $this->icon?->toArray(),
             "cover"            => $this->cover?->toArray(),
-            "properties"       => array_map(fn($p) => $p->toArray(), $this->properties),
+            "properties"       => array_map(fn ($p) => $p->toArray(), $this->properties),
             "parent"           => $this->parent->toArray(),
             "url"              => $this->url,
         ];
