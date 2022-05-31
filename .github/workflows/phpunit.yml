@@ -1,0 +1,139 @@
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+name: PHPUnit
+
+jobs:
+  unit-tests:
+    name: Unit tests
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+
+        php-version:
+          - "8.0"
+
+        dependencies:
+          - lowest
+          - highest
+          - locked
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: xdebug3
+          tools: none
+
+      - name: Install composer dependencies
+        uses: ramsey/composer-install@1.3.0
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
+          composer-options: --no-ansi --no-interaction --no-progress
+
+      - name: Run tests with phpunit
+        if: matrix.dependencies == 'lowest' || matrix.dependencies == 'highest'
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        run: vendor/bin/phpunit --testsuite Unit
+
+  integration-tests:
+    name: Integration tests
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.0"
+          tools: none
+
+      - name: Install composer dependencies
+        uses: ramsey/composer-install@1.3.0
+        with:
+          dependency-versions: ${{ matrix.locked }}
+          composer-options: --no-ansi --no-interaction --no-progress
+
+      - name: Run tests with phpunit
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        run: vendor/bin/phpunit --testsuite Integration
+
+  # test-coverage:
+  #   name: Test coverage (PHPUnit)
+
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+
+  #     - name: Install PHP
+  #       uses: shivammathur/setup-php@v2
+  #       with:
+  #         php-version: "8.0"
+  #         coverage: xdebug3
+  #         tools: none
+
+  #     - name: Install composer dependencies
+  #       uses: ramsey/composer-install@1.3.0
+  #       with:
+  #         dependency-versions: locked
+  #         composer-options: --no-ansi --no-interaction --no-progress
+
+  #     - name: Calculate test coverage
+  #       env:
+  #         NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+  #       run: vendor/bin/phpunit --coverage-clover dist/phpunit/clover.xml
+
+  #     - name: Send code coverage report to Codecov.io
+  #       uses: codecov/codecov-action@v1
+  #       with:
+  #         token: ${{ secrets.CODECOV_TOKEN }}
+
+  # mutation-tests:
+  #   name: Mutation Tests
+
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+
+  #     - name: Install PHP
+  #       uses: shivammathur/setup-php@v2
+  #       with:
+  #         php-version: "8.0"
+  #         tools: none
+
+  #     - name: Install composer dependencies
+  #       uses: ramsey/composer-install@1.3.0
+  #       with:
+  #         dependency-versions: locked
+  #         composer-options: --no-ansi --no-interaction --no-progress
+
+  #     - name: Run mutation tests with Infection
+  #       run: composer mutation-tests
+
+  #     - name: Upload mutation test artifacts
+  #       if: always()
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: mutation-test-reports
+  #         path: .infection
