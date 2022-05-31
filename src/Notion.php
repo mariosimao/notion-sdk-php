@@ -11,7 +11,8 @@ use Notion\Users\Client as UsersClient;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 
-class Notion {
+class Notion
+{
     public const NOTION_VERSION = "2022-02-22";
 
     private ClientInterface $psrClient;
