@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  mutation-tests:
+  infection:
     name: "Mutation tests"
 
     runs-on: ubuntu-latest
@@ -30,4 +30,6 @@ jobs:
           composer-options: --no-ansi --no-interaction --no-progress
 
       - name: Run mutation tests with Infection
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         run: composer mutation-tests
