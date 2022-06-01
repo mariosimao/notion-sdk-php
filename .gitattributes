@@ -7,3 +7,4 @@
 /psalm.xml export-ignore
 /docs/ export-ignore
 /test/ export-ignore
+logo.png export-ignore
