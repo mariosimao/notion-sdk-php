@@ -121,4 +121,14 @@ class ImageTest extends TestCase
 
         $this->assertCount(2, $array);
     }
+
+    public function test_archive(): void
+    {
+        $file = File::createExternal("https://my-site.com/image.png");
+        $block = Image::create($file);
+
+        $block = $block->archive();
+
+        $this->assertTrue($block->block()->archived());
+    }
 }

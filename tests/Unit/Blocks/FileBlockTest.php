@@ -121,4 +121,14 @@ class FileBlockTest extends TestCase
 
         $this->assertCount(2, $array);
     }
+
+    public function test_archive(): void
+    {
+        $file = File::createExternal("https://example.com/file.doc");
+        $block = FileBlock::create($file);
+
+        $block = $block->archive();
+
+        $this->assertTrue($block->block()->archived());
+    }
 }

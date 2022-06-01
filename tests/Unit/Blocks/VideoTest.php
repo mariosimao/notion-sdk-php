@@ -121,4 +121,14 @@ class VideoTest extends TestCase
 
         $this->assertCount(2, $array);
     }
+
+    public function test_archive(): void
+    {
+        $file = File::createExternal("https://my-site.com/video.mp4");
+        $block = Video::create($file);
+
+        $block = $block->archive();
+
+        $this->assertTrue($block->block()->archived());
+    }
 }

@@ -121,4 +121,14 @@ class PdfTest extends TestCase
 
         $this->assertCount(2, $array);
     }
+
+    public function test_archive(): void
+    {
+        $file = File::createExternal("https://example.com/document.pdf");
+        $block = Pdf::create($file);
+
+        $block = $block->archive();
+
+        $this->assertTrue($block->block()->archived());
+    }
 }

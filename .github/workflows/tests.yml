@@ -1,36 +1,14 @@
 on:
-  - pull_request
-  - push
+  pull_request:
+  push:
+    branches:
+      - main
 
-name: Continuous Integration
+name: Tests
 
 jobs:
-  phpcs:
-    name: PHP CodeSniffer
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Install PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: "8.0"
-          tools: none
-
-      - name: Install composer dependencies
-        uses: ramsey/composer-install@1.3.0
-        with:
-          dependency-versions: locked
-          composer-options: --no-ansi --no-interaction --no-progress
-
-      - name: Run phpcs checks
-        run: vendor/bin/phpcs
-
-  phpunit:
-    name: PHPUnit
+  unit-tests:
+    name: Unit tests (PHPUnit)
 
     runs-on: ${{ matrix.os }}
 
@@ -44,8 +22,8 @@ jobs:
           - "8.0"
 
         dependencies:
-          # - lowest
-          # - highest
+          - lowest
+          - highest
           - locked
 
     steps:
@@ -56,7 +34,6 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          coverage: xdebug3
           tools: none
 
       - name: Install composer dependencies
@@ -66,25 +43,10 @@ jobs:
           composer-options: --no-ansi --no-interaction --no-progress
 
       - name: Run tests with phpunit
-        if: matrix.dependencies == 'lowest' || matrix.dependencies == 'highest'
-        env:
-          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpunit --testsuite Unit
 
-      - name: Calculate test coverage
-        if: matrix.dependencies == 'locked'
-        env:
-          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-        run: vendor/bin/phpunit --coverage-clover dist/phpunit/clover.xml
-
-      - name: Send code coverage report to Codecov.io
-        if: matrix.dependencies == 'locked'
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-
-  psalm:
-    name: Psalm
+  integration-tests:
+    name: Integration tests (PHPUnit)
 
     runs-on: ubuntu-latest
 
@@ -101,14 +63,19 @@ jobs:
       - name: Install composer dependencies
         uses: ramsey/composer-install@1.3.0
         with:
-          dependency-versions: locked
+          dependency-versions: ${{ matrix.locked }}
           composer-options: --no-ansi --no-interaction --no-progress
 
-      - name: Run tests with psalm and send coverage report
-        run: vendor/bin/psalm --shepherd
+      - name: Run tests with phpunit
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        run: vendor/bin/phpunit --testsuite Integration
 
   mutation-tests:
-    name: Mutation Tests
+    name: "Mutation tests (Infection)"
+
+    if: ${{ always() }}
+    needs: [integration-tests]
 
     runs-on: ubuntu-latest
 
@@ -120,6 +87,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.0"
+          coverage: "pcov"
           tools: none
 
       - name: Install composer dependencies
@@ -129,11 +97,41 @@ jobs:
           composer-options: --no-ansi --no-interaction --no-progress
 
       - name: Run mutation tests with Infection
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         run: composer mutation-tests
 
-      - name: Upload mutation test artifacts
-        if: always()
-        uses: actions/upload-artifact@v2
+  coverage:
+    name: Test coverage (PHPUnit)
+
+    if: ${{ always() }}
+    needs: [mutation-tests]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
         with:
-          name: mutation-test-reports
-          path: .infection
+          php-version: "8.0"
+          coverage: pcov
+          tools: none
+
+      - name: Install composer dependencies
+        uses: ramsey/composer-install@1.3.0
+        with:
+          dependency-versions: locked
+          composer-options: --no-ansi --no-interaction --no-progress
+
+      - name: Calculate test coverage
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        run: vendor/bin/phpunit --coverage-clover dist/phpunit/clover.xml
+
+      - name: Send code coverage report to Codecov.io
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
