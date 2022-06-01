@@ -107,4 +107,13 @@ class ChildDatabaseTest extends TestCase
 
         $this->assertCount(2, $array);
     }
+
+    public function test_archive(): void
+    {
+        $block = ChildDatabase::create();
+
+        $block = $block->archive();
+
+        $this->assertTrue($block->block()->archived());
+    }
 }
