@@ -1,10 +1,26 @@
-[![Codecov](https://img.shields.io/codecov/c/github/mariosimao/notion-sdk)](https://app.codecov.io/gh/mariosimao/notion-sdk)
-[![Type coverage](https://shepherd.dev/github/mariosimao/notion-sdk/coverage.svg)](https://shepherd.dev/github/mariosimao/notion-sdk)
-[![Notion API version](https://img.shields.io/badge/API%20Version-2022--02--22-blue)](https://developers.notion.com/reference/versioning)
+<p align="center">
+    <img src="./logo.png" width="300">
+</p>
+
+<p align="center">
+    <a href="https://app.codecov.io/gh/mariosimao/notion-sdk">
+        <image src="https://img.shields.io/codecov/c/github/mariosimao/notion-sdk">
+    </a>
+    <a href="https://shepherd.dev/github/mariosimao/notion-sdk">
+        <image src="https://shepherd.dev/github/mariosimao/notion-sdk/coverage.svg">
+    </a>
+    <a href="https://developers.notion.com/reference/versioning">
+        <image src="https://img.shields.io/badge/API%20Version-2022--02--22-blue">
+    </a>
+    <a href="https://codecov.io/gh/mariosimao/notion-sdk-php">
+        <image src="https://codecov.io/gh/mariosimao/notion-sdk-php/branch/main/graph/badge.svg?token=ZKKCWDY4QX">
+    </a>
+</p>
 
 # notion-sdk-php
 
 A complete Notion SDK for PHP developers.
+
 ## Installation
 
 ```
