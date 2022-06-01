@@ -93,16 +93,6 @@ class PageTest extends TestCase
         $this->assertSame($newParent, $page->parent());
     }
 
-    public function test_error_with_internal_cover_image(): void
-    {
-        $parent = PageParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
-        $cover = FIle::createInternal("https://notion.so/image.png");
-
-        $this->expectException(\Exception::class);
-        /** @psalm-suppress UnusedMethodCall */
-        Page::create($parent)->withCover($cover);
-    }
-
     public function test_replace_properties(): void
     {
         $parent = PageParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
