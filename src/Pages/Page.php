@@ -57,10 +57,6 @@ class Page
         PageParent $parent,
         string $url,
     ) {
-        if ($cover !== null && $cover->isInternal()) {
-            throw new \Exception("Internal cover image is not supported");
-        }
-
         $this->id = $id;
         $this->createdTime = $createdTime;
         $this->lastEditedTime = $lastEditedTime;
