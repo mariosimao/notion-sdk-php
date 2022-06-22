@@ -6,8 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.2] - 2022-06-22
+
+### Fixed
+- Handle empty value for select property (#86)
+
 ## [0.5.1] - 2022-06-02
 
+### Fixed
 - Add support to internal cover image (#80)
 
 ## [0.5.0] - 2022-05-12
@@ -134,3 +140,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.4.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v0.4.0
 [0.5.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v0.5.0
 [0.5.1]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v0.5.1
+[0.5.2]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v0.5.2
