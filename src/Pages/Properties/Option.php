@@ -51,7 +51,7 @@ class Option
 
         $id = $array["id"] ?? null;
         $name = $array["name"] ?? null;
-        $color = $array["color"];
+        $color = $array["color"] ?? self::COLOR_DEFAULT;
 
         return new self($id, $name, $color);
     }
