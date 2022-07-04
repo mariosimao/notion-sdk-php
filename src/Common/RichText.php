@@ -192,6 +192,19 @@ class RichText
         );
     }
 
+    public function withUrl(string $url): self
+    {
+        return new self(
+            $this->plainText,
+            $this->href,
+            $this->annotations,
+            $this->type,
+            $this->text->withUrl($url),
+            $this->mention,
+            $this->equation,
+        );
+    }
+
     public function withAnnotations(Annotations $annotations): self
     {
         return new self(

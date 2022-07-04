@@ -74,6 +74,13 @@ class RichTextTest extends TestCase
         $this->assertEquals("https://notion.so", $richText->href());
     }
 
+    public function test_add_url(): void
+    {
+        $richText = RichText::createText("Simple text")->withUrl("https://my-site.com");
+
+        $this->assertEquals("https://my-site.com", $richText->text()->url());
+    }
+
     public function test_mention_array_conversion(): void
     {
         $array = [
