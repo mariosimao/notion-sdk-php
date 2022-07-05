@@ -53,25 +53,45 @@ class RichText
     /** @psalm-mutation-free */
     public static function createText(string $content): self
     {
-        $annotations = Annotations::create();
         $text = Text::create($content);
 
-        return new self($content, null, $annotations, "text", $text, null, null);
+        return self::createFromText($text);
+    }
+
+    public static function createLink(string $content, string $url): self
+    {
+        $text = Text::create($content)->withUrl($url);
+
+        return self::createFromText($text);
+    }
+
+    /** @psalm-mutation-free */
+    public static function createFromText(Text $text): self
+    {
+        $annotations = Annotations::create();
+
+        return new self($text->content(), $text->url(), $annotations, "text", $text, null, null);
     }
 
     public static function createEquation(string $expression): self
     {
-        $annotations = Annotations::create();
         $equation = Equation::create($expression);
 
+        return self::createFromEquation($equation);
+    }
+
+    public static function createFromEquation(Equation $equation): self
+    {
+        $annotations = Annotations::create();
+
         return new self(
-            $expression,
+            $equation->expression(),
             null,
             $annotations,
             "equation",
             null,
             null,
-            $equation,
+            $equation
         );
     }
 
