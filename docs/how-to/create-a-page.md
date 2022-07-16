@@ -11,7 +11,6 @@ use Notion\Pages\Page;
 use Notion\Pages\PageParent;
 
 $token = $_ENV["NOTION_SECRET"];
-
 $notion = Notion::create($token);
 
 $parent = PageParent::page("c986d7b0-7051-4f18-b165-cc0b9503ffc2");
@@ -35,7 +34,6 @@ use Notion\Pages\Page;
 use Notion\Pages\PageParent;
 
 $token = $_ENV["NOTION_SECRET"];
-
 $notion = Notion::create($token);
 
 $parent = PageParent::page("c986d7b0-7051-4f18-b165-cc0b9503ffc2");

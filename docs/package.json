@@ -1,0 +1,17 @@
+{
+  "name": "notion-sdk-php-docs",
+  "description": "Notion SDK PHP documentation",
+  "main": "index.js",
+  "scripts": {
+    "docs:dev": "vitepress dev .",
+    "docs:build": "vitepress build .",
+    "docs:serve": "vitepress serve ."
+  },
+  "author": "Mario Simão",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^18.0.5",
+    "vitepress": "^1.0.0-alpha.4",
+    "vue": "^3.2.37"
+  }
+}

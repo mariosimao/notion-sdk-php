@@ -29,4 +29,4 @@ jobs:
           composer-options: --no-ansi --no-interaction --no-progress
 
       - name: Run phpcs checks
-        run: "vendor/bin/phpcs -q --report=checkstyle | cs2pr"
+        run: "composer ci:phpcs"
