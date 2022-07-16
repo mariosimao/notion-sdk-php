@@ -29,4 +29,4 @@ jobs:
           composer-options: --no-ansi --no-interaction --no-progress
 
       - name: Run tests with psalm and send coverage report
-        run: vendor/bin/psalm  --output-format=github --shepherd --stats
+        run: composer ci:psalm

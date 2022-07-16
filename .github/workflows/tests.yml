@@ -43,7 +43,7 @@ jobs:
           composer-options: --no-ansi --no-interaction --no-progress
 
       - name: Run tests with phpunit
-        run: vendor/bin/phpunit --testsuite Unit
+        run: composer ci:unit
 
   integration-tests:
     name: Integration tests (PHPUnit)
@@ -69,7 +69,7 @@ jobs:
       - name: Run tests with phpunit
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-        run: vendor/bin/phpunit --testsuite Integration
+        run: composer ci:integration
 
   mutation-tests:
     name: "Mutation tests (Infection)"
@@ -99,7 +99,7 @@ jobs:
       - name: Run mutation tests with Infection
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-        run: composer mutation-tests
+        run: composer ci:mutation
 
   coverage:
     name: Test coverage (PHPUnit)
@@ -129,7 +129,7 @@ jobs:
       - name: Calculate test coverage
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-        run: vendor/bin/phpunit --coverage-clover dist/phpunit/clover.xml
+        run: composer ci:coverage
 
       - name: Send code coverage report to Codecov.io
         uses: codecov/codecov-action@v1

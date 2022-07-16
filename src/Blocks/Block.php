@@ -145,7 +145,7 @@ class Block
         return $this->createdTime;
     }
 
-    public function lastEditedType(): DateTimeImmutable
+    public function lastEditedTime(): DateTimeImmutable
     {
         return $this->lastEditedTime;
     }

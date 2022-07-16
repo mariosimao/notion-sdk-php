@@ -1,8 +1,9 @@
 {
     "name": "mariosimao/notion-sdk-php",
-    "description": "Notion SDK",
+    "description": "A complete Notion SDK for PHP developers.",
     "type": "library",
     "license": "MIT",
+    "homepage": "https://mariosimao.github.io/notion-sdk-php",
     "autoload": {
         "psr-4": {
             "Notion\\": "src/"
@@ -21,9 +22,9 @@
     ],
     "require": {
         "php": ">=8.0",
-        "psr/http-client": "^1.0",
-        "psr/http-message": "^1.0",
-        "psr/http-factory": "^1.0",
+        "psr/http-client-implementation": "^1.0",
+        "psr/http-message-implementation": "^1.0",
+        "psr/http-factory-implementation": "^1.0",
         "php-http/discovery": "^1.14"
     },
     "require-dev": {
@@ -35,8 +36,21 @@
         "infection/infection": "^0.25.3"
     },
     "scripts": {
-        "ci-test": "phpunit --coverage-clover dist/phpunit/clover.xml",
-        "mutation-tests": "./vendor/bin/infection --threads=4",
-        "test-coverage-html": "phpunit --coverage-html dist/phpunit/html"
+        "ci:phpcs": "phpcs -q --report=checkstyle | cs2pr",
+        "ci:psalm": "psalm --output-format=github --shepherd --stats",
+        "ci:coverage": "phpunit --coverage-clover dist/phpunit/clover.xml",
+        "ci:unit": "phpunit --testsuite Unit",
+        "ci:integration": "phpunit --testsuite Integration",
+        "ci:mutation": "infection --threads=4",
+        "test": [
+            "@test:phpcs",
+            "@test:psalm",
+            "@test:unit"
+        ],
+        "test:phpcs": "phpcs",
+        "test:psalm": "psalm",
+        "test:unit": "phpunit --testsuite Unit",
+        "test:integration": "phpunit --testsuite Integration",
+        "test:coverage-html": "phpunit --coverage-html dist/phpunit/html"
     }
 }

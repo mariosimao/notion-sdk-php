@@ -112,7 +112,7 @@ class QuoteTest extends TestCase
         $expected = [
             "object"           => "block",
             "created_time"     => $q->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $q->block()->lastEditedType()->format(Date::FORMAT),
+            "last_edited_time" => $q->block()->lastEditedTime()->format(Date::FORMAT),
             "archived"         => false,
             "has_children"      => false,
             "type"             => "quote",

@@ -112,7 +112,7 @@ class BulletedListItemTest extends TestCase
         $expected = [
             "object"           => "block",
             "created_time"     => $i->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $i->block()->lastEditedType()->format(Date::FORMAT),
+            "last_edited_time" => $i->block()->lastEditedTime()->format(Date::FORMAT),
             "archived"         => false,
             "has_children"     => false,
             "type"             => "bulleted_list_item",

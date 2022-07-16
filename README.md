@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="./logo.png" width="300">
+    <img src="./docs/images/logo.png" width="300">
 </p>
 
 <p align="center">
@@ -10,9 +10,14 @@
         <image src="https://shepherd.dev/github/mariosimao/notion-sdk/coverage.svg">
     </a>
     <a href="https://developers.notion.com/reference/versioning">
-        <image src="https://img.shields.io/badge/API%20Version-2022--02--22-blue">
+        <image src="https://img.shields.io/badge/API%20Version-2022--02--22-%23212121">
     </a>
-
+    <a href="https://packagist.org/packages/mariosimao/notion-sdk-php">
+        <image src="https://img.shields.io/packagist/php-v/mariosimao/notion-sdk-php?color=%23787CB5">
+    </a>
+    <a href="https://packagist.org/packages/mariosimao/notion-sdk-php">
+        <image src="https://img.shields.io/packagist/dt/mariosimao/notion-sdk-php?color=%23FF8A65">
+    </a>
 </p>
 
 # notion-sdk-php
@@ -25,37 +30,6 @@ A complete Notion SDK for PHP developers.
 composer require mariosimao/notion-sdk-php
 ```
 
-## Getting started
-
-A Notion token will be needed to fully use this library. If you don't have one,
-please refer to [Authorization section](https://developers.notion.com/docs/authorization) from the [Notion API documentation](https://developers.notion.com/).
-
-A simple example on how to create a page with some content:
-
-```php
-<?php
-
-use Notion\Notion;
-use Notion\Common\Emoji;
-use Notion\Blocks\Paragraph;
-use Notion\Pages\Page;
-use Notion\Pages\PageParent;
-
-$token = $_ENV["NOTION_TOKEN"];
-$notion = Notion::create($token);
-
-$parent = PageParent::page("c986d7b0-7051-4f18-b165-cc0b9503ffc2");
-$page = Page::create($parent)
-            ->withTitle("Sample page")
-            ->withIcon(Emoji::create("⭐"));
-
-$content = [
-    Paragraph::fromString("This is a simple paragraph."),
-];
-
-$notion->pages()->create($page, $content);
-```
-
 ## Documentation
 
-Further documentation can be found [here](./docs/README.md).
+Further documentation can be found [here](https://mariosimao.github.io/notion-sdk-php).
