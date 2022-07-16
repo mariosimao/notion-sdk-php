@@ -32,19 +32,21 @@ const howToItems = fs.readdirSync('./how-to')
         link: `/how-to/${file}`,
     }));
 
+const basePath = '/notion-sdk-php/';
+
 export default defineConfig({
-    base: '/notion-sdk-php/',
+    base: basePath,
     title: 'Notion SDK PHP',
     description: 'A complete Notion SDK for PHP developers.',
     lang: 'en-US',
     lastUpdated: true,
     head: [
-        ['link', { rel: "apple-touch-icon", sizes: "180x180", href: "/favicons/apple-touch-icon.png"}],
-        ['link', { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicons/favicon-32x32.png"}],
-        ['link', { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicons/favicon-16x16.png"}],
-        ['link', { rel: "manifest", href: "/favicons/site.webmanifest"}],
-        ['link', { rel: "shortcut icon", href: "/favicons/favicon.ico"}],
-        ['meta', { name: "theme-color", content: "#787CB5"}],
+        ['link', { rel: 'apple-touch-icon', sizes: '180x180', href: `${basePath}favicons/apple-touch-icon.png`}],
+        ['link', { rel: 'icon', type: 'image/png', sizes: '32x32', href: `${basePath}favicons/favicon-32x32.png`}],
+        ['link', { rel: 'icon', type: 'image/png', sizes: '16x16', href: `${basePath}favicons/favicon-16x16.png`}],
+        ['link', { rel: 'manifest', href: `${basePath}favicons/site.webmanifest`}],
+        ['link', { rel: 'shortcut icon', href: `${basePath}favicons/favicon.ico`}],
+        ['meta', { name: 'theme-color', content: '#787CB5'}],
     ],
     themeConfig: {
         logo: '/logo.png',
