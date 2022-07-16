@@ -1,0 +1,1 @@
+import{_ as s,c as a,o as n,a as p}from"./app.6b460cd1.js";const C=JSON.parse('{"title":"Find a page","description":"","frontmatter":{},"headers":[],"relativePath":"how-to/find-a-page.md","lastUpdated":1658015941000}'),o={name:"how-to/find-a-page.md"},l=p("",3),e=[l];function t(c,r,D,F,y,i){return n(),a("div",null,e)}var d=s(o,[["render",t]]);export{C as __pageData,d as default};
