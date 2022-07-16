@@ -111,7 +111,7 @@ class ParagraphTest extends TestCase
         $expected = [
             "object"           => "block",
             "created_time"     => $p->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $p->block()->lastEditedType()->format(Date::FORMAT),
+            "last_edited_time" => $p->block()->lastEditedTime()->format(Date::FORMAT),
             "archived"         => false,
             "has_children"      => false,
             "type"             => "paragraph",

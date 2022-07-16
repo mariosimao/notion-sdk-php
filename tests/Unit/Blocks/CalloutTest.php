@@ -209,7 +209,7 @@ class CalloutTest extends TestCase
         $expected = [
             "object"           => "block",
             "created_time"     => $c->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $c->block()->lastEditedType()->format(Date::FORMAT),
+            "last_edited_time" => $c->block()->lastEditedTime()->format(Date::FORMAT),
             "archived"         => false,
             "has_children"      => false,
             "type"             => "callout",

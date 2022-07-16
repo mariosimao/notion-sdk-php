@@ -88,7 +88,7 @@ class CodeTest extends TestCase
         $expected = [
             "object"           => "block",
             "created_time"     => $h->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $h->block()->lastEditedType()->format(Date::FORMAT),
+            "last_edited_time" => $h->block()->lastEditedTime()->format(Date::FORMAT),
             "archived"         => false,
             "has_children"      => false,
             "type"             => "code",
