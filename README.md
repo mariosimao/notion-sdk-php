@@ -32,4 +32,4 @@ composer require mariosimao/notion-sdk-php
 
 ## Documentation
 
-Further documentation can be found [here](https://mariosimao.github.io/notion-sdk-php).
+Further documentation can be found [here](https://mario.engineering/notion-sdk-php).
