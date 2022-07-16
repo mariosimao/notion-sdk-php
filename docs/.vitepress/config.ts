@@ -39,7 +39,7 @@ export default defineConfig({
     lang: 'en-US',
     lastUpdated: true,
     themeConfig: {
-        logo: '/images/logo.png',
+        logo: '/logo.png',
         nav: [
             { text: 'Documentation', link: '/getting-started' },
             { text: 'Changelog', link: 'https://github.com/mariosimao/notion-sdk-php/blob/main/CHANGELOG.md'},
