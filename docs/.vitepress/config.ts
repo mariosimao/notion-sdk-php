@@ -33,6 +33,7 @@ const howToItems = fs.readdirSync('./how-to')
     }));
 
 export default defineConfig({
+    base: '/notion-sdk-php/',
     title: 'Notion SDK PHP',
     description: 'A complete Notion SDK for PHP developers.',
     lang: 'en-US',
