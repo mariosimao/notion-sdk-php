@@ -55,7 +55,8 @@
     },
     "config": {
         "allow-plugins": {
-            "infection/extension": true
+            "infection/extension": true,
+            "infection/extension-installer": true
         }
     }
 }
