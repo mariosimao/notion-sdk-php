@@ -50,6 +50,11 @@ export default defineConfig({
     ],
     themeConfig: {
         logo: '/logo.png',
+        algolia: {
+            appId: 'I6RXP3ZUR1',
+            apiKey: 'd4fe90d3f1d686f71865fec455c3ac59',
+            indexName: 'notion-sdk-php',
+        },
         nav: [
             { text: 'Documentation', link: '/getting-started' },
             { text: 'Changelog', link: 'https://github.com/mariosimao/notion-sdk-php/blob/main/CHANGELOG.md'},
