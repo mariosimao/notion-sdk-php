@@ -52,5 +52,11 @@
         "test:unit": "phpunit --testsuite Unit",
         "test:integration": "phpunit --testsuite Integration",
         "test:coverage-html": "phpunit --coverage-html dist/phpunit/html"
+    },
+    "config": {
+        "allow-plugins": {
+            "infection/extension-installer": true
+        },
+        "sort-packages": true
     }
 }
