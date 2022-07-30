@@ -36,10 +36,8 @@ jobs:
           php-version: ${{ matrix.php-version }}
           tools: none
 
-      - name: Configure composer
-        run: composer config --no-plugins allow-plugins.infection/extension-installer true
-
       - name: Install composer dependencies
+        run: composer config --no-plugins allow-plugins.infection/extension-installer true
         uses: ramsey/composer-install@2.1.0
         with:
           dependency-versions: ${{ matrix.dependencies }}
