@@ -37,7 +37,7 @@ jobs:
           tools: none
 
       - name: Configure composer
-      - run: composer config --no-plugins allow-plugins.infection/extension-installer true
+        run: composer config --no-plugins allow-plugins.infection/extension-installer true
 
       - name: Install composer dependencies
         uses: ramsey/composer-install@2.1.0
