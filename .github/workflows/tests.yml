@@ -37,13 +37,14 @@ jobs:
           tools: none
 
       - name: Install composer dependencies
-        run: composer config --no-plugins allow-plugins.infection/extension-installer true
         uses: ramsey/composer-install@2.1.0
         with:
           dependency-versions: ${{ matrix.dependencies }}
 
       - name: Run tests with phpunit
-        run: composer ci:unit
+        run: |
+          composer config --no-plugins allow-plugins.infection/extension-installer true
+          composer ci:unit
 
   integration-tests:
     name: Integration tests (PHPUnit)
