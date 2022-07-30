@@ -40,7 +40,6 @@ jobs:
         uses: ramsey/composer-install@1.3.0
         with:
           dependency-versions: ${{ matrix.dependencies }}
-          composer-options: --no-ansi --no-interaction --no-progress
 
       - name: Run tests with phpunit
         run: composer ci:unit
