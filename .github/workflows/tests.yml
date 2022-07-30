@@ -37,7 +37,7 @@ jobs:
           tools: none
 
       - name: Install composer dependencies
-        uses: ramsey/composer-install@1.3.0
+        uses: ramsey/composer-install@2.1.0
         with:
           dependency-versions: ${{ matrix.dependencies }}
 
@@ -60,7 +60,7 @@ jobs:
           tools: none
 
       - name: Install composer dependencies
-        uses: ramsey/composer-install@1.3.0
+        uses: ramsey/composer-install@2.1.0
         with:
           dependency-versions: ${{ matrix.locked }}
           composer-options: --no-ansi --no-interaction --no-progress
@@ -90,7 +90,7 @@ jobs:
           tools: none
 
       - name: Install composer dependencies
-        uses: ramsey/composer-install@1.3.0
+        uses: ramsey/composer-install@2.1.0
         with:
           dependency-versions: locked
           composer-options: --no-ansi --no-interaction --no-progress
@@ -120,7 +120,7 @@ jobs:
           tools: none
 
       - name: Install composer dependencies
-        uses: ramsey/composer-install@1.3.0
+        uses: ramsey/composer-install@2.1.0
         with:
           dependency-versions: locked
           composer-options: --no-ansi --no-interaction --no-progress
