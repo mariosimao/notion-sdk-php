@@ -36,22 +36,14 @@ jobs:
           php-version: ${{ matrix.php-version }}
           tools: none
 
-      - name: "Install lowest dependencies"
-        if: ${{ matrix.dependencies == 'lowest' }}
-        run: "composer update --prefer-lowest --no-interaction --no-progress --no-suggest --ignore-platform-req=php"
-
-      - name: "Install highest dependencies"
-        if: ${{ matrix.dependencies == 'highest' }}
-        run: "composer update --no-interaction --no-progress --no-suggest --ignore-platform-req=php"
-
-      - name: "Install locked dependencies"
-        if: ${{ matrix.dependencies == 'locked' }}
-        run: "composer install --no-interaction --no-progress --no-suggest --ignore-platform-req=php"
+      - name: Install composer dependencies
+        run: composer config --no-plugins allow-plugins.infection/extension-installer true
+        uses: ramsey/composer-install@2.1.0
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
 
       - name: Run tests with phpunit
-        run: |
-          composer config --no-plugins allow-plugins.infection/extension-installer true
-          composer ci:unit
+        run: composer ci:unit
 
   integration-tests:
     name: Integration tests (PHPUnit)
