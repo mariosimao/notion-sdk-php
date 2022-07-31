@@ -10,6 +10,8 @@ $paragraph = Paragraph::fromString("Simple paragraph.");
 $paragraph->toString(); // "Simple paragraph."
 ```
 
+![](../images/paragraph.png)
+
 Or creating an empty paragraph:
 ```php
 <?php
@@ -29,6 +31,8 @@ $text = RichText::createText("Simple text")->bold()->italic();
 $paragraph = Paragraph::create()->appendText($text);
 ```
 
+![](../images/paragraph-rich-text.png)
+
 While working with multiple texts:
 
 ```php
@@ -44,3 +48,5 @@ $paragraph = Paragraph::create()->withText($text);
 ```
 
 Note that `withText()` will replace the text on a new instance of `Paragraph`.
+
+![](../images/paragraph-rich-text-multiple.png)

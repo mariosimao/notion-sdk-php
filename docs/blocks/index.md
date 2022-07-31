@@ -19,9 +19,6 @@ $p->block()->hasChildren();                     // false
 
 ## Available blocks:
 
-- Block
-- BlockFactory
-- BlockInterface
 - [Bookmark](./Bookmark)
 - Breadcrumb
 - [BulletedListItem](./BulletedListItem)

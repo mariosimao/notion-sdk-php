@@ -9,14 +9,18 @@ Creating a bookmark from a URL string:
 $bookmark = Bookmark::create("https://notion.so");
 ```
 
+![](../images/bookmark.png)
+
 ## Add caption
 
 ```php
 $caption = RichText::createText("An awesome bookmark caption");
 
-$bookmark = Bookmark::create("https://notion.so");
+$bookmark = Bookmark::create("https://notion.so")
                     ->withCaption($caption);
 ```
+
+![](../images/bookmark-caption.png)
 
 ## Change URL
 
