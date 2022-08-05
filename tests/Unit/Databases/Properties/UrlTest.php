@@ -22,7 +22,7 @@ class UrlTest extends TestCase
             "id"    => "abc",
             "name"  => "dummy",
             "type"  => "url",
-            "url" => [],
+            "url" => new \stdClass(),
         ];
         $url = Url::fromArray($array);
         $fromFactory = Factory::fromArray($array);

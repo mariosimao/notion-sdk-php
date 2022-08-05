@@ -22,7 +22,7 @@ class LastEditedByTest extends TestCase
             "id"    => "abc",
             "name"  => "dummy",
             "type"  => "last_edited_by",
-            "last_edited_by" => [],
+            "last_edited_by" => new \stdClass(),
         ];
         $lastEditedBy = LastEditedBy::fromArray($array);
         $fromFactory = Factory::fromArray($array);

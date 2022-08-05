@@ -22,7 +22,7 @@ class PeopleTest extends TestCase
             "id"    => "abc",
             "name"  => "dummy",
             "type"  => "people",
-            "people" => [],
+            "people" => new \stdClass(),
         ];
         $people = People::fromArray($array);
         $fromFactory = Factory::fromArray($array);

@@ -22,7 +22,7 @@ class CreatedByTest extends TestCase
             "id"    => "abc",
             "name"  => "dummy",
             "type"  => "created_by",
-            "created_by" => [],
+            "created_by" => new \stdClass(),
         ];
         $createdBy = CreatedBy::fromArray($array);
         $fromFactory = Factory::fromArray($array);

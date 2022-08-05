@@ -22,7 +22,7 @@ class CheckboxTest extends TestCase
             "id"    => "abc",
             "name"  => "dummy",
             "type"  => "checkbox",
-            "checkbox" => [],
+            "checkbox" => new \stdClass(),
         ];
         $checkbox = Checkbox::fromArray($array);
         $fromFactory = Factory::fromArray($array);

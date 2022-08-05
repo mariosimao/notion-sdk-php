@@ -24,7 +24,7 @@ class TitleTest extends TestCase
             "id"    => "title",
             "name"  => "dummy",
             "type"  => "title",
-            "title" => [],
+            "title" => new \stdClass(),
         ];
         $title = Title::fromArray($array);
         $fromFactory = Factory::fromArray($array);

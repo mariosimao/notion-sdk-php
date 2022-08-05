@@ -28,7 +28,7 @@ class DividerTest extends TestCase
             "archived"         => false,
             "has_children"     => false,
             "type"             => "divider",
-            "divider"          => [],
+            "divider"          => new \stdClass(),
         ];
 
         $divider = Divider::fromArray($array);
@@ -49,7 +49,7 @@ class DividerTest extends TestCase
             "archived"         => false,
             "has_children"     => false,
             "type"             => "wrong-type",
-            "divider"          => [],
+            "divider"          => new \stdClass(),
         ];
 
         Divider::fromArray($array);
@@ -66,7 +66,7 @@ class DividerTest extends TestCase
             "archived"         => false,
             "has_children"     => false,
             "type"             => "divider",
-            "divider"          => [],
+            "divider"          => new \stdClass(),
         ];
 
         $this->assertEquals($expected, $divider->toArray());

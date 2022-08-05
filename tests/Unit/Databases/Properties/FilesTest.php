@@ -22,7 +22,7 @@ class FilesTest extends TestCase
             "id"    => "abc",
             "name"  => "dummy",
             "type"  => "files",
-            "files" => [],
+            "files" => new \stdClass(),
         ];
         $files = Files::fromArray($array);
         $fromFactory = Factory::fromArray($array);

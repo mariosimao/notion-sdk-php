@@ -22,7 +22,7 @@ class CreatedTimeTest extends TestCase
             "id"    => "abc",
             "name"  => "dummy",
             "type"  => "created_time",
-            "created_time" => [],
+            "created_time" => new \stdClass(),
         ];
         $createdTime = CreatedTime::fromArray($array);
         $fromFactory = Factory::fromArray($array);
