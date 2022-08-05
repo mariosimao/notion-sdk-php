@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.1] - 2022-08-04
+
 ## Added
 - Documentation website
 
@@ -17,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add URL support to RichText objects (#89)
+
+### Fixed
+
+- Wrong object to array conversion
 
 ## [0.5.2] - 2022-06-22
 
@@ -145,7 +151,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - title
   - URL
 
-[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v0.1.0
 [0.2.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v0.2.0
 [0.3.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v0.3.0
@@ -154,3 +159,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.5.1]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v0.5.1
 [0.5.2]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v0.5.2
 [0.6.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v0.6.0
+[0.6.1]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v0.6.1
+[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v0.6.1...HEAD

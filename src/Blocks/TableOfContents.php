@@ -48,7 +48,7 @@ class TableOfContents implements BlockInterface
     {
         $array = $this->block->toArray();
 
-        $array[self::TYPE] = [];
+        $array[self::TYPE] = new \stdClass();
 
         return $array;
     }
@@ -57,7 +57,7 @@ class TableOfContents implements BlockInterface
     public function toUpdateArray(): array
     {
         return [
-            self::TYPE => [],
+            self::TYPE => new \stdClass(),
             "archived" => $this->block()->archived(),
         ];
     }

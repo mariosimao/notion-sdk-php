@@ -46,7 +46,7 @@ class LastEditedTime implements PropertyInterface
     public function toArray(): array
     {
         $array = $this->property->toArray();
-        $array[self::TYPE] = [];
+        $array[self::TYPE] = new \stdClass();
 
         return $array;
     }
