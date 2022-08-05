@@ -139,7 +139,7 @@ class DatabaseTest extends TestCase
                     "id"    => "title",
                     "name"  => "Dummy prop name",
                     "type"  => "title",
-                    "title" => [],
+                    "title" => new \stdClass(),
                 ],
             ],
             "parent" => [
@@ -153,7 +153,7 @@ class DatabaseTest extends TestCase
         $outArray = $array;
         unset($outArray["parent"]["type"]);
 
-        $this->assertSame($outArray, $database->toArray());
+        $this->assertEquals($outArray, $database->toArray());
         $this->assertSame("a7e80c0b-a766-43c3-a9e9-21ce94595e0e", $database->id());
         $this->assertSame("https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e", $database->url());
         $this->assertEquals(
@@ -196,7 +196,7 @@ class DatabaseTest extends TestCase
                     "id"    => "title",
                     "name"  => "Title",
                     "type"  => "title",
-                    "title" => [],
+                    "title" => new \stdClass(),
                 ],
             ],
             "parent" => [
@@ -242,7 +242,7 @@ class DatabaseTest extends TestCase
                     "id"    => "title",
                     "name"  => "Title",
                     "type"  => "title",
-                    "title" => [],
+                    "title" => new \stdClass(),
                 ],
             ],
             "parent" => [

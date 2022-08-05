@@ -65,7 +65,7 @@ class ColumnTest extends TestCase
                     "archived"         => false,
                     "has_children"     => false,
                     "type"             => "divider",
-                    "divider"          => [],
+                    "divider"          => new \stdClass(),
                 ]],
             ],
         ];

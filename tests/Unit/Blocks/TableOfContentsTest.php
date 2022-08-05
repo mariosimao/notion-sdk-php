@@ -28,7 +28,7 @@ class TableOfContentsTest extends TestCase
             "archived"         => false,
             "has_children"     => false,
             "type"             => "table_of_contents",
-            "table_of_contents" => [],
+            "table_of_contents" => new \stdClass(),
         ];
 
         $tableOfContents = TableOfContents::fromArray($array);
@@ -49,7 +49,7 @@ class TableOfContentsTest extends TestCase
             "archived"         => false,
             "has_children"     => false,
             "type"             => "wrong-type",
-            "table_of_contents" => [],
+            "table_of_contents" => new \stdClass(),
         ];
 
         TableOfContents::fromArray($array);
@@ -66,7 +66,7 @@ class TableOfContentsTest extends TestCase
             "archived"         => false,
             "has_children"     => false,
             "type"             => "table_of_contents",
-            "table_of_contents" => [],
+            "table_of_contents" => new \stdClass(),
         ];
 
         $this->assertEquals($expected, $tableOfContents->toArray());

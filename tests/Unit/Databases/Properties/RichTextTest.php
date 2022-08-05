@@ -22,7 +22,7 @@ class RichTextTest extends TestCase
             "id"    => "abc",
             "name"  => "dummy",
             "type"  => "rich_text",
-            "rich_text" => [],
+            "rich_text" => new \stdClass(),
         ];
         $text = RichText::fromArray($array);
         $fromFactory = Factory::fromArray($array);

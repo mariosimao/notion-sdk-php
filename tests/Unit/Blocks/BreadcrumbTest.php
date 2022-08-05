@@ -28,7 +28,7 @@ class BreadcrumbTest extends TestCase
             "archived"         => false,
             "has_children"     => false,
             "type"             => "breadcrumb",
-            "breadcrumb"       => [],
+            "breadcrumb"       => new \stdClass(),
         ];
 
         $breadcrumb = Breadcrumb::fromArray($array);
@@ -49,7 +49,7 @@ class BreadcrumbTest extends TestCase
             "archived"         => false,
             "has_children"     => false,
             "type"             => "wrong-type",
-            "breadcrumb"       => [],
+            "breadcrumb"       => new \stdClass(),
         ];
 
         Breadcrumb::fromArray($array);
@@ -66,7 +66,7 @@ class BreadcrumbTest extends TestCase
             "archived"         => false,
             "has_children"     => false,
             "type"             => "breadcrumb",
-            "breadcrumb"       => [],
+            "breadcrumb"       => new \stdClass(),
         ];
 
         $this->assertEquals($expected, $breadcrumb->toArray());

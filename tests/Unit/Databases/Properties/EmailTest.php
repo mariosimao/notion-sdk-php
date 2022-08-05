@@ -22,7 +22,7 @@ class EmailTest extends TestCase
             "id"    => "abc",
             "name"  => "dummy",
             "type"  => "email",
-            "email" => [],
+            "email" => new \stdClass(),
         ];
         $email = Email::fromArray($array);
         $fromFactory = Factory::fromArray($array);

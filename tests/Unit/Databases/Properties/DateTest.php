@@ -22,7 +22,7 @@ class DateTest extends TestCase
             "id"    => "abc",
             "name"  => "dummy",
             "type"  => "date",
-            "date" => [],
+            "date" => new \stdClass(),
         ];
         $date = Date::fromArray($array);
         $fromFactory = Factory::fromArray($array);

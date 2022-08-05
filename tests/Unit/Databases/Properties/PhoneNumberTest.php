@@ -22,7 +22,7 @@ class PhoneNumberTest extends TestCase
             "id"    => "abc",
             "name"  => "dummy",
             "type"  => "phone_number",
-            "phone_number" => [],
+            "phone_number" => new \stdClass(),
         ];
         $phoneNumber = PhoneNumber::fromArray($array);
         $fromFactory = Factory::fromArray($array);
