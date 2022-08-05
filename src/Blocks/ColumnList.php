@@ -67,7 +67,7 @@ class ColumnList implements BlockInterface
     public function toUpdateArray(): array
     {
         return [
-            self::TYPE => [],
+            self::TYPE => new \stdClass(),
             "archived" => $this->block()->archived(),
         ];
     }
