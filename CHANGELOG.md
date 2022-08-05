@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add URL support to RichText objects (#89)
 
+### Fixed
+
+- Wrong object to array conversion
+
 ## [0.5.2] - 2022-06-22
 
 ### Fixed
