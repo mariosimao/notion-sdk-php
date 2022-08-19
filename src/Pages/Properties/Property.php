@@ -99,6 +99,11 @@ class Property
         return $this->type === self::TYPE_DATE;
     }
 
+    public function isFiles(): bool
+    {
+        return $this->type === self::TYPE_FILES;
+    }
+
     public function isFormula(): bool
     {
         return $this->type === self::TYPE_FORMULA;
