@@ -4,6 +4,7 @@ namespace Notion\Test\Unit\Common;
 
 use DateTimeImmutable;
 use Notion\Common\File;
+use Notion\Common\FileType;
 use PHPUnit\Framework\TestCase;
 
 class FileTest extends TestCase
@@ -14,9 +15,9 @@ class FileTest extends TestCase
         $file = File::createInternal("https://notion.so/image.png", $expiryTime);
 
         $this->assertTrue($file->isInternal());
-        $this->assertEquals("file", $file->type());
-        $this->assertEquals("https://notion.so/image.png", $file->url());
-        $this->assertEquals($expiryTime, $file->expiryTime());
+        $this->assertEquals(FileType::Internal, $file->type);
+        $this->assertEquals("https://notion.so/image.png", $file->url);
+        $this->assertEquals($expiryTime, $file->expiryTime);
     }
 
     public function test_create_external(): void
@@ -24,9 +25,9 @@ class FileTest extends TestCase
         $file = File::createExternal("https://my-site.com/image.png");
 
         $this->assertTrue($file->isExternal());
-        $this->assertEquals("external", $file->type());
-        $this->assertEquals("https://my-site.com/image.png", $file->url());
-        $this->assertNull($file->expiryTime());
+        $this->assertEquals(FileType::External, $file->type);
+        $this->assertEquals("https://my-site.com/image.png", $file->url);
+        $this->assertNull($file->expiryTime);
     }
 
     public function test_intenral_array_conversion(): void
@@ -56,8 +57,8 @@ class FileTest extends TestCase
 
     public function test_change_url(): void
     {
-        $file = File::createExternal("")->withUrl("https://my-site.com/image.png");
+        $file = File::createExternal("")->changeUrl("https://my-site.com/image.png");
 
-        $this->assertEquals("https://my-site.com/image.png", $file->url());
+        $this->assertEquals("https://my-site.com/image.png", $file->url);
     }
 }

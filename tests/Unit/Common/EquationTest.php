@@ -22,13 +22,6 @@ class EquationTest extends TestCase
     {
         $equation = Equation::create("a^2 + b^2 = c^2");
 
-        $this->assertEquals("a^2 + b^2 = c^2", $equation->expression());
-    }
-
-    public function test_change_expression(): void
-    {
-        $equation = Equation::create("")->withExpression("a^2 + b^2 = c^2");
-
-        $this->assertEquals("a^2 + b^2 = c^2", $equation->expression());
+        $this->assertEquals("a^2 + b^2 = c^2", $equation->expression);
     }
 }

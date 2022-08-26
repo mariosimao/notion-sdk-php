@@ -9,14 +9,10 @@ namespace Notion\Common;
  */
 class Text
 {
-    private string $content;
-    private string|null $url;
-
-    private function __construct(string $content, string|null $url)
-    {
-        $this->content = $content;
-        $this->url = $url;
-    }
+    private function __construct(
+        public readonly string $content,
+        public readonly string|null $url,
+    ) {}
 
     /** @psalm-mutation-free */
     public static function create(string $content): self
@@ -46,27 +42,17 @@ class Text
         return $array;
     }
 
-    public function content(): string
-    {
-        return $this->content;
-    }
-
-    public function url(): string|null
-    {
-        return $this->url;
-    }
-
-    public function withContent(string $content): self
+    public function changeContent(string $content): self
     {
         return new self($content, $this->url);
     }
 
-    public function withUrl(string $url): self
+    public function changeUrl(string $url): self
     {
         return new self($this->content, $url);
     }
 
-    public function withoutUrl(): self
+    public function removeUrl(): self
     {
         return new self($this->content, null);
     }

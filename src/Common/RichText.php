@@ -22,35 +22,16 @@ namespace Notion\Common;
  */
 class RichText
 {
-    private const ALLOWED_TYPES = [ "text", "mention", "equation" ];
-
-    private string $plainText;
-    private string|null $href;
-    private Annotations $annotations;
-    private string $type;
-    private Text|null $text;
-    private Mention|null $mention;
-    private Equation|null $equation;
-
     private function __construct(
-        string $plainText,
-        string|null $href,
-        Annotations $annotations,
-        string $type,
-        Text|null $text,
-        Mention|null $mention,
-        Equation|null $equation,
-    ) {
-        $this->plainText = $plainText;
-        $this->href = $href;
-        $this->annotations = $annotations;
-        $this->type = $type;
-        $this->text = $text;
-        $this->mention = $mention;
-        $this->equation = $equation;
-    }
+        public readonly string $plainText,
+        public readonly string|null $href,
+        public readonly Annotations $annotations,
+        public readonly RichTextType $type,
+        public readonly Text|null $text,
+        public readonly Mention|null $mention,
+        public readonly Equation|null $equation,
+    ) {}
 
-    /** @psalm-mutation-free */
     public static function createText(string $content): self
     {
         $text = Text::create($content);
@@ -60,17 +41,24 @@ class RichText
 
     public static function createLink(string $content, string $url): self
     {
-        $text = Text::create($content)->withUrl($url);
+        $text = Text::create($content)->changeUrl($url);
 
         return self::createFromText($text);
     }
 
-    /** @psalm-mutation-free */
     public static function createFromText(Text $text): self
     {
         $annotations = Annotations::create();
 
-        return new self($text->content(), $text->url(), $annotations, "text", $text, null, null);
+        return new self(
+            $text->content,
+            $text->url,
+            $annotations,
+            RichTextType::Text,
+            $text,
+            null,
+            null
+        );
     }
 
     public static function createEquation(string $expression): self
@@ -85,10 +73,10 @@ class RichText
         $annotations = Annotations::create();
 
         return new self(
-            $equation->expression(),
+            $equation->expression,
             null,
             $annotations,
-            "equation",
+            RichTextType::Equation,
             null,
             null,
             $equation
@@ -96,7 +84,7 @@ class RichText
     }
 
     /**
-     * @param RichTextJson $array
+     * @psalm-param RichTextJson $array
      *
      * @internal
      */
@@ -106,7 +94,7 @@ class RichText
             $array["plain_text"],
             isset($array["href"]) ? $array["href"] : null,
             Annotations::fromArray($array["annotations"]),
-            $array["type"],
+            RichTextType::from($array["type"]),
             array_key_exists("text", $array) ? Text::fromArray($array["text"]) : null,
             array_key_exists("mention", $array) ? Mention::fromArray($array["mention"]) : null,
             array_key_exists("equation", $array) ? Equation::fromArray($array["equation"]) : null,
@@ -119,7 +107,7 @@ class RichText
             "plain_text"  => $this->plainText,
             "href"        => $this->href,
             "annotations" => $this->annotations->toArray(),
-            "type"        => $this->type,
+            "type"        => $this->type->value,
         ];
 
         if ($this->isText()) {
@@ -137,69 +125,31 @@ class RichText
         return $array;
     }
 
-    public function plainText(): string
-    {
-        return $this->plainText;
-    }
-
-    public function href(): string|null
-    {
-        return $this->href;
-    }
-
-    public function annotations(): Annotations
-    {
-        return $this->annotations;
-    }
-
-    public function type(): string
-    {
-        return $this->type;
-    }
-
-    public function text(): Text|null
-    {
-        return $this->text;
-    }
-
-    public function mention(): Mention|null
-    {
-        return $this->mention;
-    }
-
-    public function equation(): Equation|null
-    {
-        return $this->equation;
-    }
-
     /**
      * @psalm-assert-if-true Text $this->text
-     * @psalm-assert-if-true Text $this->text()
      */
     public function isText(): bool
     {
-        return $this->type === "text";
+        return $this->type === RichTextType::Text;
     }
 
     /**
      * @psalm-assert-if-true Mention $this->mention
-     * @psalm-assert-if-true Mention $this->mention()
      */
     public function isMention(): bool
     {
-        return $this->type === "mention";
+        return $this->type === RichTextType::Mention;
     }
 
     /**
      * @psalm-assert-if-true Equation $this->equation
-     * @psalm-assert-if-true Equation $this->equation()
      */
     public function isEquation(): bool
     {
-        return $this->type === "equation";
+        return $this->type === RichTextType::Equation;
     }
 
-    public function withHref(string $href): self
+    public function changeHref(string $href): self
     {
         return new self(
             $this->plainText,
@@ -212,7 +162,7 @@ class RichText
         );
     }
 
-    public function withAnnotations(Annotations $annotations): self
+    public function changeAnnotations(Annotations $annotations): self
     {
         return new self(
             $this->plainText,
@@ -229,42 +179,41 @@ class RichText
     {
         $annotations = $this->annotations->bold($bold);
 
-        return $this->withAnnotations($annotations);
+        return $this->changeAnnotations($annotations);
     }
 
     public function italic(bool $italic = true): self
     {
         $annotations = $this->annotations->italic($italic);
 
-        return $this->withAnnotations($annotations);
+        return $this->changeAnnotations($annotations);
     }
 
     public function strikeThrough(bool $strikeThrough = true): self
     {
         $annotations = $this->annotations->strikeThrough($strikeThrough);
 
-        return $this->withAnnotations($annotations);
+        return $this->changeAnnotations($annotations);
     }
 
     public function underline(bool $underline = true): self
     {
         $annotations = $this->annotations->underline($underline);
 
-        return $this->withAnnotations($annotations);
+        return $this->changeAnnotations($annotations);
     }
 
     public function code(bool $code = true): self
     {
         $annotations = $this->annotations->code($code);
 
-        return $this->withAnnotations($annotations);
+        return $this->changeAnnotations($annotations);
     }
 
-    /** @param Annotations::COLOR_* $color */
-    public function color(string $color): self
+    public function color(Color $color): self
     {
-        $annotations = $this->annotations->withColor($color);
+        $annotations = $this->annotations->changeColor($color);
 
-        return $this->withAnnotations($annotations);
+        return $this->changeAnnotations($annotations);
     }
 }

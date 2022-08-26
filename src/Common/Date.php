@@ -13,14 +13,10 @@ class Date
 {
     public const FORMAT = "Y-m-d\TH:i:s.up";
 
-    private DateTimeImmutable $start;
-    private DateTimeImmutable|null $end;
-
-    private function __construct(DateTimeImmutable $start, DateTimeImmutable|null $end)
-    {
-        $this->start = $start;
-        $this->end = $end;
-    }
+    private function __construct(
+        public readonly DateTimeImmutable $start,
+        public readonly DateTimeImmutable|null $end,
+    ) {}
 
     public static function create(
         DateTimeImmutable $start,
@@ -50,32 +46,22 @@ class Date
         ];
     }
 
-    public function start(): DateTimeImmutable
-    {
-        return $this->start;
-    }
-
-    public function end(): DateTimeImmutable|null
-    {
-        return $this->end;
-    }
-
     public function isRange(): bool
     {
         return $this->end !== null;
     }
 
-    public function withStart(DateTimeImmutable $start): self
+    public function changeStart(DateTimeImmutable $start): self
     {
         return new self($start, $this->end);
     }
 
-    public function withEnd(DateTimeImmutable $end): self
+    public function changeEnd(DateTimeImmutable $end): self
     {
         return new self($this->start, $end);
     }
 
-    public function withoutEnd(): self
+    public function removeEnd(): self
     {
         return new self($this->start, null);
     }

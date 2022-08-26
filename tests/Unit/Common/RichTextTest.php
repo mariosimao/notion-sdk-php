@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Unit\Common;
 
+use Notion\Common\Color;
 use Notion\Common\Equation;
 use Notion\Common\RichText;
 use Notion\Common\Text;
@@ -14,8 +15,7 @@ class RichTextTest extends TestCase
         $richText = RichText::createText("Simple text");
 
         $this->assertTrue($richText->isText());
-        $this->assertEquals("text", $richText->type());
-        $this->assertEquals("Simple text", $richText->text()?->content());
+        $this->assertEquals("Simple text", $richText->text?->content);
     }
 
     public function test_create_link(): void
@@ -23,10 +23,10 @@ class RichTextTest extends TestCase
         $richText = RichText::createLink("Click here", "https://notion.so");
 
         $this->assertTrue($richText->isText());
-        $this->assertEquals("Click here", $richText->plainText());
-        $this->assertEquals("Click here", $richText->text()?->content());
-        $this->assertEquals("https://notion.so", $richText->href());
-        $this->assertEquals("https://notion.so", $richText->text()?->url());
+        $this->assertEquals("Click here", $richText->plainText);
+        $this->assertEquals("Click here", $richText->text?->content);
+        $this->assertEquals("https://notion.so", $richText->href);
+        $this->assertEquals("https://notion.so", $richText->text?->url);
     }
 
     public function test_create_from_text(): void
@@ -36,8 +36,8 @@ class RichTextTest extends TestCase
         $richText = RichText::createFromText($text);
 
         $this->assertTrue($richText->isText());
-        $this->assertEquals("My text", $richText->plainText());
-        $this->assertEquals("My text", $richText->text()?->content());
+        $this->assertEquals("My text", $richText->plainText);
+        $this->assertEquals("My text", $richText->text?->content);
     }
 
     public function test_create_equation(): void
@@ -45,8 +45,7 @@ class RichTextTest extends TestCase
         $richText = RichText::createEquation("a^2 + b^2 = c^2");
 
         $this->assertTrue($richText->isEquation());
-        $this->assertEquals("equation", $richText->type());
-        $this->assertEquals("a^2 + b^2 = c^2", $richText->equation()?->expression());
+        $this->assertEquals("a^2 + b^2 = c^2", $richText->equation?->expression);
     }
 
     public function test_create_from_equation(): void
@@ -55,56 +54,56 @@ class RichTextTest extends TestCase
         $richText = RichText::createFromEquation($equation);
 
         $this->assertTrue($richText->isEquation());
-        $this->assertEquals("a^2 + b^2 = c^2", $richText->equation()?->expression());
+        $this->assertEquals("a^2 + b^2 = c^2", $richText->equation?->expression);
     }
 
     public function test_change_to_bold(): void
     {
         $richText = RichText::createText("Simple text")->bold();
 
-        $this->assertTrue($richText->annotations()->isBold());
+        $this->assertTrue($richText->annotations->isBold);
     }
 
     public function test_change_to_italic(): void
     {
         $richText = RichText::createText("Simple text")->italic();
 
-        $this->assertTrue($richText->annotations()->isItalic());
+        $this->assertTrue($richText->annotations->isItalic);
     }
 
     public function test_change_to_strike_through(): void
     {
         $richText = RichText::createText("Simple text")->strikeThrough();
 
-        $this->assertTrue($richText->annotations()->isStrikeThrough());
+        $this->assertTrue($richText->annotations->isStrikeThrough);
     }
 
     public function test_change_to_underline(): void
     {
         $richText = RichText::createText("Simple text")->underline();
 
-        $this->assertTrue($richText->annotations()->isUnderline());
+        $this->assertTrue($richText->annotations->isUnderline);
     }
 
     public function test_change_to_code(): void
     {
         $richText = RichText::createText("Simple text")->code();
 
-        $this->assertTrue($richText->annotations()->isCode());
+        $this->assertTrue($richText->annotations->isCode);
     }
 
     public function test_change_color(): void
     {
-        $richText = RichText::createText("Simple text")->color("red");
+        $richText = RichText::createText("Simple text")->color(Color::Red);
 
-        $this->assertEquals("red", $richText->annotations()->color());
+        $this->assertEquals(Color::Red, $richText->annotations->color);
     }
 
     public function test_change_href(): void
     {
-        $richText = RichText::createText("Simple text")->withHref("https://notion.so");
+        $richText = RichText::createText("Simple text")->changeHref("https://notion.so");
 
-        $this->assertEquals("https://notion.so", $richText->href());
+        $this->assertEquals("https://notion.so", $richText->href);
     }
 
     public function test_mention_array_conversion(): void
@@ -129,7 +128,7 @@ class RichTextTest extends TestCase
         $richText = RichText::fromArray($array);
 
         $this->assertEquals($array, $richText->toArray());
-        $this->assertNotNull($richText->mention());
+        $this->assertNotNull($richText->mention);
     }
 
     public function test_equation_array_conversion(): void
