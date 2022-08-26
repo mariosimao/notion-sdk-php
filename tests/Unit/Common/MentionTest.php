@@ -5,6 +5,7 @@ namespace Notion\Test\Unit\Common;
 use DateTimeImmutable;
 use Notion\Common\Date;
 use Notion\Common\Mention;
+use Notion\Common\MentionType;
 use Notion\Users\User;
 use PHPUnit\Framework\TestCase;
 
@@ -15,8 +16,8 @@ class MentionTest extends TestCase
         $mention = Mention::createPage("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
 
         $this->assertTrue($mention->isPage());
-        $this->assertEquals("page", $mention->type());
-        $this->assertEquals("1ce62b6f-b7f3-4201-afd0-08acb02e61c6", $mention->pageId());
+        $this->assertEquals(MentionType::Page, $mention->type);
+        $this->assertEquals("1ce62b6f-b7f3-4201-afd0-08acb02e61c6", $mention->pageId);
     }
 
     public function test_mention_database(): void
@@ -24,8 +25,7 @@ class MentionTest extends TestCase
         $mention = Mention::createDatabase("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
 
         $this->assertTrue($mention->isDatabase());
-        $this->assertEquals("database", $mention->type());
-        $this->assertEquals("1ce62b6f-b7f3-4201-afd0-08acb02e61c6", $mention->databaseId());
+        $this->assertEquals("1ce62b6f-b7f3-4201-afd0-08acb02e61c6", $mention->databaseId);
     }
 
     public function test_mention_user(): void
@@ -41,8 +41,7 @@ class MentionTest extends TestCase
         $mention = Mention::createUser($user);
 
         $this->assertTrue($mention->isUser());
-        $this->assertEquals("user", $mention->type());
-        $this->assertEquals($user, $mention->user());
+        $this->assertEquals($user, $mention->user);
     }
 
     public function test_mention_date(): void
@@ -51,8 +50,7 @@ class MentionTest extends TestCase
         $mention = Mention::createDate($date);
 
         $this->assertTrue($mention->isDate());
-        $this->assertEquals("date", $mention->type());
-        $this->assertEquals($date, $mention->date());
+        $this->assertEquals($date, $mention->date);
     }
 
     public function test_page_array_conversion(): void
@@ -103,14 +101,5 @@ class MentionTest extends TestCase
         $mention = Mention::fromArray($array);
 
         $this->assertEquals($array, $mention->toArray());
-    }
-
-    public function test_wrong_type_array_conversion(): void
-    {
-        $array = [ "type" => "wrong-type" ];
-
-        $this->expectException(\Exception::class);
-        /** @psalm-suppress InvalidArgument */
-        Mention::fromArray($array);
     }
 }

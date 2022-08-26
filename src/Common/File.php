@@ -15,36 +15,22 @@ use DateTimeImmutable;
  */
 class File
 {
-    private const ALLOWED_TYPES = [ "external", "file" ];
-
-    private string $type;
-    private string $url;
-    private DateTimeImmutable|null $expiryTime;
-
     private function __construct(
-        string $type,
-        string $url,
-        DateTimeImmutable|null $expiryTime,
-    ) {
-        if (!in_array($type, self::ALLOWED_TYPES)) {
-            throw new \Exception("Invalid file type: '{$type}'.");
-        }
-
-        $this->type = $type;
-        $this->url = $url;
-        $this->expiryTime = $expiryTime;
-    }
+        public readonly FileType $type,
+        public readonly string $url,
+        public readonly DateTimeImmutable|null $expiryTime,
+    ) {}
 
     public static function createExternal(string $url): self
     {
-        return new self("external", $url, null);
+        return new self(FileType::External, $url, null);
     }
 
     public static function createInternal(
         string $url,
         DateTimeImmutable|null $expiryTime = null
     ): self {
-        return new self("file", $url, $expiryTime);
+        return new self(FileType::Internal, $url, $expiryTime);
     }
 
     /**
@@ -59,7 +45,7 @@ class File
         $file = $array[$type] ?? [];
 
         return new self(
-            $type,
+            FileType::from($type),
             $file["url"] ?? "",
             isset($file["expiry_time"]) ? new DateTimeImmutable($file["expiry_time"]) : null,
         );
@@ -70,7 +56,7 @@ class File
         $array = [];
         $type = $this->type;
 
-        if ($type === "file") {
+        if ($type === FileType::Internal) {
             $array = [
                 "type" => "file",
                 "file" => [
@@ -80,7 +66,7 @@ class File
             ];
         }
 
-        if ($type === "external") {
+        if ($type === FileType::External) {
             $array = [
                 "type" => "external",
                 "external" => [ "url" => $this->url ],
@@ -90,32 +76,17 @@ class File
         return $array;
     }
 
-    public function type(): string
-    {
-        return $this->type;
-    }
-
-    public function url(): string
-    {
-        return $this->url;
-    }
-
-    public function expiryTime(): DateTimeImmutable|null
-    {
-        return $this->expiryTime;
-    }
-
     public function isExternal(): bool
     {
-        return $this->type === "external";
+        return $this->type === FileType::External;
     }
 
     public function isInternal(): bool
     {
-        return $this->type === "file";
+        return $this->type === FileType::Internal;
     }
 
-    public function withUrl(string $url): self
+    public function changeUrl(string $url): self
     {
         return new self($this->type, $url, $this->expiryTime);
     }

@@ -9,12 +9,9 @@ namespace Notion\Common;
  */
 class Emoji
 {
-    private string $emoji;
-
-    private function __construct(string $emoji)
-    {
-        $this->emoji = $emoji;
-    }
+    private function __construct(
+        public readonly string $emoji,
+    ) {}
 
     public static function create(string $emoji): self
     {
@@ -33,10 +30,5 @@ class Emoji
             "type"  => "emoji",
             "emoji" => $this->emoji,
         ];
-    }
-
-    public function emoji(): string
-    {
-        return $this->emoji;
     }
 }
