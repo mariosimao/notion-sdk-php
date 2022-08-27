@@ -18,9 +18,14 @@ class Date
         public readonly DateTimeImmutable|null $end,
     ) {}
 
-    public static function create(
+    public static function create(DateTimeImmutable $date): self
+    {
+        return new self($date, null);
+    }
+
+    public static function createRange(
         DateTimeImmutable $start,
-        DateTimeImmutable $end = null,
+        DateTimeImmutable $end,
     ): self {
         return new self($start, $end);
     }
