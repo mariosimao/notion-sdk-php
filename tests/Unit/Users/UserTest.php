@@ -21,10 +21,10 @@ class UserTest extends TestCase
 
         $this->assertEquals($array, $user->toArray());
         $this->assertTrue($user->isPerson());
-        $this->assertEquals("b0688871-85db-4637-8fc9-043a240fcaec", $user->id());
-        $this->assertEquals("Mario Simao", $user->name());
-        $this->assertEquals("person", $user->type());
-        $this->assertEquals("mariosimao@email.com", $user->person()?->email());
+        $this->assertEquals("b0688871-85db-4637-8fc9-043a240fcaec", $user->id);
+        $this->assertEquals("Mario Simao", $user->name);
+        $this->assertEquals("person", $user->type);
+        $this->assertEquals("mariosimao@email.com", $user->person?->email);
     }
 
     public function test_bot_from_array(): void
@@ -41,8 +41,8 @@ class UserTest extends TestCase
 
         $this->assertEquals($array, $user->toArray());
         $this->assertTrue($user->isBot());
-        $this->assertNotNull($user->bot());
-        $this->assertNull($user->avatarUrl());
+        $this->assertNotNull($user->bot);
+        $this->assertNull($user->avatarUrl);
     }
 
     public function test_invalid_type_from_array(): void
