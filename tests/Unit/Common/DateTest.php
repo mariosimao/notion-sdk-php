@@ -33,7 +33,7 @@ class DateTest extends TestCase
     {
         $start = new DateTimeImmutable("2021-01-01");
         $end = new DateTimeImmutable("2021-12-31");
-        $date = Date::create($start, $end);
+        $date = Date::createRange($start, $end);
 
         $this->assertSame($start, $date->start);
         $this->assertSame($end, $date->end);
@@ -64,7 +64,7 @@ class DateTest extends TestCase
     {
         $start = new DateTimeImmutable("2021-01-01");
         $end = new DateTimeImmutable("2021-12-31");
-        $date = Date::create($start, $end)->removeEnd();
+        $date = Date::createRange($start, $end)->removeEnd();
 
         $this->assertNull($date->end);
         $this->assertFalse($date->isRange());
