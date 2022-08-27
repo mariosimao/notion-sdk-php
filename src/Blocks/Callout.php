@@ -3,13 +3,13 @@
 namespace Notion\Blocks;
 
 use Exception;
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Common\Emoji;
 use Notion\Common\File;
 use Notion\Common\RichText;
 
 /**
- * @psalm-import-type BlockJson from Block
+ * @psalm-import-type BlockMetadataJson from BlockMetadata
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
  * @psalm-import-type EmojiJson from \Notion\Common\Emoji
  * @psalm-import-type FileJson from \Notion\Common\File
@@ -17,7 +17,7 @@ use Notion\Common\RichText;
  * @psalm-type CalloutJson = array{
  *      callout: array{
  *          rich_text: list<RichTextJson>,
- *          children?: list<BlockJson>,
+ *          children?: list<BlockMetadataJson>,
  *          icon: EmojiJson|FileJson,
  *      },
  * }
@@ -26,62 +26,43 @@ use Notion\Common\RichText;
  */
 class Callout implements BlockInterface
 {
-    private const TYPE = Block::TYPE_CALLOUT;
-
-    private Block $block;
-
-    /** @var list<RichText> */
-    private array $text;
-
-    private Emoji|File $icon;
-
-    /** @var list<\Notion\Blocks\BlockInterface> */
-    private array $children;
-
     /**
-     * @param list<RichText> $text
-     * @param list<\Notion\Blocks\BlockInterface> $children
+     * @param RichText[] $text
+     * @param BlockInterface[] $children
      */
     private function __construct(
-        Block $block,
-        array $text,
-        Emoji|File $icon,
-        array $children,
+        private readonly BlockMetadata $metadata,
+        public readonly array $text,
+        public readonly Emoji|File $icon,
+        public readonly array $children,
     ) {
-        if (!$block->isCallout()) {
-            throw new BlockTypeException(self::TYPE);
-        }
-
-        $this->block = $block;
-        $this->text = $text;
-        $this->icon = $icon;
-        $this->children = $children;
+        $metadata->checkType(BlockType::Callout);
     }
 
     public static function create(): self
     {
-        $block = Block::create(self::TYPE);
+        $metadata = BlockMetadata::create(BlockType::Callout);
         $icon = Emoji::create("⭐");
 
-        return new self($block, [], $icon, []);
+        return new self($metadata, [], $icon, []);
     }
 
     public static function fromString(string $emoji, string $content): self
     {
-        $block = Block::create(self::TYPE);
+        $metadata = BlockMetadata::create(BlockType::Callout);
         $text = [ RichText::createText($content) ];
         $icon = Emoji::create($emoji);
 
-        return new self($block, $text, $icon, []);
+        return new self($metadata, $text, $icon, []);
     }
 
     public static function fromArray(array $array): self
     {
-        /** @psalm-var BlockJson $array */
-        $block = Block::fromArray($array);
+        /** @psalm-var BlockMetadataJson $array */
+        $metadata = BlockMetadata::fromArray($array);
 
         /** @psalm-var CalloutJson $array */
-        $callout = $array[self::TYPE];
+        $callout = $array["callout"];
 
         $text = array_map(fn($t) => RichText::fromArray($t), $callout["rich_text"]);
 
@@ -96,14 +77,14 @@ class Callout implements BlockInterface
 
         $children = array_map(fn($b) => BlockFactory::fromArray($b), $callout["children"] ?? []);
 
-        return new self($block, $text, $icon, $children);
+        return new self($metadata, $text, $icon, $children);
     }
 
     public function toArray(): array
     {
-        $array = $this->block->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = [
+        $array["callout"] = [
             "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
             "icon"     => $this->icon->toArray(),
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
@@ -116,11 +97,11 @@ class Callout implements BlockInterface
     public function toUpdateArray(): array
     {
         return [
-            self::TYPE => [
+            "callout" => [
                 "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
                 "icon"     => $this->icon->toArray(),
             ],
-            "archived" => $this->block()->archived(),
+            "archived" => $this->metadata()->archived,
         ];
     }
 
@@ -128,25 +109,15 @@ class Callout implements BlockInterface
     {
         $string = "";
         foreach ($this->text as $richText) {
-            $string = $string . $richText->plainText();
+            $string = $string . $richText->plainText;
         }
 
         return $string;
     }
 
-    public function block(): Block
+    public function metadata(): BlockMetadata
     {
-        return $this->block;
-    }
-
-    public function text(): array
-    {
-        return $this->text;
-    }
-
-    public function icon(): Emoji|File
-    {
-        return $this->icon;
+        return $this->metadata;
     }
 
     /**
@@ -167,51 +138,43 @@ class Callout implements BlockInterface
         return $this->icon::class === File::class;
     }
 
-    /** @return list<BlockInterface> */
-    public function children(): array
+    public function changeText(RichText ...$text): self
     {
-        return $this->children;
+        return new self($this->metadata, $text, $this->icon, $this->children);
     }
 
-    /** @param list<RichText> $text */
-    public function withText(array $text): self
-    {
-        return new self($this->block, $text, $this->icon, $this->children);
-    }
-
-    public function appendText(RichText $text): self
+    public function addText(RichText $text): self
     {
         $texts = $this->text;
         $texts[] = $text;
 
-        return new self($this->block, $texts, $this->icon, $this->children);
+        return new self($this->metadata, $texts, $this->icon, $this->children);
     }
 
-    public function withIcon(Emoji|File $icon): self
+    public function changeIcon(Emoji|File $icon): self
     {
-        return new self($this->block, $this->text, $icon, $this->children);
+        return new self($this->metadata, $this->text, $icon, $this->children);
     }
 
-    /** @param list<BlockInterface> $children */
-    public function changeChildren(array $children): self
+    public function changeChildren(BlockInterface ...$children): self
     {
         $hasChildren = (count($children) > 0);
 
         return new self(
-            $this->block->withHasChildren($hasChildren),
+            $this->metadata->updateHasChildren($hasChildren),
             $this->text,
             $this->icon,
             $children,
         );
     }
 
-    public function appendChild(BlockInterface $child): self
+    public function addChild(BlockInterface $child): self
     {
         $children = $this->children;
         $children[] = $child;
 
         return new self(
-            $this->block->withHasChildren(true),
+            $this->metadata->updateHasChildren(true),
             $this->text,
             $this->icon,
             $children,
@@ -221,7 +184,7 @@ class Callout implements BlockInterface
     public function archive(): BlockInterface
     {
         return new self(
-            $this->block->archive(),
+            $this->metadata->archive(),
             $this->text,
             $this->icon,
             $this->children,

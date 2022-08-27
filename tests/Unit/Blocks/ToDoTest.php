@@ -3,7 +3,7 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Blocks\ToDo;
 use Notion\Common\Date;
 use Notion\Common\RichText;
@@ -15,9 +15,9 @@ class ToDoTest extends TestCase
     {
         $toDo = ToDo::create();
 
-        $this->assertEmpty($toDo->text());
-        $this->assertEmpty($toDo->children());
-        $this->assertFalse($toDo->checked());
+        $this->assertEmpty($toDo->text);
+        $this->assertEmpty($toDo->children);
+        $this->assertFalse($toDo->checked);
     }
 
     public function test_create_from_string(): void
@@ -79,18 +79,18 @@ class ToDoTest extends TestCase
 
         $toDo = ToDo::fromArray($array);
 
-        $this->assertCount(2, $toDo->text());
-        $this->assertEmpty($toDo->children());
+        $this->assertCount(2, $toDo->text);
+        $this->assertEmpty($toDo->children);
         $this->assertEquals("Notion to dos rock!", $toDo->toString());
-        $this->assertTrue($toDo->checked());
-        $this->assertFalse($toDo->block()->archived());
+        $this->assertTrue($toDo->checked);
+        $this->assertFalse($toDo->metadata()->archived);
 
         $this->assertEquals($toDo, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(BlockTypeException::class);
+        $this->expectException(BlockException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -115,8 +115,8 @@ class ToDoTest extends TestCase
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $p->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $p->block()->lastEditedTime()->format(Date::FORMAT),
+            "created_time"     => $p->metadata()->createdTime->format(Date::FORMAT),
+            "last_edited_time" => $p->metadata()->lastEditedTime->format(Date::FORMAT),
             "archived"         => false,
             "has_children"     => false,
             "type"             => "to_do",
@@ -149,20 +149,20 @@ class ToDoTest extends TestCase
     {
         $oldToDo = ToDo::fromString("This is an old to do");
 
-        $newToDo = $oldToDo->withText([
+        $newToDo = $oldToDo->changeText(
             RichText::createText("This is a "),
             RichText::createText("new to do"),
-        ]);
+        );
 
         $this->assertEquals("This is an old to do", $oldToDo->toString());
         $this->assertEquals("This is a new to do", $newToDo->toString());
     }
 
-    public function test_append_text(): void
+    public function test_add_text(): void
     {
         $oldToDo = ToDo::fromString("A to do");
 
-        $newToDo = $oldToDo->appendText(
+        $newToDo = $oldToDo->addText(
             RichText::createText(" can be extended.")
         );
 
@@ -174,21 +174,21 @@ class ToDoTest extends TestCase
     {
         $nested1 = ToDo::fromString("Nested to do 1");
         $nested2 = ToDo::fromString("Nested to do 2");
-        $toDo = ToDo::fromString("Simple to do.")->changeChildren([ $nested1, $nested2 ]);
+        $toDo = ToDo::fromString("Simple to do.")->changeChildren($nested1, $nested2);
 
-        $this->assertCount(2, $toDo->children());
-        $this->assertEquals($nested1, $toDo->children()[0]);
-        $this->assertEquals($nested2, $toDo->children()[1]);
+        $this->assertCount(2, $toDo->children);
+        $this->assertEquals($nested1, $toDo->children[0]);
+        $this->assertEquals($nested2, $toDo->children[1]);
     }
 
-    public function test_append_child(): void
+    public function test_add_child(): void
     {
         $toDo = ToDo::fromString("Simple to do.");
         $nested = ToDo::fromString("Nested to do");
-        $toDo = $toDo->appendChild($nested);
+        $toDo = $toDo->addChild($nested);
 
-        $this->assertCount(1, $toDo->children());
-        $this->assertEquals($nested, $toDo->children()[0]);
+        $this->assertCount(1, $toDo->children);
+        $this->assertEquals($nested, $toDo->children[0]);
     }
 
     public function test_check_item(): void
@@ -196,14 +196,14 @@ class ToDoTest extends TestCase
         $toDo = ToDo::fromString("Simple to do.");
         $toDo = $toDo->check();
 
-        $this->assertTrue($toDo->checked());
+        $this->assertTrue($toDo->checked);
     }
 
     public function test_uncheck_item(): void
     {
         $toDo = ToDo::fromString("Simple to do.")->check()->uncheck();
 
-        $this->assertFalse($toDo->checked());
+        $this->assertFalse($toDo->checked);
     }
 
     public function test_array_for_update_operations(): void

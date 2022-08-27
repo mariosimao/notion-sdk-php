@@ -4,7 +4,7 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Bookmark;
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Common\Date;
 use Notion\Common\RichText;
 use Notion\NotionException;
@@ -16,7 +16,7 @@ class BookmarkTest extends TestCase
     {
         $bookmark = Bookmark::create("https://my-site.com");
 
-        $this->assertEquals("https://my-site.com", $bookmark->url());
+        $this->assertEquals("https://my-site.com", $bookmark->url);
     }
 
     public function test_create_from_array(): void
@@ -34,14 +34,14 @@ class BookmarkTest extends TestCase
 
         $bookmark = Bookmark::fromArray($array);
 
-        $this->assertEquals("https://my-site.com", $bookmark->url());
+        $this->assertEquals("https://my-site.com", $bookmark->url);
 
         $this->assertEquals($bookmark, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(BlockTypeException::class);
+        $this->expectException(BlockException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -62,8 +62,8 @@ class BookmarkTest extends TestCase
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $bookmark->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $bookmark->block()->createdTime()->format(Date::FORMAT),
+            "created_time"     => $bookmark->metadata()->createdTime->format(Date::FORMAT),
+            "last_edited_time" => $bookmark->metadata()->createdTime->format(Date::FORMAT),
             "archived"         => false,
             "has_children"     => false,
             "type"             => "bookmark",
@@ -76,18 +76,18 @@ class BookmarkTest extends TestCase
     public function test_replace_url(): void
     {
         $old = Bookmark::create("https://my-site.com");
-        $new = $old->withUrl("https://another-site.com");
+        $new = $old->changeUrl("https://another-site.com");
 
-        $this->assertEquals("https://my-site.com", $old->url());
-        $this->assertEquals("https://another-site.com", $new->url());
+        $this->assertEquals("https://my-site.com", $old->url);
+        $this->assertEquals("https://another-site.com", $new->url);
     }
 
     public function test_replace_caption(): void
     {
         $caption = [ RichText::createText("Bookmark caption") ];
-        $bookmark = Bookmark::create("https://my-site.com")->withCaption($caption);
+        $bookmark = Bookmark::create("https://my-site.com")->changeCaption($caption);
 
-        $this->assertEquals($caption, $bookmark->caption());
+        $this->assertEquals($caption, $bookmark->caption);
     }
 
     public function test_no_children_support(): void
@@ -96,7 +96,7 @@ class BookmarkTest extends TestCase
 
         $this->expectException(NotionException::class);
         /** @psalm-suppress UnusedMethodCall */
-        $bookmark->changeChildren([]);
+        $bookmark->changeChildren();
     }
 
     public function test_array_for_update_operations(): void

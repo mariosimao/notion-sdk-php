@@ -27,10 +27,9 @@ class LinkPreviewTest extends TestCase
         $linkPreview = LinkPreview::fromArray($array);
 
         $this->assertEquals($array, $linkPreview->toArray());
-        $this->assertTrue($linkPreview->block()->isLinkPreview());
         $this->assertEquals(
             "https://github.com/mariosimao/notion-sdk-php/issues/1",
-            $linkPreview->url()
+            $linkPreview->url,
         );
     }
 
@@ -53,7 +52,7 @@ class LinkPreviewTest extends TestCase
         LinkPreview::fromArray($array);
     }
 
-    public function test_create_with_factory(): void
+    public function test_create_change_factory(): void
     {
         $array = [
             "object"           => "block",
@@ -92,6 +91,6 @@ class LinkPreviewTest extends TestCase
 
         $this->expectException(NotionException::class);
         /** @psalm-suppress UnusedMethodCall */
-        $block->changeChildren([]);
+        $block->changeChildren();
     }
 }

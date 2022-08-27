@@ -2,15 +2,15 @@
 
 namespace Notion\Blocks;
 
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Common\Equation;
 use Notion\NotionException;
 
 /**
- * @psalm-import-type BlockJson from Block
+ * @psalm-import-type BlockMetadataJson from BlockMetadata
  * @psalm-import-type EquationJson from \Notion\Common\Equation
  *
- * @psalm-type EquationBlockJson = array{
+ * @psalm-type EquationBlockMetadataJson = array{
  *      equation: EquationJson,
  * }
  *
@@ -18,25 +18,16 @@ use Notion\NotionException;
  */
 class EquationBlock implements BlockInterface
 {
-    private const TYPE = Block::TYPE_EQUATION;
-
-    private Block $block;
-
-    private Equation $equation;
-
-    private function __construct(Block $block, Equation $equation)
-    {
-        if (!$block->isEquation()) {
-            throw new BlockTypeException(self::TYPE);
-        }
-
-        $this->block = $block;
-        $this->equation = $equation;
+    private function __construct(
+        private readonly BlockMetadata $metadata,
+        public readonly Equation $equation
+    ) {
+        $metadata->checkType(BlockType::Equation);
     }
 
     public static function create(string $expression = ""): self
     {
-        $block = Block::create(self::TYPE);
+        $block = BlockMetadata::create(BlockType::Equation);
         $equation = Equation::create($expression);
 
         return new self($block, $equation);
@@ -44,20 +35,20 @@ class EquationBlock implements BlockInterface
 
     public static function fromArray(array $array): self
     {
-        /** @psalm-var BlockJson $array */
-        $block = Block::fromArray($array);
+        /** @psalm-var BlockMetadataJson $array */
+        $block = BlockMetadata::fromArray($array);
 
-        /** @psalm-var EquationBlockJson $array */
-        $equation = Equation::fromArray($array[self::TYPE]);
+        /** @psalm-var EquationBlockMetadataJson $array */
+        $equation = Equation::fromArray($array["equation"]);
 
         return new self($block, $equation);
     }
 
     public function toArray(): array
     {
-        $array = $this->block->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = $this->equation->toArray();
+        $array["equation"] = $this->equation->toArray();
 
         return $array;
     }
@@ -66,38 +57,35 @@ class EquationBlock implements BlockInterface
     public function toUpdateArray(): array
     {
         return [
-            self::TYPE => $this->equation->toArray(),
-            "archived" => $this->block()->archived(),
+            "equation" => $this->equation->toArray(),
+            "archived" => $this->metadata()->archived,
         ];
     }
 
-    public function block(): Block
+    public function metadata(): BlockMetadata
     {
-        return $this->block;
+        return $this->metadata;
     }
 
-    public function equation(): Equation
+    public function changeEquation(Equation $equation): self
     {
-        return $this->equation;
+        return new self($this->metadata, $equation);
     }
 
-    public function withEquation(Equation $equation): self
+    public function addChild(BlockInterface $child): self
     {
-        return new self($this->block, $equation);
+        throw BlockException::noChindrenSupport();
     }
 
-    public function changeChildren(array $children): self
+    public function changeChildren(BlockInterface ...$children): self
     {
-        throw new NotionException(
-            "This block does not support children.",
-            "no_children_support",
-        );
+        throw BlockException::noChindrenSupport();
     }
 
     public function archive(): BlockInterface
     {
         return new self(
-            $this->block->archive(),
+            $this->metadata->archive(),
             $this->equation,
         );
     }

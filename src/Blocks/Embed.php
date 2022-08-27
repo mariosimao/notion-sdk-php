@@ -2,12 +2,10 @@
 
 namespace Notion\Blocks;
 
-use Notion\Blocks\Exceptions\BlockTypeException;
-use Notion\Common\RichText;
-use Notion\NotionException;
+use Notion\Blocks\Exceptions\BlockException;
 
 /**
- * @psalm-import-type BlockJson from Block
+ * @psalm-import-type BlockMetadataJson from BlockMetadata
  *
  * @psalm-type EmbedJson = array{
  *      embed: array{ url: string },
@@ -17,45 +15,36 @@ use Notion\NotionException;
  */
 class Embed implements BlockInterface
 {
-    private const TYPE = Block::TYPE_EMBED;
-
-    private Block $block;
-
-    private string $url;
-
-    private function __construct(Block $block, string $url)
-    {
-        if (!$block->isEmbed()) {
-            throw new BlockTypeException(self::TYPE);
-        }
-
-        $this->block = $block;
-        $this->url = $url;
+    private function __construct(
+        private readonly BlockMetadata $metadata,
+        public readonly string $url,
+    ) {
+        $metadata->checkType(BlockType::Embed);
     }
 
     public static function create(string $url = ""): self
     {
-        $block = Block::create(self::TYPE);
+        $metadata = BlockMetadata::create(BlockType::Embed);
 
-        return new self($block, $url);
+        return new self($metadata, $url);
     }
 
     public static function fromArray(array $array): self
     {
-        /** @psalm-var BlockJson $array */
-        $block = Block::fromArray($array);
+        /** @psalm-var BlockMetadataJson $array */
+        $metadata = BlockMetadata::fromArray($array);
 
         /** @psalm-var EmbedJson $array */
-        $url = $array[self::TYPE]["url"];
+        $url = $array["embed"]["url"];
 
-        return new self($block, $url);
+        return new self($metadata, $url);
     }
 
     public function toArray(): array
     {
-        $array = $this->block->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = [ "url" => $this->url ];
+        $array["embed"] = [ "url" => $this->url ];
 
         return $array;
     }
@@ -64,40 +53,37 @@ class Embed implements BlockInterface
     public function toUpdateArray(): array
     {
         return [
-            self::TYPE => [
+            "embed" => [
                 "url" => $this->url
             ],
-            "archived" => $this->block()->archived(),
+            "archived" => $this->metadata()->archived,
         ];
     }
 
-    public function block(): Block
+    public function metadata(): BlockMetadata
     {
-        return $this->block;
+        return $this->metadata;
     }
 
-    public function url(): string
+    public function changeUrl(string $url): self
     {
-        return $this->url;
+        return new self($this->metadata, $url);
     }
 
-    public function withUrl(string $url): self
+    public function addCHild(BlockInterface $child): self
     {
-        return new self($this->block, $url);
+        throw BlockException::noChindrenSupport();
     }
 
-    public function changeChildren(array $children): self
+    public function changeChildren(BlockInterface ...$children): self
     {
-        throw new NotionException(
-            "This block does not support children.",
-            "no_children_support",
-        );
+        throw BlockException::noChindrenSupport();
     }
 
     public function archive(): BlockInterface
     {
         return new self(
-            $this->block->archive(),
+            $this->metadata->archive(),
             $this->url,
         );
     }

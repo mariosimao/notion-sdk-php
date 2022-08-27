@@ -3,7 +3,7 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Blocks\Toggle;
 use Notion\Common\Date;
 use Notion\Common\RichText;
@@ -15,8 +15,8 @@ class ToggleTest extends TestCase
     {
         $toggle = Toggle::create();
 
-        $this->assertEmpty($toggle->text());
-        $this->assertEmpty($toggle->children());
+        $this->assertEmpty($toggle->text);
+        $this->assertEmpty($toggle->children);
     }
 
     public function test_create_from_string(): void
@@ -77,17 +77,17 @@ class ToggleTest extends TestCase
 
         $toggle = Toggle::fromArray($array);
 
-        $this->assertCount(2, $toggle->text());
-        $this->assertEmpty($toggle->children());
+        $this->assertCount(2, $toggle->text);
+        $this->assertEmpty($toggle->children);
         $this->assertEquals("Notion toggles rock!", $toggle->toString());
-        $this->assertFalse($toggle->block()->archived());
+        $this->assertFalse($toggle->metadata()->archived);
 
         $this->assertEquals($toggle, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(BlockTypeException::class);
+        $this->expectException(BlockException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -110,8 +110,8 @@ class ToggleTest extends TestCase
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $p->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $p->block()->lastEditedTime()->format(Date::FORMAT),
+            "created_time"     => $p->metadata()->createdTime->format(Date::FORMAT),
+            "last_edited_time" => $p->metadata()->lastEditedTime->format(Date::FORMAT),
             "archived"         => false,
             "has_children"      => false,
             "type"             => "toggle",
@@ -143,20 +143,20 @@ class ToggleTest extends TestCase
     {
         $oldToggle = Toggle::fromString("This is an old toggle");
 
-        $newToggle = $oldToggle->withText([
+        $newToggle = $oldToggle->changeText(
             RichText::createText("This is a "),
             RichText::createText("new toggle"),
-        ]);
+        );
 
         $this->assertEquals("This is an old toggle", $oldToggle->toString());
         $this->assertEquals("This is a new toggle", $newToggle->toString());
     }
 
-    public function test_append_text(): void
+    public function test_add_text(): void
     {
         $oldToggle = Toggle::fromString("A toggle");
 
-        $newToggle = $oldToggle->appendText(
+        $newToggle = $oldToggle->addText(
             RichText::createText(" can be extended.")
         );
 
@@ -168,21 +168,21 @@ class ToggleTest extends TestCase
     {
         $nested1 = Toggle::fromString("Nested toggle 1");
         $nested2 = Toggle::fromString("Nested toggle 2");
-        $toggle = Toggle::fromString("Simple toggle.")->changeChildren([ $nested1, $nested2 ]);
+        $toggle = Toggle::fromString("Simple toggle.")->changeChildren($nested1, $nested2);
 
-        $this->assertCount(2, $toggle->children());
-        $this->assertEquals($nested1, $toggle->children()[0]);
-        $this->assertEquals($nested2, $toggle->children()[1]);
+        $this->assertCount(2, $toggle->children);
+        $this->assertEquals($nested1, $toggle->children[0]);
+        $this->assertEquals($nested2, $toggle->children[1]);
     }
 
-    public function test_append_child(): void
+    public function test_add_child(): void
     {
         $toggle = Toggle::fromString("Simple toggle.");
         $nestedToggle = Toggle::fromString("Nested toggle");
-        $toggle = $toggle->appendChild($nestedToggle);
+        $toggle = $toggle->addChild($nestedToggle);
 
-        $this->assertCount(1, $toggle->children());
-        $this->assertEquals($nestedToggle, $toggle->children()[0]);
+        $this->assertCount(1, $toggle->children);
+        $this->assertEquals($nestedToggle, $toggle->children[0]);
     }
 
     public function test_array_for_update_operations(): void

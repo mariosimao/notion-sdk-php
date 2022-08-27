@@ -4,7 +4,7 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Callout;
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Common\Date;
 use Notion\Common\Emoji;
 use Notion\Common\RichText;
@@ -16,8 +16,8 @@ class CalloutTest extends TestCase
     {
         $callout = Callout::create();
 
-        $this->assertEmpty($callout->text());
-        $this->assertEmpty($callout->children());
+        $this->assertEmpty($callout->text);
+        $this->assertEmpty($callout->children);
     }
 
     public function test_create_from_string(): void
@@ -27,7 +27,7 @@ class CalloutTest extends TestCase
         $this->assertEquals("Dummy callout.", $callout->toString());
     }
 
-    public function test_create_from_array_with_emoji_icon(): void
+    public function test_create_from_array_change_emoji_icon(): void
     {
         $array = [
             "object"           => "block",
@@ -82,18 +82,18 @@ class CalloutTest extends TestCase
 
         $callout = Callout::fromArray($array);
 
-        $this->assertCount(2, $callout->text());
-        $this->assertEmpty($callout->children());
+        $this->assertCount(2, $callout->text);
+        $this->assertEmpty($callout->children);
         $this->assertEquals("Notion callouts rock!", $callout->toString());
         if ($callout->iconIsEmoji()) {
-            $this->assertEquals("☀️", $callout->icon()->emoji());
+            $this->assertEquals("☀️", $callout->icon->emoji);
         }
-        $this->assertFalse($callout->block()->archived());
+        $this->assertFalse($callout->metadata()->archived);
 
         $this->assertEquals($callout, BlockFactory::fromArray($array));
     }
 
-    public function test_create_from_array_with_icon_file(): void
+    public function test_create_from_array_change_icon_file(): void
     {
         $array = [
             "object"           => "block",
@@ -151,15 +151,15 @@ class CalloutTest extends TestCase
 
         $callout = Callout::fromArray($array);
 
-        $this->assertCount(2, $callout->text());
-        $this->assertEmpty($callout->children());
+        $this->assertCount(2, $callout->text);
+        $this->assertEmpty($callout->children);
         $this->assertEquals("Notion callouts rock!", $callout->toString());
-        $this->assertFalse($callout->block()->archived());
+        $this->assertFalse($callout->metadata()->archived);
     }
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(BlockTypeException::class);
+        $this->expectException(BlockException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -208,8 +208,8 @@ class CalloutTest extends TestCase
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $c->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $c->block()->lastEditedTime()->format(Date::FORMAT),
+            "created_time"     => $c->metadata()->createdTime->format(Date::FORMAT),
+            "last_edited_time" => $c->metadata()->lastEditedTime->format(Date::FORMAT),
             "archived"         => false,
             "has_children"      => false,
             "type"             => "callout",
@@ -245,20 +245,20 @@ class CalloutTest extends TestCase
     {
         $oldCallout = Callout::fromString("☀️", "This is an old callout");
 
-        $newCallout = $oldCallout->withText([
+        $newCallout = $oldCallout->changeText(
             RichText::createText("This is a "),
             RichText::createText("new callout"),
-        ]);
+        );
 
         $this->assertEquals("This is an old callout", $oldCallout->toString());
         $this->assertEquals("This is a new callout", $newCallout->toString());
     }
 
-    public function test_append_text(): void
+    public function test_add_text(): void
     {
         $oldCallout = Callout::fromString("☀️", "A callout");
 
-        $newCallout = $oldCallout->appendText(
+        $newCallout = $oldCallout->addText(
             RichText::createText(" can be extended.")
         );
 
@@ -270,30 +270,30 @@ class CalloutTest extends TestCase
     {
         $nested1 = Callout::fromString("☀️", "Nested callout 1");
         $nested2 = Callout::fromString("☀️", "Nested callout 2");
-        $callout = Callout::fromString("☀️", "Simple callout.")->changeChildren([$nested1, $nested2]);
+        $callout = Callout::fromString("☀️", "Simple callout.")->changeChildren($nested1, $nested2);
 
-        $this->assertCount(2, $callout->children());
-        $this->assertEquals($nested1, $callout->children()[0]);
-        $this->assertEquals($nested2, $callout->children()[1]);
+        $this->assertCount(2, $callout->children);
+        $this->assertEquals($nested1, $callout->children[0]);
+        $this->assertEquals($nested2, $callout->children[1]);
     }
 
-    public function test_append_child(): void
+    public function test_add_child(): void
     {
         $callout = Callout::fromString("☀️", "Simple callout.");
         $nested = Callout::fromString("☀️", "Nested callout");
-        $callout = $callout->appendChild($nested);
+        $callout = $callout->addChild($nested);
 
-        $this->assertCount(1, $callout->children());
-        $this->assertEquals($nested, $callout->children()[0]);
+        $this->assertCount(1, $callout->children);
+        $this->assertEquals($nested, $callout->children[0]);
     }
 
     public function test_replace_icon(): void
     {
         $callout = Callout::fromString("☀️", "Simple callout.")
-            ->withIcon(Emoji::create("🌙"));
+            ->changeIcon(Emoji::create("🌙"));
 
         if ($callout->iconIsEmoji()) {
-            $this->assertEquals("🌙", $callout->icon()->emoji());
+            $this->assertEquals("🌙", $callout->icon->emoji);
         }
     }
 

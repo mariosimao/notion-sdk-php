@@ -2,12 +2,10 @@
 
 namespace Notion\Blocks;
 
-use Notion\Blocks\Exceptions\BlockTypeException;
-use Notion\Common\RichText;
-use Notion\NotionException;
+use Notion\Blocks\Exceptions\BlockException;
 
 /**
- * @psalm-import-type BlockJson from Block
+ * @psalm-import-type BlockMetadataJson from BlockMetadata
  *
  * @psalm-type ChildPageJson = array{
  *      child_page: array{ title: string },
@@ -17,52 +15,29 @@ use Notion\NotionException;
  */
 class ChildPage implements BlockInterface
 {
-    private const TYPE = Block::TYPE_CHILD_PAGE;
-
-    private Block $block;
-
-    private string $pageTitle;
-
-    private function __construct(Block $block, string $pageTitle)
-    {
-        if (!$block->isChildPage()) {
-            throw new BlockTypeException(self::TYPE);
-        }
-
-        $this->block = $block;
-        $this->pageTitle = $pageTitle;
-    }
-
-    public static function create(): self
-    {
-        $block = Block::create(self::TYPE);
-
-        return new self($block, "");
-    }
-
-    public static function fromString(string $pageTitle): self
-    {
-        $block = Block::create(self::TYPE);
-
-        return new self($block, $pageTitle);
+    private function __construct(
+        private readonly BlockMetadata $metadata,
+        public readonly string $pageTitle,
+    ) {
+        $metadata->checkType(BlockType::ChildPage);
     }
 
     public static function fromArray(array $array): self
     {
-        /** @psalm-var BlockJson $array */
-        $block = Block::fromArray($array);
+        /** @psalm-var BlockMetadataJson $array */
+        $metadata = BlockMetadata::fromArray($array);
 
         /** @psalm-var ChildPageJson $array */
-        $pageTitle = $array[self::TYPE]["title"];
+        $pageTitle = $array["child_page"]["title"];
 
-        return new self($block, $pageTitle);
+        return new self($metadata, $pageTitle);
     }
 
     public function toArray(): array
     {
-        $array = $this->block->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = [ "title" => $this->pageTitle ];
+        $array["child_page"] = [ "title" => $this->pageTitle ];
 
         return $array;
     }
@@ -71,40 +46,32 @@ class ChildPage implements BlockInterface
     public function toUpdateArray(): array
     {
         return [
-            self::TYPE => [
+            "child_page" => [
                 "title" => $this->pageTitle,
             ],
-            "archived" => $this->block()->archived(),
+            "archived" => $this->metadata()->archived,
         ];
     }
 
-    public function block(): Block
+    public function metadata(): BlockMetadata
     {
-        return $this->block;
+        return $this->metadata;
     }
 
-    public function pageTitle(): string
+    public function addChild(BlockInterface $child): self
     {
-        return $this->pageTitle;
+        throw BlockException::noChindrenSupport();
     }
 
-    public function withPageTitle(string $pageTitle): self
+    public function changeChildren(BlockInterface ...$children): self
     {
-        return new self($this->block, $pageTitle);
-    }
-
-    public function changeChildren(array $children): self
-    {
-        throw new NotionException(
-            "This block does not support children.",
-            "no_children_support",
-        );
+        throw BlockException::noChindrenSupport();
     }
 
     public function archive(): BlockInterface
     {
         return new self(
-            $this->block->archive(),
+            $this->metadata->archive(),
             $this->pageTitle,
         );
     }

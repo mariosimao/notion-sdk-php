@@ -3,7 +3,7 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Blocks\Video;
 use Notion\Common\Date;
 use Notion\Common\File;
@@ -17,7 +17,7 @@ class VideoTest extends TestCase
         $file = File::createExternal("https://my-site.com/video.mp4");
         $video = Video::create($file);
 
-        $this->assertEquals($file, $video->file());
+        $this->assertEquals($file, $video->file);
     }
 
     public function test_create_from_array(): void
@@ -40,14 +40,14 @@ class VideoTest extends TestCase
 
         $video = Video::fromArray($array);
 
-        $this->assertEquals("https://my-site.com/video.mp4", $video->file()->url());
+        $this->assertEquals("https://my-site.com/video.mp4", $video->file->url);
 
         $this->assertEquals($video, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(BlockTypeException::class);
+        $this->expectException(BlockException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -74,8 +74,8 @@ class VideoTest extends TestCase
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $video->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $video->block()->createdTime()->format(Date::FORMAT),
+            "created_time"     => $video->metadata()->createdTime->format(Date::FORMAT),
+            "last_edited_time" => $video->metadata()->createdTime->format(Date::FORMAT),
             "archived"         => false,
             "has_children"     => false,
             "type"             => "video",
@@ -96,10 +96,10 @@ class VideoTest extends TestCase
         $file2 = File::createExternal("https://my-site.com/video2.mp4");
 
         $old = Video::create($file1);
-        $new = $old->withFile($file2);
+        $new = $old->changeFile($file2);
 
-        $this->assertEquals($file1, $old->file());
-        $this->assertEquals($file2, $new->file());
+        $this->assertEquals($file1, $old->file);
+        $this->assertEquals($file2, $new->file);
     }
 
     public function test_no_children_support(): void
@@ -109,7 +109,7 @@ class VideoTest extends TestCase
 
         $this->expectException(NotionException::class);
         /** @psalm-suppress UnusedMethodCall */
-        $block->changeChildren([]);
+        $block->changeChildren();
     }
 
     public function test_array_for_update_operations(): void
@@ -129,6 +129,6 @@ class VideoTest extends TestCase
 
         $block = $block->archive();
 
-        $this->assertTrue($block->block()->archived());
+        $this->assertTrue($block->metadata()->archived);
     }
 }

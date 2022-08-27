@@ -2,11 +2,10 @@
 
 namespace Notion\Blocks;
 
-use Notion\NotionException;
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 
 /**
- * @psalm-import-type BlockJson from Block
+ * @psalm-import-type BlockMetadataJson from BlockMetadata
  *
  * @psalm-type BreadcrumbJson = array{
  *      breadcrumb: array<empty, empty>
@@ -16,67 +15,61 @@ use Notion\Blocks\Exceptions\BlockTypeException;
  */
 class Breadcrumb implements BlockInterface
 {
-    private const TYPE = Block::TYPE_BREADCRUMB;
-
-    private Block $block;
-
-    private function __construct(Block $block)
-    {
-        if (!$block->isBreadcrumb()) {
-            throw new BlockTypeException(self::TYPE);
-        }
-
-        $this->block = $block;
+    private function __construct(
+        private readonly BlockMetadata $metadata
+    ) {
+        $metadata->checkType(BlockType::Breadcrumb);
     }
 
     public static function create(): self
     {
-        $block = Block::create(self::TYPE);
+        $metadata = BlockMetadata::create(BlockType::Breadcrumb);
 
-        return new self($block);
+        return new self($metadata);
     }
 
     public static function fromArray(array $array): self
     {
-        /** @psalm-var BlockJson $array */
-        $block = Block::fromArray($array);
+        /** @psalm-var BlockMetadataJson $array */
+        $metadata = BlockMetadata::fromArray($array);
 
-        return new self($block);
+        return new self($metadata);
     }
 
     public function toArray(): array
     {
-        $array = $this->block->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = new \stdClass();
+        $array["breadcrumb"] = new \stdClass();
 
         return $array;
     }
 
-    /** @internal */
     public function toUpdateArray(): array
     {
         return [
-            self::TYPE => new \stdClass(),
-            "archived" => $this->block()->archived(),
+            "breadcrumb" => new \stdClass(),
+            "archived"   => $this->metadata()->archived,
         ];
     }
 
-    public function block(): Block
+    public function metadata(): BlockMetadata
     {
-        return $this->block;
+        return $this->metadata;
     }
 
-    public function changeChildren(array $children): self
+    public function addChild(BlockInterface $child): self
     {
-        throw new NotionException(
-            "This block does not support children.",
-            "no_children_support",
-        );
+        throw BlockException::noChindrenSupport();
+    }
+
+    public function changeChildren(BlockInterface ...$children): self
+    {
+        throw BlockException::noChindrenSupport();
     }
 
     public function archive(): BlockInterface
     {
-        return new self($this->block->archive());
+        return new self($this->metadata->archive());
     }
 }

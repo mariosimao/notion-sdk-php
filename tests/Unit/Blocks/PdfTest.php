@@ -3,7 +3,7 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Blocks\Pdf;
 use Notion\Common\Date;
 use Notion\Common\File;
@@ -17,7 +17,7 @@ class PdfTest extends TestCase
         $file = File::createExternal("https://my-site.com/document.pdf");
         $pdf = Pdf::create($file);
 
-        $this->assertEquals($file, $pdf->file());
+        $this->assertEquals($file, $pdf->file);
     }
 
     public function test_create_from_array(): void
@@ -40,14 +40,14 @@ class PdfTest extends TestCase
 
         $pdf = Pdf::fromArray($array);
 
-        $this->assertEquals("https://my-site.com/document.pdf", $pdf->file()->url());
+        $this->assertEquals("https://my-site.com/document.pdf", $pdf->file->url);
 
         $this->assertEquals($pdf, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(BlockTypeException::class);
+        $this->expectException(BlockException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -74,8 +74,8 @@ class PdfTest extends TestCase
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $pdf->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $pdf->block()->createdTime()->format(Date::FORMAT),
+            "created_time"     => $pdf->metadata()->createdTime->format(Date::FORMAT),
+            "last_edited_time" => $pdf->metadata()->createdTime->format(Date::FORMAT),
             "archived"         => false,
             "has_children"     => false,
             "type"             => "pdf",
@@ -96,10 +96,10 @@ class PdfTest extends TestCase
         $file2 = File::createExternal("https://my-site.com/pdf2.png");
 
         $old = Pdf::create($file1);
-        $new = $old->withFile($file2);
+        $new = $old->changeFile($file2);
 
-        $this->assertEquals($file1, $old->file());
-        $this->assertEquals($file2, $new->file());
+        $this->assertEquals($file1, $old->file);
+        $this->assertEquals($file2, $new->file);
     }
 
     public function test_no_children_support(): void
@@ -109,7 +109,7 @@ class PdfTest extends TestCase
 
         $this->expectException(NotionException::class);
         /** @psalm-suppress UnusedMethodCall */
-        $block->changeChildren([]);
+        $block->changeChildren();
     }
 
     public function test_array_for_update_operations(): void
@@ -129,6 +129,6 @@ class PdfTest extends TestCase
 
         $block = $block->archive();
 
-        $this->assertTrue($block->block()->archived());
+        $this->assertTrue($block->metadata()->archived);
     }
 }

@@ -4,7 +4,7 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\EquationBlock;
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Common\Date;
 use Notion\Common\Equation;
 use Notion\NotionException;
@@ -16,7 +16,7 @@ class EquationBlockTest extends TestCase
     {
         $equation = EquationBlock::create("a^2 + b^2 = c^2");
 
-        $this->assertEquals("a^2 + b^2 = c^2", $equation->equation()->expression());
+        $this->assertEquals("a^2 + b^2 = c^2", $equation->equation->expression);
     }
 
     public function test_create_from_array(): void
@@ -34,14 +34,14 @@ class EquationBlockTest extends TestCase
 
         $equation = EquationBlock::fromArray($array);
 
-        $this->assertEquals("a^2 + b^2 = c^2", $equation->equation()->expression());
+        $this->assertEquals("a^2 + b^2 = c^2", $equation->equation->expression);
 
         $this->assertEquals($equation, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(BlockTypeException::class);
+        $this->expectException(BlockException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -62,8 +62,8 @@ class EquationBlockTest extends TestCase
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $equation->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $equation->block()->createdTime()->format(Date::FORMAT),
+            "created_time"     => $equation->metadata()->createdTime->format(Date::FORMAT),
+            "last_edited_time" => $equation->metadata()->createdTime->format(Date::FORMAT),
             "archived"         => false,
             "has_children"     => false,
             "type"             => "equation",
@@ -76,9 +76,9 @@ class EquationBlockTest extends TestCase
     public function test_replace_equation(): void
     {
         $equation = Equation::create("a^2 + b^2 = c^2");
-        $equationBlock = EquationBlock::create()->withEquation($equation);
+        $equationBlock = EquationBlock::create()->changeEquation($equation);
 
-        $this->assertEquals($equation, $equationBlock->equation());
+        $this->assertEquals($equation, $equationBlock->equation);
     }
 
     public function test_no_children_support(): void
@@ -87,7 +87,7 @@ class EquationBlockTest extends TestCase
 
         $this->expectException(NotionException::class);
         /** @psalm-suppress UnusedMethodCall */
-        $block->changeChildren([]);
+        $block->changeChildren();
     }
 
     public function test_array_for_update_operations(): void

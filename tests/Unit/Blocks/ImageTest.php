@@ -3,7 +3,7 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Blocks\Image;
 use Notion\Common\Date;
 use Notion\Common\File;
@@ -17,7 +17,7 @@ class ImageTest extends TestCase
         $file = File::createExternal("https://my-site.com/image.png");
         $image = Image::create($file);
 
-        $this->assertEquals($file, $image->file());
+        $this->assertEquals($file, $image->file);
     }
 
     public function test_create_from_array(): void
@@ -40,14 +40,14 @@ class ImageTest extends TestCase
 
         $image = Image::fromArray($array);
 
-        $this->assertEquals("https://my-site.com/image.png", $image->file()->url());
+        $this->assertEquals("https://my-site.com/image.png", $image->file->url);
 
         $this->assertEquals($image, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(BlockTypeException::class);
+        $this->expectException(BlockException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -74,8 +74,8 @@ class ImageTest extends TestCase
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $image->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $image->block()->createdTime()->format(Date::FORMAT),
+            "created_time"     => $image->metadata()->createdTime->format(Date::FORMAT),
+            "last_edited_time" => $image->metadata()->createdTime->format(Date::FORMAT),
             "archived"         => false,
             "has_children"     => false,
             "type"             => "image",
@@ -96,10 +96,10 @@ class ImageTest extends TestCase
         $file2 = File::createExternal("https://my-site.com/image2.png");
 
         $old = Image::create($file1);
-        $new = $old->withFile($file2);
+        $new = $old->changeFile($file2);
 
-        $this->assertEquals($file1, $old->file());
-        $this->assertEquals($file2, $new->file());
+        $this->assertEquals($file1, $old->file);
+        $this->assertEquals($file2, $new->file);
     }
 
     public function test_no_children_support(): void
@@ -109,7 +109,7 @@ class ImageTest extends TestCase
 
         $this->expectException(NotionException::class);
         /** @psalm-suppress UnusedMethodCall */
-        $block->changeChildren([]);
+        $block->changeChildren();
     }
 
     public function test_array_for_update_operations(): void
@@ -129,6 +129,6 @@ class ImageTest extends TestCase
 
         $block = $block->archive();
 
-        $this->assertTrue($block->block()->archived());
+        $this->assertTrue($block->metadata()->archived);
     }
 }

@@ -4,7 +4,7 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Embed;
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Common\Date;
 use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +15,7 @@ class EmbedTest extends TestCase
     {
         $embed = Embed::create("https://my-site.com");
 
-        $this->assertEquals("https://my-site.com", $embed->url());
+        $this->assertEquals("https://my-site.com", $embed->url);
     }
 
     public function test_create_from_array(): void
@@ -33,14 +33,14 @@ class EmbedTest extends TestCase
 
         $embed = Embed::fromArray($array);
 
-        $this->assertEquals("https://my-site.com", $embed->url());
+        $this->assertEquals("https://my-site.com", $embed->url);
 
         $this->assertEquals($embed, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(BlockTypeException::class);
+        $this->expectException(BlockException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -61,8 +61,8 @@ class EmbedTest extends TestCase
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $embed->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $embed->block()->createdTime()->format(Date::FORMAT),
+            "created_time"     => $embed->metadata()->createdTime->format(Date::FORMAT),
+            "last_edited_time" => $embed->metadata()->createdTime->format(Date::FORMAT),
             "archived"         => false,
             "has_children"     => false,
             "type"             => "embed",
@@ -75,10 +75,10 @@ class EmbedTest extends TestCase
     public function test_replace_url(): void
     {
         $old = Embed::create("https://my-site.com");
-        $new = $old->withUrl("https://another-site.com");
+        $new = $old->changeUrl("https://another-site.com");
 
-        $this->assertEquals("https://my-site.com", $old->url());
-        $this->assertEquals("https://another-site.com", $new->url());
+        $this->assertEquals("https://my-site.com", $old->url);
+        $this->assertEquals("https://another-site.com", $new->url);
     }
 
     public function test_no_children_support(): void
@@ -87,7 +87,7 @@ class EmbedTest extends TestCase
 
         $this->expectException(NotionException::class);
         /** @psalm-suppress UnusedMethodCall */
-        $block->changeChildren([]);
+        $block->changeChildren();
     }
 
     public function test_array_for_update_operations(): void
@@ -105,6 +105,6 @@ class EmbedTest extends TestCase
 
         $block = $block->archive();
 
-        $this->assertTrue($block->block()->archived());
+        $this->assertTrue($block->metadata()->archived);
     }
 }

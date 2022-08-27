@@ -2,18 +2,18 @@
 
 namespace Notion\Blocks;
 
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Common\RichText;
 
 /**
- * @psalm-import-type BlockJson from Block
+ * @psalm-import-type BlockMetadataJson from BlockMetadata
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
  *
  * @psalm-type ToDoJson = array{
  *      to_do: array{
  *          checked: bool,
  *          rich_text: list<RichTextJson>,
- *          children?: list<BlockJson>,
+ *          children?: list<BlockMetadataJson>,
  *      },
  * }
  *
@@ -21,48 +21,29 @@ use Notion\Common\RichText;
  */
 class ToDo implements BlockInterface
 {
-    private const TYPE = Block::TYPE_TO_DO;
-
-    private Block $block;
-
-    /** @var list<RichText> */
-    private array $text;
-
-    private bool $checked;
-
-    /** @var list<\Notion\Blocks\BlockInterface> */
-    private array $children;
-
     /**
-     * @param list<RichText> $text
-     * @param list<\Notion\Blocks\BlockInterface> $children
+     * @param RichText[] $text
+     * @param BlockInterface[] $children
      */
     private function __construct(
-        Block $block,
-        array $text,
-        bool $checked,
-        array $children,
+        private readonly BlockMetadata $metadata,
+        public readonly array $text,
+        public readonly bool $checked,
+        public readonly array $children,
     ) {
-        if (!$block->isToDo()) {
-            throw new BlockTypeException(self::TYPE);
-        }
-
-        $this->block = $block;
-        $this->text = $text;
-        $this->checked = $checked;
-        $this->children = $children;
+        $metadata->checkType(BlockType::ToDo);
     }
 
     public static function create(): self
     {
-        $block = Block::create(self::TYPE);
+        $block = BlockMetadata::create(BlockType::ToDo);
 
         return new self($block, [], false, []);
     }
 
     public static function fromString(string $content): self
     {
-        $block = Block::create(self::TYPE);
+        $block = BlockMetadata::create(BlockType::ToDo);
         $text = [ RichText::createText($content) ];
 
         return new self($block, $text, false, []);
@@ -70,11 +51,11 @@ class ToDo implements BlockInterface
 
     public static function fromArray(array $array): self
     {
-        /** @psalm-var BlockJson $array */
-        $block = Block::fromArray($array);
+        /** @psalm-var BlockMetadataJson $array */
+        $block = BlockMetadata::fromArray($array);
 
         /** @psalm-var ToDoJson $array */
-        $todo = $array[self::TYPE];
+        $todo = $array["to_do"];
 
         $text = array_map(fn($t) => RichText::fromArray($t), $todo["rich_text"]);
 
@@ -87,12 +68,12 @@ class ToDo implements BlockInterface
 
     public function toArray(): array
     {
-        $array = $this->block->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = [
-            "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
-            "checked"  => $this->checked,
-            "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
+        $array["to_do"] = [
+            "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "checked"   => $this->checked,
+            "children"  => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
         ];
 
         return $array;
@@ -102,11 +83,11 @@ class ToDo implements BlockInterface
     public function toUpdateArray(): array
     {
         return [
-            self::TYPE => [
-                "rich_text"    => array_map(fn(RichText $t) => $t->toArray(), $this->text),
-                "checked" => $this->checked,
+            "to_do" => [
+                "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+                "checked"   => $this->checked,
             ],
-            "archived" => $this->block()->archived(),
+            "archived" => $this->metadata()->archived,
         ];
     }
 
@@ -114,77 +95,59 @@ class ToDo implements BlockInterface
     {
         $string = "";
         foreach ($this->text as $richText) {
-            $string = $string . $richText->plainText();
+            $string = $string . $richText->plainText;
         }
 
         return $string;
     }
 
-    public function block(): Block
+    public function metadata(): BlockMetadata
     {
-        return $this->block;
+        return $this->metadata;
     }
 
-    public function text(): array
+    public function changeText(RichText ...$text): self
     {
-        return $this->text;
+        return new self($this->metadata, $text, $this->checked, $this->children);
     }
 
-    public function checked(): bool
-    {
-        return $this->checked;
-    }
-
-    /** @return list<BlockInterface> */
-    public function children(): array
-    {
-        return $this->children;
-    }
-
-    /** @param list<RichText> $text */
-    public function withText(array $text): self
-    {
-        return new self($this->block, $text, $this->checked, $this->children);
-    }
-
-    public function appendText(RichText $text): self
+    public function addText(RichText $text): self
     {
         $texts = $this->text;
         $texts[] = $text;
 
-        return new self($this->block, $texts, $this->checked, $this->children);
+        return new self($this->metadata, $texts, $this->checked, $this->children);
     }
 
     public function check(): self
     {
-        return new self($this->block, $this->text, true, $this->children);
+        return new self($this->metadata, $this->text, true, $this->children);
     }
 
     public function uncheck(): self
     {
-        return new self($this->block, $this->text, false, $this->children);
+        return new self($this->metadata, $this->text, false, $this->children);
     }
 
-    /** @param list<BlockInterface> $children */
-    public function changeChildren(array $children): self
+    public function changeChildren(BlockInterface ...$children): self
     {
         $hasChildren = (count($children) > 0);
 
         return new self(
-            $this->block->withHasChildren($hasChildren),
+            $this->metadata->updateHasChildren($hasChildren),
             $this->text,
             $this->checked,
             $children,
         );
     }
 
-    public function appendChild(BlockInterface $child): self
+    public function addChild(BlockInterface $child): self
     {
         $children = $this->children;
         $children[] = $child;
 
         return new self(
-            $this->block->withHasChildren(true),
+            $this->metadata->updateHasChildren(true),
             $this->text,
             $this->checked,
             $children,
@@ -194,7 +157,7 @@ class ToDo implements BlockInterface
     public function archive(): BlockInterface
     {
         return new self(
-            $this->block->archive(),
+            $this->metadata->archive(),
             $this->text,
             $this->checked,
             $this->children,
