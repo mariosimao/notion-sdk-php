@@ -19,36 +19,16 @@ namespace Notion\Users;
  */
 class User
 {
-    private const ALLOWED_TYPES = [ "person", "bot" ];
-
-    private string $id;
-    private string $name;
-    private string|null $avatarUrl;
-    private string $type;
-    private Person|null $person;
-    private Bot|null $bot;
-
     private function __construct(
-        string $id,
-        string $name,
-        string|null $avatarUrl,
-        string $type,
-        Person|null $person,
-        Bot|null $bot,
-    ) {
-        if (!in_array($type, self::ALLOWED_TYPES)) {
-            throw new \Exception("Invalid user type: '{$type}'.");
-        }
+        public readonly string $id,
+        public readonly string $name,
+        public readonly string|null $avatarUrl,
+        public readonly UserType $type,
+        public readonly Person|null $person,
+        public readonly Bot|null $bot,
+    ) {}
 
-        $this->id = $id;
-        $this->name = $name;
-        $this->avatarUrl = $avatarUrl;
-        $this->type = $type;
-        $this->person = $person;
-        $this->bot = $bot;
-    }
-
-    /** @param UserJson $array */
+    /** @psalm-param UserJson $array */
     public static function fromArray(array $array): self
     {
         $person = array_key_exists("person", $array) ? Person::fromArray($array["person"]) : null;
@@ -58,20 +38,20 @@ class User
             $array["id"],
             $array["name"],
             $array["avatar_url"],
-            $array["type"],
+            UserType::from($array["type"]),
             $person,
             $bot,
         );
     }
 
-    /** @return UserJson */
+    /** @psalm-return UserJson */
     public function toArray(): array
     {
         $array = [
             "id"         => $this->id,
             "name"       => $this->name,
             "avatar_url" => $this->avatarUrl,
-            "type"       => $this->type,
+            "type"       => $this->type->value,
         ];
 
         if ($this->isPerson()) {
@@ -84,51 +64,19 @@ class User
         return $array;
     }
 
-    public function id(): string
-    {
-        return $this->id;
-    }
-
-    public function name(): string
-    {
-        return $this->name;
-    }
-
-    public function avatarUrl(): string|null
-    {
-        return $this->avatarUrl;
-    }
-
-    public function type(): string
-    {
-        return $this->type;
-    }
-
-    public function person(): Person|null
-    {
-        return $this->person;
-    }
-
-    public function bot(): Bot|null
-    {
-        return $this->bot;
-    }
-
     /**
      * @psalm-assert-if-true Person $this->person
-     * @psalm-assert-if-true Person $this->person()
      */
     public function isPerson(): bool
     {
-        return $this->type === "person";
+        return $this->type === UserType::Person;
     }
 
     /**
      * @psalm-assert-if-true Bot $this->bot
-     * @psalm-assert-if-true Bot $this->bot()
      */
     public function isBot(): bool
     {
-        return $this->type === "bot";
+        return $this->type === UserType::Bot;
     }
 }

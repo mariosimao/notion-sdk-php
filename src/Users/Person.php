@@ -9,12 +9,9 @@ namespace Notion\Users;
  */
 class Person
 {
-    private string $email;
-
-    private function __construct(string $email)
-    {
-        $this->email = $email;
-    }
+    private function __construct(
+        public readonly string $email,
+    ) {}
 
     /** @param PersonJson $array */
     public static function fromArray(array $array): self
@@ -28,10 +25,5 @@ class Person
         return [
             "email" => $this->email,
         ];
-    }
-
-    public function email(): string
-    {
-        return $this->email;
     }
 }
