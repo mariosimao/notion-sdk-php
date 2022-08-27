@@ -216,4 +216,15 @@ class RichText
 
         return $this->changeAnnotations($annotations);
     }
+
+    /** @psalm-mutation-free */
+    public static function multipleToString(self ...$richText): string
+    {
+        $string = "";
+        foreach ($richText as $singleRichText) {
+            $string = $string . $singleRichText->plainText;
+        }
+
+        return $string;
+    }
 }
