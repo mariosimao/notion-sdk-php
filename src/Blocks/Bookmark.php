@@ -2,20 +2,20 @@
 
 namespace Notion\Blocks;
 
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Common\RichText;
 use Notion\NotionException;
 
 /**
  * Bookmark block
  *
- * @psalm-import-type BlockJson from Block
+ * @psalm-import-type BlockMetadataJson from BlockMetadata
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
  *
  * @psalm-type BookmarkJson = array{
  *      bookmark: array{
  *          url: string,
- *          caption: list<RichTextJson>,
+ *          caption: RichTextJson[],
  *      },
  * }
  *
@@ -23,25 +23,13 @@ use Notion\NotionException;
  */
 class Bookmark implements BlockInterface
 {
-    private const TYPE = Block::TYPE_BOOKMARK;
-
-    private Block $block;
-
-    private string $url;
-
-    /** @var list<RichText> */
-    private array $caption;
-
-    /** @param list<RichText> $caption */
-    private function __construct(Block $block, string $url, array $caption)
-    {
-        if (!$block->isBookmark()) {
-            throw new BlockTypeException(self::TYPE);
-        }
-
-        $this->block = $block;
-        $this->url = $url;
-        $this->caption = $caption;
+    /** @param RichText[] $caption */
+    private function __construct(
+        private readonly BlockMetadata $metadata,
+        public readonly string $url,
+        public readonly array $caption
+    ) {
+        $metadata->checkType(BlockType::Bookmark);
     }
 
     /**
@@ -49,31 +37,29 @@ class Bookmark implements BlockInterface
      */
     public static function create(string $url): self
     {
-        $block = Block::create(self::TYPE);
+        $metadata = BlockMetadata::create(BlockType::Bookmark);
 
-        return new self($block, $url, []);
+        return new self($metadata, $url, []);
     }
 
-    /** @internal */
     public static function fromArray(array $array): self
     {
-        /** @psalm-var BlockJson $array */
-        $block = Block::fromArray($array);
+        /** @psalm-var BlockMetadataJson $array */
+        $metadata = BlockMetadata::fromArray($array);
 
         /** @psalm-var BookmarkJson $array */
-        $url = $array[self::TYPE]["url"];
+        $url = $array["bookmark"]["url"];
 
-        $caption = array_map(fn($t) => RichText::fromArray($t), $array[self::TYPE]["caption"]);
+        $caption = array_map(fn($t) => RichText::fromArray($t), $array["bookmark"]["caption"]);
 
-        return new self($block, $url, $caption);
+        return new self($metadata, $url, $caption);
     }
 
-    /** @internal */
     public function toArray(): array
     {
-        $array = $this->block->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = [
+        $array["bookmark"] = [
             "url" => $this->url,
             "caption" => array_map(fn(RichText $t) => $t->toArray(), $this->caption),
         ];
@@ -81,70 +67,52 @@ class Bookmark implements BlockInterface
         return $array;
     }
 
-    /** @internal */
     public function toUpdateArray(): array
     {
         return [
-            self::TYPE => [
+            "bookmark" => [
                 "url" => $this->url,
                 "caption" => array_map(fn(RichText $t) => $t->toArray(), $this->caption),
             ],
-            "archived" => $this->block()->archived(),
+            "archived" => $this->metadata()->archived,
         ];
     }
 
-    /** Get block common object */
-    public function block(): Block
+    public function metadata(): BlockMetadata
     {
-        return $this->block;
+        return $this->metadata;
     }
 
-    /** Get bookmark URL */
-    public function url(): string
+    /** Change bookmark URL */
+    public function changeUrl(string $url): self
     {
-        return $this->url;
-    }
-
-    /**
-     * Get bookmark caption
-     *
-     * @return list<RichText>
-     */
-    public function caption(): array
-    {
-        return $this->caption;
-    }
-
-    /**
-     * Change bookmark URL
-     */
-    public function withUrl(string $url): self
-    {
-        return new self($this->block, $url, $this->caption);
+        return new self($this->metadata, $url, $this->caption);
     }
 
     /**
      * Change bookmark caption
      *
-     * @param list<RichText> $caption
+     * @param RichText[] $caption
      */
-    public function withCaption(array $caption): self
+    public function changeCaption(array $caption): self
     {
-        return new self($this->block, $this->url, $caption);
+        return new self($this->metadata, $this->url, $caption);
     }
 
-    public function changeChildren(array $children): self
+    public function addChild(BlockInterface $child): self
     {
-        throw new NotionException(
-            "This block does not support children.",
-            "no_children_support",
-        );
+        throw BlockException::noChindrenSupport();
+    }
+
+    public function changeChildren(BlockInterface ...$children): self
+    {
+        throw throw BlockException::noChindrenSupport();
     }
 
     public function archive(): BlockInterface
     {
         return new self(
-            $this->block->archive(),
+            $this->metadata->archive(),
             $this->url,
             $this->caption,
         );

@@ -2,19 +2,18 @@
 
 namespace Notion\Blocks;
 
-use Notion\Blocks\Exceptions\BlockTypeException;
 use Notion\Common\RichText;
 
 /**
  * Bulleted list item
  *
- * @psalm-import-type BlockJson from Block
+ * @psalm-import-type BlockMetadataJson from BlockMetadata
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
  *
  * @psalm-type BulletedListItemJson = array{
  *      bulleted_list_item: array{
  *          rich_text: list<RichTextJson>,
- *          children?: list<BlockJson>,
+ *          children?: list<BlockMetadataJson>,
  *      },
  * }
  *
@@ -22,32 +21,16 @@ use Notion\Common\RichText;
  */
 class BulletedListItem implements BlockInterface
 {
-    private const TYPE = Block::TYPE_BULLETED_LIST_ITEM;
-
-    private Block $block;
-
-    /** @var list<RichText> */
-    private array $text;
-
-    /** @var list<\Notion\Blocks\BlockInterface> */
-    private array $children;
-
     /**
-     * @param list<RichText> $text
-     * @param list<\Notion\Blocks\BlockInterface> $children
+     * @param RichText[] $text
+     * @param BlockInterface[] $children
      */
     private function __construct(
-        Block $block,
-        array $text,
-        array $children,
+        private readonly BlockMetadata $metadata,
+        public readonly array $text,
+        public readonly array $children,
     ) {
-        if (!$block->isBulletedListItem()) {
-            throw new BlockTypeException(self::TYPE);
-        }
-
-        $this->block = $block;
-        $this->text = $text;
-        $this->children = $children;
+        $this->metadata->checkType(BlockType::BulletedListItem);
     }
 
     /**
@@ -55,9 +38,9 @@ class BulletedListItem implements BlockInterface
      */
     public static function create(): self
     {
-        $block = Block::create(self::TYPE);
+        $metadata = BlockMetadata::create(BlockType::BulletedListItem);
 
-        return new self($block, [], []);
+        return new self($metadata, [], []);
     }
 
     /**
@@ -65,49 +48,46 @@ class BulletedListItem implements BlockInterface
      */
     public static function fromString(string $content): self
     {
-        $block = Block::create(self::TYPE);
+        $metadata = BlockMetadata::create(BlockType::BulletedListItem);
         $text = [ RichText::createText($content) ];
 
-        return new self($block, $text, []);
+        return new self($metadata, $text, []);
     }
 
-    /** @internal */
     public static function fromArray(array $array): self
     {
-        /** @psalm-var BlockJson $array */
-        $block = Block::fromArray($array);
+        /** @psalm-var BlockMetadataJson $array */
+        $metadata = BlockMetadata::fromArray($array);
 
         /** @psalm-var BulletedListItemJson $array */
-        $item = $array[self::TYPE];
+        $item = $array["bulleted_list_item"];
 
         $text = array_map(fn($t) => RichText::fromArray($t), $item["rich_text"]);
 
         $children = array_map(fn($b) => BlockFactory::fromArray($b), $item["children"] ?? []);
 
-        return new self($block, $text, $children);
+        return new self($metadata, $text, $children);
     }
 
-    /** @internal */
     public function toArray(): array
     {
-        $array = $this->block->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = [
-            "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
-            "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
+        $array["bulleted_list_item"] = [
+            "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "children"  => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
         ];
 
         return $array;
     }
 
-    /** @internal */
     public function toUpdateArray(): array
     {
         return [
-            self::TYPE => [
-                "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "bulleted_list_item" => [
+                "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
             ],
-            "archived" => $this->block()->archived(),
+            "archived" => $this->metadata()->archived,
         ];
     }
 
@@ -116,77 +96,51 @@ class BulletedListItem implements BlockInterface
     {
         $string = "";
         foreach ($this->text as $richText) {
-            $string = $string . $richText->plainText();
+            $string = $string . $richText->plainText;
         }
 
         return $string;
     }
 
-    /** Get block common object */
-    public function block(): Block
+    public function metadata(): BlockMetadata
     {
-        return $this->block;
+        return $this->metadata;
+    }
+
+    public function changeText(RichText ...$text): self
+    {
+        return new self($this->metadata->update(), $text, $this->children);
     }
 
     /**
-     *  Get list item text
-     *
-     * @return list<RichText>
+     * add text to list item
      */
-    public function text(): array
-    {
-        return $this->text;
-    }
-
-    /**
-     * Get children blocks
-     *
-     * @return BlockInterface[]
-     */
-    public function children(): array
-    {
-        return $this->children;
-    }
-
-    /**
-     * Change list item text
-     */
-    /** @param list<RichText> $text */
-    public function withText(array $text): self
-    {
-        return new self($this->block, $text, $this->children);
-    }
-
-    /**
-     * Append text to list item
-     */
-    public function appendText(RichText $text): self
+    public function addText(RichText $text): self
     {
         $texts = $this->text;
         $texts[] = $text;
 
-        return new self($this->block, $texts, $this->children);
+        return new self($this->metadata, $texts, $this->children);
     }
 
-    public function changeChildren(array $children): self
+    public function changeChildren(BlockInterface ...$children): self
     {
         $hasChildren = (count($children) > 0);
 
         return new self(
-            $this->block->withHasChildren($hasChildren),
+            $this->metadata->updateHasChildren($hasChildren),
             $this->text,
             $children,
         );
     }
 
-    /** Append child block */
-    public function appendChild(BlockInterface $child): self
+    public function addChild(BlockInterface $child): self
     {
         $children = $this->children;
         $children[] = $child;
 
         return new self(
-            $this->block->withHasChildren(true),
+            $this->metadata->updateHasChildren(true),
             $this->text,
             $children,
         );
@@ -195,7 +149,7 @@ class BulletedListItem implements BlockInterface
     public function archive(): BlockInterface
     {
         return new self(
-            $this->block->archive(),
+            $this->metadata->archive(),
             $this->text,
             $this->children,
         );

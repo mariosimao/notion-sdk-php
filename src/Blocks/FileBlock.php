@@ -2,59 +2,50 @@
 
 namespace Notion\Blocks;
 
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Common\File;
 use Notion\NotionException;
 
 /**
- * @psalm-import-type BlockJson from Block
+ * @psalm-import-type BlockMetadataJson from BlockMetadata
  * @psalm-import-type FileJson from \Notion\Common\File
  *
- * @psalm-type FileBlockJson = array{ file: FileJson }
+ * @psalm-type FileBlockMetadataJson = array{ file: FileJson }
  *
  * @psalm-immutable
  */
 class FileBlock implements BlockInterface
 {
-    private const TYPE = Block::TYPE_FILE;
-
-    private Block $block;
-
-    private File $file;
-
-    private function __construct(Block $block, File $file)
-    {
-        if (!$block->isFile()) {
-            throw new BlockTypeException(self::TYPE);
-        }
-
-        $this->block = $block;
-        $this->file = $file;
+    private function __construct(
+        private readonly BlockMetadata $metadata,
+        private readonly File $file,
+    ) {
+        $metadata->checkType(BlockType::File);
     }
 
     public static function create(File $file): self
     {
-        $block = Block::create(self::TYPE);
+        $metadata = BlockMetadata::create(BlockType::File);
 
-        return new self($block, $file);
+        return new self($metadata, $file);
     }
 
     public static function fromArray(array $array): self
     {
-        /** @psalm-var BlockJson $array */
-        $block = Block::fromArray($array);
+        /** @psalm-var BlockMetadataJson $array */
+        $metadata = BlockMetadata::fromArray($array);
 
-        /** @psalm-var FileBlockJson $array */
-        $file = File::fromArray($array[self::TYPE]);
+        /** @psalm-var FileBlockMetadataJson $array */
+        $file = File::fromArray($array["file"]);
 
-        return new self($block, $file);
+        return new self($metadata, $file);
     }
 
     public function toArray(): array
     {
-        $array = $this->block->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = $this->file->toArray();
+        $array["file"] = $this->file->toArray();
 
         return $array;
     }
@@ -63,14 +54,14 @@ class FileBlock implements BlockInterface
     public function toUpdateArray(): array
     {
         return [
-            self::TYPE => $this->file->toArray(),
-            "archived" => $this->block()->archived(),
+            "file" => $this->file->toArray(),
+            "archived" => $this->metadata()->archived,
         ];
     }
 
-    public function block(): Block
+    public function metadata(): BlockMetadata
     {
-        return $this->block;
+        return $this->metadata;
     }
 
     public function file(): File
@@ -78,23 +69,25 @@ class FileBlock implements BlockInterface
         return $this->file;
     }
 
-    public function withFile(File $file): self
+    public function changeFile(File $file): self
     {
-        return new self($this->block, $file);
+        return new self($this->metadata, $file);
     }
 
-    public function changeChildren(array $children): self
+    public function addChild(BlockInterface $child): self
     {
-        throw new NotionException(
-            "This block does not support children.",
-            "no_children_support",
-        );
+        throw BlockException::noChindrenSupport();
+    }
+
+    public function changeChildren(BlockInterface ...$children): self
+    {
+        throw BlockException::noChindrenSupport();
     }
 
     public function archive(): BlockInterface
     {
         return new self(
-            $this->block->archive(),
+            $this->metadata->archive(),
             $this->file,
         );
     }

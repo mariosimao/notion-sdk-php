@@ -2,12 +2,12 @@
 
 namespace Notion\Blocks;
 
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Common\RichText;
 use Notion\NotionException;
 
 /**
- * @psalm-import-type BlockJson from Block
+ * @psalm-import-type BlockMetadataJson from BlockMetadata
  *
  * @psalm-type ChildDatabaseJson = array{
  *      child_database: array{ title: string },
@@ -17,52 +17,29 @@ use Notion\NotionException;
  */
 class ChildDatabase implements BlockInterface
 {
-    private const TYPE = Block::TYPE_CHILD_DATABASE;
-
-    private Block $block;
-
-    private string $databaseTitle;
-
-    private function __construct(Block $block, string $databaseTitle)
-    {
-        if (!$block->isChildDatabase()) {
-            throw new BlockTypeException(self::TYPE);
-        }
-
-        $this->block = $block;
-        $this->databaseTitle = $databaseTitle;
-    }
-
-    public static function create(): self
-    {
-        $block = Block::create(self::TYPE);
-
-        return new self($block, "");
-    }
-
-    public static function fromString(string $databaseTitle): self
-    {
-        $block = Block::create(self::TYPE);
-
-        return new self($block, $databaseTitle);
+    private function __construct(
+        private readonly BlockMetadata $metadata,
+        public readonly string $databaseTitle
+    ) {
+        $metadata->checkType(BlockType::ChildDatabase);
     }
 
     public static function fromArray(array $array): self
     {
-        /** @psalm-var BlockJson $array */
-        $block = Block::fromArray($array);
+        /** @psalm-var BlockMetadataJson $array */
+        $metadata = BlockMetadata::fromArray($array);
 
         /** @psalm-var ChildDatabaseJson $array */
-        $databaseTitle = $array[self::TYPE]["title"];
+        $databaseTitle = $array["child_database"]["title"];
 
-        return new self($block, $databaseTitle);
+        return new self($metadata, $databaseTitle);
     }
 
     public function toArray(): array
     {
-        $array = $this->block->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = [ "title" => $this->databaseTitle ];
+        $array["child_database"] = [ "title" => $this->databaseTitle ];
 
         return $array;
     }
@@ -71,40 +48,32 @@ class ChildDatabase implements BlockInterface
     public function toUpdateArray(): array
     {
         return [
-            self::TYPE => [
+            "child_database" => [
                 "title" => $this->databaseTitle,
             ],
-            "archived" => $this->block()->archived(),
+            "archived" => $this->metadata()->archived,
         ];
     }
 
-    public function block(): Block
+    public function metadata(): BlockMetadata
     {
-        return $this->block;
+        return $this->metadata;
     }
 
-    public function databaseTitle(): string
+    public function addChild(BlockInterface $child): self
     {
-        return $this->databaseTitle;
+        throw BlockException::noChindrenSupport();
     }
 
-    public function withDatabaseTitle(string $databaseTitle): self
+    public function changeChildren(BlockInterface ...$children): self
     {
-        return new self($this->block, $databaseTitle);
-    }
-
-    public function changeChildren(array $children): self
-    {
-        throw new NotionException(
-            "This block does not support children.",
-            "no_children_support",
-        );
+        throw BlockException::noChindrenSupport();
     }
 
     public function archive(): BlockInterface
     {
         return new self(
-            $this->block->archive(),
+            $this->metadata->archive(),
             $this->databaseTitle,
         );
     }

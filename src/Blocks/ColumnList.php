@@ -2,14 +2,15 @@
 
 namespace Notion\Blocks;
 
+use Notion\Blocks\Exceptions\ColumnListException;
 use Notion\NotionException;
 
 /**
- * @psalm-import-type BlockJson from Block
+ * @psalm-import-type BlockMetadataJson from BlockMetadata
  *
  * @psalm-type ColumnListJson = array{
  *     column_list: array{
- *         children: list<BlockJson>
+ *         children: list<BlockMetadataJson>
  *     },
  * }
  *
@@ -17,46 +18,40 @@ use Notion\NotionException;
  */
 class ColumnList implements BlockInterface
 {
-    private const TYPE = Block::TYPE_COLUMN_LIST;
-
-    private Block $block;
-
-    /** @var list<Column> */
-    private $columns;
-
-    /** @param list<Column> $columns */
-    private function __construct(Block $block, array $columns)
-    {
-        $this->block = $block;
-        $this->columns = $columns;
+    /** @param Column[] $columns */
+    private function __construct(
+        private readonly BlockMetadata $metadata,
+        public readonly array $columns,
+    ) {
+        $metadata->checkType(BlockType::ColumnList);
     }
 
-    /** @param list<Column> $columns */
+    /** @param Column[] $columns */
     public static function create(array $columns): self
     {
-        $block = Block::create(self::TYPE);
+        $metadata = BlockMetadata::create(BlockType::ColumnList);
 
-        return new self($block, $columns);
+        return new self($metadata, $columns);
     }
 
     public static function fromArray(array $array): self
     {
-        /** @psalm-var BlockJson $array */
-        $block = Block::fromArray($array);
+        /** @psalm-var BlockMetadataJson $array */
+        $metadata = BlockMetadata::fromArray($array);
 
         /** @psalm-var ColumnListJson $array */
-        $rawColumns = $array[self::TYPE]["children"] ?? [];
-        /** @var list<Column> $columns */
+        $rawColumns = $array["column_list"]["children"] ?? [];
+        /** @var Column[] $columns */
         $columns = array_map(fn($child) => BlockFactory::fromArray($child), $rawColumns);
 
-        return new self($block, $columns);
+        return new self($metadata, $columns);
     }
 
     public function toArray(): array
     {
-        $array = $this->block->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = [
+        $array["column_list"] = [
             "children" => array_map(fn (Column $c) => $c->toArray(), $this->columns),
         ];
 
@@ -67,41 +62,42 @@ class ColumnList implements BlockInterface
     public function toUpdateArray(): array
     {
         return [
-            self::TYPE => new \stdClass(),
-            "archived" => $this->block()->archived(),
+            "column_list" => new \stdClass(),
+            "archived" => $this->metadata()->archived,
         ];
     }
 
-    public function block(): Block
+    public function metadata(): BlockMetadata
     {
-        return $this->block;
+        return $this->metadata;
     }
 
-    /** @return list<Column> */
-    public function columns(): array
+    public function addChild(BlockInterface $child): self
     {
-        return $this->columns;
+        if ($child->metadata()->type !== BlockType::Column) {
+            throw ColumnListException::childNotColumn();
+        }
+
+        /** @var Column $child */
+        return new self($this->metadata(), [...$this->columns, $child]);
     }
 
-    public function changeChildren(array $children): self
+    public function changeChildren(BlockInterface ...$children): self
     {
         foreach ($children as $child) {
-            if ($child::class !== Column::class) {
-                throw new NotionException(
-                    "Column lists accept only columns as children.",
-                    "validation_error",
-                );
+            if ($child->metadata()->type !== BlockType::Column) {
+                throw ColumnListException::childNotColumn();
             }
         }
 
-        /** @var list<Column> $children */
-        return new self($this->block(), $children);
+        /** @var Column[] $children */
+        return new self($this->metadata(), $children);
     }
 
     public function archive(): BlockInterface
     {
         return new self(
-            $this->block->archive(),
+            $this->metadata->archive(),
             $this->columns,
         );
     }

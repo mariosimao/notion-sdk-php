@@ -2,6 +2,7 @@
 
 namespace Notion\Blocks;
 
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\NotionException;
 
 /**
@@ -9,50 +10,39 @@ use Notion\NotionException;
  *
  * This block cannot be created, only retrieved by the API.
  *
- * @psalm-import-type BlockJson from Block
+ * @psalm-import-type BlockMetadataJson from BlockMetadata
  *
  * @psalm-type LinkPreviewJson = array{
- *      link_preview: array{ url: non-empty-string },
+ *      link_preview: array{ url: string },
  * }
  *
  * @psalm-immutable
  */
 class LinkPreview implements BlockInterface
 {
-    private const TYPE = Block::TYPE_LINK_PREVIEW;
-
-    private Block $block;
-
-    /** @var non-empty-string */
-    private string $url;
-
-    /** @param non-empty-string $url */
-    private function __construct(Block $block, string $url)
-    {
-        if (!$block->isLinkPreview()) {
-            throw new \Exception("Block must be of type " . self::TYPE);
-        }
-
-        $this->block = $block;
-        $this->url = $url;
+    private function __construct(
+        private readonly BlockMetadata $metadata,
+        public readonly string $url
+    ) {
+        $metadata->checkType(BlockType::LinkPreview);
     }
 
     public static function fromArray(array $array): self
     {
-        /** @psalm-var BlockJson $array */
-        $block = Block::fromArray($array);
+        /** @psalm-var BlockMetadataJson $array */
+        $block = BlockMetadata::fromArray($array);
 
         /** @psalm-var LinkPreviewJson $array */
-        $url = $array[self::TYPE]["url"];
+        $url = $array["link_preview"]["url"];
 
         return new self($block, $url);
     }
 
     public function toArray(): array
     {
-        $array = $this->block->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = [ "url" => $this->url ];
+        $array["link_preview"] = [ "url" => $this->url ];
 
         return $array;
     }
@@ -61,35 +51,32 @@ class LinkPreview implements BlockInterface
     public function toUpdateArray(): array
     {
         return [
-            self::TYPE => [
+            "link_preview" => [
                 "url" => $this->url
             ],
-            "archived" => $this->block()->archived(),
+            "archived" => $this->metadata()->archived,
         ];
     }
 
-    public function block(): Block
+    public function metadata(): BlockMetadata
     {
-        return $this->block;
+        return $this->metadata;
     }
 
-    public function url(): string
+    public function addChild(BlockInterface $child): self
     {
-        return $this->url;
+        throw BlockException::noChindrenSupport();
     }
 
-    public function changeChildren(array $children): self
+    public function changeChildren(BlockInterface ...$children): self
     {
-        throw new NotionException(
-            "This block does not support children.",
-            "no_children_support",
-        );
+        throw BlockException::noChindrenSupport();
     }
 
     public function archive(): BlockInterface
     {
         return new self(
-            $this->block->archive(),
+            $this->metadata->archive(),
             $this->url,
         );
     }

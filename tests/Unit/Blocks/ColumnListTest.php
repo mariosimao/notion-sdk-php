@@ -18,8 +18,7 @@ class ColumnListTest extends TestCase
 
         $list = ColumnList::create([ $column1, $column2 ]);
 
-        $this->assertTrue($list->block()->isColumnList());
-        $this->assertEquals([ $column1, $column2 ], $list->columns());
+        $this->assertEquals([ $column1, $column2 ], $list->columns);
     }
 
     public function test_array_conversion(): void
@@ -85,8 +84,8 @@ class ColumnListTest extends TestCase
 
         $this->assertEquals($list, $listFromFactory);
         $this->assertEquals($array, $list->toArray());
-        $this->assertEquals("04a13895-f072-4814-8af7-cd11af127040", $list->block()->id());
-        $this->assertTrue($list->block()->hasChildren());
+        $this->assertEquals("04a13895-f072-4814-8af7-cd11af127040", $list->metadata()->id);
+        $this->assertTrue($list->metadata()->hasChildren);
     }
 
     public function test_change_children(): void
@@ -94,8 +93,8 @@ class ColumnListTest extends TestCase
         $column1 = Column::create([ Paragraph::fromString("Paragraph 1") ]);
         $column2 = Column::create([ Paragraph::fromString("Paragraph 2") ]);
 
-        $list = ColumnList::create([ $column1 ])->changeChildren([ $column2 ]);
-        $this->assertEquals([ $column2 ], $list->columns());
+        $list = ColumnList::create([ $column1 ])->changeChildren($column2);
+        $this->assertEquals([ $column2 ], $list->columns);
     }
 
     public function test_change_children_to_not_columns(): void
@@ -106,7 +105,7 @@ class ColumnListTest extends TestCase
 
         $this->expectException(NotionException::class);
         /** @psalm-suppress UnusedMethodCall */
-        $list->changeChildren([ Paragraph::fromString("This should be a column.") ]);
+        $list->changeChildren(Paragraph::fromString("This should be a column."));
     }
 
     public function test_array_for_update_operations(): void
@@ -124,6 +123,6 @@ class ColumnListTest extends TestCase
 
         $block = $block->archive();
 
-        $this->assertTrue($block->block()->archived());
+        $this->assertTrue($block->metadata()->archived);
     }
 }

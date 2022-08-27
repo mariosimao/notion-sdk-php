@@ -3,7 +3,7 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Blocks\Quote;
 use Notion\Common\Date;
 use Notion\Common\RichText;
@@ -15,8 +15,8 @@ class QuoteTest extends TestCase
     {
         $quote = Quote::create();
 
-        $this->assertEmpty($quote->text());
-        $this->assertEmpty($quote->children());
+        $this->assertEmpty($quote->text);
+        $this->assertEmpty($quote->children);
     }
 
     public function test_create_from_string(): void
@@ -77,17 +77,17 @@ class QuoteTest extends TestCase
 
         $quote = Quote::fromArray($array);
 
-        $this->assertCount(2, $quote->text());
-        $this->assertEmpty($quote->children());
+        $this->assertCount(2, $quote->text);
+        $this->assertEmpty($quote->children);
         $this->assertEquals("Notion quotes rock!", $quote->toString());
-        $this->assertFalse($quote->block()->archived());
+        $this->assertFalse($quote->metadata()->archived);
 
         $this->assertEquals($quote, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(BlockTypeException::class);
+        $this->expectException(BlockException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -111,8 +111,8 @@ class QuoteTest extends TestCase
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $q->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $q->block()->lastEditedTime()->format(Date::FORMAT),
+            "created_time"     => $q->metadata()->createdTime->format(Date::FORMAT),
+            "last_edited_time" => $q->metadata()->lastEditedTime->format(Date::FORMAT),
             "archived"         => false,
             "has_children"      => false,
             "type"             => "quote",
@@ -144,7 +144,7 @@ class QuoteTest extends TestCase
     {
         $oldQuote = Quote::fromString("This is an old quote");
 
-        $newQuote = $oldQuote->withText([
+        $newQuote = $oldQuote->changeText([
             RichText::createText("This is a "),
             RichText::createText("new quote"),
         ]);
@@ -153,11 +153,11 @@ class QuoteTest extends TestCase
         $this->assertEquals("This is a new quote", $newQuote->toString());
     }
 
-    public function test_append_text(): void
+    public function test_add_text(): void
     {
         $oldQuote = Quote::fromString("A quote");
 
-        $newQuote = $oldQuote->appendText(
+        $newQuote = $oldQuote->addText(
             RichText::createText(" can be extended.")
         );
 
@@ -169,21 +169,21 @@ class QuoteTest extends TestCase
     {
         $nested1 = Quote::fromString("Nested quote 1");
         $nested2 = Quote::fromString("Nested quote 2");
-        $quote = Quote::fromString("Simple quote.")->changeChildren([ $nested1, $nested2 ]);
+        $quote = Quote::fromString("Simple quote.")->changeChildren($nested1, $nested2);
 
-        $this->assertCount(2, $quote->children());
-        $this->assertEquals($nested1, $quote->children()[0]);
-        $this->assertEquals($nested2, $quote->children()[1]);
+        $this->assertCount(2, $quote->children);
+        $this->assertEquals($nested1, $quote->children[0]);
+        $this->assertEquals($nested2, $quote->children[1]);
     }
 
-    public function test_append_child(): void
+    public function test_add_child(): void
     {
         $quote = Quote::fromString("Simple quote.");
         $nested = Quote::fromString("Nested quote");
-        $quote = $quote->appendChild($nested);
+        $quote = $quote->addChild($nested);
 
-        $this->assertCount(1, $quote->children());
-        $this->assertEquals($nested, $quote->children()[0]);
+        $this->assertCount(1, $quote->children);
+        $this->assertEquals($nested, $quote->children[0]);
     }
 
     public function test_array_for_update_operations(): void

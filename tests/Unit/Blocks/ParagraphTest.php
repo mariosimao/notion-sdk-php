@@ -3,7 +3,7 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Blocks\Paragraph;
 use Notion\Common\Date;
 use Notion\Common\RichText;
@@ -15,8 +15,8 @@ class ParagraphTest extends TestCase
     {
         $paragraph = Paragraph::create();
 
-        $this->assertEmpty($paragraph->text());
-        $this->assertEmpty($paragraph->children());
+        $this->assertEmpty($paragraph->text);
+        $this->assertEmpty($paragraph->children);
     }
 
     public function test_create_from_string(): void
@@ -77,17 +77,17 @@ class ParagraphTest extends TestCase
 
         $paragraph = Paragraph::fromArray($array);
 
-        $this->assertCount(2, $paragraph->text());
-        $this->assertEmpty($paragraph->children());
+        $this->assertCount(2, $paragraph->text);
+        $this->assertEmpty($paragraph->children);
         $this->assertEquals("Notion paragraphs rock!", $paragraph->toString());
-        $this->assertFalse($paragraph->block()->archived());
+        $this->assertFalse($paragraph->metadata()->archived);
 
         $this->assertEquals($paragraph, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(BlockTypeException::class);
+        $this->expectException(BlockException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -110,8 +110,8 @@ class ParagraphTest extends TestCase
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $p->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $p->block()->lastEditedTime()->format(Date::FORMAT),
+            "created_time"     => $p->metadata()->createdTime->format(Date::FORMAT),
+            "last_edited_time" => $p->metadata()->lastEditedTime->format(Date::FORMAT),
             "archived"         => false,
             "has_children"      => false,
             "type"             => "paragraph",
@@ -143,7 +143,7 @@ class ParagraphTest extends TestCase
     {
         $oldParagraph = Paragraph::fromString("This is an old paragraph");
 
-        $newParagraph = $oldParagraph->withText([
+        $newParagraph = $oldParagraph->changeText([
             RichText::createText("This is a "),
             RichText::createText("new paragraph"),
         ]);
@@ -152,11 +152,11 @@ class ParagraphTest extends TestCase
         $this->assertEquals("This is a new paragraph", $newParagraph->toString());
     }
 
-    public function test_append_text(): void
+    public function test_add_text(): void
     {
         $oldParagraph = Paragraph::fromString("A paragraph");
 
-        $newParagraph = $oldParagraph->appendText(
+        $newParagraph = $oldParagraph->addText(
             RichText::createText(" can be extended.")
         );
 
@@ -168,23 +168,21 @@ class ParagraphTest extends TestCase
     {
         $nested1 = Paragraph::fromString("Nested paragraph 1");
         $nested2 = Paragraph::fromString("Nested paragraph 2");
-        $paragraph = Paragraph::fromString("Simple paragraph.")->changeChildren([
-            $nested1, $nested2
-        ]);
+        $paragraph = Paragraph::fromString("Simple paragraph.")->changeChildren($nested1, $nested2);
 
-        $this->assertCount(2, $paragraph->children());
-        $this->assertEquals($nested1, $paragraph->children()[0]);
-        $this->assertEquals($nested2, $paragraph->children()[1]);
+        $this->assertCount(2, $paragraph->children);
+        $this->assertEquals($nested1, $paragraph->children[0]);
+        $this->assertEquals($nested2, $paragraph->children[1]);
     }
 
-    public function test_append_child(): void
+    public function test_add_child(): void
     {
         $paragraph = Paragraph::fromString("Simple paragraph.");
         $nested = Paragraph::fromString("Nested paragraph");
-        $paragraph = $paragraph->appendChild($nested);
+        $paragraph = $paragraph->addChild($nested);
 
-        $this->assertCount(1, $paragraph->children());
-        $this->assertEquals($nested, $paragraph->children()[0]);
+        $this->assertCount(1, $paragraph->children);
+        $this->assertEquals($nested, $paragraph->children[0]);
     }
 
     public function test_array_for_update_operations(): void

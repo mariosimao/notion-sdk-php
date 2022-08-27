@@ -5,12 +5,15 @@ namespace Notion\Blocks;
 /** @psalm-immutable */
 interface BlockInterface
 {
-    public static function fromArray(array $array): self;
-    public function toArray(): array;
-    public function toUpdateArray(): array;
-
-    public function block(): Block;
-    /** @param list<BlockInterface> $children */
-    public function changeChildren(array $children): self;
+    public function metadata(): BlockMetadata;
+    public function addChild(BlockInterface $child): self;
+    public function changeChildren(BlockInterface ...$children): self;
     public function archive(): self;
+
+    /** @internal */
+    public static function fromArray(array $array): self;
+    /** @internal */
+    public function toArray(): array;
+    /** @internal */
+    public function toUpdateArray(): array;
 }

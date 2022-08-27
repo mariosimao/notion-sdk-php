@@ -3,7 +3,7 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Blocks\FileBlock;
 use Notion\Common\Date;
 use Notion\Common\File;
@@ -40,14 +40,14 @@ class FileBlockTest extends TestCase
 
         $fileBlock = FileBlock::fromArray($array);
 
-        $this->assertEquals("https://my-site.com/file.doc", $fileBlock->file()->url());
+        $this->assertEquals("https://my-site.com/file.doc", $fileBlock->file()->url);
 
         $this->assertEquals($fileBlock, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(BlockTypeException::class);
+        $this->expectException(BlockException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -74,8 +74,8 @@ class FileBlockTest extends TestCase
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $fileBlock->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $fileBlock->block()->createdTime()->format(Date::FORMAT),
+            "created_time"     => $fileBlock->metadata()->createdTime->format(Date::FORMAT),
+            "last_edited_time" => $fileBlock->metadata()->createdTime->format(Date::FORMAT),
             "archived"         => false,
             "has_children"     => false,
             "type"             => "file",
@@ -96,7 +96,7 @@ class FileBlockTest extends TestCase
         $file2 = File::createExternal("https://my-site.com/file2.doc");
 
         $old = FileBlock::create($file1);
-        $new = $old->withFile($file2);
+        $new = $old->changeFile($file2);
 
         $this->assertEquals($file1, $old->file());
         $this->assertEquals($file2, $new->file());
@@ -109,7 +109,7 @@ class FileBlockTest extends TestCase
 
         $this->expectException(NotionException::class);
         /** @psalm-suppress UnusedMethodCall */
-        $block->changeChildren([]);
+        $block->changeChildren();
     }
 
     public function test_array_for_update_operations(): void
@@ -129,6 +129,6 @@ class FileBlockTest extends TestCase
 
         $block = $block->archive();
 
-        $this->assertTrue($block->block()->archived());
+        $this->assertTrue($block->metadata()->archived);
     }
 }

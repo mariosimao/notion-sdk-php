@@ -33,8 +33,8 @@ class Client
     {
         $url = "https://api.notion.com/v1/blocks/{$blockId}";
         $request = $this->requestFactory->createRequest("GET", $url)
-            ->withHeader("Authorization", "Bearer {$this->token}")
-            ->withHeader("Notion-Version", $this->version);
+            ->changeHeader("Authorization", "Bearer {$this->token}")
+            ->changeHeader("Notion-Version", $this->version);
 
         $response = $this->psrClient->sendRequest($request);
 
@@ -53,13 +53,13 @@ class Client
         return BlockFactory::fromArray($body);
     }
 
-    /** @return list<BlockInterface> */
+    /** @return BlockInterface[] */
     public function findChildren(string $blockId): array
     {
         $url = "https://api.notion.com/v1/blocks/{$blockId}/children";
         $request = $this->requestFactory->createRequest("GET", $url)
-            ->withHeader("Authorization", "Bearer {$this->token}")
-            ->withHeader("Notion-Version", $this->version);
+            ->changeHeader("Authorization", "Bearer {$this->token}")
+            ->changeHeader("Notion-Version", $this->version);
 
         $response = $this->psrClient->sendRequest($request);
 
@@ -81,15 +81,15 @@ class Client
         );
     }
 
-    /** @return list<BlockInterface> */
+    /** @return BlockInterface[] */
     public function findChildrenRecursive(string $blockId): array
     {
         $children = $this->findChildren($blockId);
         return array_map(
             function (BlockInterface $block) {
-                if ($block->block()->hasChildren()) {
-                    $blockChildren = $this->findChildrenRecursive($block->block()->id());
-                    return $block->changeChildren($blockChildren);
+                if ($block->metadata()->hasChildren) {
+                    $blockChildren = $this->findChildrenRecursive($block->metadata()->id);
+                    return $block->changeChildren(...$blockChildren);
                 }
 
                 return $block;
@@ -103,7 +103,7 @@ class Client
      *
      * @return BlockInterface[] Newly created blocks
      */
-    public function append(string $blockId, array $blocks): array
+    public function add(string $blockId, array $blocks): array
     {
         $data = json_encode([
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $blocks),
@@ -111,9 +111,9 @@ class Client
 
         $url = "https://api.notion.com/v1/blocks/{$blockId}/children";
         $request = $this->requestFactory->createRequest("PATCH", $url)
-            ->withHeader("Authorization", "Bearer {$this->token}")
-            ->withHeader("Notion-Version", $this->version)
-            ->withHeader("Content-Type", "application/json");
+            ->changeHeader("Authorization", "Bearer {$this->token}")
+            ->changeHeader("Notion-Version", $this->version)
+            ->changeHeader("Content-Type", "application/json");
 
         $request->getBody()->write($data);
 
@@ -139,15 +139,15 @@ class Client
 
     public function update(BlockInterface $block): BlockInterface
     {
-        $blockId = $block->block()->id();
+        $blockId = $block->metadata()->id;
 
         $json = json_encode($block->toUpdateArray());
 
         $url = "https://api.notion.com/v1/blocks/{$blockId}";
         $request = $this->requestFactory->createRequest("PATCH", $url)
-            ->withHeader("Authorization", "Bearer {$this->token}")
-            ->withHeader("Notion-Version", $this->version)
-            ->withHeader("Content-Type", "application/json");
+            ->changeHeader("Authorization", "Bearer {$this->token}")
+            ->changeHeader("Notion-Version", $this->version)
+            ->changeHeader("Content-Type", "application/json");
 
         $request->getBody()->write($json);
 
@@ -172,8 +172,8 @@ class Client
     {
         $url = "https://api.notion.com/v1/blocks/{$blockId}";
         $request = $this->requestFactory->createRequest("DELETE", $url)
-            ->withHeader("Authorization", "Bearer {$this->token}")
-            ->withHeader("Notion-Version", $this->version);
+            ->changeHeader("Authorization", "Bearer {$this->token}")
+            ->changeHeader("Notion-Version", $this->version);
 
         $response = $this->psrClient->sendRequest($request);
 

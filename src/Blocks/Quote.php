@@ -2,17 +2,17 @@
 
 namespace Notion\Blocks;
 
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Common\RichText;
 
 /**
- * @psalm-import-type BlockJson from Block
+ * @psalm-import-type BlockMetadataJson from BlockMetadata
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
  *
  * @psalm-type QuoteJson = array{
  *      quote: array{
  *          rich_text: list<RichTextJson>,
- *          children: list<BlockJson>,
+ *          children: list<BlockMetadataJson>,
  *      },
  * }
  *
@@ -20,44 +20,28 @@ use Notion\Common\RichText;
  */
 class Quote implements BlockInterface
 {
-    private const TYPE = Block::TYPE_QUOTE;
-
-    private Block $block;
-
-    /** @var list<RichText> */
-    private array $text;
-
-    /** @var list<\Notion\Blocks\BlockInterface> */
-    private array $children;
-
     /**
-     * @param list<RichText> $text
-     * @param list<\Notion\Blocks\BlockInterface> $children
+     * @param RichText[] $text
+     * @param BlockInterface[] $children
      */
     private function __construct(
-        Block $block,
-        array $text,
-        array $children,
+        private readonly BlockMetadata $metadata,
+        public readonly array $text,
+        public readonly array $children,
     ) {
-        if (!$block->isQuote()) {
-            throw new BlockTypeException(self::TYPE);
-        }
-
-        $this->block = $block;
-        $this->text = $text;
-        $this->children = $children;
+        $metadata->checkType(BlockType::Quote);
     }
 
     public static function create(): self
     {
-        $block = Block::create(self::TYPE);
+        $block = BlockMetadata::create(BlockType::Quote);
 
         return new self($block, [], []);
     }
 
     public static function fromString(string $content): self
     {
-        $block = Block::create(self::TYPE);
+        $block = BlockMetadata::create(BlockType::Quote);
         $text = [ RichText::createText($content) ];
 
         return new self($block, $text, []);
@@ -65,11 +49,11 @@ class Quote implements BlockInterface
 
     public static function fromArray(array $array): self
     {
-        /** @psalm-var BlockJson $array */
-        $block = Block::fromArray($array);
+        /** @psalm-var BlockMetadataJson $array */
+        $block = BlockMetadata::fromArray($array);
 
         /** @psalm-var QuoteJson $array */
-        $quote = $array[self::TYPE];
+        $quote = $array["quote"];
 
         $text = array_map(fn($t) => RichText::fromArray($t), $quote["rich_text"]);
 
@@ -80,9 +64,9 @@ class Quote implements BlockInterface
 
     public function toArray(): array
     {
-        $array = $this->block->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = [
+        $array["quote"] = [
             "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
         ];
@@ -94,10 +78,10 @@ class Quote implements BlockInterface
     public function toUpdateArray(): array
     {
         return [
-            self::TYPE => [
+            "quote" => [
                 "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
             ],
-            "archived" => $this->block()->archived(),
+            "archived" => $this->metadata()->archived,
         ];
     }
 
@@ -105,61 +89,49 @@ class Quote implements BlockInterface
     {
         $string = "";
         foreach ($this->text as $richText) {
-            $string = $string . $richText->plainText();
+            $string = $string . $richText->plainText;
         }
 
         return $string;
     }
 
-    public function block(): Block
+    public function metadata(): BlockMetadata
     {
-        return $this->block;
+        return $this->metadata;
     }
 
-    public function text(): array
+    /** @param RichText[] $text */
+    public function changeText(array $text): self
     {
-        return $this->text;
+        return new self($this->metadata, $text, $this->children);
     }
 
-    /** @return list<BlockInterface> */
-    public function children(): array
-    {
-        return $this->children;
-    }
-
-    /** @param list<RichText> $text */
-    public function withText(array $text): self
-    {
-        return new self($this->block, $text, $this->children);
-    }
-
-    public function appendText(RichText $text): self
+    public function addText(RichText $text): self
     {
         $texts = $this->text;
         $texts[] = $text;
 
-        return new self($this->block, $texts, $this->children);
+        return new self($this->metadata, $texts, $this->children);
     }
 
-    /** @param list<BlockInterface> $children */
-    public function changeChildren(array $children): self
+    public function changeChildren(BlockInterface ...$children): self
     {
         $hasChildren = (count($children) > 0);
 
         return new self(
-            $this->block->withHasChildren($hasChildren),
+            $this->metadata->updateHasChildren($hasChildren),
             $this->text,
             $children,
         );
     }
 
-    public function appendChild(BlockInterface $child): self
+    public function addChild(BlockInterface $child): self
     {
         $children = $this->children;
         $children[] = $child;
 
         return new self(
-            $this->block->withHasChildren(true),
+            $this->metadata->updateHasChildren(true),
             $this->text,
             $children,
         );
@@ -168,7 +140,7 @@ class Quote implements BlockInterface
     public function archive(): BlockInterface
     {
         return new self(
-            $this->block->archive(),
+            $this->metadata->archive(),
             $this->text,
             $this->children,
         );

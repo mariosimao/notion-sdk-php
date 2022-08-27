@@ -14,11 +14,10 @@ class ColumnTest extends TestCase
         $children = [ Paragraph::fromString("A paragraph.") ];
         $column = Column::create($children);
 
-        $this->assertTrue($column->block()->isColumn());
-        $this->assertEquals($children, $column->children());
+        $this->assertEquals($children, $column->children);
     }
 
-    public function test_create_with_child_column(): void
+    public function test_create_change_child_column(): void
     {
         $childColumn = Column::create([ Paragraph::fromString("A paragraph") ]);
 
@@ -26,14 +25,14 @@ class ColumnTest extends TestCase
         Column::create([ $childColumn ]);
     }
 
-    public function test_append_child(): void
+    public function test_add_child(): void
     {
         $paragraph1 = Paragraph::fromString("Paragraph 1.");
         $paragraph2 = Paragraph::fromString("Paragraph 2.");
 
-        $column = Column::create([ $paragraph1 ])->appendChild($paragraph2);
+        $column = Column::create([ $paragraph1 ])->addChild($paragraph2);
 
-        $this->assertEquals([ $paragraph1, $paragraph2 ], $column->children());
+        $this->assertEquals([ $paragraph1, $paragraph2 ], $column->children);
     }
 
     public function test_change_child(): void
@@ -41,9 +40,9 @@ class ColumnTest extends TestCase
         $children1 = [ Paragraph::fromString("Paragraph 1.") ];
         $children2 = [ Paragraph::fromString("Paragraph 2.") ];
 
-        $column = Column::create($children1)->changeChildren($children2);
+        $column = Column::create($children1)->changeChildren(...$children2);
 
-        $this->assertEquals($children2, $column->children());
+        $this->assertEquals($children2, $column->children);
     }
 
     public function test_array_conversion(): void
@@ -90,6 +89,6 @@ class ColumnTest extends TestCase
 
         $block = $block->archive();
 
-        $this->assertTrue($block->block()->archived());
+        $this->assertTrue($block->metadata()->archived);
     }
 }

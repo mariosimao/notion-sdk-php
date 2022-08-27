@@ -4,7 +4,7 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Breadcrumb;
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Common\Date;
 use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +15,7 @@ class BreadcrumbTest extends TestCase
     {
         $breadcrumb = Breadcrumb::create();
 
-        $this->assertEquals("breadcrumb", $breadcrumb->block()->type());
+        $this->assertEquals("breadcrumb", $breadcrumb->metadata()->type->value);
     }
 
     public function test_create_from_array(): void
@@ -33,14 +33,12 @@ class BreadcrumbTest extends TestCase
 
         $breadcrumb = Breadcrumb::fromArray($array);
 
-        $this->assertTrue($breadcrumb->block()->isBreadcrumb());
-
         $this->assertEquals($breadcrumb, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(BlockTypeException::class);
+        $this->expectException(BlockException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -61,8 +59,8 @@ class BreadcrumbTest extends TestCase
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $breadcrumb->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $breadcrumb->block()->createdTime()->format(Date::FORMAT),
+            "created_time"     => $breadcrumb->metadata()->createdTime->format(Date::FORMAT),
+            "last_edited_time" => $breadcrumb->metadata()->createdTime->format(Date::FORMAT),
             "archived"         => false,
             "has_children"     => false,
             "type"             => "breadcrumb",
@@ -78,7 +76,7 @@ class BreadcrumbTest extends TestCase
 
         $this->expectException(NotionException::class);
         /** @psalm-suppress UnusedMethodCall */
-        $block->changeChildren([]);
+        $block->changeChildren();
     }
 
     public function test_array_for_update_operations(): void
@@ -96,6 +94,6 @@ class BreadcrumbTest extends TestCase
 
         $block = $block->archive();
 
-        $this->assertTrue($block->block()->archived());
+        $this->assertTrue($block->metadata()->archived);
     }
 }

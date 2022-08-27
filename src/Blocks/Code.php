@@ -2,18 +2,18 @@
 
 namespace Notion\Blocks;
 
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Common\RichText;
 use Notion\NotionException;
 
 /**
- * @psalm-import-type BlockJson from Block
+ * @psalm-import-type BlockMetadataJson from BlockMetadata
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
  *
  * @psalm-type CodeJson = array{
  *      code: array{
  *          rich_text: list<RichTextJson>,
- *          language: self::LANG_*,
+ *          language: string,
  *      },
  * }
  *
@@ -21,208 +21,114 @@ use Notion\NotionException;
  */
 class Code implements BlockInterface
 {
-    private const TYPE = Block::TYPE_CODE;
-
-    public const LANG_ABAP = "abap";
-    public const LANG_ARDUINO = "arduino";
-    public const LANG_BASH = "bash";
-    public const LANG_BASIC = "basic";
-    public const LANG_C = "c";
-    public const LANG_CLOJURE = "clojure";
-    public const LANG_COFFEESCRIPT = "coffeescript";
-    public const LANG_CPP = "c++";
-    public const LANG_C_SHARP = "c#";
-    public const LANG_CSS = "css";
-    public const LANG_DART = "dart";
-    public const LANG_DIFF = "diff";
-    public const LANG_DOCKER = "docker";
-    public const LANG_ELIXIR = "elixir";
-    public const LANG_ELM = "elm";
-    public const LANG_ERLANG = "erlang";
-    public const LANG_FLOW = "flow";
-    public const LANG_FORTRAN = "fortran";
-    public const LANG_F_SHARP = "f#";
-    public const LANG_GHERKIN = "gherkin";
-    public const LANG_GLSL = "glsl";
-    public const LANG_GO = "go";
-    public const LANG_GRAPHQL = "graphql";
-    public const LANG_GROOVY = "groovy";
-    public const LANG_HASKELL = "haskell";
-    public const LANG_HTML = "html";
-    public const LANG_JAVA = "java";
-    public const LANG_JAVASCRIPT = "javaScript";
-    public const LANG_JSON = "json";
-    public const LANG_JULIA = "julia";
-    public const LANG_KOTLIN = "kotlin";
-    public const LANG_LATEX = "latex";
-    public const LANG_LESS = "less";
-    public const LANG_LISP = "lisp";
-    public const LANG_LIVESCRIPT = "livescript";
-    public const LANG_LUA = "lua";
-    public const LANG_MAKEFILE = "makefile";
-    public const LANG_MARKDOWN = "markdown";
-    public const LANG_MARKUP = "markup";
-    public const LANG_MATLAB = "matlab";
-    public const LANG_MERMAID = "mermaid";
-    public const LANG_NIX = "nix";
-    public const LANG_OBJECTIVE_C = "objective-c";
-    public const LANG_OCAML = "ocaml";
-    public const LANG_PASCAL = "pascal";
-    public const LANG_PERL = "perl";
-    public const LANG_PHP = "php";
-    public const LANG_PLAIN_TEXT = "plain text";
-    public const LANG_POWERSHELL = "powershell";
-    public const LANG_PROLOG = "prolog";
-    public const LANG_PROTOBUF = "protobuf";
-    public const LANG_PYTHON = "python";
-    public const LANG_R = "r";
-    public const LANG_REASON = "reason";
-    public const LANG_RUBY = "ruby";
-    public const LANG_RUST = "rust";
-    public const LANG_SASS = "sass";
-    public const LANG_SCALA = "scala";
-    public const LANG_SCHEME = "scheme";
-    public const LANG_SCSS = "scss";
-    public const LANG_SHELL = "shell";
-    public const LANG_SQL = "sql";
-    public const LANG_SWIFT = "swift";
-    public const LANG_TYPESCRIPT = "typescript";
-    public const LANG_VB_NET = "vb.net";
-    public const LANG_VERILOG = "verilog";
-    public const LANG_VHDL = "vhdl";
-    public const LANG_VISUAL_BASIC = "visual basic";
-    public const LANG_WEBASSEMBLY = "webassembly";
-    public const LANG_XML = "xml";
-    public const LANG_YAML = "yaml";
-
-    private Block $block;
-
-    /** @var list<RichText> */
-    private array $text;
-
-    private string $language;
-
-    /** @param list<RichText> $text */
-    private function __construct(Block $block, array $text, string $language)
-    {
-        if (!$block->isCode()) {
-            throw new BlockTypeException(self::TYPE);
-        }
-
-        $this->block = $block;
-        $this->text = $text;
-        $this->language = $language;
+    /** @param RichText[] $text */
+    private function __construct(
+        private readonly BlockMetadata $metadata,
+        public readonly array $text,
+        public readonly CodeLanguage $language,
+    ) {
+        $metadata->checkType(BlockType::Code);
     }
 
+    /** @param RichText[] $text */
     public static function create(
-        string $code = "",
-        string $language = self::LANG_PLAIN_TEXT
+        array $text = [],
+        CodeLanguage $language = CodeLanguage::PlainText,
     ): self {
-        $block = Block::create(self::TYPE);
-        $text = [];
-        if ($code !== "") {
-            $text[] = RichText::createText($code) ;
-        }
+        $metadata = BlockMetadata::create(BlockType::Code);
 
-        return new self($block, $text, $language);
+        return new self($metadata, $text, $language);
+    }
+
+    public static function createFromString(
+        string $code,
+        CodeLanguage $language = CodeLanguage::PlainText,
+    ): self {
+        $metadata = BlockMetadata::create(BlockType::Code);
+        $text = [ RichText::createText($code) ];
+
+        return new self($metadata, $text, $language);
     }
 
     public static function fromArray(array $array): self
     {
-        /** @psalm-var BlockJson $array */
-        $block = Block::fromArray($array);
+        /** @psalm-var BlockMetadataJson $array */
+        $metadata = BlockMetadata::fromArray($array);
 
         /** @psalm-var CodeJson $array */
-        $code = $array[self::TYPE];
+        $code = $array["code"];
         $text = array_map(fn($t) => RichText::fromArray($t), $code["rich_text"]);
-        $language = $code["language"];
+        $language = CodeLanguage::from($code["language"]);
 
-        return new self($block, $text, $language);
+        return new self($metadata, $text, $language);
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
-        $array = $this->block->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = [
-            "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
-            "language" => $this->language,
+        $array["code"] = [
+            "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "language"  => $this->language->value,
         ];
 
         return $array;
+    }
+
+    public function toString(): string
+    {
+        return RichText::multipleToString(...$this->text);
     }
 
     /** @internal */
     public function toUpdateArray(): array
     {
         return [
-            self::TYPE => [
+            "code" => [
                 "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
                 "language" => $this->language,
             ],
-            "archived" => $this->block()->archived(),
+            "archived" => $this->metadata()->archived,
         ];
     }
 
-    public function toString(): string
+    public function metadata(): BlockMetadata
     {
-        $string = "";
-        foreach ($this->text as $richText) {
-            $string = $string . $richText->plainText();
-        }
-
-        return $string;
+        return $this->metadata;
     }
 
-    public function block(): Block
+    public function changeText(RichText ...$text): self
     {
-        return $this->block;
+        return new self($this->metadata, $text, $this->language);
     }
 
-    public function text(): array
-    {
-        return $this->text;
-    }
-
-    public function language(): string
-    {
-        return $this->language;
-    }
-
-    /** @param list<RichText> $text */
-    public function withText(array $text): self
-    {
-        return new self($this->block, $text, $this->language);
-    }
-
-    public function appendText(RichText $text): self
+    public function addText(RichText $text): self
     {
         $texts = $this->text;
         $texts[] = $text;
 
-        return new self($this->block, $texts, $this->language);
+        return new self($this->metadata, $texts, $this->language);
     }
 
-    public function withLanguage(string $language): self
+    public function changeLanguage(CodeLanguage $language): self
     {
-        return new self($this->block, $this->text, $language);
+        return new self($this->metadata, $this->text, $language);
     }
 
-    public function changeChildren(array $children): self
+    public function addCHild(BlockInterface $child): self
     {
-        throw new NotionException(
-            "This block does not support children.",
-            "no_children_support",
-        );
+        throw BlockException::noChindrenSupport();
+    }
+
+    public function changeChildren(BlockInterface ...$children): self
+    {
+        throw BlockException::noChindrenSupport();
     }
 
     public function archive(): BlockInterface
     {
         return new self(
-            $this->block->archive(),
+            $this->metadata->archive(),
             $this->text,
             $this->language,
         );

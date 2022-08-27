@@ -4,7 +4,8 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Code;
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\CodeLanguage;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Common\Date;
 use Notion\Common\RichText;
 use Notion\NotionException;
@@ -16,8 +17,8 @@ class CodeTest extends TestCase
     {
         $code = Code::create();
 
-        $this->assertEmpty($code->text());
-        $this->assertEquals(Code::LANG_PLAIN_TEXT, $code->language());
+        $this->assertEmpty($code->text);
+        $this->assertEquals(CodeLanguage::PlainText, $code->language);
     }
 
     public function test_create_from_array(): void
@@ -55,14 +56,14 @@ class CodeTest extends TestCase
 
         $code = Code::fromArray($array);
 
-        $this->assertCount(1, $code->text());
+        $this->assertCount(1, $code->text);
         $this->assertEquals("<?php\necho 'Hello World!';", $code->toString());
         $this->assertEquals($code, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(BlockTypeException::class);
+        $this->expectException(BlockException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -83,12 +84,15 @@ class CodeTest extends TestCase
 
     public function test_transform_in_array(): void
     {
-        $h = Code::create("<?php\necho 'Hello World!';", "php");
+        $h = Code::create(
+            [ RichText::createText("<?php\necho 'Hello World!';") ],
+            CodeLanguage::Php,
+        );
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $h->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $h->block()->lastEditedTime()->format(Date::FORMAT),
+            "created_time"     => $h->metadata()->createdTime->format(Date::FORMAT),
+            "last_edited_time" => $h->metadata()->lastEditedTime->format(Date::FORMAT),
             "archived"         => false,
             "has_children"      => false,
             "type"             => "code",
@@ -118,22 +122,22 @@ class CodeTest extends TestCase
 
     public function test_replace_text(): void
     {
-        $oldHeading = Code::create("This is an old code");
+        $oldHeading = Code::createFromString("This is an old code");
 
-        $newHeading = $oldHeading->withText([
+        $newHeading = $oldHeading->changeText(
             RichText::createText("This is a "),
             RichText::createText("new code"),
-        ]);
+        );
 
         $this->assertEquals("This is an old code", $oldHeading->toString());
         $this->assertEquals("This is a new code", $newHeading->toString());
     }
 
-    public function test_append_text(): void
+    public function test_add_text(): void
     {
-        $oldHeading = Code::create("A code");
+        $oldHeading = Code::createFromString("A code");
 
-        $newHeading = $oldHeading->appendText(
+        $newHeading = $oldHeading->addText(
             RichText::createText(" can be extended.")
         );
 
@@ -143,9 +147,10 @@ class CodeTest extends TestCase
 
     public function test_change_language(): void
     {
-        $code = Code::create("Simple code")->withLanguage("php");
+        $language = CodeLanguage::Php;
+        $code = Code::createFromString("Simple code")->changeLanguage($language);
 
-        $this->assertEquals("php", $code->language());
+        $this->assertEquals($language, $code->language);
     }
 
     public function test_no_children_support(): void
@@ -154,7 +159,7 @@ class CodeTest extends TestCase
 
         $this->expectException(NotionException::class);
         /** @psalm-suppress UnusedMethodCall */
-        $block->changeChildren([]);
+        $block->changeChildren();
     }
 
     public function test_array_for_update_operations(): void

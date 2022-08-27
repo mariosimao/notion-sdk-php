@@ -3,7 +3,7 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Blocks\Heading1;
 use Notion\Common\Date;
 use Notion\Common\RichText;
@@ -16,7 +16,7 @@ class Heading1Test extends TestCase
     {
         $heading = Heading1::create();
 
-        $this->assertEmpty($heading->text());
+        $this->assertEmpty($heading->text);
     }
 
     public function test_create_from_string(): void
@@ -77,16 +77,16 @@ class Heading1Test extends TestCase
 
         $heading = Heading1::fromArray($array);
 
-        $this->assertCount(2, $heading->text());
+        $this->assertCount(2, $heading->text);
         $this->assertEquals("Notion headings rock!", $heading->toString());
-        $this->assertFalse($heading->block()->archived());
+        $this->assertFalse($heading->metadata()->archived);
 
         $this->assertEquals($heading, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(BlockTypeException::class);
+        $this->expectException(BlockException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -109,8 +109,8 @@ class Heading1Test extends TestCase
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $h->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $h->block()->lastEditedTime()->format(Date::FORMAT),
+            "created_time"     => $h->metadata()->createdTime->format(Date::FORMAT),
+            "last_edited_time" => $h->metadata()->lastEditedTime->format(Date::FORMAT),
             "archived"         => false,
             "has_children"      => false,
             "type"             => "heading_1",
@@ -141,7 +141,7 @@ class Heading1Test extends TestCase
     {
         $oldHeading = Heading1::fromString("This is an old heading");
 
-        $newHeading = $oldHeading->withText([
+        $newHeading = $oldHeading->changeText([
             RichText::createText("This is a "),
             RichText::createText("new heading"),
         ]);
@@ -150,11 +150,11 @@ class Heading1Test extends TestCase
         $this->assertEquals("This is a new heading", $newHeading->toString());
     }
 
-    public function test_append_text(): void
+    public function test_add_text(): void
     {
         $oldHeading = Heading1::fromString("A heading");
 
-        $newHeading = $oldHeading->appendText(
+        $newHeading = $oldHeading->addText(
             RichText::createText(" can be extended.")
         );
 
@@ -168,7 +168,7 @@ class Heading1Test extends TestCase
 
         $this->expectException(NotionException::class);
         /** @psalm-suppress UnusedMethodCall */
-        $block->changeChildren([]);
+        $block->changeChildren();
     }
 
     public function test_array_for_update_operations(): void

@@ -4,7 +4,7 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\BulletedListItem;
-use Notion\Blocks\Exceptions\BlockTypeException;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Common\Date;
 use Notion\Common\RichText;
 use PHPUnit\Framework\TestCase;
@@ -15,8 +15,8 @@ class BulletedListItemTest extends TestCase
     {
         $item = BulletedListItem::create();
 
-        $this->assertEmpty($item->text());
-        $this->assertEmpty($item->children());
+        $this->assertEmpty($item->text);
+        $this->assertEmpty($item->children);
     }
 
     public function test_create_from_string(): void
@@ -77,17 +77,17 @@ class BulletedListItemTest extends TestCase
 
         $item = BulletedListItem::fromArray($array);
 
-        $this->assertCount(2, $item->text());
-        $this->assertEmpty($item->children());
+        $this->assertCount(2, $item->text);
+        $this->assertEmpty($item->children);
         $this->assertEquals("Notion items rock!", $item->toString());
-        $this->assertFalse($item->block()->archived());
+        $this->assertFalse($item->metadata()->archived);
 
         $this->assertEquals($item, BlockFactory::fromArray($array));
     }
 
     public function test_error_on_wrong_type(): void
     {
-        $this->expectException(BlockTypeException::class);
+        $this->expectException(BlockException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -111,8 +111,8 @@ class BulletedListItemTest extends TestCase
 
         $expected = [
             "object"           => "block",
-            "created_time"     => $i->block()->createdTime()->format(Date::FORMAT),
-            "last_edited_time" => $i->block()->lastEditedTime()->format(Date::FORMAT),
+            "created_time"     => $i->metadata()->createdTime->format(Date::FORMAT),
+            "last_edited_time" => $i->metadata()->lastEditedTime->format(Date::FORMAT),
             "archived"         => false,
             "has_children"     => false,
             "type"             => "bulleted_list_item",
@@ -144,20 +144,20 @@ class BulletedListItemTest extends TestCase
     {
         $oldItem = BulletedListItem::fromString("This is an old item");
 
-        $newItem = $oldItem->withText([
+        $newItem = $oldItem->changeText(
             RichText::createText("This is a "),
             RichText::createText("new item"),
-        ]);
+        );
 
         $this->assertEquals("This is an old item", $oldItem->toString());
         $this->assertEquals("This is a new item", $newItem->toString());
     }
 
-    public function test_append_text(): void
+    public function test_add_text(): void
     {
         $oldItem = BulletedListItem::fromString("A item");
 
-        $newItem = $oldItem->appendText(
+        $newItem = $oldItem->addText(
             RichText::createText(" can be extended.")
         );
 
@@ -169,21 +169,21 @@ class BulletedListItemTest extends TestCase
     {
         $nested1 = BulletedListItem::fromString("Nested item 1");
         $nested2 = BulletedListItem::fromString("Nested item 2");
-        $item = BulletedListItem::fromString("Simple item.")->changeChildren([ $nested1, $nested2 ]);
+        $item = BulletedListItem::fromString("Simple item.")->changeChildren($nested1, $nested2);
 
-        $this->assertCount(2, $item->children());
-        $this->assertEquals($nested1, $item->children()[0]);
-        $this->assertEquals($nested2, $item->children()[1]);
+        $this->assertCount(2, $item->children);
+        $this->assertEquals($nested1, $item->children[0]);
+        $this->assertEquals($nested2, $item->children[1]);
     }
 
-    public function test_append_child(): void
+    public function test_add_child(): void
     {
         $item = BulletedListItem::fromString("Simple item.");
         $nested = BulletedListItem::fromString("Nested item");
-        $item = $item->appendChild($nested);
+        $item = $item->addChild($nested);
 
-        $this->assertCount(1, $item->children());
-        $this->assertEquals($nested, $item->children()[0]);
+        $this->assertCount(1, $item->children);
+        $this->assertEquals($nested, $item->children[0]);
     }
 
     public function test_array_for_update_operations(): void
