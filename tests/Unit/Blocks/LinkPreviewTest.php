@@ -3,7 +3,7 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
-use Notion\Blocks\Exceptions\BlockException;
+use Notion\Exceptions\BlockException;
 use Notion\Blocks\LinkPreview;
 use Notion\NotionException;
 use PHPUnit\Framework\TestCase;

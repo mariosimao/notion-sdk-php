@@ -22,6 +22,7 @@ use Notion\Blocks\TableOfContents;
 use Notion\Blocks\ToDo;
 use Notion\Blocks\Toggle;
 use Notion\Common\RichText;
+use Notion\Exceptions\ApiException;
 use Notion\Notion;
 use Notion\NotionException;
 use Notion\Pages\Page;
@@ -117,7 +118,7 @@ class BlocksTest extends TestCase
         }
         $client = Notion::create($token);
 
-        $this->expectException(NotionException::class);
+        $this->expectException(ApiException::class);
         $client->blocks()->find("inexistentId");
     }
 
@@ -129,7 +130,7 @@ class BlocksTest extends TestCase
         }
         $client = Notion::create($token);
 
-        $this->expectException(NotionException::class);
+        $this->expectException(ApiException::class);
         $client->blocks()->findChildren("inexistentId");
     }
 
@@ -171,7 +172,7 @@ class BlocksTest extends TestCase
         }
         $client = Notion::create($token);
 
-        $this->expectException(NotionException::class);
+        $this->expectException(ApiException::class);
         $client->blocks()->delete("inexistentId");
     }
 
@@ -202,7 +203,7 @@ class BlocksTest extends TestCase
         }
         $client = Notion::create($token);
 
-        $this->expectException(NotionException::class);
+        $this->expectException(ApiException::class);
         $client->blocks()->add("inexistentId", [
             Paragraph::fromString("This is a simple paragraph"),
         ]);
@@ -264,7 +265,7 @@ class BlocksTest extends TestCase
 
         $paragraph = Paragraph::fromString("This is a simple paragraph");
 
-        $this->expectException(NotionException::class);
+        $this->expectException(ApiException::class);
         $client->blocks()->update($paragraph);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Integration;
 
+use Notion\Exceptions\ApiException;
 use Notion\Notion;
 use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
@@ -47,7 +48,7 @@ class UsersTest extends TestCase
         }
         $client = Notion::create($token);
 
-        $this->expectException(NotionException::class);
+        $this->expectException(ApiException::class);
         $this->expectExceptionMessage(
             "Could not find user with ID: 7c3bd31e-63fa-4c60-956d-2264ceb2c522."
         );

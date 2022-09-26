@@ -2,7 +2,7 @@
 
 namespace Notion\Blocks;
 
-use Notion\Blocks\Exceptions\BlockException;
+use Notion\Exceptions\BlockException;
 use Notion\Common\RichText;
 
 /**
