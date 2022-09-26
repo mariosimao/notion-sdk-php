@@ -33,8 +33,8 @@ class Client
     {
         $url = "https://api.notion.com/v1/blocks/{$blockId}";
         $request = $this->requestFactory->createRequest("GET", $url)
-            ->changeHeader("Authorization", "Bearer {$this->token}")
-            ->changeHeader("Notion-Version", $this->version);
+            ->withHeader("Authorization", "Bearer {$this->token}")
+            ->withHeader("Notion-Version", $this->version);
 
         $response = $this->psrClient->sendRequest($request);
 
@@ -58,8 +58,8 @@ class Client
     {
         $url = "https://api.notion.com/v1/blocks/{$blockId}/children";
         $request = $this->requestFactory->createRequest("GET", $url)
-            ->changeHeader("Authorization", "Bearer {$this->token}")
-            ->changeHeader("Notion-Version", $this->version);
+            ->withHeader("Authorization", "Bearer {$this->token}")
+            ->withHeader("Notion-Version", $this->version);
 
         $response = $this->psrClient->sendRequest($request);
 
@@ -111,9 +111,9 @@ class Client
 
         $url = "https://api.notion.com/v1/blocks/{$blockId}/children";
         $request = $this->requestFactory->createRequest("PATCH", $url)
-            ->changeHeader("Authorization", "Bearer {$this->token}")
-            ->changeHeader("Notion-Version", $this->version)
-            ->changeHeader("Content-Type", "application/json");
+            ->withHeader("Authorization", "Bearer {$this->token}")
+            ->withHeader("Notion-Version", $this->version)
+            ->withHeader("Content-Type", "application/json");
 
         $request->getBody()->write($data);
 
@@ -145,9 +145,9 @@ class Client
 
         $url = "https://api.notion.com/v1/blocks/{$blockId}";
         $request = $this->requestFactory->createRequest("PATCH", $url)
-            ->changeHeader("Authorization", "Bearer {$this->token}")
-            ->changeHeader("Notion-Version", $this->version)
-            ->changeHeader("Content-Type", "application/json");
+            ->withHeader("Authorization", "Bearer {$this->token}")
+            ->withHeader("Notion-Version", $this->version)
+            ->withHeader("Content-Type", "application/json");
 
         $request->getBody()->write($json);
 
@@ -172,8 +172,8 @@ class Client
     {
         $url = "https://api.notion.com/v1/blocks/{$blockId}";
         $request = $this->requestFactory->createRequest("DELETE", $url)
-            ->changeHeader("Authorization", "Bearer {$this->token}")
-            ->changeHeader("Notion-Version", $this->version);
+            ->withHeader("Authorization", "Bearer {$this->token}")
+            ->withHeader("Notion-Version", $this->version);
 
         $response = $this->psrClient->sendRequest($request);
 
