@@ -10,8 +10,8 @@
   "author": "Mario Simão",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^18.0.5",
-    "vitepress": "^1.0.0-alpha.4",
-    "vue": "^3.2.37"
+    "@types/node": "18.0.5",
+    "vitepress": "1.0.0-alpha.16",
+    "vue": "3.2.37"
   }
 }
