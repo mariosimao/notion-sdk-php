@@ -32,8 +32,8 @@ class ResultTest extends TestCase
 
         $result = Result::fromArray($apiResponse);
 
-        $this->assertCount(1, $result->pages());
-        $this->assertTrue($result->hasMore());
-        $this->assertSame("889431ed-4f50-460b-a926-36f6cf0f9669", $result->nextCursor());
+        $this->assertCount(1, $result->pages);
+        $this->assertTrue($result->hasMore);
+        $this->assertSame("889431ed-4f50-460b-a926-36f6cf0f9669", $result->nextCursor);
     }
 }

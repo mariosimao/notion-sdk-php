@@ -18,42 +18,28 @@ namespace Notion\Databases\Properties;
  */
 class Select implements PropertyInterface
 {
-    private const TYPE = Property::TYPE_SELECT;
+    /** @param SelectOption[] $options */
+    private function __construct(
+        private readonly PropertyMetadata $metadata,
+        public readonly array $options
+    ) {}
 
-    private Property $property;
-    /** @var list<SelectOption> */
-    private array $options;
-
-    /** @param list<SelectOption> $options */
-    private function __construct(Property $property, array $options)
-    {
-        $this->property = $property;
-        $this->options = $options;
-    }
-
-    /** @param list<SelectOption> $options */
+    /** @param SelectOption[] $options */
     public static function create(string $propertyName = "Select", array $options = []): self
     {
-        $property = Property::create("", $propertyName, self::TYPE);
+        $property = PropertyMetadata::create("", $propertyName, PropertyType::Select);
 
         return new self($property, $options);
     }
 
-    public function property(): Property
+    public function metadata(): PropertyMetadata
     {
-        return $this->property;
+        return $this->metadata;
     }
 
-    /** @return list<SelectOption> */
-    public function options(): array
+    public function changeOptions(SelectOption ...$options): self
     {
-        return $this->options;
-    }
-
-    /** @param list<SelectOption> $options */
-    public function withOptions(array $options): self
-    {
-        return new self($this->property, $options);
+        return new self($this->metadata, $options);
     }
 
     public function addOption(SelectOption $option): self
@@ -61,18 +47,18 @@ class Select implements PropertyInterface
         $options = $this->options;
         $options[] = $option;
 
-        return new self($this->property, $options);
+        return new self($this->metadata, $options);
     }
 
     public static function fromArray(array $array): self
     {
         /** @psalm-var SelectJson $array */
-        $property = Property::fromArray($array);
+        $property = PropertyMetadata::fromArray($array);
         $options = array_map(
             function (array $option): SelectOption {
                 return SelectOption::fromArray($option);
             },
-            $array[self::TYPE]["options"],
+            $array["select"]["options"],
         );
 
         return new self($property, $options);
@@ -80,8 +66,8 @@ class Select implements PropertyInterface
 
     public function toArray(): array
     {
-        $array = $this->property->toArray();
-        $array[self::TYPE] = [
+        $array = $this->metadata->toArray();
+        $array["select"] = [
             "options" => array_map(fn(SelectOption $o) => $o->toArray(), $this->options),
         ];
 

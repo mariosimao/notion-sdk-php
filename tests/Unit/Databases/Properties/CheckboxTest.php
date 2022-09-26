@@ -2,8 +2,9 @@
 
 namespace Notion\Test\Unit\Databases\Properties;
 
-use Notion\Databases\Properties\Factory;
+use Notion\Databases\Properties\PropertyFactory;
 use Notion\Databases\Properties\Checkbox;
+use Notion\Databases\Properties\PropertyType;
 use PHPUnit\Framework\TestCase;
 
 class CheckboxTest extends TestCase
@@ -12,8 +13,8 @@ class CheckboxTest extends TestCase
     {
         $checkbox = Checkbox::create("Dummy prop name");
 
-        $this->assertEquals("Dummy prop name", $checkbox->property()->name());
-        $this->assertTrue($checkbox->property()->isCheckbox());
+        $this->assertEquals("Dummy prop name", $checkbox->metadata()->name);
+        $this->assertEquals(PropertyType::Checkbox, $checkbox->metadata()->type);
     }
 
     public function test_array_conversion(): void
@@ -25,7 +26,7 @@ class CheckboxTest extends TestCase
             "checkbox" => new \stdClass(),
         ];
         $checkbox = Checkbox::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $checkbox->toArray());
         $this->assertEquals($array, $fromFactory->toArray());

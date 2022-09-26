@@ -2,8 +2,9 @@
 
 namespace Notion\Test\Unit\Databases\Properties;
 
-use Notion\Databases\Properties\Factory;
+use Notion\Databases\Properties\PropertyFactory;
 use Notion\Databases\Properties\Email;
+use Notion\Databases\Properties\PropertyType;
 use PHPUnit\Framework\TestCase;
 
 class EmailTest extends TestCase
@@ -12,8 +13,8 @@ class EmailTest extends TestCase
     {
         $email = Email::create("Dummy prop name");
 
-        $this->assertEquals("Dummy prop name", $email->property()->name());
-        $this->assertTrue($email->property()->isEmail());
+        $this->assertEquals("Dummy prop name", $email->metadata()->name);
+        $this->assertEquals(PropertyType::Email, $email->metadata()->type);
     }
 
     public function test_array_conversion(): void
@@ -25,7 +26,7 @@ class EmailTest extends TestCase
             "email" => new \stdClass(),
         ];
         $email = Email::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $email->toArray());
         $this->assertEquals($array, $fromFactory->toArray());

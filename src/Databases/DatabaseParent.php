@@ -14,17 +14,13 @@ class DatabaseParent
 {
     private const ALLOWED_TYPES = [ "page_id", "workspace" ];
 
-    private string $type;
-    private string|null $id;
-
-    private function __construct(string $type, string|null $id)
-    {
+    private function __construct(
+        public readonly string $type,
+        public readonly string|null $id,
+    ) {
         if (!in_array($type, self::ALLOWED_TYPES)) {
             throw new \Exception("Invalid parent type: '{$type}'.");
         }
-
-        $this->type = $type;
-        $this->id = $id;
     }
 
     public static function page(string $pageId): self
@@ -63,16 +59,6 @@ class DatabaseParent
         }
 
         return $array;
-    }
-
-    public function id(): string|null
-    {
-        return $this->id;
-    }
-
-    public function type(): string
-    {
-        return $this->type;
     }
 
     public function isPage(): bool

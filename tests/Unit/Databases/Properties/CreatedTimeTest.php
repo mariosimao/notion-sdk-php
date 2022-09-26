@@ -2,8 +2,9 @@
 
 namespace Notion\Test\Unit\Databases\Properties;
 
-use Notion\Databases\Properties\Factory;
+use Notion\Databases\Properties\PropertyFactory;
 use Notion\Databases\Properties\CreatedTime;
+use Notion\Databases\Properties\PropertyType;
 use PHPUnit\Framework\TestCase;
 
 class CreatedTimeTest extends TestCase
@@ -12,8 +13,8 @@ class CreatedTimeTest extends TestCase
     {
         $createdTime = CreatedTime::create("Dummy prop name");
 
-        $this->assertEquals("Dummy prop name", $createdTime->property()->name());
-        $this->assertTrue($createdTime->property()->isCreatedTime());
+        $this->assertEquals("Dummy prop name", $createdTime->metadata()->name);
+        $this->assertEquals(PropertyType::CreatedTime, $createdTime->metadata()->type);
     }
 
     public function test_array_conversion(): void
@@ -25,7 +26,7 @@ class CreatedTimeTest extends TestCase
             "created_time" => new \stdClass(),
         ];
         $createdTime = CreatedTime::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $createdTime->toArray());
         $this->assertEquals($array, $fromFactory->toArray());

@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Databases\Query;
 
 use Notion\Databases\Query\DateFilter;
+use Notion\Databases\Query\Operator;
 use PHPUnit\Framework\TestCase;
 
 class DateFilterTest extends TestCase
@@ -13,7 +14,7 @@ class DateFilterTest extends TestCase
 
         $this->assertSame("property", $filter->propertyType());
         $this->assertSame("Release date", $filter->propertyName());
-        $this->assertSame("is_not_empty", $filter->operator());
+        $this->assertSame(Operator::IsNotEmpty, $filter->operator());
         $this->assertTrue($filter->value());
     }
 
@@ -23,7 +24,7 @@ class DateFilterTest extends TestCase
 
         $this->assertSame("timestamp", $filter->propertyType());
         $this->assertSame("created_time", $filter->propertyName());
-        $this->assertSame("is_not_empty", $filter->operator());
+        $this->assertSame(Operator::IsNotEmpty, $filter->operator());
         $this->assertTrue($filter->value());
     }
 
@@ -33,7 +34,7 @@ class DateFilterTest extends TestCase
 
         $this->assertSame("timestamp", $filter->propertyType());
         $this->assertSame("last_edited_time", $filter->propertyName());
-        $this->assertSame("is_not_empty", $filter->operator());
+        $this->assertSame(Operator::IsNotEmpty, $filter->operator());
         $this->assertTrue($filter->value());
     }
 

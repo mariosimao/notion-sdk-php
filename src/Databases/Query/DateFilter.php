@@ -8,41 +8,34 @@ class DateFilter implements Filter, Condition
     private const TYPE_PROPERTY = "property";
     private const TYPE_TIMESTAMP = "timestamp";
 
-    private const OPERATOR_EQUALS = "equals";
-    private const OPERATOR_BEFORE = "before";
-    private const OPERATOR_AFTER = "after";
-    private const OPERATOR_ON_OR_BEFORE = "on_or_before";
-    private const OPERATOR_IS_EMPTY = "is_empty";
-    private const OPERATOR_IS_NOT_EMPTY = "is_not_empty";
-    private const OPERATOR_ON_OR_AFTER = "on_or_after";
-    private const OPERATOR_PAST_WEEK = "past_week";
-    private const OPERATOR_PAST_MONTH = "past_month";
-    private const OPERATOR_PAST_YEAR = "past_year";
-    private const OPERATOR_NEXT_WEEK = "next_week";
-    private const OPERATOR_NEXT_MONTH = "next_month";
-    private const OPERATOR_NEXT_YEAR = "next_year";
-
-    /** @var self::TYPE_* */
-    private string $propertyType;
-    private string $propertyName;
-    /** @var self::OPERATOR_* */
-    private string $operator;
-    private string|bool|array $value;
+    private static array $validOperators = [
+        Operator::Equals,
+        Operator::Before,
+        Operator::After,
+        Operator::OnOrBefore,
+        Operator::IsEmpty,
+        Operator::IsNotEmpty,
+        Operator::OnOrAfter,
+        Operator::PastWeek,
+        Operator::PastMonth,
+        Operator::PastYear,
+        Operator::NextWeek,
+        Operator::NextMonth,
+        Operator::NextYear,
+    ];
 
     /**
-     * @param self::TYPE_* $propertyType
-     * @param self::OPERATOR_* $operator
+     * @psalm-param self::TYPE_* $propertyType
      */
     private function __construct(
-        string $propertyType,
-        string $propertyName,
-        string $operator,
-        string|bool|array $value,
+        private readonly string $propertyType,
+        private readonly string $propertyName,
+        private readonly Operator $operator,
+        private readonly string|bool|array $value,
     ) {
-        $this->propertyType = $propertyType;
-        $this->propertyName = $propertyName;
-        $this->operator = $operator;
-        $this->value = $value;
+        if (!in_array($operator, self::$validOperators)) {
+            throw new \Exception("Invalid operator");
+        }
     }
 
     public static function property(string $propertyName): self
@@ -50,7 +43,7 @@ class DateFilter implements Filter, Condition
         return new self(
             self::TYPE_PROPERTY,
             $propertyName,
-            self::OPERATOR_IS_NOT_EMPTY,
+            Operator::IsNotEmpty,
             true
         );
     }
@@ -60,7 +53,7 @@ class DateFilter implements Filter, Condition
         return new self(
             self::TYPE_TIMESTAMP,
             "created_time",
-            self::OPERATOR_IS_NOT_EMPTY,
+            Operator::IsNotEmpty,
             true
         );
     }
@@ -70,7 +63,7 @@ class DateFilter implements Filter, Condition
         return new self(
             self::TYPE_TIMESTAMP,
             "last_edited_time",
-            self::OPERATOR_IS_NOT_EMPTY,
+            Operator::IsNotEmpty,
             true
         );
     }
@@ -85,8 +78,7 @@ class DateFilter implements Filter, Condition
         return $this->propertyName;
     }
 
-    /** @return static::OPERATOR_* */
-    public function operator(): string
+    public function operator(): Operator
     {
         return $this->operator;
     }
@@ -101,73 +93,73 @@ class DateFilter implements Filter, Condition
         return [
             $this->propertyType() => $this->propertyName,
             "date" => [
-                $this->operator => $this->value
+                $this->operator->value => $this->value
             ],
         ];
     }
 
     public function equals(string $value): self
     {
-        return new self($this->propertyType, $this->propertyName, self::OPERATOR_EQUALS, $value);
+        return new self($this->propertyType, $this->propertyName, Operator::Equals, $value);
     }
 
     public function before(string $value): self
     {
-        return new self($this->propertyType, $this->propertyName, self::OPERATOR_BEFORE, $value);
+        return new self($this->propertyType, $this->propertyName, Operator::Before, $value);
     }
 
     public function after(string $value): self
     {
-        return new self($this->propertyType, $this->propertyName, self::OPERATOR_AFTER, $value);
+        return new self($this->propertyType, $this->propertyName, Operator::After, $value);
     }
 
     public function onOrBefore(string $value): self
     {
-        return new self($this->propertyType, $this->propertyName, self::OPERATOR_ON_OR_BEFORE, $value);
+        return new self($this->propertyType, $this->propertyName, Operator::OnOrBefore, $value);
     }
 
     public function isEmpty(): self
     {
-        return new self($this->propertyType, $this->propertyName, self::OPERATOR_IS_EMPTY, true);
+        return new self($this->propertyType, $this->propertyName, Operator::IsEmpty, true);
     }
 
     public function isNotEmpty(): self
     {
-        return new self($this->propertyType, $this->propertyName, self::OPERATOR_IS_NOT_EMPTY, true);
+        return new self($this->propertyType, $this->propertyName, Operator::IsNotEmpty, true);
     }
 
     public function onOrAfter(string $value): self
     {
-        return new self($this->propertyType, $this->propertyName, self::OPERATOR_ON_OR_AFTER, $value);
+        return new self($this->propertyType, $this->propertyName, Operator::OnOrAfter, $value);
     }
 
     public function pastWeek(): self
     {
-        return new self($this->propertyType, $this->propertyName, self::OPERATOR_PAST_WEEK, []);
+        return new self($this->propertyType, $this->propertyName, Operator::PastWeek, []);
     }
 
     public function pastMonth(): self
     {
-        return new self($this->propertyType, $this->propertyName, self::OPERATOR_PAST_MONTH, []);
+        return new self($this->propertyType, $this->propertyName, Operator::PastMonth, []);
     }
 
     public function pastYear(): self
     {
-        return new self($this->propertyType, $this->propertyName, self::OPERATOR_PAST_YEAR, []);
+        return new self($this->propertyType, $this->propertyName, Operator::PastYear, []);
     }
 
     public function nextWeek(): self
     {
-        return new self($this->propertyType, $this->propertyName, self::OPERATOR_NEXT_WEEK, []);
+        return new self($this->propertyType, $this->propertyName, Operator::NextWeek, []);
     }
 
     public function nextMonth(): self
     {
-        return new self($this->propertyType, $this->propertyName, self::OPERATOR_NEXT_MONTH, []);
+        return new self($this->propertyType, $this->propertyName, Operator::NextMonth, []);
     }
 
     public function nextYear(): self
     {
-        return new self($this->propertyType, $this->propertyName, self::OPERATOR_NEXT_YEAR, []);
+        return new self($this->propertyType, $this->propertyName, Operator::NextYear, []);
     }
 }

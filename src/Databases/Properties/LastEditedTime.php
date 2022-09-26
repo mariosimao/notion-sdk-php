@@ -14,39 +14,34 @@ namespace Notion\Databases\Properties;
  */
 class LastEditedTime implements PropertyInterface
 {
-    private const TYPE = Property::TYPE_LAST_EDITED_TIME;
-
-    private Property $property;
-
-    private function __construct(Property $property)
-    {
-        $this->property = $property;
-    }
+    private function __construct(
+        private readonly PropertyMetadata $metadata,
+    ) {}
 
     public static function create(string $propertyName = "LastEditedTime"): self
     {
-        $property = Property::create("", $propertyName, self::TYPE);
+        $metadata = PropertyMetadata::create("", $propertyName, PropertyType::LastEditedTime);
 
-        return new self($property);
+        return new self($metadata);
     }
 
-    public function property(): Property
+    public function metadata(): PropertyMetadata
     {
-        return $this->property;
+        return $this->metadata;
     }
 
     public static function fromArray(array $array): self
     {
         /** @psalm-var LastEditedTimeJson $array */
-        $property = Property::fromArray($array);
+        $metadata = PropertyMetadata::fromArray($array);
 
-        return new self($property);
+        return new self($metadata);
     }
 
     public function toArray(): array
     {
-        $array = $this->property->toArray();
-        $array[self::TYPE] = new \stdClass();
+        $array = $this->metadata->toArray();
+        $array["last_edited_time"] = new \stdClass();
 
         return $array;
     }

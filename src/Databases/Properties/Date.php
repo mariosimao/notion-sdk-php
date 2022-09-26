@@ -14,39 +14,34 @@ namespace Notion\Databases\Properties;
  */
 class Date implements PropertyInterface
 {
-    private const TYPE = Property::TYPE_DATE;
-
-    private Property $property;
-
-    private function __construct(Property $property)
-    {
-        $this->property = $property;
-    }
+    private function __construct(
+        private readonly PropertyMetadata $metadata,
+    ) {}
 
     public static function create(string $propertyName = "Date"): self
     {
-        $property = Property::create("", $propertyName, self::TYPE);
+        $property = PropertyMetadata::create("", $propertyName, PropertyType::Date);
 
         return new self($property);
     }
 
-    public function property(): Property
+    public function metadata(): PropertyMetadata
     {
-        return $this->property;
+        return $this->metadata;
     }
 
     public static function fromArray(array $array): self
     {
         /** @psalm-var DateJson $array */
-        $property = Property::fromArray($array);
+        $property = PropertyMetadata::fromArray($array);
 
         return new self($property);
     }
 
     public function toArray(): array
     {
-        $array = $this->property->toArray();
-        $array[self::TYPE] = new \stdClass();
+        $array = $this->metadata->toArray();
+        $array["date"] = new \stdClass();
 
         return $array;
     }

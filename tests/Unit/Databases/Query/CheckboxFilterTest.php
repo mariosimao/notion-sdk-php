@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Databases\Query;
 
 use Notion\Databases\Query\CheckboxFilter;
+use Notion\Databases\Query\Operator;
 use PHPUnit\Framework\TestCase;
 
 class CheckboxFilterTest extends TestCase
@@ -13,7 +14,7 @@ class CheckboxFilterTest extends TestCase
 
         $this->assertSame("property", $filter->propertyType());
         $this->assertSame("Done", $filter->propertyName());
-        $this->assertSame("equals", $filter->operator());
+        $this->assertSame(Operator::Equals, $filter->operator());
         $this->assertTrue($filter->value());
     }
 

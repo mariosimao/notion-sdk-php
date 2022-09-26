@@ -2,7 +2,8 @@
 
 namespace Notion\Test\Unit\Databases\Properties;
 
-use Notion\Databases\Properties\Factory;
+use Notion\Databases\Properties\PropertyFactory;
+use Notion\Databases\Properties\PropertyType;
 use Notion\Databases\Properties\Url;
 use PHPUnit\Framework\TestCase;
 
@@ -12,8 +13,8 @@ class UrlTest extends TestCase
     {
         $url = Url::create("Dummy prop name");
 
-        $this->assertEquals("Dummy prop name", $url->property()->name());
-        $this->assertTrue($url->property()->isUrl());
+        $this->assertEquals("Dummy prop name", $url->metadata()->name);
+        $this->assertEquals(PropertyType::Url, $url->metadata()->type);
     }
 
     public function test_array_conversion(): void
@@ -25,7 +26,7 @@ class UrlTest extends TestCase
             "url" => new \stdClass(),
         ];
         $url = Url::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $url->toArray());
         $this->assertEquals($array, $fromFactory->toArray());

@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Databases\Query;
 
 use Notion\Databases\Query\NumberFilter;
+use Notion\Databases\Query\Operator;
 use PHPUnit\Framework\TestCase;
 
 class NumberFilterTest extends TestCase
@@ -12,7 +13,7 @@ class NumberFilterTest extends TestCase
         $filter = NumberFilter::property("Downloads");
 
         $this->assertSame("Downloads", $filter->propertyName());
-        $this->assertSame("is_not_empty", $filter->operator());
+        $this->assertSame(Operator::IsNotEmpty, $filter->operator());
         $this->assertTrue($filter->value());
     }
 

@@ -5,6 +5,7 @@ namespace Notion\Test\Unit\Databases;
 use Notion\Common\Date;
 use Notion\Common\Emoji;
 use Notion\Common\File;
+use Notion\Common\Icon;
 use Notion\Common\RichText;
 use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
@@ -19,27 +20,29 @@ class DatabaseTest extends TestCase
         $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
         $database = Database::create($parent);
 
-        $this->assertEquals("1ce62b6f-b7f3-4201-afd0-08acb02e61c6", $database->parent()->id());
-        $this->assertCount(1, $database->properties()); // Title property
+        $this->assertEquals("1ce62b6f-b7f3-4201-afd0-08acb02e61c6", $database->parent->id);
+        $this->assertCount(1, $database->properties); // Title property
     }
 
     public function test_add_title(): void
     {
         $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
-        $database = Database::create($parent)->withAdvancedTitle([
+        $database = Database::create($parent)->changeAdvancedTitle(
             RichText::createText("Database title")
-        ]);
+        );
 
-        $this->assertEquals("Database title", $database->title()[0]->plainText());
+        $this->assertEquals("Database title", $database->title[0]->plainText);
     }
 
     public function test_add_icon(): void
     {
         $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
-        $database = Database::create($parent)->withIcon(Emoji::create("⭐"));
+        $database = Database::create($parent)->changeIcon(
+            Icon::fromEmoji(Emoji::create("⭐"))
+        );
 
-        if ($database->iconIsEmoji()) {
-            $this->assertEquals("⭐", $database->icon()->emoji());
+        if ($database->icon?->isEmoji()) {
+            $this->assertEquals("⭐", $database->icon->emoji?->emoji);
         }
     }
 
@@ -47,47 +50,47 @@ class DatabaseTest extends TestCase
     {
         $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
         $database = Database::create($parent)
-            ->withIcon(Emoji::create("⭐"))
-            ->withoutIcon();
+            ->changeIcon(Icon::fromEmoji(Emoji::create("⭐")))
+            ->removeIcon();
 
-        $this->assertNull($database->icon());
+        $this->assertNull($database->icon);
     }
 
     public function test_add_cover(): void
     {
         $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
         $coverImage = File::createExternal("https://my-site.com/image.png");
-        $database = Database::create($parent)->withCover($coverImage);
+        $database = Database::create($parent)->changeCover($coverImage);
 
-        $this->assertEquals($coverImage, $database->cover());
+        $this->assertEquals($coverImage, $database->cover);
     }
 
     public function test_remove_cover(): void
     {
         $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
         $coverImage = File::createExternal("https://my-site.com/image.png");
-        $database = Database::create($parent)->withCover($coverImage)->withoutCover();
+        $database = Database::create($parent)->changeCover($coverImage)->removeCover();
 
-        $this->assertNull($database->cover());
+        $this->assertNull($database->cover);
     }
 
     public function test_move_page(): void
     {
         $oldParent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
         $newParent = DatabaseParent::page("08da99e5-f11d-4d26-827d-112a3a9bd07d");
-        $database = Database::create($oldParent)->withParent($newParent);
+        $database = Database::create($oldParent)->changeParent($newParent);
 
-        $this->assertSame($newParent, $database->parent());
+        $this->assertSame($newParent, $database->parent);
     }
 
-    public function test_error_with_internal_cover_image(): void
+    public function test_error_change_internal_cover_image(): void
     {
         $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
         $cover = FIle::createInternal("https://notion.so/image.png");
 
         $this->expectException(\Exception::class);
         /** @psalm-suppress UnusedMethodCall */
-        Database::create($parent)->withCover($cover);
+        Database::create($parent)->changeCover($cover);
     }
 
     public function test_replace_properties(): void
@@ -96,9 +99,9 @@ class DatabaseTest extends TestCase
         $properties = [
             "Dummy prop name" => Title::create("Dummy prop name")
         ];
-        $database = Database::create($parent)->withProperties($properties);
+        $database = Database::create($parent)->changeProperties($properties);
 
-        $this->assertCount(1, $database->properties());
+        $this->assertCount(1, $database->properties);
     }
 
     public function test_add_property(): void
@@ -108,7 +111,7 @@ class DatabaseTest extends TestCase
             CreatedBy::create("Dummy prop name")
         );
 
-        $this->assertCount(2, $database->properties()); // Title + CreatedBy
+        $this->assertCount(2, $database->properties); // Title + CreatedBy
     }
 
     public function test_array_conversion(): void
@@ -154,19 +157,19 @@ class DatabaseTest extends TestCase
         unset($outArray["parent"]["type"]);
 
         $this->assertEquals($outArray, $database->toArray());
-        $this->assertSame("a7e80c0b-a766-43c3-a9e9-21ce94595e0e", $database->id());
-        $this->assertSame("https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e", $database->url());
+        $this->assertSame("a7e80c0b-a766-43c3-a9e9-21ce94595e0e", $database->id);
+        $this->assertSame("https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e", $database->url);
         $this->assertEquals(
             "2020-12-08T12:00:00.000000Z",
-            $database->createdTime()->format(Date::FORMAT),
+            $database->createdTime->format(Date::FORMAT),
         );
         $this->assertEquals(
             "2020-12-08T12:00:00.000000Z",
-            $database->lastEditedTime()->format(Date::FORMAT),
+            $database->lastEditedTime->format(Date::FORMAT),
         );
     }
 
-    public function test_from_array_with_emoji_icon(): void
+    public function test_from_array_change_emoji_icon(): void
     {
         $array = [
             "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
@@ -207,12 +210,12 @@ class DatabaseTest extends TestCase
         ];
         $database = Database::fromArray($array);
 
-        if ($database->iconIsEmoji()) {
-            $this->assertEquals("⭐", $database->icon()->emoji());
+        if ($database->icon?->isEmoji()) {
+            $this->assertEquals("⭐", $database->icon->emoji?->emoji);
         }
     }
 
-    public function test_from_array_with_file_icon(): void
+    public function test_from_array_change_file_icon(): void
     {
         $array = [
             "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
@@ -253,8 +256,8 @@ class DatabaseTest extends TestCase
         ];
         $database = Database::fromArray($array);
 
-        if ($database->iconIsFile()) {
-            $this->assertEquals("https://my-site.com/image.png", $database->icon()->url());
+        if ($database->icon?->isFile()) {
+            $this->assertEquals("https://my-site.com/image.png", $database->icon->file?->url);
         }
     }
 }

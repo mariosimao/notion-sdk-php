@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Databases\Query;
 
 use Notion\Databases\Query\MultiSelectFilter;
+use Notion\Databases\Query\Operator;
 use PHPUnit\Framework\TestCase;
 
 class MultiSelectFilterTest extends TestCase
@@ -12,7 +13,7 @@ class MultiSelectFilterTest extends TestCase
         $filter = MultiSelectFilter::property("Categories");
 
         $this->assertSame("Categories", $filter->propertyName());
-        $this->assertSame("is_not_empty", $filter->operator());
+        $this->assertSame(Operator::IsNotEmpty, $filter->operator());
         $this->assertTrue($filter->value());
     }
 
@@ -22,7 +23,7 @@ class MultiSelectFilterTest extends TestCase
             ->contains("Comedy");
 
         $this->assertSame("Categories", $filter->propertyName());
-        $this->assertSame("contains", $filter->operator());
+        $this->assertSame(Operator::Contains, $filter->operator());
         $this->assertSame("Comedy", $filter->value());
 
         $expected = [

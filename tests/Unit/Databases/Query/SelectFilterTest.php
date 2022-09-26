@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Unit\Databases\Query;
 
+use Notion\Databases\Query\Operator;
 use Notion\Databases\Query\SelectFilter;
 use PHPUnit\Framework\TestCase;
 
@@ -12,7 +13,7 @@ class SelectFilterTest extends TestCase
         $filter = SelectFilter::property("Category");
 
         $this->assertSame("Category", $filter->propertyName());
-        $this->assertSame("is_not_empty", $filter->operator());
+        $this->assertSame(Operator::IsNotEmpty, $filter->operator());
         $this->assertTrue($filter->value());
     }
 

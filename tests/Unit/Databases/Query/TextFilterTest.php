@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Unit\Databases\Query;
 
+use Notion\Databases\Query\Operator;
 use Notion\Databases\Query\TextFilter;
 use PHPUnit\Framework\TestCase;
 
@@ -12,7 +13,7 @@ class TextFilterTest extends TestCase
         $filter = TextFilter::property("Title");
 
         $this->assertSame("Title", $filter->propertyName());
-        $this->assertSame("contains", $filter->operator());
+        $this->assertSame(Operator::Contains, $filter->operator());
         $this->assertSame("", $filter->value());
     }
 
@@ -21,7 +22,7 @@ class TextFilterTest extends TestCase
         $filter = TextFilter::property("Title")->equals("Harry Potter");
 
         $this->assertSame("Title", $filter->propertyName());
-        $this->assertSame("equals", $filter->operator());
+        $this->assertSame(Operator::Equals, $filter->operator());
         $this->assertSame("Harry Potter", $filter->value());
 
         $expected = [

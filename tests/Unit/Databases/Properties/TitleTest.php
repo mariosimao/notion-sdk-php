@@ -2,7 +2,8 @@
 
 namespace Notion\Test\Unit\Databases\Properties;
 
-use Notion\Databases\Properties\Factory;
+use Notion\Databases\Properties\PropertyFactory;
+use Notion\Databases\Properties\PropertyType;
 use Notion\Databases\Properties\Title;
 use PHPUnit\Framework\TestCase;
 
@@ -12,10 +13,9 @@ class TitleTest extends TestCase
     {
         $title = Title::create("Dummy prop name");
 
-        $this->assertEquals("Dummy prop name", $title->property()->name());
-        $this->assertTrue($title->property()->isTitle());
-        $this->assertEmpty($title->property()->id());
-        $this->assertEquals("title", $title->property()->type());
+        $this->assertEquals("Dummy prop name", $title->metadata()->name);
+        $this->assertEmpty($title->metadata()->id);
+        $this->assertEquals(PropertyType::Title, $title->metadata()->type);
     }
 
     public function test_array_conversion(): void
@@ -27,7 +27,7 @@ class TitleTest extends TestCase
             "title" => new \stdClass(),
         ];
         $title = Title::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $title->toArray());
         $this->assertEquals($array, $fromFactory->toArray());
