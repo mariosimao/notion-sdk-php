@@ -17,7 +17,8 @@ class Query
         public readonly array $sorts,
         public readonly string|null $startCursor,
         public readonly int $pageSize,
-    ) {}
+    ) {
+    }
 
     public static function create(): self
     {

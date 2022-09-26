@@ -12,7 +12,8 @@ class PropertyMetadata
     private function __construct(
         public readonly string $id,
         public readonly PropertyType $type,
-    ) {}
+    ) {
+    }
 
     /** @psalm-mutation-free */
     public static function create(string $id, PropertyType $type): self

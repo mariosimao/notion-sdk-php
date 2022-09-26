@@ -21,7 +21,8 @@ class People implements PropertyInterface
     private function __construct(
         private readonly PropertyMetadata $metadata,
         public readonly array $users
-    ) {}
+    ) {
+    }
 
     public static function create(User ...$users): self
     {

@@ -12,7 +12,8 @@ class Text
     private function __construct(
         public readonly string $content,
         public readonly string|null $url,
-    ) {}
+    ) {
+    }
 
     /** @psalm-mutation-free */
     public static function create(string $content): self

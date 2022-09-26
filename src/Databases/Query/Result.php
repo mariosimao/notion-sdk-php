@@ -23,7 +23,8 @@ class Result
         public readonly array $pages,
         public readonly bool $hasMore,
         public readonly string|null $nextCursor
-    ) {}
+    ) {
+    }
 
     /** @param QueryResultJson $array */
     public static function fromArray(array $array): self

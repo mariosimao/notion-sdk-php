@@ -16,7 +16,8 @@ class Url implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,
-    ) {}
+    ) {
+    }
 
     public static function create(string $propertyName = "Url"): self
     {

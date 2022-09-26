@@ -19,7 +19,8 @@ class File
         public readonly FileType $type,
         public readonly string $url,
         public readonly DateTimeImmutable|null $expiryTime,
-    ) {}
+    ) {
+    }
 
     public static function createExternal(string $url): self
     {

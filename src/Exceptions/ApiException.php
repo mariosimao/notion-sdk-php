@@ -9,7 +9,8 @@ final class ApiException extends NotionException
 {
     private string $notionCode;
 
-    private function __construct(string $message, string $notionCode) {
+    private function __construct(string $message, string $notionCode)
+    {
         $this->notionCode = $notionCode;
 
         parent::__construct($message);

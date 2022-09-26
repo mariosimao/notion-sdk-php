@@ -18,7 +18,8 @@ class Select implements PropertyInterface
     private function __construct(
         private readonly PropertyMetadata $metadata,
         public readonly SelectOption $option
-    ) {}
+    ) {
+    }
 
     public static function fromId(string $id): self
     {

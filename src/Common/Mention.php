@@ -26,7 +26,8 @@ class Mention
         public readonly string|null $databaseId,
         public readonly User|null $user,
         public readonly Date|null $date,
-    ) {}
+    ) {
+    }
 
     public static function createPage(string $pageId): self
     {

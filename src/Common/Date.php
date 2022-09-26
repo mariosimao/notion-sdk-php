@@ -16,7 +16,8 @@ class Date
     private function __construct(
         public readonly DateTimeImmutable $start,
         public readonly DateTimeImmutable|null $end,
-    ) {}
+    ) {
+    }
 
     public static function create(DateTimeImmutable $date): self
     {

@@ -32,7 +32,8 @@ class Formula implements PropertyInterface
         public readonly int|float|null $number,
         public readonly bool|null $boolean,
         public readonly Date|null $date,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $array): self
     {

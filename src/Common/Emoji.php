@@ -11,7 +11,8 @@ class Emoji
 {
     private function __construct(
         public readonly string $emoji,
-    ) {}
+    ) {
+    }
 
     public static function create(string $emoji): self
     {

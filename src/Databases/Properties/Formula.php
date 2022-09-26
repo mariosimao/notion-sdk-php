@@ -17,7 +17,8 @@ class Formula implements PropertyInterface
     private function __construct(
         private readonly PropertyMetadata $metadata,
         public readonly string $expression
-    ) {}
+    ) {
+    }
 
     public static function create(string $propertyName = "Formula", string $expression = ""): self
     {

@@ -21,7 +21,8 @@ class RichTextProperty implements PropertyInterface
     private function __construct(
         private readonly PropertyMetadata $metadata,
         public readonly array $text
-    ) {}
+    ) {
+    }
 
     public static function create(RichText ...$texts): self
     {

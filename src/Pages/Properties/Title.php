@@ -21,7 +21,8 @@ class Title implements PropertyInterface
     private function __construct(
         private readonly PropertyMetadata $metadata,
         public readonly array $title
-    ) {}
+    ) {
+    }
 
     /** @psalm-mutation-free */
     public static function create(RichText ...$title): self
