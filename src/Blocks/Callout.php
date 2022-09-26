@@ -2,10 +2,9 @@
 
 namespace Notion\Blocks;
 
-use Exception;
-use Notion\Exceptions\BlockException;
 use Notion\Common\Emoji;
 use Notion\Common\File;
+use Notion\Common\Icon;
 use Notion\Common\RichText;
 
 /**
@@ -33,7 +32,7 @@ class Callout implements BlockInterface
     private function __construct(
         private readonly BlockMetadata $metadata,
         public readonly array $text,
-        public readonly Emoji|File $icon,
+        public readonly Icon $icon,
         public readonly array $children,
     ) {
         $metadata->checkType(BlockType::Callout);
@@ -42,7 +41,7 @@ class Callout implements BlockInterface
     public static function create(): self
     {
         $metadata = BlockMetadata::create(BlockType::Callout);
-        $icon = Emoji::create("⭐");
+        $icon = Icon::fromEmoji(Emoji::create("⭐"));
 
         return new self($metadata, [], $icon, []);
     }
@@ -51,7 +50,7 @@ class Callout implements BlockInterface
     {
         $metadata = BlockMetadata::create(BlockType::Callout);
         $text = [ RichText::createText($content) ];
-        $icon = Emoji::create($emoji);
+        $icon = Icon::fromEmoji(Emoji::create($emoji));
 
         return new self($metadata, $text, $icon, []);
     }
@@ -69,10 +68,12 @@ class Callout implements BlockInterface
         $iconArray = $callout["icon"];
         if ($iconArray["type"] === "emoji") {
             /** @psalm-var EmojiJson $iconArray */
-            $icon = Emoji::fromArray($iconArray);
+            $emoji = Emoji::fromArray($iconArray);
+            $icon = Icon::fromEmoji($emoji);
         } else {
             /** @psalm-var FileJson $iconArray */
-            $icon = File::fromArray($iconArray);
+            $file = File::fromArray($iconArray);
+            $icon = Icon::fromFile($file);
         }
 
         $children = array_map(fn($b) => BlockFactory::fromArray($b), $callout["children"] ?? []);
@@ -107,35 +108,12 @@ class Callout implements BlockInterface
 
     public function toString(): string
     {
-        $string = "";
-        foreach ($this->text as $richText) {
-            $string = $string . $richText->plainText;
-        }
-
-        return $string;
+        return RichText::multipleToString(...$this->text);
     }
 
     public function metadata(): BlockMetadata
     {
         return $this->metadata;
-    }
-
-    /**
-     * @psalm-assert-if-true Emoji $this->icon
-     * @psalm-assert-if-true Emoji $this->icon()
-     */
-    public function iconIsEmoji(): bool
-    {
-        return $this->icon::class === Emoji::class;
-    }
-
-    /**
-     * @psalm-assert-if-true File $this->icon
-     * @psalm-assert-if-true File $this->icon()
-     */
-    public function iconIsFile(): bool
-    {
-        return $this->icon::class === File::class;
     }
 
     public function changeText(RichText ...$text): self
@@ -151,8 +129,16 @@ class Callout implements BlockInterface
         return new self($this->metadata, $texts, $this->icon, $this->children);
     }
 
-    public function changeIcon(Emoji|File $icon): self
+    public function changeIcon(Emoji|File|Icon $icon): self
     {
+        if ($icon instanceof Emoji) {
+            $icon = Icon::fromEmoji($icon);
+        }
+
+        if ($icon instanceof File) {
+            $icon = Icon::fromFile($icon);
+        }
+
         return new self($this->metadata, $this->text, $icon, $this->children);
     }
 
