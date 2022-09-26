@@ -51,7 +51,7 @@
         "test:psalm": "psalm",
         "test:unit": "phpunit --testsuite Unit",
         "test:integration": "phpunit --testsuite Integration",
-        "test:coverage-html": "phpunit --coverage-html dist/phpunit/html"
+        "test:coverage": "phpunit --coverage-html dist/phpunit/html && echo \"Open the result on your browser: $PWD/dist/phpunit/html/index.html\""
     },
     "config": {
         "allow-plugins": {
