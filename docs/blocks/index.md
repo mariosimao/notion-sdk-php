@@ -22,7 +22,7 @@ $p->metadta->hasChildren;                     // false
 - [Bookmark](./Bookmark)
 - [Breadcrumb](./Breadcrumb)
 - [BulletedListItem](./BulletedListItem)
-- Callout
+- [Callout](./Callout)
 - ChildDatabase
 - ChildPage
 - Client
