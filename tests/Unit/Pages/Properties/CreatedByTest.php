@@ -3,7 +3,8 @@
 namespace Notion\Test\Unit\Pages\Properties;
 
 use Notion\Pages\Properties\CreatedBy;
-use Notion\Pages\Properties\Factory;
+use Notion\Pages\Properties\PropertyFactory;
+use Notion\Pages\Properties\PropertyType;
 use PHPUnit\Framework\TestCase;
 
 class CreatedByTest extends TestCase
@@ -23,11 +24,11 @@ class CreatedByTest extends TestCase
         ];
 
         $createdBy = CreatedBy::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $createdBy->toArray());
         $this->assertEquals($array, $fromFactory->toArray());
-        $this->assertEquals("Mario", $createdBy->user()->name());
-        $this->assertTrue($createdBy->property()->isCreatedBy());
+        $this->assertEquals("Mario", $createdBy->user->name);
+        $this->assertEquals(PropertyType::CreatedBy, $createdBy->metadata()->type);
     }
 }

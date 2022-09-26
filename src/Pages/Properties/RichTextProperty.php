@@ -7,7 +7,7 @@ use Notion\Common\RichText;
 /**
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
  *
- * @psalm-type RichTextPropertyJson = array{
+ * @psalm-type RichTextPropertyMetadataJson = array{
  *      id: string,
  *      type: "rich_text",
  *      rich_text: list<RichTextJson>,
@@ -17,75 +17,67 @@ use Notion\Common\RichText;
  */
 class RichTextProperty implements PropertyInterface
 {
-    private const TYPE = Property::TYPE_RICH_TEXT;
+    /** @param RichText[] $text */
+    private function __construct(
+        private readonly PropertyMetadata $metadata,
+        public readonly array $text
+    ) {}
 
-    private Property $property;
-
-    /** @var list<RichText> */
-    private array $text;
-
-    /** @param list<RichText> $text */
-    private function __construct(Property $property, array $text)
+    public static function create(RichText ...$texts): self
     {
-        $this->property = $property;
-        $this->text = $text;
+        $metadata = PropertyMetadata::create("", PropertyType::RichText);
+
+        return new self($metadata, $texts);
     }
 
-    public static function create(string $text): self
+    public static function fromString(string ...$texts): self
     {
-        $property = Property::create("", self::TYPE);
-        $richText = [ RichText::createText($text) ];
+        $metadata = PropertyMetadata::create("", PropertyType::RichText);
+        $texts = array_map(fn (string $t) => RichText::createText($t), $texts);
 
-        return new self($property, $richText);
+        return new self($metadata, $texts);
     }
 
     public static function fromArray(array $array): self
     {
-        /** @psalm-var RichTextPropertyJson $array */
+        /** @psalm-var RichTextPropertyMetadataJson $array */
 
-        $property = Property::fromArray($array);
+        $metadata = PropertyMetadata::fromArray($array);
 
         $text = array_map(
             function (array $richTextArray): RichText {
                 return RichText::fromArray($richTextArray);
             },
-            $array[self::TYPE],
+            $array["rich_text"],
         );
 
-        return new self($property, $text);
+        return new self($metadata, $text);
     }
 
     public function toArray(): array
     {
-        $array = $this->property->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = array_map(fn(RichText $richText) => $richText->toArray(), $this->text);
+        $array["rich_text"] = array_map(fn(RichText $richText) => $richText->toArray(), $this->text);
 
         return $array;
     }
 
-    public function property(): Property
+    public function metadata(): PropertyMetadata
     {
-        return $this->property;
+        return $this->metadata;
     }
 
-    /** @return list<RichText> */
-    public function text(): array
+    public function changeText(RichText ...$texts): self
     {
-        return $this->text;
-    }
-
-    /** @param list<RichText> $text */
-    public function withText(array $text): self
-    {
-        return new self($this->property, $text);
+        return new self($this->metadata, $texts);
     }
 
     public function toString(): string
     {
         $string = "";
         foreach ($this->text as $textPart) {
-            $string = $string . $textPart->plainText();
+            $string = $string . $textPart->plainText;
         }
 
         return $string;

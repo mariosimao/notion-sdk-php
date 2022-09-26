@@ -13,21 +13,14 @@ namespace Notion\Pages\Properties;
  */
 class Email implements PropertyInterface
 {
-    private const TYPE = Property::TYPE_EMAIL;
-
-    private Property $property;
-
-    private string $email;
-
-    private function __construct(Property $property, string $email)
-    {
-        $this->property = $property;
-        $this->email = $email;
-    }
+    private function __construct(
+        private readonly PropertyMetadata $metadata,
+        public readonly string $email,
+    ) {}
 
     public static function create(string $email): self
     {
-        $property = Property::create("", self::TYPE);
+        $property = PropertyMetadata::create("", PropertyType::Email);
 
         return new self($property, $email);
     }
@@ -36,34 +29,29 @@ class Email implements PropertyInterface
     {
         /** @psalm-var EmailJson $array */
 
-        $property = Property::fromArray($array);
+        $property = PropertyMetadata::fromArray($array);
 
-        $email = $array[self::TYPE];
+        $email = $array["email"];
 
         return new self($property, $email);
     }
 
     public function toArray(): array
     {
-        $array = $this->property->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = $this->email;
+        $array["email"] = $this->email;
 
         return $array;
     }
 
-    public function property(): Property
+    public function metadata(): PropertyMetadata
     {
-        return $this->property;
+        return $this->metadata;
     }
 
-    public function email(): string
+    public function changeEmail(string $email): self
     {
-        return $this->email;
-    }
-
-    public function withEmail(string $email): self
-    {
-        return new self($this->property, $email);
+        return new self($this->metadata, $email);
     }
 }

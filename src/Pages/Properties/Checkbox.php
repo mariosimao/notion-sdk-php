@@ -13,21 +13,14 @@ namespace Notion\Pages\Properties;
  */
 class Checkbox implements PropertyInterface
 {
-    private const TYPE = Property::TYPE_CHECKBOX;
-
-    private Property $property;
-
-    private bool $checked;
-
-    private function __construct(Property $property, bool $checked)
-    {
-        $this->property = $property;
-        $this->checked = $checked;
-    }
+    private function __construct(
+        private readonly PropertyMetadata $metadata,
+        public readonly bool $checked,
+    ) {}
 
     public static function create(bool $checked = false): self
     {
-        $property = Property::create("", self::TYPE);
+        $property = PropertyMetadata::create("", PropertyType::Checkbox);
 
         return new self($property, $checked);
     }
@@ -36,39 +29,34 @@ class Checkbox implements PropertyInterface
     {
         /** @psalm-var CheckboxJson $array */
 
-        $property = Property::fromArray($array);
+        $property = PropertyMetadata::fromArray($array);
 
-        $checked = $array[self::TYPE];
+        $checked = $array["checkbox"];
 
         return new self($property, $checked);
     }
 
     public function toArray(): array
     {
-        $array = $this->property->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = $this->checked;
+        $array["checkbox"] = $this->checked;
 
         return $array;
     }
 
-    public function property(): Property
+    public function metadata(): PropertyMetadata
     {
-        return $this->property;
-    }
-
-    public function isChecked(): bool
-    {
-        return $this->checked;
+        return $this->metadata;
     }
 
     public function check(): self
     {
-        return new self($this->property, true);
+        return new self($this->metadata, true);
     }
 
     public function uncheck(): self
     {
-        return new self($this->property, false);
+        return new self($this->metadata, false);
     }
 }

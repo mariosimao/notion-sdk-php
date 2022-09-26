@@ -2,85 +2,86 @@
 
 namespace Notion\Pages\Properties;
 
+use Notion\Databases\Properties\SelectOption;
+
 /**
- * @psalm-import-type OptionJson from Option
+ * @psalm-import-type SelectOptionJson from SelectOption
  *
  * @psalm-type MultiSelectJson = array{
  *      id: string,
  *      type: "multi_select",
- *      multi_select: list<OptionJson>,
+ *      multi_select: SelectOptionJson[],
  * }
  *
  * @psalm-immutable
  */
 class MultiSelect implements PropertyInterface
 {
-    private const TYPE = Property::TYPE_MULTI_SELECT;
+    /** @param SelectOption[] $options */
+    private function __construct(
+        private readonly PropertyMetadata $metadata,
+        public readonly array $options
+    ) {}
 
-    private Property $property;
-
-    /** @var list<Option> */
-    private array $options;
-
-    /** @param list<Option> $options */
-    private function __construct(Property $property, array $options)
+    public static function fromIds(string ...$ids): self
     {
-        $this->property = $property;
-        $this->options = $options;
+        $metadata = PropertyMetadata::create("", PropertyType::MultiSelect);
+        $options = array_map(fn(string $id) => SelectOption::fromId($id), $ids);
+
+        return new self($metadata, $options);
     }
 
-    /** @param list<non-empty-string> $ids */
-    public static function fromIds(array $ids): self
+    public static function fromNames(string ...$names): self
     {
-        $property = Property::create("", self::TYPE);
-        $options = array_map(fn(string $id) => Option::fromId($id), $ids);
+        $metadata = PropertyMetadata::create("", PropertyType::MultiSelect);
+        $options = array_map(fn(string $name) => SelectOption::fromName($name), $names);
 
-        return new self($property, $options);
+        return new self($metadata, $options);
     }
 
-    /** @param list<non-empty-string> $names */
-    public static function fromNames(array $names): self
+    public static function fromOptions(SelectOption ...$options): self
     {
-        $property = Property::create("", self::TYPE);
-        $options = array_map(fn(string $name) => Option::fromName($name), $names);
+        $metadata = PropertyMetadata::create("", PropertyType::MultiSelect);
 
-        return new self($property, $options);
+        return new self($metadata, $options);
     }
 
     public static function fromArray(array $array): self
     {
         /** @psalm-var MultiSelectJson $array */
-        $property = Property::fromArray($array);
+        $metadata = PropertyMetadata::fromArray($array);
 
-        $options = array_map(fn(array $option) => Option::fromArray($option), $array[self::TYPE]);
+        $options = array_map(fn(array $option) => SelectOption::fromArray($option), $array["multi_select"]);
 
-        return new self($property, $options);
+        return new self($metadata, $options);
     }
 
     public function toArray(): array
     {
-        $array = $this->property->toArray();
-        $array[self::TYPE] = array_map(fn (Option $option) => $option->toArray(), $this->options);
+        $array = $this->metadata->toArray();
+        $array["multi_select"] = array_map(fn (SelectOption $option) => $option->toArray(), $this->options);
 
         return $array;
     }
 
-    public function property(): Property
+    public function metadata(): PropertyMetadata
     {
-        return $this->property;
+        return $this->metadata;
     }
 
-    /** @return list<Option> */
-    public function options(): array
-    {
-        return $this->options;
-    }
-
-    public function addOption(Option $option): self
+    public function addOption(SelectOption $option): self
     {
         $options = $this->options;
         $options[] = $option;
 
-        return new self($this->property, $options);
+        return new self($this->metadata, $options);
+    }
+
+    public function removeOption(string $optionId): self
+    {
+        return new self(
+            $this->metadata,
+            array_filter($this->options, fn (SelectOption $o) => $o->id !== $optionId),
+        );
     }
 }

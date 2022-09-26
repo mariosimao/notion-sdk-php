@@ -17,24 +17,15 @@ use Notion\Common\File;
  */
 class Files implements PropertyInterface
 {
-    private const TYPE = Property::TYPE_FILES;
-
-    private Property $property;
-
-    /** @var File[] */
-    private array $files;
-
     /** @param File[] $files */
-    private function __construct(Property $property, array $files)
-    {
-        $this->property = $property;
-        $this->files = $files;
-    }
+    private function __construct(
+        private readonly PropertyMetadata $metadata,
+        public readonly array $files,
+    ) {}
 
-    /** @param File[] $files */
-    public static function create(array $files): self
+    public static function create(File ...$files): self
     {
-        $property = Property::create("", self::TYPE);
+        $property = PropertyMetadata::create("", PropertyType::Files);
 
         return new self($property, $files);
     }
@@ -42,44 +33,36 @@ class Files implements PropertyInterface
     public static function fromArray(array $array): self
     {
         /** @psalm-var FilesJson $array */
+        $property = PropertyMetadata::fromArray($array);
 
-        $property = Property::fromArray($array);
-
-        $files = array_map(fn($f) => File::fromArray($f), $array[self::TYPE]);
+        $files = array_map(fn($f) => File::fromArray($f), $array["files"]);
 
         return new self($property, $files);
     }
 
     public function toArray(): array
     {
-        $array = $this->property->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = array_map(fn($f) => $f->toArray(), $this->files);
+        $array["files"] = array_map(fn($f) => $f->toArray(), $this->files);
 
         return $array;
     }
 
-    public function property(): Property
+    public function metadata(): PropertyMetadata
     {
-        return $this->property;
+        return $this->metadata;
     }
 
-    /** @return File[] */
-    public function files(): array
+    public function changeFiles(File ...$files): self
     {
-        return $this->files;
+        return new self($this->metadata, $files);
     }
 
-    /** @param File[] $files */
-    public function withFiles(array $files): self
-    {
-        return new self($this->property, $files);
-    }
-
-    public function withAddedFile(File $file): self
+    public function addFile(File $file): self
     {
         $files = array_merge($this->files, [$file]);
 
-        return new self($this->property, $files);
+        return new self($this->metadata, $files);
     }
 }

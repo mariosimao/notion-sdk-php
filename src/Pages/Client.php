@@ -61,11 +61,11 @@ class Client
     public function create(Page $page, array $content = []): Page
     {
         $data = json_encode([
-            "archived" => $page->archived(),
-            "icon" => $page->icon()?->toArray(),
-            "cover" => $page->cover()?->toArray(),
-            "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $page->properties()),
-            "parent" => $page->parent()->toArray(),
+            "archived" => $page->archived,
+            "icon" => $page->icon?->toArray(),
+            "cover" => $page->cover?->toArray(),
+            "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $page->properties),
+            "parent" => $page->parent->toArray(),
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $content),
         ], JSON_PRETTY_PRINT);
 
@@ -98,14 +98,14 @@ class Client
     public function update(Page $page): Page
     {
         $data = json_encode([
-            "archived" => $page->archived(),
-            "icon" => $page->icon()?->toArray(),
-            "cover" => $page->cover()?->toArray(),
-            "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $page->properties()),
-            "parent" => $page->parent()->toArray(),
+            "archived" => $page->archived,
+            "icon" => $page->icon?->toArray(),
+            "cover" => $page->cover?->toArray(),
+            "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $page->properties),
+            "parent" => $page->parent->toArray(),
         ]);
 
-        $pageId = $page->id();
+        $pageId = $page->id;
         $url = "https://api.notion.com/v1/pages/{$pageId}";
         $request = $this->requestFactory->createRequest("PATCH", $url)
             ->withHeader("Authorization", "Bearer {$this->token}")

@@ -4,7 +4,8 @@ namespace Notion\Test\Unit\Pages\Properties;
 
 use DateTimeImmutable;
 use Notion\Pages\Properties\CreatedTime;
-use Notion\Pages\Properties\Factory;
+use Notion\Pages\Properties\PropertyFactory;
+use Notion\Pages\Properties\PropertyType;
 use PHPUnit\Framework\TestCase;
 
 class CreatedTimeTest extends TestCase
@@ -14,8 +15,8 @@ class CreatedTimeTest extends TestCase
         $date = new DateTimeImmutable("2021-01-01T00:00:00.000000Z");
         $time = CreatedTime::create($date);
 
-        $this->assertTrue($time->property()->isCreatedTime());
-        $this->assertEquals($date, $time->time());
+        $this->assertEquals(PropertyType::CreatedTime, $time->metadata()->type);
+        $this->assertEquals($date, $time->time);
     }
 
     public function test_change_time(): void
@@ -23,9 +24,9 @@ class CreatedTimeTest extends TestCase
         $date1 = new DateTimeImmutable("2021-01-01T00:00:00.000000Z");
         $date2 = new DateTimeImmutable("2022-01-01T00:00:00.000000Z");
 
-        $time = CreatedTime::create($date1)->withTime($date2);
+        $time = CreatedTime::create($date1)->changeTime($date2);
 
-        $this->assertEquals($date2, $time->time());
+        $this->assertEquals($date2, $time->time);
     }
 
     public function test_array_conversion(): void
@@ -37,7 +38,7 @@ class CreatedTimeTest extends TestCase
         ];
 
         $time = CreatedTime::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $time->toArray());
         $this->assertEquals($array, $fromFactory->toArray());

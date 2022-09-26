@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Pages;
 
 use Notion\Pages\PageParent;
+use Notion\Pages\PageParentType;
 use PHPUnit\Framework\TestCase;
 
 class PageParentTest extends TestCase
@@ -12,7 +13,7 @@ class PageParentTest extends TestCase
         $parent = PageParent::database("058d158b-09de-4d69-be07-901c20a7ca5c");
 
         $this->assertTrue($parent->isDatabase());
-        $this->assertEquals("058d158b-09de-4d69-be07-901c20a7ca5c", $parent->id());
+        $this->assertEquals("058d158b-09de-4d69-be07-901c20a7ca5c", $parent->id);
     }
 
     public function test_create_parent_page(): void
@@ -20,7 +21,7 @@ class PageParentTest extends TestCase
         $parent = PageParent::page("058d158b-09de-4d69-be07-901c20a7ca5c");
 
         $this->assertTrue($parent->isPage());
-        $this->assertEquals("058d158b-09de-4d69-be07-901c20a7ca5c", $parent->id());
+        $this->assertEquals("058d158b-09de-4d69-be07-901c20a7ca5c", $parent->id);
     }
 
     public function test_create_parent_workspace(): void
@@ -28,7 +29,7 @@ class PageParentTest extends TestCase
         $parent = PageParent::workspace();
 
         $this->assertTrue($parent->isWorkspace());
-        $this->assertEquals("workspace", $parent->type());
+        $this->assertEquals(PageParentType::Workspace, $parent->type);
     }
 
     public function test_page_array_conversion(): void
@@ -66,7 +67,7 @@ class PageParentTest extends TestCase
 
     public function test_invalid_type_array(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(\ValueError::class);
         /** @psalm-suppress InvalidArgument */
         PageParent::fromArray([ "type" => "invalid-type" ]);
     }

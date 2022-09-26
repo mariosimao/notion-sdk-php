@@ -25,6 +25,7 @@ class Annotations
     ) {
     }
 
+    /** @psalm-mutation-free */
     public static function create(): self
     {
         return new self(false, false, false, false, false, Color::Default);

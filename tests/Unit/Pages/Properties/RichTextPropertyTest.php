@@ -3,7 +3,8 @@
 namespace Notion\Test\Unit\Pages\Properties;
 
 use Notion\Common\RichText;
-use Notion\Pages\Properties\Factory;
+use Notion\Pages\Properties\PropertyFactory;
+use Notion\Pages\Properties\PropertyType;
 use Notion\Pages\Properties\RichTextProperty;
 use PHPUnit\Framework\TestCase;
 
@@ -11,12 +12,11 @@ class RichTextPropertyTest extends TestCase
 {
     public function test_create(): void
     {
-        $text = RichTextProperty::create("Dummy text");
+        $text = RichTextProperty::create(RichText::createText("Dummy text"));
 
-        $this->assertEquals("Dummy text", $text->text()[0]->text()?->content());
-        $this->assertEquals("", $text->property()->id());
-        $this->assertEquals("rich_text", $text->property()->type());
-        $this->assertTrue($text->property()->isRichText());
+        $this->assertEquals("Dummy text", $text->text[0]->text?->content);
+        $this->assertEquals("", $text->metadata()->id);
+        $this->assertTrue($text->metadata()->type === PropertyType::RichText);
     }
 
     public function test_array_conversion(): void
@@ -43,7 +43,7 @@ class RichTextPropertyTest extends TestCase
         ];
 
         $text = RichTextProperty::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $text->toArray());
         $this->assertEquals($array, $fromFactory->toArray());
@@ -51,15 +51,15 @@ class RichTextPropertyTest extends TestCase
 
     public function test_string_conversion(): void
     {
-        $text = RichTextProperty::create("Dummy text");
+        $text = RichTextProperty::create(RichText::createText("Dummy text"));
         $this->assertEquals("Dummy text", $text->toString());
     }
 
     public function test_change_text(): void
     {
-        $text = RichTextProperty::create("")->withText([
+        $text = RichTextProperty::create()->changeText(
             RichText::createText("Dummy text")
-        ]);
+        );
         $this->assertEquals("Dummy text", $text->toString());
     }
 }

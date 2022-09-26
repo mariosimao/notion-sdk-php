@@ -20,28 +20,17 @@ use Notion\Common\RichText;
  */
 class Date implements PropertyInterface
 {
-    private const TYPE = Property::TYPE_DATE;
-
-    private Property $property;
-
-    private DateTimeImmutable $start;
-    private DateTimeImmutable|null $end;
-
     private function __construct(
-        Property $property,
-        DateTimeImmutable $start,
-        DateTimeImmutable|null $end,
-    ) {
-        $this->property = $property;
-        $this->start = $start;
-        $this->end = $end;
-    }
+        private readonly PropertyMetadata $metadata,
+        public readonly DateTimeImmutable $start,
+        public readonly DateTimeImmutable|null $end,
+    ) {}
 
     public static function create(
         DateTimeImmutable $start,
         DateTimeImmutable|null $end = null,
     ): self {
-        $property = Property::create("", self::TYPE);
+        $property = PropertyMetadata::create("", PropertyType::Date);
 
         return new self($property, $start, $end);
     }
@@ -50,20 +39,20 @@ class Date implements PropertyInterface
     {
         /** @psalm-var DateJson $array */
 
-        $property = Property::fromArray($array);
+        $property = PropertyMetadata::fromArray($array);
 
-        $start = new DateTimeImmutable($array[self::TYPE]["start"]);
-        $end = isset($array[self::TYPE]["end"]) ?
-            new DateTimeImmutable($array[self::TYPE]["end"]) : null;
+        $start = new DateTimeImmutable($array["date"]["start"]);
+        $end = isset($array["date"]["end"]) ?
+            new DateTimeImmutable($array["date"]["end"]) : null;
 
         return new self($property, $start, $end);
     }
 
     public function toArray(): array
     {
-        $array = $this->property->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = [
+        $array["date"] = [
             "start" => $this->start->format(CommonDate::FORMAT),
             "end"   => $this->end?->format(CommonDate::FORMAT),
         ];
@@ -71,34 +60,24 @@ class Date implements PropertyInterface
         return $array;
     }
 
-    public function property(): Property
+    public function metadata(): PropertyMetadata
     {
-        return $this->property;
+        return $this->metadata;
     }
 
-    public function start(): DateTimeImmutable
+    public function changeStart(DateTimeImmutable $start): self
     {
-        return $this->start;
+        return new self($this->metadata, $start, $this->end);
     }
 
-    public function end(): DateTimeImmutable|null
+    public function changeEnd(DateTimeImmutable $end): self
     {
-        return $this->end;
+        return new self($this->metadata, $this->start, $end);
     }
 
-    public function withStart(DateTimeImmutable $start): self
+    public function removeEnd(): self
     {
-        return new self($this->property, $start, $this->end);
-    }
-
-    public function withEnd(DateTimeImmutable $end): self
-    {
-        return new self($this->property, $this->start, $end);
-    }
-
-    public function withoutEnd(): self
-    {
-        return new self($this->property, $this->start, null);
+        return new self($this->metadata, $this->start, null);
     }
 
     public function isRange(): bool

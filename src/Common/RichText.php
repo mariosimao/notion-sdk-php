@@ -32,6 +32,7 @@ class RichText
         public readonly Equation|null $equation,
     ) {}
 
+    /** @psalm-mutation-free */
     public static function createText(string $content): self
     {
         $text = Text::create($content);
@@ -46,6 +47,7 @@ class RichText
         return self::createFromText($text);
     }
 
+    /** @psalm-mutation-free */
     public static function createFromText(Text $text): self
     {
         $annotations = Annotations::create();

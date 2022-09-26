@@ -3,7 +3,8 @@
 namespace Notion\Test\Unit\Pages\Properties;
 
 use Notion\Pages\Properties\LastEditedBy;
-use Notion\Pages\Properties\Factory;
+use Notion\Pages\Properties\PropertyFactory;
+use Notion\Pages\Properties\PropertyType;
 use PHPUnit\Framework\TestCase;
 
 class LastEditedByTest extends TestCase
@@ -23,11 +24,11 @@ class LastEditedByTest extends TestCase
         ];
 
         $createdBy = LastEditedBy::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $createdBy->toArray());
         $this->assertEquals($array, $fromFactory->toArray());
-        $this->assertEquals("Mario", $createdBy->user()->name());
-        $this->assertTrue($createdBy->property()->isLastEditedBy());
+        $this->assertEquals("Mario", $createdBy->user->name);
+        $this->assertEquals(PropertyType::LastEditedBy, $createdBy->metadata()->type);
     }
 }

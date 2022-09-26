@@ -2,6 +2,8 @@
 
 namespace Notion\Pages\Properties;
 
+use Notion\Databases\Properties\SelectOption;
+
 /**
  * @psalm-type SelectJson = array{
  *      id: string,
@@ -13,90 +15,59 @@ namespace Notion\Pages\Properties;
  */
 class Select implements PropertyInterface
 {
-    private const TYPE = Property::TYPE_SELECT;
-
-    private Property $property;
-
-    private Option $option;
-
-    private function __construct(Property $property, Option $option)
-    {
-        $this->property = $property;
-        $this->option = $option;
-    }
+    private function __construct(
+        private readonly PropertyMetadata $metadata,
+        public readonly SelectOption $option
+    ) {}
 
     public static function fromId(string $id): self
     {
-        $property = Property::create("", self::TYPE);
-        $option = Option::fromId($id);
+        $metadata = PropertyMetadata::create("", PropertyType::Select);
+        $option = SelectOption::fromId($id);
 
-        return new self($property, $option);
+        return new self($metadata, $option);
     }
 
     public static function fromName(string $name): self
     {
-        $property = Property::create("", self::TYPE);
-        $option = Option::fromName($name);
+        $metadata = PropertyMetadata::create("", PropertyType::Select);
+        $option = SelectOption::fromName($name);
 
-        return new self($property, $option);
+        return new self($metadata, $option);
+    }
+
+    public static function fromOption(SelectOption $option): self
+    {
+        $metadata = PropertyMetadata::create("", PropertyType::Select);
+
+        return new self($metadata, $option);
     }
 
     public static function fromArray(array $array): self
     {
         /** @psalm-var SelectJson $array */
-        $property = Property::fromArray($array);
+        $metadata = PropertyMetadata::fromArray($array);
 
-        $option = Option::fromArray($array[self::TYPE] ?? []);
+        $option = SelectOption::fromArray($array["select"] ?? []);
 
-        return new self($property, $option);
+        return new self($metadata, $option);
     }
 
     public function toArray(): array
     {
-        $array = $this->property->toArray();
-        $array[self::TYPE] = $this->option->toArray();
+        $array = $this->metadata->toArray();
+        $array["select"] = $this->option->toArray();
 
         return $array;
     }
 
-    public function property(): Property
+    public function metadata(): PropertyMetadata
     {
-        return $this->property;
+        return $this->metadata;
     }
 
-    public function id(): string|null
+    public function changeOption(SelectOption $option): self
     {
-        return $this->option->id();
-    }
-
-    public function withId(string $id): self
-    {
-        $option = $this->option->withId($id);
-
-        return new self($this->property, $option);
-    }
-
-    public function name(): string|null
-    {
-        return $this->option->name();
-    }
-
-    public function withName(string $name): self
-    {
-        $option = $this->option->withName($name);
-
-        return new self($this->property, $option);
-    }
-
-    public function color(): string
-    {
-        return $this->option->color();
-    }
-
-    public function withColor(string $color): self
-    {
-        $option = $this->option->withColor($color);
-
-        return new self($this->property, $option);
+        return new self($this->metadata, $option);
     }
 }

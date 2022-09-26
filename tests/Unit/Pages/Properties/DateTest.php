@@ -4,7 +4,8 @@ namespace Notion\Test\Unit\Pages\Properties;
 
 use DateTimeImmutable;
 use Notion\Pages\Properties\Date;
-use Notion\Pages\Properties\Factory;
+use Notion\Pages\Properties\PropertyFactory;
+use Notion\Pages\Properties\PropertyType;
 use PHPUnit\Framework\TestCase;
 
 class DateTest extends TestCase
@@ -15,10 +16,10 @@ class DateTest extends TestCase
 
         $date = Date::create($someday);
 
-        $this->assertEquals($someday, $date->start());
-        $this->assertNull($date->end());
+        $this->assertEquals($someday, $date->start);
+        $this->assertNull($date->end);
         $this->assertFalse($date->isRange());
-        $this->assertTrue($date->property()->isDate());
+        $this->assertEquals(PropertyType::Date, $date->metadata()->type);
     }
 
     public function test_create_range(): void
@@ -29,8 +30,8 @@ class DateTest extends TestCase
         $date = Date::create($start, $end);
 
         $this->assertTrue($date->isRange());
-        $this->assertEquals($start, $date->start());
-        $this->assertEquals($end, $date->end());
+        $this->assertEquals($start, $date->start);
+        $this->assertEquals($end, $date->end);
     }
 
     public function test_change_start(): void
@@ -38,9 +39,9 @@ class DateTest extends TestCase
         $newStart = new DateTimeImmutable("2021-01-01");
 
         $date = Date::create(new DateTimeImmutable("2020-01-01"))
-                    ->withStart($newStart);
+                    ->changeStart($newStart);
 
-        $this->assertEquals($newStart, $date->start());
+        $this->assertEquals($newStart, $date->start);
     }
 
     public function test_change_end(): void
@@ -48,9 +49,9 @@ class DateTest extends TestCase
         $newEnd = new DateTimeImmutable("2021-12-31");
 
         $date = Date::create(new DateTimeImmutable("2021-01-01"))
-                    ->withEnd($newEnd);
+                    ->changeEnd($newEnd);
 
-        $this->assertEquals($newEnd, $date->end());
+        $this->assertEquals($newEnd, $date->end);
     }
 
     public function test_remove_end(): void
@@ -58,9 +59,9 @@ class DateTest extends TestCase
         $date = Date::create(
             new DateTimeImmutable("2021-01-01"),
             new DateTimeImmutable("2021-12-31"),
-        )->withoutEnd();
+        )->removeEnd();
 
-        $this->assertNull($date->end());
+        $this->assertNull($date->end);
         $this->assertFalse($date->isRange());
     }
 
@@ -75,7 +76,7 @@ class DateTest extends TestCase
             ],
         ];
         $date = Date::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $date->toArray());
         $this->assertEquals($array, $fromFactory->toArray());

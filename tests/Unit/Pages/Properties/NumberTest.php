@@ -3,8 +3,9 @@
 namespace Notion\Test\Unit\Pages\Properties;
 
 use Notion\Common\RichText;
-use Notion\Pages\Properties\Factory;
+use Notion\Pages\Properties\PropertyFactory;
 use Notion\Pages\Properties\Number;
+use Notion\Pages\Properties\PropertyType;
 use PHPUnit\Framework\TestCase;
 
 class NumberTest extends TestCase
@@ -13,10 +14,9 @@ class NumberTest extends TestCase
     {
         $text = Number::create(123);
 
-        $this->assertEquals(123, $text->number());
-        $this->assertEquals("", $text->property()->id());
-        $this->assertEquals("number", $text->property()->type());
-        $this->assertTrue($text->property()->isNumber());
+        $this->assertEquals(123, $text->number);
+        $this->assertEquals("", $text->metadata()->id);
+        $this->assertEquals(PropertyType::Number, $text->metadata()->type);
     }
 
     public function test_array_conversion(): void
@@ -28,7 +28,7 @@ class NumberTest extends TestCase
         ];
 
         $text = Number::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $text->toArray());
         $this->assertEquals($array, $fromFactory->toArray());
@@ -36,7 +36,7 @@ class NumberTest extends TestCase
 
     public function test_change_value(): void
     {
-        $text = Number::create(123)->withNumber(0.25);
-        $this->assertEquals(0.25, $text->number());
+        $text = Number::create(123)->changeNumber(0.25);
+        $this->assertEquals(0.25, $text->number);
     }
 }

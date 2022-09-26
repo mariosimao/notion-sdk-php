@@ -6,31 +6,22 @@ namespace Notion\Pages\Properties;
  * @psalm-type RelationJson = array{
  *      id: string,
  *      type: "relation",
- *      relation: list<array{ id: non-empty-string }>,
+ *      relation: array{ id: non-empty-string }[],
  * }
  *
  * @psalm-immutable
  */
 class Relation implements PropertyInterface
 {
-    private const TYPE = Property::TYPE_RELATION;
+    /** @param string[] $pageIds */
+    private function __construct(
+        private readonly PropertyMetadata $metadata,
+        public readonly array $pageIds
+    ) {}
 
-    private Property $property;
-
-    /** @var list<non-empty-string> */
-    private array $pageIds;
-
-    /** @param list<non-empty-string> $pageIds */
-    private function __construct(Property $property, array $pageIds)
+    public static function create(string ...$pageIds): self
     {
-        $this->property = $property;
-        $this->pageIds = $pageIds;
-    }
-
-    /** @param list<non-empty-string> $pageIds */
-    public static function create(array $pageIds): self
-    {
-        $property = Property::create("", self::TYPE);
+        $property = PropertyMetadata::create("", PropertyType::Relation);
 
         return new self($property, $pageIds);
     }
@@ -39,13 +30,13 @@ class Relation implements PropertyInterface
     {
         /** @psalm-var RelationJson $array */
 
-        $property = Property::fromArray($array);
+        $property = PropertyMetadata::fromArray($array);
 
         $pageIds = array_map(
             function (array $pageReference): string {
                 return $pageReference["id"];
             },
-            $array[self::TYPE],
+            $array["relation"],
         );
 
         return new self($property, $pageIds);
@@ -53,9 +44,9 @@ class Relation implements PropertyInterface
 
     public function toArray(): array
     {
-        $array = $this->property->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = array_map(
+        $array["relation"] = array_map(
             function (string $pageId): array {
                 return [ "id" => $pageId ];
             },
@@ -65,29 +56,30 @@ class Relation implements PropertyInterface
         return $array;
     }
 
-    public function property(): Property
+    public function metadata(): PropertyMetadata
     {
-        return $this->property;
+        return $this->metadata;
     }
 
-    /** @return string[] */
-    public function pageIds(): array
+    /** @param string[] $pageIds */
+    public function changeRelations(string ...$pageIds): self
     {
-        return $this->pageIds;
+        return new self($this->metadata, $pageIds);
     }
 
-    /** @param list<non-empty-string> $pageIds */
-    public function withRelations(array $pageIds): self
-    {
-        return new self($this->property, $pageIds);
-    }
-
-    /** @param non-empty-string $pageId */
     public function addRelation(string $pageId): self
     {
         $pageIds = $this->pageIds;
         $pageIds[] = $pageId;
 
-        return new self($this->property, $pageIds);
+        return new self($this->metadata, $pageIds);
+    }
+
+    public function removeRelation(string $pageId): self
+    {
+        return new self(
+            $this->metadata,
+            array_filter($this->pageIds, fn (string $p) => $p !== $pageId),
+        );
     }
 }
