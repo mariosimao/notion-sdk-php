@@ -31,7 +31,7 @@ $bookmark = $bookmark->changeUrl("https://google.com");
 echo $bookmark->url;
 ```
 
-Output
+Output:
 ```
 https://google.com
 ```
@@ -49,7 +49,7 @@ $bookmark = $bookmark->changeCaption($newCaption);
 echo RichText::multipleToString($bookmark->caption);
 ```
 
-Output
+Output:
 ```
 A new caption!
 ```
