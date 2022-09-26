@@ -17,7 +17,8 @@ class Number implements PropertyInterface
     private function __construct(
         private readonly PropertyMetadata $metadata,
         public readonly NumberFormat $format,
-    ) {}
+    ) {
+    }
 
     public static function create(
         string $propertyName = "Number",

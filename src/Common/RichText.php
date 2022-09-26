@@ -30,7 +30,8 @@ class RichText
         public readonly Text|null $text,
         public readonly Mention|null $mention,
         public readonly Equation|null $equation,
-    ) {}
+    ) {
+    }
 
     /** @psalm-mutation-free */
     public static function createText(string $content): self

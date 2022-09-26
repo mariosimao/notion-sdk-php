@@ -19,7 +19,8 @@ class LastEditedTime implements PropertyInterface
     private function __construct(
         private readonly PropertyMetadata $metadata,
         public readonly DateTimeImmutable $time,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $array): self
     {

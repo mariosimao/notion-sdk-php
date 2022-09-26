@@ -21,7 +21,8 @@ class Sort
         private readonly string $type,
         private readonly string $propertyName,
         private readonly string $direction,
-    ) {}
+    ) {
+    }
 
     public static function property(string $propertyName): self
     {

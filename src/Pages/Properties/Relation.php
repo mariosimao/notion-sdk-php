@@ -17,7 +17,8 @@ class Relation implements PropertyInterface
     private function __construct(
         private readonly PropertyMetadata $metadata,
         public readonly array $pageIds
-    ) {}
+    ) {
+    }
 
     public static function create(string ...$pageIds): self
     {

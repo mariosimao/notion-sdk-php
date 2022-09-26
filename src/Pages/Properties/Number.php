@@ -18,7 +18,8 @@ class Number implements PropertyInterface
     private function __construct(
         private readonly PropertyMetadata $metadata,
         public readonly int|float $number
-    ) {}
+    ) {
+    }
 
     public static function create(int|float $number): self
     {

@@ -16,7 +16,8 @@ class Checkbox implements PropertyInterface
     private function __construct(
         private readonly PropertyMetadata $metadata,
         public readonly bool $checked,
-    ) {}
+    ) {
+    }
 
     public static function create(bool $checked = false): self
     {

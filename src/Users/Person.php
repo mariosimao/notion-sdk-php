@@ -11,7 +11,8 @@ class Person
 {
     private function __construct(
         public readonly string $email,
-    ) {}
+    ) {
+    }
 
     /** @param PersonJson $array */
     public static function fromArray(array $array): self

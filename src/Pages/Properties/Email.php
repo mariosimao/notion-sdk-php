@@ -16,7 +16,8 @@ class Email implements PropertyInterface
     private function __construct(
         private readonly PropertyMetadata $metadata,
         public readonly string $email,
-    ) {}
+    ) {
+    }
 
     public static function create(string $email): self
     {

@@ -16,7 +16,8 @@ class PhoneNumber implements PropertyInterface
     private function __construct(
         private readonly PropertyMetadata $metadata,
         public readonly string $phone
-    ) {}
+    ) {
+    }
 
     public static function create(string $phone): self
     {

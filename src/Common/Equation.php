@@ -11,7 +11,8 @@ class Equation
 {
     private function __construct(
         public readonly string $expression
-    ) {}
+    ) {
+    }
 
     public static function create(string $expression): self
     {

@@ -17,7 +17,8 @@ class PageParent
     private function __construct(
         public readonly PageParentType $type,
         public readonly string|null $id,
-    ) {}
+    ) {
+    }
 
     public static function database(string $databaseId): self
     {

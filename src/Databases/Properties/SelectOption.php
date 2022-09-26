@@ -19,7 +19,8 @@ class SelectOption
         public readonly string|null $id,
         public readonly string|null $name,
         public readonly Color $color,
-    ) {}
+    ) {
+    }
 
     public static function fromId(string $id): self
     {

@@ -21,7 +21,8 @@ class MultiSelect implements PropertyInterface
     private function __construct(
         private readonly PropertyMetadata $metadata,
         public readonly array $options
-    ) {}
+    ) {
+    }
 
     public static function fromIds(string ...$ids): self
     {

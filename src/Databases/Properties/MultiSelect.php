@@ -22,7 +22,8 @@ class MultiSelect implements PropertyInterface
     private function __construct(
         private readonly PropertyMetadata $metadata,
         public readonly array $options,
-    ) {}
+    ) {
+    }
 
     /** @param SelectOption[] $options */
     public static function create(string $propertyName = "Multi Select", array $options = []): self

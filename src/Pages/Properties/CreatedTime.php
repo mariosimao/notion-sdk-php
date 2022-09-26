@@ -19,7 +19,8 @@ class CreatedTime implements PropertyInterface
     private function __construct(
         private readonly PropertyMetadata $metadata,
         public readonly DateTimeImmutable $time,
-    ) {}
+    ) {
+    }
 
     public static function create(DateTimeImmutable $time): self
     {

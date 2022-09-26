@@ -21,7 +21,8 @@ class Client
         private readonly RequestFactoryInterface $requestFactory,
         private readonly string $token,
         private readonly string $version,
-    ) {}
+    ) {
+    }
 
     public function find(string $pageId): Page
     {

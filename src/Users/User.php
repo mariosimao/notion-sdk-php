@@ -26,7 +26,8 @@ class User
         public readonly UserType $type,
         public readonly Person|null $person,
         public readonly Bot|null $bot,
-    ) {}
+    ) {
+    }
 
     /** @psalm-param UserJson $array */
     public static function fromArray(array $array): self

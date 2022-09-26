@@ -13,7 +13,8 @@ class PropertyMetadata
         public readonly string $id,
         public readonly string $name,
         public readonly PropertyType $type,
-    ) {}
+    ) {
+    }
 
     public static function create(string $id, string $name, PropertyType $type): self
     {

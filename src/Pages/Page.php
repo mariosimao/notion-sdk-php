@@ -46,7 +46,8 @@ class Page
         public readonly array $properties,
         public readonly PageParent $parent,
         public readonly string $url
-    ) {}
+    ) {
+    }
 
     public static function create(PageParent $parent): self
     {

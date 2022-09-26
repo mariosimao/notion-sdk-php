@@ -21,7 +21,8 @@ class Files implements PropertyInterface
     private function __construct(
         private readonly PropertyMetadata $metadata,
         public readonly array $files,
-    ) {}
+    ) {
+    }
 
     public static function create(File ...$files): self
     {

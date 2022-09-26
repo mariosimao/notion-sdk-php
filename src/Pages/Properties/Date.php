@@ -24,7 +24,8 @@ class Date implements PropertyInterface
         private readonly PropertyMetadata $metadata,
         public readonly DateTimeImmutable $start,
         public readonly DateTimeImmutable|null $end,
-    ) {}
+    ) {
+    }
 
     public static function create(
         DateTimeImmutable $start,
