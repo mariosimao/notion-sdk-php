@@ -3,7 +3,7 @@
 namespace Notion\Pages;
 
 use Notion\Blocks\BlockInterface;
-use Notion\NotionException;
+use Notion\Infrastructure\Http;
 use Notion\Pages\Properties\PropertyInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -13,47 +13,26 @@ use Psr\Http\Message\RequestFactoryInterface;
  */
 class Client
 {
-    private ClientInterface $psrClient;
-    private RequestFactoryInterface $requestFactory;
-    private string $token;
-    private string $version;
-
     /**
      * @internal Use `\Notion\Notion::pages()` instead
      */
     public function __construct(
-        ClientInterface $psrClient,
-        RequestFactoryInterface $requestFactory,
-        string $token,
-        string $version,
-    ) {
-        $this->psrClient = $psrClient;
-        $this->requestFactory = $requestFactory;
-        $this->token = $token;
-        $this->version = $version;
-    }
+        private readonly ClientInterface $psrClient,
+        private readonly RequestFactoryInterface $requestFactory,
+        private readonly string $token,
+        private readonly string $version,
+    ) {}
 
     public function find(string $pageId): Page
     {
         $url = "https://api.notion.com/v1/pages/{$pageId}";
-        $request = $this->requestFactory->createRequest("GET", $url)
-            ->withHeader("Authorization", "Bearer {$this->token}")
-            ->withHeader("Notion-Version", $this->version);
+        $request = Http::createRequest($this->requestFactory, $this->version, $this->token, $url);
 
         $response = $this->psrClient->sendRequest($request);
 
-        /** @var array */
-        $body = json_decode((string) $response->getBody(), true);
-
-        if ($response->getStatusCode() !== 200) {
-            /** @var array{ message: string, code: string} $body */
-            $message = $body["message"];
-            $code = $body["code"];
-
-            throw new NotionException($message, $code);
-        }
-
         /** @psalm-var PageJson $body */
+        $body = Http::parseBody($response);
+
         return Page::fromArray($body);
     }
 
@@ -71,27 +50,16 @@ class Client
 
 
         $url = "https://api.notion.com/v1/pages";
-        $request = $this->requestFactory->createRequest("POST", $url)
-            ->withHeader("Authorization", "Bearer {$this->token}")
-            ->withHeader("Notion-Version", $this->version)
+        $request = Http::createRequest($this->requestFactory, $this->version, $this->token, $url)
+            ->withMethod("POST")
             ->withHeader("Content-Type", "application/json");
-
         $request->getBody()->write($data);
 
         $response = $this->psrClient->sendRequest($request);
 
-        /** @var array */
-        $body = json_decode((string) $response->getBody(), true);
-
-        if ($response->getStatusCode() !== 200) {
-            /** @var array{ message: string, code: string} $body */
-            $message = $body["message"];
-            $code = $body["code"];
-
-            throw new NotionException($message, $code);
-        }
-
         /** @psalm-var PageJson $body */
+        $body = Http::parseBody($response);
+
         return Page::fromArray($body);
     }
 
@@ -107,27 +75,16 @@ class Client
 
         $pageId = $page->id;
         $url = "https://api.notion.com/v1/pages/{$pageId}";
-        $request = $this->requestFactory->createRequest("PATCH", $url)
-            ->withHeader("Authorization", "Bearer {$this->token}")
-            ->withHeader("Notion-Version", $this->version)
+        $request = Http::createRequest($this->requestFactory, $this->version, $this->token, $url)
+            ->withMethod("PATCH")
             ->withHeader("Content-Type", "application/json");
-
         $request->getBody()->write($data);
 
         $response = $this->psrClient->sendRequest($request);
 
-        /** @var array */
-        $body = json_decode((string) $response->getBody(), true);
-
-        if ($response->getStatusCode() !== 200) {
-            /** @var array{ message: string, code: string} $body */
-            $message = $body["message"];
-            $code = $body["code"];
-
-            throw new NotionException($message, $code);
-        }
-
         /** @psalm-var PageJson $body */
+        $body = Http::parseBody($response);
+
         return Page::fromArray($body);
     }
 
