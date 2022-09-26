@@ -42,8 +42,8 @@ class CalloutTest extends TestCase
                     [
                         "plain_text"  => "Notion callouts ",
                         "href"        => null,
-                        "type"        => "rich_text",
-                        "rich_text"        => [
+                        "type"        => "text",
+                        "text"        => [
                             "content" => "Notion callouts ",
                         ],
                         "annotations" => [
@@ -58,8 +58,8 @@ class CalloutTest extends TestCase
                     [
                         "plain_text"  => "rock!",
                         "href"        => null,
-                        "type"        => "rich_text",
-                        "rich_text"        => [
+                        "type"        => "text",
+                        "text"        => [
                             "content" => "rock!",
                         ],
                         "annotations" => [
@@ -108,8 +108,8 @@ class CalloutTest extends TestCase
                     [
                         "plain_text"  => "Notion callouts ",
                         "href"        => null,
-                        "type"        => "rich_text",
-                        "rich_text"        => [
+                        "type"        => "text",
+                        "text"        => [
                             "content" => "Notion callouts ",
                         ],
                         "annotations" => [
@@ -124,8 +124,8 @@ class CalloutTest extends TestCase
                     [
                         "plain_text"  => "rock!",
                         "href"        => null,
-                        "type"        => "rich_text",
-                        "rich_text"        => [
+                        "type"        => "text",
+                        "text"        => [
                             "content" => "rock!",
                         ],
                         "annotations" => [
@@ -183,7 +183,7 @@ class CalloutTest extends TestCase
 
     public function test_error_on_wrong_icon_type(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(\ValueError::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",

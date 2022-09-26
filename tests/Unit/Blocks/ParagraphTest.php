@@ -41,8 +41,8 @@ class ParagraphTest extends TestCase
                     [
                         "plain_text"  => "Notion paragraphs ",
                         "href"        => null,
-                        "type"        => "rich_text",
-                        "rich_text"        => [
+                        "type"        => "text",
+                        "text"        => [
                             "content" => "Notion paragraphs ",
                         ],
                         "annotations" => [
@@ -57,8 +57,8 @@ class ParagraphTest extends TestCase
                     [
                         "plain_text"  => "rock!",
                         "href"        => null,
-                        "type"        => "rich_text",
-                        "rich_text"        => [
+                        "type"        => "text",
+                        "text"        => [
                             "content" => "rock!",
                         ],
                         "annotations" => [

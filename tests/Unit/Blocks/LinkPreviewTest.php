@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Blocks\LinkPreview;
 use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
@@ -89,7 +90,7 @@ class LinkPreviewTest extends TestCase
 
         $block = LinkPreview::fromArray($array);
 
-        $this->expectException(NotionException::class);
+        $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren();
     }

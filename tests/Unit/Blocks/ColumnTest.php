@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\Column;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Blocks\Paragraph;
 use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
@@ -12,17 +13,17 @@ class ColumnTest extends TestCase
     public function test_create_column(): void
     {
         $children = [ Paragraph::fromString("A paragraph.") ];
-        $column = Column::create($children);
+        $column = Column::create(...$children);
 
         $this->assertEquals($children, $column->children);
     }
 
     public function test_create_change_child_column(): void
     {
-        $childColumn = Column::create([ Paragraph::fromString("A paragraph") ]);
+        $childColumn = Column::create(Paragraph::fromString("A paragraph"));
 
-        $this->expectException(NotionException::class);
-        Column::create([ $childColumn ]);
+        $this->expectException(BlockException::class);
+        Column::create($childColumn);
     }
 
     public function test_add_child(): void
@@ -30,7 +31,7 @@ class ColumnTest extends TestCase
         $paragraph1 = Paragraph::fromString("Paragraph 1.");
         $paragraph2 = Paragraph::fromString("Paragraph 2.");
 
-        $column = Column::create([ $paragraph1 ])->addChild($paragraph2);
+        $column = Column::create($paragraph1)->addChild($paragraph2);
 
         $this->assertEquals([ $paragraph1, $paragraph2 ], $column->children);
     }
@@ -40,7 +41,7 @@ class ColumnTest extends TestCase
         $children1 = [ Paragraph::fromString("Paragraph 1.") ];
         $children2 = [ Paragraph::fromString("Paragraph 2.") ];
 
-        $column = Column::create($children1)->changeChildren(...$children2);
+        $column = Column::create(...$children1)->changeChildren(...$children2);
 
         $this->assertEquals($children2, $column->children);
     }
@@ -76,7 +77,7 @@ class ColumnTest extends TestCase
 
     public function test_array_for_update_operations(): void
     {
-        $block = Column::create([]);
+        $block = Column::create();
 
         $array = $block->toUpdateArray();
 
@@ -85,7 +86,7 @@ class ColumnTest extends TestCase
 
     public function test_archive(): void
     {
-        $block = Column::create([]);
+        $block = Column::create();
 
         $block = $block->archive();
 

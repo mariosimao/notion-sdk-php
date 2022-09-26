@@ -7,7 +7,7 @@ use Notion\Common\Emoji;
 use Notion\Common\RichText;
 use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
-use Notion\Databases\Properties\RichText as PropertiesRichText;
+use Notion\Databases\Properties\RichTextProperty as PropertiesRichText;
 use Notion\Databases\Query;
 use Notion\Databases\Query\CompoundFilter;
 use Notion\Databases\Query\DateFilter;
@@ -28,16 +28,16 @@ class DatabasesTest extends TestCase
         $client = Notion::create($token);
 
         $database = Database::create(DatabaseParent::page(self::DEFAULT_PARENT_ID))
-            ->withAdvancedTitle([ RichText::createText("Empty database") ])
-            ->withIcon(Emoji::create("🌻"));
+            ->changeAdvancedTitle(RichText::createText("Empty database"))
+            ->changeIcon(Emoji::create("🌻"));
 
         $database = $client->databases()->create($database);
 
-        $databaseFound = $client->databases()->find($database->id());
+        $databaseFound = $client->databases()->find($database->id);
 
-        $this->assertEquals("Empty database", $database->title()[0]->plainText());
-        if ($databaseFound->iconIsEmoji()) {
-            $this->assertEquals("🌻", $databaseFound->icon()->emoji());
+        $this->assertEquals("Empty database", $database->title[0]->plainText);
+        if ($databaseFound->icon?->isEmoji()) {
+            $this->assertEquals("🌻", $databaseFound->icon->emoji?->emoji);
         }
 
         $client->databases()->delete($database);
@@ -53,7 +53,7 @@ class DatabasesTest extends TestCase
 
         $database = $client->databases()->find("a1acab7aeea2438bb0e9b23b73fb4a25");
 
-        $this->assertEquals("Movies", $database->title()[0]->plainText());
+        $this->assertEquals("Movies", $database->title[0]->plainText);
     }
 
     public function test_update_database(): void
@@ -65,7 +65,7 @@ class DatabasesTest extends TestCase
         $client = Notion::create($token);
 
         $database = $client->databases()->find("a1acab7aeea2438bb0e9b23b73fb4a25");
-        $oldProperties = $database->properties();
+        $oldProperties = $database->properties;
 
         $database = $database->addProperty(PropertiesRichText::create("Test"));
 
@@ -73,11 +73,11 @@ class DatabasesTest extends TestCase
 
         $this->assertEquals(
             "Test",
-            $updatedDatabase->properties()["Test"]->property()->name()
+            $updatedDatabase->properties["Test"]->metadata()->name
         );
 
         // Back to original state
-        $original = $updatedDatabase->withProperties($oldProperties);
+        $original = $updatedDatabase->changeProperties($oldProperties);
         $client->databases()->update($original);
     }
 
@@ -94,7 +94,7 @@ class DatabasesTest extends TestCase
         $client->databases()->find("60e79d42-4742-41ca-8d70-cc51660cbd3c");
     }
 
-    public function test_create_with_inexistent_parent(): void
+    public function test_create_change_inexistent_parent(): void
     {
         $token = getenv("NOTION_TOKEN");
         if (!$token) {
@@ -118,7 +118,7 @@ class DatabasesTest extends TestCase
         $client = Notion::create($token);
 
         $database = Database::create(DatabaseParent::page(self::DEFAULT_PARENT_ID))
-            ->withAdvancedTitle([ RichText::createText("Dummy database") ]);
+            ->changeAdvancedTitle(RichText::createText("Dummy database"));
 
         $database = $client->databases()->create($database);
 
@@ -181,7 +181,7 @@ class DatabasesTest extends TestCase
         $database = $client->databases()->find("a1acab7aeea2438bb0e9b23b73fb4a25");
 
         // 70s and 90s movies
-        $query = Query::create()->withFilter(
+        $query = Query::create()->changeFilter(
             CompoundFilter::or(
                 CompoundFilter::and(
                     DateFilter::property("Release date")->onOrAfter("1990-01-01"),
@@ -196,7 +196,7 @@ class DatabasesTest extends TestCase
 
         $result = $client->databases()->query($database, $query);
 
-        $this->assertCount(3, $result->pages());
+        $this->assertCount(3, $result->pages);
     }
 
     public function test_query_inexistent_database(): void

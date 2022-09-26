@@ -107,7 +107,7 @@ class ImageTest extends TestCase
         $file = File::createExternal("https://my-site.com/image.png");
         $block = Image::create($file);
 
-        $this->expectException(NotionException::class);
+        $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren();
     }

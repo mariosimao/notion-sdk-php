@@ -41,8 +41,8 @@ class NumberedListItemTest extends TestCase
                     [
                         "plain_text"  => "Notion items ",
                         "href"        => null,
-                        "type"        => "rich_text",
-                        "rich_text"        => [
+                        "type"        => "text",
+                        "text"        => [
                             "content" => "Notion items ",
                         ],
                         "annotations" => [
@@ -57,8 +57,8 @@ class NumberedListItemTest extends TestCase
                     [
                         "plain_text"  => "rock!",
                         "href"        => null,
-                        "type"        => "rich_text",
-                        "rich_text"        => [
+                        "type"        => "text",
+                        "text"        => [
                             "content" => "rock!",
                         ],
                         "annotations" => [
@@ -144,10 +144,10 @@ class NumberedListItemTest extends TestCase
     {
         $oldItem = NumberedListItem::fromString("This is an old item");
 
-        $newItem = $oldItem->changeText([
+        $newItem = $oldItem->changeText(
             RichText::createText("This is a "),
             RichText::createText("new item"),
-        ]);
+        );
 
         $this->assertEquals("This is an old item", $oldItem->toString());
         $this->assertEquals("This is a new item", $newItem->toString());

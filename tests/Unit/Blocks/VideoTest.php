@@ -107,7 +107,7 @@ class VideoTest extends TestCase
         $file = File::createExternal("https://my-site.com/video.mp4");
         $block = Video::create($file);
 
-        $this->expectException(NotionException::class);
+        $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren();
     }

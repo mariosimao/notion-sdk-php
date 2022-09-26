@@ -85,7 +85,7 @@ class EmbedTest extends TestCase
     {
         $block = Embed::create();
 
-        $this->expectException(NotionException::class);
+        $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren();
     }

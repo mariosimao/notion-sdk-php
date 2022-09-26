@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Users;
 
 use Notion\Users\User;
+use Notion\Users\UserType;
 use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
@@ -23,7 +24,7 @@ class UserTest extends TestCase
         $this->assertTrue($user->isPerson());
         $this->assertEquals("b0688871-85db-4637-8fc9-043a240fcaec", $user->id);
         $this->assertEquals("Mario Simao", $user->name);
-        $this->assertEquals("person", $user->type);
+        $this->assertEquals(UserType::Person, $user->type);
         $this->assertEquals("mariosimao@email.com", $user->person?->email);
     }
 
@@ -54,7 +55,7 @@ class UserTest extends TestCase
             "type"       => "wrong-type",
         ];
 
-        $this->expectException(\Exception::class);
+        $this->expectException(\ValueError::class);
         /** @psalm-suppress InvalidArgument */
         User::fromArray($array);
     }

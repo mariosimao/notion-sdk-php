@@ -94,7 +94,7 @@ class BookmarkTest extends TestCase
     {
         $bookmark = Bookmark::create("https://my-site.com");
 
-        $this->expectException(NotionException::class);
+        $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $bookmark->changeChildren();
     }

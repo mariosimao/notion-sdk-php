@@ -41,8 +41,8 @@ class QuoteTest extends TestCase
                     [
                         "plain_text"  => "Notion quotes ",
                         "href"        => null,
-                        "type"        => "rich_text",
-                        "rich_text"        => [
+                        "type"        => "text",
+                        "text"        => [
                             "content" => "Notion quotes ",
                         ],
                         "annotations" => [
@@ -57,8 +57,8 @@ class QuoteTest extends TestCase
                     [
                         "plain_text"  => "rock!",
                         "href"        => null,
-                        "type"        => "rich_text",
-                        "rich_text"        => [
+                        "type"        => "text",
+                        "text"        => [
                             "content" => "rock!",
                         ],
                         "annotations" => [

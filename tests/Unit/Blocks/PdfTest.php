@@ -107,7 +107,7 @@ class PdfTest extends TestCase
         $file = File::createExternal("https://my-site.com/document.pdf");
         $block = Pdf::create($file);
 
-        $this->expectException(NotionException::class);
+        $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren();
     }

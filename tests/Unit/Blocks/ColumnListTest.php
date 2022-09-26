@@ -5,6 +5,7 @@ namespace Notion\Test\Unit\Blocks;
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Column;
 use Notion\Blocks\ColumnList;
+use Notion\Blocks\Exceptions\BlockException;
 use Notion\Blocks\Paragraph;
 use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
@@ -13,10 +14,10 @@ class ColumnListTest extends TestCase
 {
     public function test_create(): void
     {
-        $column1 = Column::create([ Paragraph::fromString("Paragraph 1") ]);
-        $column2 = Column::create([ Paragraph::fromString("Paragraph 2") ]);
+        $column1 = Column::create(Paragraph::fromString("Paragraph 1"));
+        $column2 = Column::create(Paragraph::fromString("Paragraph 2"));
 
-        $list = ColumnList::create([ $column1, $column2 ]);
+        $list = ColumnList::create($column1, $column2);
 
         $this->assertEquals([ $column1, $column2 ], $list->columns);
     }
@@ -90,27 +91,27 @@ class ColumnListTest extends TestCase
 
     public function test_change_children(): void
     {
-        $column1 = Column::create([ Paragraph::fromString("Paragraph 1") ]);
-        $column2 = Column::create([ Paragraph::fromString("Paragraph 2") ]);
+        $column1 = Column::create(Paragraph::fromString("Paragraph 1"));
+        $column2 = Column::create(Paragraph::fromString("Paragraph 2"));
 
-        $list = ColumnList::create([ $column1 ])->changeChildren($column2);
+        $list = ColumnList::create($column1)->changeChildren($column2);
         $this->assertEquals([ $column2 ], $list->columns);
     }
 
     public function test_change_children_to_not_columns(): void
     {
-        $column = Column::create([ Paragraph::fromString("Paragraph 1") ]);
+        $column = Column::create(Paragraph::fromString("Paragraph 1"));
 
-        $list = ColumnList::create([ $column ]);
+        $list = ColumnList::create($column);
 
-        $this->expectException(NotionException::class);
+        $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $list->changeChildren(Paragraph::fromString("This should be a column."));
     }
 
     public function test_array_for_update_operations(): void
     {
-        $block = ColumnList::create([]);
+        $block = ColumnList::create();
 
         $array = $block->toUpdateArray();
 
@@ -119,7 +120,7 @@ class ColumnListTest extends TestCase
 
     public function test_archive(): void
     {
-        $block = ColumnList::create([]);
+        $block = ColumnList::create();
 
         $block = $block->archive();
 

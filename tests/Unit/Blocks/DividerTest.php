@@ -74,7 +74,7 @@ class DividerTest extends TestCase
     {
         $block = Divider::create();
 
-        $this->expectException(NotionException::class);
+        $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren();
     }
