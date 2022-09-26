@@ -94,12 +94,7 @@ class BulletedListItem implements BlockInterface
     /** Get item content as string */
     public function toString(): string
     {
-        $string = "";
-        foreach ($this->text as $richText) {
-            $string = $string . $richText->plainText;
-        }
-
-        return $string;
+        return RichText::multipleToString(...$this->text);
     }
 
     public function metadata(): BlockMetadata
