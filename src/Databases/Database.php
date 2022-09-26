@@ -11,6 +11,7 @@ use Notion\Common\RichText;
 use Notion\Databases\Properties\PropertyFactory;
 use Notion\Databases\Properties\PropertyInterface;
 use Notion\Databases\Properties\Title;
+use Notion\Exceptions\DatabaseException;
 use Notion\NotionException;
 
 /**
@@ -52,11 +53,11 @@ class Database
         public readonly string $url,
     ) {
         if ($cover !== null && $cover->isInternal()) {
-            throw new \Exception("Internal cover image is not supported");
+            throw DatabaseException::internalCover();
         }
 
         if (!$this->hasTitleProperty($properties)) {
-            throw new NotionException("A database must have a title property", "validation_error");
+            throw DatabaseException::noTitleProperty();
         }
     }
 
