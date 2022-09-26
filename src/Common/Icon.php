@@ -17,11 +17,13 @@ class Icon
         }
     }
 
+    /** @psalm-mutation-free */
     public static function fromEmoji(Emoji $emoji): self
     {
         return new self($emoji, null);
     }
 
+    /** @psalm-mutation-free */
     public static function fromFile(File $file): self
     {
         return new self(null, $file);
