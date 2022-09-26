@@ -17,43 +17,30 @@ use Notion\Users\User;
  */
 class CreatedBy implements PropertyInterface
 {
-    private const TYPE = Property::TYPE_CREATED_BY;
+    private function __construct(
+        private readonly PropertyMetadata $metadata,
+        public readonly User $user,
+    ) {}
 
-    private Property $property;
-
-    private User $user;
-
-    private function __construct(Property $property, User $user)
+    public function metadata(): PropertyMetadata
     {
-        $this->property = $property;
-        $this->user = $user;
-    }
-
-    public function property(): Property
-    {
-        return $this->property;
-    }
-
-    public function user(): User
-    {
-        return $this->user;
+        return $this->metadata;
     }
 
     public static function fromArray(array $array): self
     {
-        /** @var CreatedByJson $array */
-
-        $property = Property::fromArray($array);
-        $user = User::fromArray($array[self::TYPE]);
+        /** @psalm-var CreatedByJson $array */
+        $property = PropertyMetadata::fromArray($array);
+        $user = User::fromArray($array["created_by"]);
 
         return new self($property, $user);
     }
 
     public function toArray(): array
     {
-        $array = $this->property->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = $this->user->toArray();
+        $array["created_by"] = $this->user->toArray();
 
         return $array;
     }

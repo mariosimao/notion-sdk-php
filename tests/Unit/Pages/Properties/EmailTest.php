@@ -3,7 +3,8 @@
 namespace Notion\Test\Unit\Pages\Properties;
 
 use Notion\Pages\Properties\Email;
-use Notion\Pages\Properties\Factory;
+use Notion\Pages\Properties\PropertyFactory;
+use Notion\Pages\Properties\PropertyType;
 use PHPUnit\Framework\TestCase;
 
 class EmailTest extends TestCase
@@ -12,15 +13,15 @@ class EmailTest extends TestCase
     {
         $email = Email::create("mario@domain.com");
 
-        $this->assertTrue($email->property()->isEmail());
-        $this->assertEquals("mario@domain.com", $email->email());
+        $this->assertEquals(PropertyType::Email, $email->metadata()->type);
+        $this->assertEquals("mario@domain.com", $email->email);
     }
 
     public function test_change_email(): void
     {
-        $email = Email::create("mario@domain.com")->withEmail("luigi@domain.com");
+        $email = Email::create("mario@domain.com")->changeEmail("luigi@domain.com");
 
-        $this->assertEquals("luigi@domain.com", $email->email());
+        $this->assertEquals("luigi@domain.com", $email->email);
     }
 
     public function test_array_conversion(): void
@@ -32,7 +33,7 @@ class EmailTest extends TestCase
         ];
 
         $email = Email::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $email->toArray());
         $this->assertEquals($array, $fromFactory->toArray());

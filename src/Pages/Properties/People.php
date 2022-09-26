@@ -10,31 +10,22 @@ use Notion\Users\User;
  * @psalm-type PeopleJson = array{
  *      id: string,
  *      type: "people",
- *      people: list<UserJson>,
+ *      people: UserJson[],
  * }
  *
  * @psalm-immutable
  */
 class People implements PropertyInterface
 {
-    private const TYPE = Property::TYPE_PEOPLE;
+    /** @param User[] $users */
+    private function __construct(
+        private readonly PropertyMetadata $metadata,
+        public readonly array $users
+    ) {}
 
-    private Property $property;
-
-    /** @var list<User> */
-    private array $users;
-
-    /** @param list<User> $users */
-    private function __construct(Property $property, array $users)
+    public static function create(User ...$users): self
     {
-        $this->property = $property;
-        $this->users = $users;
-    }
-
-    /** @param list<User> $users */
-    public static function create(array $users): self
-    {
-        $property = Property::create("", self::TYPE);
+        $property = PropertyMetadata::create("", PropertyType::People);
 
         return new self($property, $users);
     }
@@ -43,13 +34,13 @@ class People implements PropertyInterface
     {
         /** @psalm-var PeopleJson $array */
 
-        $property = Property::fromArray($array);
+        $property = PropertyMetadata::fromArray($array);
 
         $users = array_map(
             function (array $userArray): User {
                 return User::fromArray($userArray);
             },
-            $array[self::TYPE],
+            $array["people"],
         );
 
         return new self($property, $users);
@@ -57,9 +48,9 @@ class People implements PropertyInterface
 
     public function toArray(): array
     {
-        $array = $this->property->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = array_map(
+        $array["people"] = array_map(
             function (User $user): array {
                 return $user->toArray();
             },
@@ -69,21 +60,14 @@ class People implements PropertyInterface
         return $array;
     }
 
-    public function property(): Property
+    public function metadata(): PropertyMetadata
     {
-        return $this->property;
+        return $this->metadata;
     }
 
-    /** @return list<User> */
-    public function users(): array
+    public function changePeople(User ...$users): self
     {
-        return $this->users;
-    }
-
-    /** @param list<User> $users */
-    public function withPeople(array $users): self
-    {
-        return new self($this->property, $users);
+        return new self($this->metadata, $users);
     }
 
     public function addPerson(User $user): self
@@ -91,6 +75,14 @@ class People implements PropertyInterface
         $users = $this->users;
         $users[] = $user;
 
-        return new self($this->property, $users);
+        return new self($this->metadata, $users);
+    }
+
+    public function removePerson(string $userId): self
+    {
+        return new self(
+            $this->metadata,
+            array_filter($this->users, fn (User $u) => $u->id !== $userId),
+        );
     }
 }

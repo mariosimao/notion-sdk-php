@@ -17,33 +17,33 @@ use Notion\Common\RichText;
  */
 class Title implements PropertyInterface
 {
-    private Property $property;
+    /** @param RichText[] $title */
+    private function __construct(
+        private readonly PropertyMetadata $metadata,
+        public readonly array $title
+    ) {}
 
-    /** @var list<RichText> */
-    private array $title;
-
-
-    /** @param list<RichText> $title */
-    private function __construct(Property $property, array $title)
+    /** @psalm-mutation-free */
+    public static function create(RichText ...$title): self
     {
-        $this->property = $property;
-        $this->title = $title;
+        $property = PropertyMetadata::create("title", PropertyType::Title);
+
+        return new self($property, $title);
     }
 
     /** @psalm-mutation-free */
-    public static function create(string $title): self
+    public static function fromString(string $title): self
     {
-        $property = Property::create("title", "title");
-        $richText = [ RichText::createText($title) ];
+        $title = RichText::createText($title);
 
-        return new self($property, $richText);
+        return self::create($title);
     }
 
     public static function fromArray(array $array): self
     {
         /** @psalm-var TitleJson $array */
 
-        $property = Property::fromArray($array);
+        $property = PropertyMetadata::fromArray($array);
 
         $title = array_map(
             function (array $richTextArray): RichText {
@@ -57,35 +57,28 @@ class Title implements PropertyInterface
 
     public function toArray(): array
     {
-        $array = $this->property->toArray();
+        $array = $this->metadata->toArray();
 
         $array["title"] = array_map(fn(RichText $richText) => $richText->toArray(), $this->title);
 
         return $array;
     }
 
-    public function property(): Property
+    public function metadata(): PropertyMetadata
     {
-        return $this->property;
+        return $this->metadata;
     }
 
-    /** @return list<RichText> */
-    public function richTexts(): array
+    public function change(RichText ...$title): self
     {
-        return $this->title;
-    }
-
-    /** @param list<RichText> $richTexts */
-    public function withRichTexts(array $richTexts): self
-    {
-        return new self($this->property, $richTexts);
+        return new self($this->metadata, $title);
     }
 
     public function toString(): string
     {
         $string = "";
         foreach ($this->title as $richText) {
-            $string = $string . $richText->plainText();
+            $string = $string . $richText->plainText;
         }
 
         return $string;

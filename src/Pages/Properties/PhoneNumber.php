@@ -13,21 +13,14 @@ namespace Notion\Pages\Properties;
  */
 class PhoneNumber implements PropertyInterface
 {
-    private const TYPE = Property::TYPE_PHONE_NUMBER;
-
-    private Property $property;
-
-    private string $phone;
-
-    private function __construct(Property $property, string $phone)
-    {
-        $this->property = $property;
-        $this->phone = $phone;
-    }
+    private function __construct(
+        private readonly PropertyMetadata $metadata,
+        public readonly string $phone
+    ) {}
 
     public static function create(string $phone): self
     {
-        $property = Property::create("", self::TYPE);
+        $property = PropertyMetadata::create("", PropertyType::PhoneNumber);
 
         return new self($property, $phone);
     }
@@ -36,34 +29,29 @@ class PhoneNumber implements PropertyInterface
     {
         /** @psalm-var PhoneNumberJson $array */
 
-        $property = Property::fromArray($array);
+        $property = PropertyMetadata::fromArray($array);
 
-        $phone = $array[self::TYPE];
+        $phone = $array["phone_number"];
 
         return new self($property, $phone);
     }
 
     public function toArray(): array
     {
-        $array = $this->property->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = $this->phone;
+        $array["phone_number"] = $this->phone;
 
         return $array;
     }
 
-    public function property(): Property
+    public function metadata(): PropertyMetadata
     {
-        return $this->property;
+        return $this->metadata;
     }
 
-    public function phone(): string
+    public function changePhone(string $phone): self
     {
-        return $this->phone;
-    }
-
-    public function withPhone(string $phone): self
-    {
-        return new self($this->property, $phone);
+        return new self($this->metadata, $phone);
     }
 }

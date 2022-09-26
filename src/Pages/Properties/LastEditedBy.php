@@ -17,43 +17,31 @@ use Notion\Users\User;
  */
 class LastEditedBy implements PropertyInterface
 {
-    private const TYPE = Property::TYPE_LAST_EDITED_BY;
+    private function __construct(
+        private readonly PropertyMetadata $metadata,
+        public readonly User $user
+    ) {}
 
-    private Property $property;
-
-    private User $user;
-
-    private function __construct(Property $property, User $user)
+    public function metadata(): PropertyMetadata
     {
-        $this->property = $property;
-        $this->user = $user;
-    }
-
-    public function property(): Property
-    {
-        return $this->property;
-    }
-
-    public function user(): User
-    {
-        return $this->user;
+        return $this->metadata;
     }
 
     public static function fromArray(array $array): self
     {
-        /** @var LastEditedByJson $array */
+        /** @psalm-var LastEditedByJson $array */
 
-        $property = Property::fromArray($array);
-        $user = User::fromArray($array[self::TYPE]);
+        $property = PropertyMetadata::fromArray($array);
+        $user = User::fromArray($array["last_edited_by"]);
 
         return new self($property, $user);
     }
 
     public function toArray(): array
     {
-        $array = $this->property->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = $this->user->toArray();
+        $array["last_edited_by"] = $this->user->toArray();
 
         return $array;
     }

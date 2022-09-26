@@ -3,7 +3,8 @@
 namespace Notion\Test\Unit\Pages\Properties;
 
 use Notion\Pages\Properties\Checkbox;
-use Notion\Pages\Properties\Factory;
+use Notion\Pages\Properties\PropertyFactory;
+use Notion\Pages\Properties\PropertyType;
 use PHPUnit\Framework\TestCase;
 
 class CheckboxTest extends TestCase
@@ -12,22 +13,22 @@ class CheckboxTest extends TestCase
     {
         $checkbox = Checkbox::create(true);
 
-        $this->assertTrue($checkbox->property()->isCheckbox());
-        $this->assertTrue($checkbox->isChecked());
+        $this->assertEquals(PropertyType::Checkbox, $checkbox->metadata()->type);
+        $this->assertTrue($checkbox->checked);
     }
 
     public function test_check(): void
     {
         $checkbox = Checkbox::create()->check();
 
-        $this->assertTrue($checkbox->isChecked());
+        $this->assertTrue($checkbox->checked);
     }
 
     public function test_uncheck(): void
     {
         $checkbox = Checkbox::create(true)->uncheck();
 
-        $this->assertFalse($checkbox->isChecked());
+        $this->assertFalse($checkbox->checked);
     }
 
     public function test_array_conversion(): void
@@ -39,7 +40,7 @@ class CheckboxTest extends TestCase
         ];
 
         $checkbox = Checkbox::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $checkbox->toArray());
         $this->assertEquals($array, $fromFactory->toArray());

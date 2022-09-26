@@ -30,6 +30,11 @@ class Date
         return new self($start, $end);
     }
 
+    public static function now(): self
+    {
+        return self::create(new DateTimeImmutable("now"));
+    }
+
     /**
      * @param DateJson $array
      *
@@ -46,8 +51,8 @@ class Date
     public function toArray(): array
     {
         return [
-            "start" => $this->start->format("Y-m-d"),
-            "end"   => $this->end?->format("Y-m-d"),
+            "start" => $this->start->format(self::FORMAT),
+            "end"   => $this->end?->format(self::FORMAT),
         ];
     }
 

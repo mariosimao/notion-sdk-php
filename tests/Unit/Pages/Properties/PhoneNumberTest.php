@@ -3,7 +3,8 @@
 namespace Notion\Test\Unit\Pages\Properties;
 
 use Notion\Pages\Properties\PhoneNumber;
-use Notion\Pages\Properties\Factory;
+use Notion\Pages\Properties\PropertyFactory;
+use Notion\Pages\Properties\PropertyType;
 use PHPUnit\Framework\TestCase;
 
 class PhoneNumberTest extends TestCase
@@ -12,15 +13,15 @@ class PhoneNumberTest extends TestCase
     {
         $phone = PhoneNumber::create("415-000-1111");
 
-        $this->assertTrue($phone->property()->isPhoneNumber());
-        $this->assertEquals("415-000-1111", $phone->phone());
+        $this->assertTrue($phone->metadata()->type === PropertyType::PhoneNumber);
+        $this->assertEquals("415-000-1111", $phone->phone);
     }
 
     public function test_change_phone(): void
     {
-        $phone = PhoneNumber::create("415-000-1111")->withPhone("415-000-2222");
+        $phone = PhoneNumber::create("415-000-1111")->changePhone("415-000-2222");
 
-        $this->assertEquals("415-000-2222", $phone->phone());
+        $this->assertEquals("415-000-2222", $phone->phone);
     }
 
     public function test_array_conversion(): void
@@ -32,7 +33,7 @@ class PhoneNumberTest extends TestCase
         ];
 
         $phone = PhoneNumber::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $phone->toArray());
         $this->assertEquals($array, $fromFactory->toArray());

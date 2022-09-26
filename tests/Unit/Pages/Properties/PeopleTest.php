@@ -2,8 +2,9 @@
 
 namespace Notion\Test\Unit\Pages\Properties;
 
-use Notion\Pages\Properties\Factory;
+use Notion\Pages\Properties\PropertyFactory;
 use Notion\Pages\Properties\People;
+use Notion\Pages\Properties\PropertyType;
 use Notion\Users\User;
 use PHPUnit\Framework\TestCase;
 
@@ -14,10 +15,10 @@ class PeopleTest extends TestCase
         $user1 = $this->user1();
         $user2 = $this->user2();
 
-        $people = People::create([ $user1, $user2 ]);
+        $people = People::create($user1, $user2);
 
-        $this->assertEquals([ $user1, $user2 ], $people->users());
-        $this->assertTrue($people->property()->isPeople());
+        $this->assertEquals([ $user1, $user2 ], $people->users);
+        $this->assertTrue($people->metadata()->type === PropertyType::People);
     }
 
     public function test_replace_users(): void
@@ -25,9 +26,9 @@ class PeopleTest extends TestCase
         $user1 = $this->user1();
         $user2 = $this->user2();
 
-        $people = People::create([ $user1 ])->withPeople([ $user2 ]);
+        $people = People::create($user1)->changePeople($user2);
 
-        $this->assertEquals([ $user2 ], $people->users());
+        $this->assertEquals([ $user2 ], $people->users);
     }
 
     public function test_add_user(): void
@@ -35,9 +36,19 @@ class PeopleTest extends TestCase
         $user1 = $this->user1();
         $user2 = $this->user2();
 
-        $people = People::create([ $user1 ])->addPerson($user2);
+        $people = People::create($user1)->addPerson($user2);
 
-        $this->assertEquals([ $user1, $user2 ], $people->users());
+        $this->assertEquals([ $user1, $user2 ], $people->users);
+    }
+
+    public function test_remove_user(): void
+    {
+        $user = $this->user1();
+
+        $people = People::create($user);
+        $people = $people->removePerson($user->id);
+
+        $this->assertCount(0, $people->users);
     }
 
     public function test_array_conversion(): void
@@ -52,7 +63,7 @@ class PeopleTest extends TestCase
         ];
 
         $people = People::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $people->toArray());
         $this->assertEquals($array, $fromFactory->toArray());

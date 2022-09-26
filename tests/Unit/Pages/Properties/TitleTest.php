@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Pages\Properties;
 
 use Notion\Common\RichText;
+use Notion\Pages\Properties\PropertyType;
 use Notion\Pages\Properties\Title;
 use PHPUnit\Framework\TestCase;
 
@@ -10,12 +11,11 @@ class TitleTest extends TestCase
 {
     public function test_create(): void
     {
-        $title = Title::create("Dummy title");
+        $title = Title::create(RichText::createText("Dummy title"));
 
-        $this->assertEquals("Dummy title", $title->richTexts()[0]->text()?->content());
-        $this->assertEquals("title", $title->property()->id());
-        $this->assertEquals("title", $title->property()->type());
-        $this->assertTrue($title->property()->isTitle());
+        $this->assertEquals("Dummy title", $title->title[0]->text?->content);
+        $this->assertEquals("title", $title->metadata()->id);
+        $this->assertTrue($title->metadata()->type === PropertyType::Title);
     }
 
     public function test_array_conversion(): void
@@ -47,15 +47,15 @@ class TitleTest extends TestCase
 
     public function test_string_conversion(): void
     {
-        $title = Title::create("Dummy title");
+        $title = Title::create(RichText::createText("Dummy title"));
         $this->assertEquals("Dummy title", $title->toString());
     }
 
     public function test_change_text(): void
     {
-        $title = Title::create("")->withRichTexts([
+        $title = Title::create()->change(
             RichText::createText("Dummy title")
-        ]);
+        );
         $this->assertEquals("Dummy title", $title->toString());
     }
 }

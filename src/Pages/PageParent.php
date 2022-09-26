@@ -14,44 +14,34 @@ namespace Notion\Pages;
  */
 class PageParent
 {
-    private const ALLOWED_TYPES = [ "page_id", "database_id", "workspace" ];
-
-    private string $type;
-    private string|null $id;
-
-    private function __construct(string $type, string|null $id)
-    {
-        if (!in_array($type, self::ALLOWED_TYPES)) {
-            throw new \Exception("Invalid parent type: '{$type}'.");
-        }
-
-        $this->type = $type;
-        $this->id = $id;
-    }
+    private function __construct(
+        public readonly PageParentType $type,
+        public readonly string|null $id,
+    ) {}
 
     public static function database(string $databaseId): self
     {
-        return new self("database_id", $databaseId);
+        return new self(PageParentType::Database, $databaseId);
     }
 
     public static function page(string $pageId): self
     {
-        return new self("page_id", $pageId);
+        return new self(PageParentType::Page, $pageId);
     }
 
     public static function workspace(): self
     {
-        return new self("workspace", null);
+        return new self(PageParentType::Workspace, null);
     }
 
     /**
-     * @param PageParentJson $array
+     * @psalm-param PageParentJson $array
      *
      * @internal
      */
     public static function fromArray(array $array): self
     {
-        $type = $array["type"];
+        $type = PageParentType::from($array["type"]);
 
         $id = $array["page_id"] ?? $array["database_id"] ?? null;
 
@@ -75,28 +65,18 @@ class PageParent
         return $array;
     }
 
-    public function id(): string|null
-    {
-        return $this->id;
-    }
-
-    public function type(): string
-    {
-        return $this->type;
-    }
-
     public function isDatabase(): bool
     {
-        return $this->type === "database_id";
+        return $this->type === PageParentType::Database;
     }
 
     public function isPage(): bool
     {
-        return $this->type === "page_id";
+        return $this->type === PageParentType::Page;
     }
 
     public function isWorkspace(): bool
     {
-        return $this->type === "workspace";
+        return $this->type === PageParentType::Workspace;
     }
 }

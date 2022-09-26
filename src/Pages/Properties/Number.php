@@ -15,21 +15,14 @@ use Notion\Common\RichText;
  */
 class Number implements PropertyInterface
 {
-    private const TYPE = Property::TYPE_NUMBER;
-
-    private Property $property;
-
-    private int|float $number;
-
-    private function __construct(Property $property, int|float $number)
-    {
-        $this->property = $property;
-        $this->number = $number;
-    }
+    private function __construct(
+        private readonly PropertyMetadata $metadata,
+        public readonly int|float $number
+    ) {}
 
     public static function create(int|float $number): self
     {
-        $property = Property::create("", self::TYPE);
+        $property = PropertyMetadata::create("", PropertyType::Number);
 
         return new self($property, $number);
     }
@@ -38,34 +31,29 @@ class Number implements PropertyInterface
     {
         /** @psalm-var NumberJson $array */
 
-        $property = Property::fromArray($array);
+        $property = PropertyMetadata::fromArray($array);
 
-        $number = $array[self::TYPE];
+        $number = $array["number"];
 
         return new self($property, $number);
     }
 
     public function toArray(): array
     {
-        $array = $this->property->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = $this->number;
+        $array["number"] = $this->number;
 
         return $array;
     }
 
-    public function property(): Property
+    public function metadata(): PropertyMetadata
     {
-        return $this->property;
+        return $this->metadata;
     }
 
-    public function number(): int|float
+    public function changeNumber(int|float $number): self
     {
-        return $this->number;
-    }
-
-    public function withNumber(int|float $number): self
-    {
-        return new self($this->property, $number);
+        return new self($this->metadata, $number);
     }
 }

@@ -3,7 +3,8 @@
 namespace Notion\Test\Unit\Pages\Properties;
 
 use Notion\Pages\Properties\Url;
-use Notion\Pages\Properties\Factory;
+use Notion\Pages\Properties\PropertyFactory;
+use Notion\Pages\Properties\PropertyType;
 use PHPUnit\Framework\TestCase;
 
 class UrlTest extends TestCase
@@ -12,15 +13,15 @@ class UrlTest extends TestCase
     {
         $url = Url::create("https://notion.so");
 
-        $this->assertTrue($url->property()->isUrl());
-        $this->assertEquals("https://notion.so", $url->url());
+        $this->assertTrue($url->metadata()->type === PropertyType::Url);
+        $this->assertEquals("https://notion.so", $url->url);
     }
 
     public function test_change_url(): void
     {
-        $url = Url::create("https://notion.so")->withUrl("https://google.com");
+        $url = Url::create("https://notion.so")->changeUrl("https://google.com");
 
-        $this->assertEquals("https://google.com", $url->url());
+        $this->assertEquals("https://google.com", $url->url);
     }
 
     public function test_array_conversion(): void
@@ -32,7 +33,7 @@ class UrlTest extends TestCase
         ];
 
         $url = Url::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $url->toArray());
         $this->assertEquals($array, $fromFactory->toArray());

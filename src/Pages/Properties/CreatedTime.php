@@ -16,21 +16,14 @@ use Notion\Common\Date;
  */
 class CreatedTime implements PropertyInterface
 {
-    private const TYPE = Property::TYPE_CREATED_TIME;
-
-    private Property $property;
-
-    private DateTimeImmutable $time;
-
-    private function __construct(Property $property, DateTimeImmutable $time)
-    {
-        $this->property = $property;
-        $this->time = $time;
-    }
+    private function __construct(
+        private readonly PropertyMetadata $metadata,
+        public readonly DateTimeImmutable $time,
+    ) {}
 
     public static function create(DateTimeImmutable $time): self
     {
-        $property = Property::create("", self::TYPE);
+        $property = PropertyMetadata::create("", PropertyType::CreatedTime);
 
         return new self($property, $time);
     }
@@ -39,34 +32,29 @@ class CreatedTime implements PropertyInterface
     {
         /** @psalm-var CreatedTimeJson $array */
 
-        $property = Property::fromArray($array);
+        $property = PropertyMetadata::fromArray($array);
 
-        $time = new DateTimeImmutable($array[self::TYPE]);
+        $time = new DateTimeImmutable($array["created_time"]);
 
         return new self($property, $time);
     }
 
     public function toArray(): array
     {
-        $array = $this->property->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = $this->time->format(Date::FORMAT);
+        $array["created_time"] = $this->time->format(Date::FORMAT);
 
         return $array;
     }
 
-    public function property(): Property
+    public function metadata(): PropertyMetadata
     {
-        return $this->property;
+        return $this->metadata;
     }
 
-    public function time(): DateTimeImmutable
+    public function changeTime(DateTimeImmutable $time): self
     {
-        return $this->time;
-    }
-
-    public function withTime(DateTimeImmutable $time): self
-    {
-        return new self($this->property, $time);
+        return new self($this->metadata, $time);
     }
 }

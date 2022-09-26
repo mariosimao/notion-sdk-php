@@ -3,8 +3,10 @@
 namespace Notion\Test\Unit\Pages\Properties;
 
 use DateTimeImmutable;
-use Notion\Pages\Properties\Factory;
+use Notion\Pages\Properties\PropertyFactory;
 use Notion\Pages\Properties\Formula;
+use Notion\Pages\Properties\FormulaType;
+use Notion\Pages\Properties\PropertyType;
 use PHPUnit\Framework\TestCase;
 
 class FormulaTest extends TestCase
@@ -22,11 +24,11 @@ class FormulaTest extends TestCase
 
         $formula = Formula::fromArray($array);
 
-        $this->assertTrue($formula->property()->isFormula());
+        $this->assertEquals(PropertyType::Formula, $formula->metadata()->type);
         $this->assertEquals($array, $formula->toArray());
-        $this->assertEquals($array, Factory::fromArray($array)->toArray());
-        $this->assertTrue($formula->isString());
-        $this->assertEquals("Formula result", $formula->string());
+        $this->assertEquals($array, PropertyFactory::fromArray($array)->toArray());
+        $this->assertEquals(FormulaType::String, $formula->type);
+        $this->assertEquals("Formula result", $formula->string);
     }
 
     public function test_number_from_array(): void
@@ -43,9 +45,9 @@ class FormulaTest extends TestCase
         $formula = Formula::fromArray($array);
 
         $this->assertEquals($array, $formula->toArray());
-        $this->assertEquals($array, Factory::fromArray($array)->toArray());
-        $this->assertTrue($formula->isNumber());
-        $this->assertEquals(123, $formula->number());
+        $this->assertEquals($array, PropertyFactory::fromArray($array)->toArray());
+        $this->assertEquals(FormulaType::Number, $formula->type);
+        $this->assertEquals(123, $formula->number);
     }
 
     public function test_boolean_from_array(): void
@@ -62,9 +64,9 @@ class FormulaTest extends TestCase
         $formula = Formula::fromArray($array);
 
         $this->assertEquals($array, $formula->toArray());
-        $this->assertEquals($array, Factory::fromArray($array)->toArray());
-        $this->assertTrue($formula->isBoolean());
-        $this->assertEquals(false, $formula->boolean());
+        $this->assertEquals($array, PropertyFactory::fromArray($array)->toArray());
+        $this->assertEquals(FormulaType::Boolean, $formula->type);
+        $this->assertEquals(false, $formula->boolean);
     }
 
     public function test_date_from_array(): void
@@ -84,9 +86,9 @@ class FormulaTest extends TestCase
         $formula = Formula::fromArray($array);
 
         $this->assertEquals($array, $formula->toArray());
-        $this->assertEquals($array, Factory::fromArray($array)->toArray());
-        $this->assertTrue($formula->isDate());
-        $this->assertEquals(new DateTimeImmutable("2021-01-01"), $formula->start());
-        $this->assertNull($formula->end());
+        $this->assertEquals($array, PropertyFactory::fromArray($array)->toArray());
+        $this->assertTrue($formula->type === FormulaType::Date);
+        $this->assertEquals(new DateTimeImmutable("2021-01-01"), $formula->date?->start);
+        $this->assertNull($formula->date?->end);
     }
 }

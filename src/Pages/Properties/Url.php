@@ -13,57 +13,45 @@ namespace Notion\Pages\Properties;
  */
 class Url implements PropertyInterface
 {
-    private const TYPE = Property::TYPE_URL;
-
-    private Property $property;
-
-    private string $url;
-
-    private function __construct(Property $property, string $url)
-    {
-        $this->property = $property;
-        $this->url = $url;
-    }
+    private function __construct(
+        private readonly PropertyMetadata $metadata,
+        public readonly string $url
+    ) {}
 
     public static function create(string $url): self
     {
-        $property = Property::create("", self::TYPE);
+        $metadata = PropertyMetadata::create("", PropertyType::Url);
 
-        return new self($property, $url);
+        return new self($metadata, $url);
     }
 
     public static function fromArray(array $array): self
     {
         /** @psalm-var UrlJson $array */
 
-        $property = Property::fromArray($array);
+        $metadata = PropertyMetadata::fromArray($array);
 
-        $url = $array[self::TYPE];
+        $url = $array["url"];
 
-        return new self($property, $url);
+        return new self($metadata, $url);
     }
 
     public function toArray(): array
     {
-        $array = $this->property->toArray();
+        $array = $this->metadata->toArray();
 
-        $array[self::TYPE] = $this->url;
+        $array["url"] = $this->url;
 
         return $array;
     }
 
-    public function property(): Property
+    public function metadata(): PropertyMetadata
     {
-        return $this->property;
+        return $this->metadata;
     }
 
-    public function url(): string
+    public function changeUrl(string $url): self
     {
-        return $this->url;
-    }
-
-    public function withUrl(string $url): self
-    {
-        return new self($this->property, $url);
+        return new self($this->metadata, $url);
     }
 }
