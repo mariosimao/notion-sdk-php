@@ -17,7 +17,7 @@ $bookmark = Bookmark::create("https://notion.so");
 $caption = RichText::createText("An awesome bookmark caption");
 
 $bookmark = Bookmark::create("https://notion.so")
-                    ->withCaption($caption);
+                    ->changeCaption($caption);
 ```
 
 ![](../images/bookmark-caption.png)
@@ -26,6 +26,30 @@ $bookmark = Bookmark::create("https://notion.so")
 
 ```php
 $bookmark = Bookmark::create("https://notion.so");
+$bookmark = $bookmark->changeUrl("https://google.com");
 
-$bookmark = $bookmark->withUrl("https://google.com");
+echo $bookmark->url;
+```
+
+Output
+```
+https://google.com
+```
+
+## Change caption
+
+```php
+$oldCaption = RichText::createText("An awesome bookmark caption");
+$bookmark = Bookmark::create("https://notion.so")
+                    ->changeCaption($oldCaption);
+
+$newCaption = RichText::createText("A new caption!");
+$bookmark = $bookmark->changeCaption($newCaption);
+
+echo RichText::multipleToString($bookmark->caption);
+```
+
+Output
+```
+A new caption!
 ```
