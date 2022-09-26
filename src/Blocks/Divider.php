@@ -19,8 +19,6 @@ class Divider implements BlockInterface
         private readonly BlockMetadata $metadata,
     ) {
         $metadata->checkType(BlockType::Divider);
-
-        $this->metadata = $metadata;
     }
 
     public static function create(): self

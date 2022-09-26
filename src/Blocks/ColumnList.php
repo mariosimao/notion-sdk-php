@@ -26,8 +26,7 @@ class ColumnList implements BlockInterface
         $metadata->checkType(BlockType::ColumnList);
     }
 
-    /** @param Column[] $columns */
-    public static function create(array $columns): self
+    public static function create(Column ...$columns): self
     {
         $metadata = BlockMetadata::create(BlockType::ColumnList);
 

@@ -45,13 +45,18 @@ class BlockMetadata
      */
     public static function fromArray(array $array): self
     {
+        $type = BlockType::tryFrom($array["type"]);
+        if ($type === null) {
+            throw BlockException::invalidType($array["type"]);
+        }
+
         return new self(
             $array["id"],
             new DateTimeImmutable($array["created_time"]),
             new DateTimeImmutable($array["last_edited_time"]),
             $array["archived"],
             $array["has_children"],
-            BlockType::from($array["type"]),
+            $type,
         );
     }
 

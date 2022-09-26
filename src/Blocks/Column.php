@@ -29,8 +29,7 @@ class Column implements BlockInterface
         }
     }
 
-    /** @param BlockInterface[] $children */
-    public static function create(array $children): self
+    public static function create(BlockInterface ...$children): self
     {
         $block = BlockMetadata::create(BlockType::Column);
 
