@@ -74,7 +74,7 @@ class TableOfContentsTest extends TestCase
     {
         $block = TableOfContents::create();
 
-        $this->expectException(NotionException::class);
+        $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren();
     }

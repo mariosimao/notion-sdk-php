@@ -11,8 +11,8 @@ class DateTest extends TestCase
     public function test_array_conversion(): void
     {
         $array = [
-            "start" => "2021-01-01",
-            "end"   => "2021-12-31",
+            "start" => "2021-01-01T00:00:00.000000Z",
+            "end"   => "2021-12-31T00:00:00.000000Z",
         ];
 
         $date = Date::fromArray($array);

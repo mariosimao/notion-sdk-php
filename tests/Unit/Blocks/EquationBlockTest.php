@@ -85,7 +85,7 @@ class EquationBlockTest extends TestCase
     {
         $block = EquationBlock::create();
 
-        $this->expectException(NotionException::class);
+        $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren();
     }

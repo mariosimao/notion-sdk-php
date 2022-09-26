@@ -22,17 +22,17 @@ class PagesTest extends TestCase
         $client = Notion::create($token);
 
         $page = Page::create(PageParent::page(self::DEFAULT_PARENT_ID))
-            ->withTitle("Empty page")
-            ->withIcon(Emoji::create("⭐"));
+            ->changeTitle("Empty page")
+            ->changeIcon(Emoji::create("⭐"));
 
         $page = $client->pages()->create($page);
 
-        $pageFound = $client->pages()->find($page->id());
+        $pageFound = $client->pages()->find($page->id);
 
         $this->assertEquals("Empty page", $page->title()?->toString());
 
-        if ($pageFound->iconIsEmoji()) {
-            $this->assertEquals("⭐", $pageFound->icon()->emoji());
+        if ($pageFound->icon?->isEmoji()) {
+            $this->assertEquals("⭐", $pageFound->icon->emoji?->emoji);
         }
 
         $client->pages()->delete($page);
@@ -64,7 +64,7 @@ class PagesTest extends TestCase
         $client->pages()->find("60e79d42-4742-41ca-8d70-cc51660cbd3c");
     }
 
-    public function test_create_with_inexistent_parent(): void
+    public function test_create_change_inexistent_parent(): void
     {
         $token = getenv("NOTION_TOKEN");
         if (!$token) {
@@ -88,12 +88,12 @@ class PagesTest extends TestCase
         $client = Notion::create($token);
 
         $page = Page::create(PageParent::page(self::DEFAULT_PARENT_ID))
-            ->withTitle("Deleted page");
+            ->changeTitle("Deleted page");
 
         $page = $client->pages()->create($page);
         $page = $client->pages()->delete($page);
 
-        $page = $page->withTitle("Title after deleted");
+        $page = $page->changeTitle("Title after deleted");
 
         $this->expectException(NotionException::class);
         $client->pages()->update($page);

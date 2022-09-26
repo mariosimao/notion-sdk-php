@@ -96,7 +96,7 @@ class MentionTest extends TestCase
     {
         $array = [
             "type" => "date",
-            "date" => [ "start" => "2021-01-01", "end" => null ],
+            "date" => [ "start" => "2021-01-01T00:00:00.000000Z", "end" => null ],
         ];
         $mention = Mention::fromArray($array);
 

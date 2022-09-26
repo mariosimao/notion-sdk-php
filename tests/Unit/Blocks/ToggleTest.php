@@ -41,8 +41,8 @@ class ToggleTest extends TestCase
                     [
                         "plain_text"  => "Notion toggles ",
                         "href"        => null,
-                        "type"        => "rich_text",
-                        "rich_text"        => [
+                        "type"        => "text",
+                        "text"        => [
                             "content" => "Notion toggles ",
                         ],
                         "annotations" => [
@@ -57,8 +57,8 @@ class ToggleTest extends TestCase
                     [
                         "plain_text"  => "rock!",
                         "href"        => null,
-                        "type"        => "rich_text",
-                        "rich_text"        => [
+                        "type"        => "text",
+                        "text"        => [
                             "content" => "rock!",
                         ],
                         "annotations" => [

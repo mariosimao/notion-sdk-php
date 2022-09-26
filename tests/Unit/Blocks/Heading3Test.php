@@ -41,8 +41,8 @@ class Heading3Test extends TestCase
                     [
                         "plain_text"  => "Notion headings ",
                         "href"        => null,
-                        "type"        => "rich_text",
-                        "rich_text"        => [
+                        "type"        => "text",
+                        "text"        => [
                             "content" => "Notion headings ",
                         ],
                         "annotations" => [
@@ -57,8 +57,8 @@ class Heading3Test extends TestCase
                     [
                         "plain_text"  => "rock!",
                         "href"        => null,
-                        "type"        => "rich_text",
-                        "rich_text"        => [
+                        "type"        => "text",
+                        "text"        => [
                             "content" => "rock!",
                         ],
                         "annotations" => [
@@ -141,10 +141,10 @@ class Heading3Test extends TestCase
     {
         $oldHeading = Heading3::fromString("This is an old heading");
 
-        $newHeading = $oldHeading->changeText([
+        $newHeading = $oldHeading->changeText(
             RichText::createText("This is a "),
             RichText::createText("new heading"),
-        ]);
+        );
 
         $this->assertEquals("This is an old heading", $oldHeading->toString());
         $this->assertEquals("This is a new heading", $newHeading->toString());
@@ -166,7 +166,7 @@ class Heading3Test extends TestCase
     {
         $block = Heading3::create();
 
-        $this->expectException(NotionException::class);
+        $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren();
     }

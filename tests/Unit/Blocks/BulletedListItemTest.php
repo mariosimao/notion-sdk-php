@@ -41,8 +41,8 @@ class BulletedListItemTest extends TestCase
                     [
                         "plain_text"  => "Notion items ",
                         "href"        => null,
-                        "type"        => "rich_text",
-                        "rich_text"        => [
+                        "type"        => "text",
+                        "text"        => [
                             "content" => "Notion items ",
                         ],
                         "annotations" => [
@@ -57,8 +57,8 @@ class BulletedListItemTest extends TestCase
                     [
                         "plain_text"  => "rock!",
                         "href"        => null,
-                        "type"        => "rich_text",
-                        "rich_text"        => [
+                        "type"        => "text",
+                        "text"        => [
                             "content" => "rock!",
                         ],
                         "annotations" => [

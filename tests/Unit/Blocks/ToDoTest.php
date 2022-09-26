@@ -43,8 +43,8 @@ class ToDoTest extends TestCase
                     [
                         "plain_text"  => "Notion to dos ",
                         "href"        => null,
-                        "type"        => "rich_text",
-                        "rich_text"        => [
+                        "type"        => "text",
+                        "text"        => [
                             "content" => "Notion to dos ",
                         ],
                         "annotations" => [
@@ -59,8 +59,8 @@ class ToDoTest extends TestCase
                     [
                         "plain_text"  => "rock!",
                         "href"        => null,
-                        "type"        => "rich_text",
-                        "rich_text"        => [
+                        "type"        => "text",
+                        "text"        => [
                             "content" => "rock!",
                         ],
                         "annotations" => [

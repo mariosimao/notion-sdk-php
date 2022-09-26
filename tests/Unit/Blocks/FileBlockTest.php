@@ -107,7 +107,7 @@ class FileBlockTest extends TestCase
         $file = File::createExternal("https://my-site.com/file.doc");
         $block = FileBlock::create($file);
 
-        $this->expectException(NotionException::class);
+        $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren();
     }

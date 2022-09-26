@@ -18,7 +18,7 @@ class UsersTest extends TestCase
         $client = Notion::create($token);
 
         $user = $client->users()->me();
-        $sameUser = $client->users()->find($user->id());
+        $sameUser = $client->users()->find($user->id);
 
         $this->assertTrue($user->isBot());
         $this->assertEquals($user, $sameUser);

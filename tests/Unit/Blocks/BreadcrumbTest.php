@@ -74,7 +74,7 @@ class BreadcrumbTest extends TestCase
     {
         $block = Breadcrumb::create();
 
-        $this->expectException(NotionException::class);
+        $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren();
     }

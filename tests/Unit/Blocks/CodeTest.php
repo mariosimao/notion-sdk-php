@@ -36,8 +36,8 @@ class CodeTest extends TestCase
                     [
                         "plain_text"  => "<?php\necho 'Hello World!';",
                         "href"        => null,
-                        "type"        => "rich_text",
-                        "rich_text"        => [
+                        "type"        => "text",
+                        "text"        => [
                             "content" => "<?php\necho 'Hello World!';",
                         ],
                         "annotations" => [
@@ -157,7 +157,7 @@ class CodeTest extends TestCase
     {
         $block = Code::create();
 
-        $this->expectException(NotionException::class);
+        $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren();
     }
