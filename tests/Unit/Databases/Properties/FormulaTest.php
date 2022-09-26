@@ -2,8 +2,9 @@
 
 namespace Notion\Test\Unit\Databases\Properties;
 
-use Notion\Databases\Properties\Factory;
+use Notion\Databases\Properties\PropertyFactory;
 use Notion\Databases\Properties\Formula;
+use Notion\Databases\Properties\PropertyType;
 use PHPUnit\Framework\TestCase;
 
 class FormulaTest extends TestCase
@@ -13,17 +14,17 @@ class FormulaTest extends TestCase
         $expression = "if(prop(\"In stock\"), 0, prop(\"Price\"))";
         $formula = Formula::create("Dummy prop name", $expression);
 
-        $this->assertEquals("Dummy prop name", $formula->property()->name());
-        $this->assertTrue($formula->property()->isFormula());
-        $this->assertEquals($expression, $formula->expression());
+        $this->assertEquals("Dummy prop name", $formula->metadata()->name);
+        $this->assertEquals(PropertyType::Formula, $formula->metadata()->type);
+        $this->assertEquals($expression, $formula->expression);
     }
 
     public function test_change_expression(): void
     {
         $expression = "if(prop(\"In stock\"), 0, prop(\"Price\"))";
-        $formula = Formula::create()->withExpression($expression);
+        $formula = Formula::create()->changeExpression($expression);
 
-        $this->assertEquals($expression, $formula->expression());
+        $this->assertEquals($expression, $formula->expression);
     }
 
     public function test_array_conversion(): void
@@ -37,7 +38,7 @@ class FormulaTest extends TestCase
             ],
         ];
         $formula = Formula::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $formula->toArray());
         $this->assertEquals($array, $fromFactory->toArray());

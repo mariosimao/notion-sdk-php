@@ -14,39 +14,34 @@ namespace Notion\Databases\Properties;
  */
 class Files implements PropertyInterface
 {
-    private const TYPE = Property::TYPE_FILES;
-
-    private Property $property;
-
-    private function __construct(Property $property)
-    {
-        $this->property = $property;
-    }
+    private function __construct(
+        private readonly PropertyMetadata $metadata,
+    ) {}
 
     public static function create(string $propertyName = "Files"): self
     {
-        $property = Property::create("", $propertyName, self::TYPE);
+        $metadata = PropertyMetadata::create("", $propertyName, PropertyType::Files);
 
-        return new self($property);
+        return new self($metadata);
     }
 
-    public function property(): Property
+    public function metadata(): PropertyMetadata
     {
-        return $this->property;
+        return $this->metadata;
     }
 
     public static function fromArray(array $array): self
     {
         /** @psalm-var FilesJson $array */
-        $property = Property::fromArray($array);
+        $metadata = PropertyMetadata::fromArray($array);
 
-        return new self($property);
+        return new self($metadata);
     }
 
     public function toArray(): array
     {
-        $array = $this->property->toArray();
-        $array[self::TYPE] = new \stdClass();
+        $array = $this->metadata->toArray();
+        $array["files"] = new \stdClass();
 
         return $array;
     }

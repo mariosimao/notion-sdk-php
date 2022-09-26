@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Unit\Databases\Query;
 
+use Notion\Databases\Query\Operator;
 use Notion\Databases\Query\PeopleFilter;
 use PHPUnit\Framework\TestCase;
 
@@ -12,7 +13,7 @@ class PeopleFilterTest extends TestCase
         $filter = PeopleFilter::property("Friends");
 
         $this->assertSame("Friends", $filter->propertyName());
-        $this->assertSame("is_not_empty", $filter->operator());
+        $this->assertSame(Operator::IsNotEmpty, $filter->operator());
         $this->assertTrue($filter->value());
     }
 
@@ -36,7 +37,7 @@ class PeopleFilterTest extends TestCase
             ->contains("7b23ad4e145c41aea5604374406c2bc0");
 
         $this->assertSame("Friends", $filter->propertyName());
-        $this->assertSame("contains", $filter->operator());
+        $this->assertSame(Operator::Contains, $filter->operator());
         $this->assertSame("7b23ad4e145c41aea5604374406c2bc0", $filter->value());
 
         $expected = [

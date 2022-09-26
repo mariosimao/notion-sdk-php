@@ -2,8 +2,9 @@
 
 namespace Notion\Test\Unit\Databases\Properties;
 
-use Notion\Databases\Properties\Factory;
+use Notion\Databases\Properties\PropertyFactory;
 use Notion\Databases\Properties\Files;
+use Notion\Databases\Properties\PropertyType;
 use PHPUnit\Framework\TestCase;
 
 class FilesTest extends TestCase
@@ -12,8 +13,8 @@ class FilesTest extends TestCase
     {
         $files = Files::create("Dummy prop name");
 
-        $this->assertEquals("Dummy prop name", $files->property()->name());
-        $this->assertTrue($files->property()->isFiles());
+        $this->assertEquals("Dummy prop name", $files->metadata()->name);
+        $this->assertEquals(PropertyType::Files, $files->metadata()->type);
     }
 
     public function test_array_conversion(): void
@@ -25,7 +26,7 @@ class FilesTest extends TestCase
             "files" => new \stdClass(),
         ];
         $files = Files::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $files->toArray());
         $this->assertEquals($array, $fromFactory->toArray());

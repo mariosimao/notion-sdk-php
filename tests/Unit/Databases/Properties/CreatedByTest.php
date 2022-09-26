@@ -2,8 +2,9 @@
 
 namespace Notion\Test\Unit\Databases\Properties;
 
-use Notion\Databases\Properties\Factory;
+use Notion\Databases\Properties\PropertyFactory;
 use Notion\Databases\Properties\CreatedBy;
+use Notion\Databases\Properties\PropertyType;
 use PHPUnit\Framework\TestCase;
 
 class CreatedByTest extends TestCase
@@ -12,8 +13,8 @@ class CreatedByTest extends TestCase
     {
         $createdBy = CreatedBy::create("Dummy prop name");
 
-        $this->assertEquals("Dummy prop name", $createdBy->property()->name());
-        $this->assertTrue($createdBy->property()->isCreatedBy());
+        $this->assertEquals("Dummy prop name", $createdBy->metadata()->name);
+        $this->assertEquals(PropertyType::CreatedBy, $createdBy->metadata()->type);
     }
 
     public function test_array_conversion(): void
@@ -25,7 +26,7 @@ class CreatedByTest extends TestCase
             "created_by" => new \stdClass(),
         ];
         $createdBy = CreatedBy::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $createdBy->toArray());
         $this->assertEquals($array, $fromFactory->toArray());

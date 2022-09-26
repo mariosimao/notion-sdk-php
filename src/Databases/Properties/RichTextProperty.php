@@ -3,24 +3,24 @@
 namespace Notion\Databases\Properties;
 
 /**
- * @psalm-type TitleJson = array{
- *      id: "title",
+ * @psalm-type RichTextJson = array{
+ *      id: string,
  *      name: string,
- *      type: "title",
- *      title: array<empty, empty>,
+ *      type: "rich_text",
+ *      rich_text: array<empty, empty>,
  * }
  *
  * @psalm-immutable
  */
-class Title implements PropertyInterface
+class RichTextProperty implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,
     ) {}
 
-    public static function create(string $propertyName = "Title"): self
+    public static function create(string $propertyName = "Text"): self
     {
-        $metadata = PropertyMetadata::create("", $propertyName, PropertyType::Title);
+        $metadata = PropertyMetadata::create("", $propertyName, PropertyType::RichText);
 
         return new self($metadata);
     }
@@ -32,7 +32,7 @@ class Title implements PropertyInterface
 
     public static function fromArray(array $array): self
     {
-        /** @psalm-var TitleJson $array */
+        /** @psalm-var RichTextJson $array */
         $metadata = PropertyMetadata::fromArray($array);
 
         return new self($metadata);
@@ -41,7 +41,7 @@ class Title implements PropertyInterface
     public function toArray(): array
     {
         $array = $this->metadata->toArray();
-        $array["title"] = new \stdClass();
+        $array["rich_text"] = new \stdClass();
 
         return $array;
     }

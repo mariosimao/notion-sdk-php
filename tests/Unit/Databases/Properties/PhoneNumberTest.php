@@ -2,8 +2,9 @@
 
 namespace Notion\Test\Unit\Databases\Properties;
 
-use Notion\Databases\Properties\Factory;
+use Notion\Databases\Properties\PropertyFactory;
 use Notion\Databases\Properties\PhoneNumber;
+use Notion\Databases\Properties\PropertyType;
 use PHPUnit\Framework\TestCase;
 
 class PhoneNumberTest extends TestCase
@@ -12,8 +13,8 @@ class PhoneNumberTest extends TestCase
     {
         $phoneNumber = PhoneNumber::create("Dummy prop name");
 
-        $this->assertEquals("Dummy prop name", $phoneNumber->property()->name());
-        $this->assertTrue($phoneNumber->property()->isPhoneNumber());
+        $this->assertEquals("Dummy prop name", $phoneNumber->metadata()->name);
+        $this->assertEquals(PropertyType::PhoneNumber, $phoneNumber->metadata()->type);
     }
 
     public function test_array_conversion(): void
@@ -25,7 +26,7 @@ class PhoneNumberTest extends TestCase
             "phone_number" => new \stdClass(),
         ];
         $phoneNumber = PhoneNumber::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $phoneNumber->toArray());
         $this->assertEquals($array, $fromFactory->toArray());

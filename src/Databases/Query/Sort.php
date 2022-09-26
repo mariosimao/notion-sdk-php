@@ -13,28 +13,19 @@ class Sort
     private const ORDER_ASCENDING = "ascending";
     private const ORDER_DESCENDING = "descending";
 
-    /** @var self::TYPE_* */
-    private string $type;
-
-    private string $property;
-
-    /** @var self::ORDER_* */
-    private string $direction;
-
     /**
-     * @param self::TYPE_* $type
-     * @param self::ORDER_* $direction
+     * @psalm-param self::TYPE_* $type
+     * @psalm-param self::ORDER_* $direction
      */
-    private function __construct(string $type, string $property, string $direction)
-    {
-        $this->type = $type;
-        $this->property = $property;
-        $this->direction = $direction;
-    }
+    private function __construct(
+        private readonly string $type,
+        private readonly string $propertyName,
+        private readonly string $direction,
+    ) {}
 
-    public static function property(string $property): self
+    public static function property(string $propertyName): self
     {
-        return new self(self::TYPE_PROPERTY, $property, self::ORDER_ASCENDING);
+        return new self(self::TYPE_PROPERTY, $propertyName, self::ORDER_ASCENDING);
     }
 
     public static function createdTime(): self
@@ -49,18 +40,18 @@ class Sort
 
     public function ascending(): self
     {
-        return new self($this->type, $this->property, self::ORDER_ASCENDING);
+        return new self($this->type, $this->propertyName, self::ORDER_ASCENDING);
     }
 
     public function descending(): self
     {
-        return new self($this->type, $this->property, self::ORDER_DESCENDING);
+        return new self($this->type, $this->propertyName, self::ORDER_DESCENDING);
     }
 
     public function toArray(): array
     {
         return [
-            $this->type => $this->property,
+            $this->type => $this->propertyName,
             "direction" => $this->direction,
         ];
     }

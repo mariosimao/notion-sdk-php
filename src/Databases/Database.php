@@ -6,8 +6,9 @@ use DateTimeImmutable;
 use Notion\Common\Date;
 use Notion\Common\Emoji;
 use Notion\Common\File;
+use Notion\Common\Icon;
 use Notion\Common\RichText;
-use Notion\Databases\Properties\Factory;
+use Notion\Databases\Properties\PropertyFactory;
 use Notion\Databases\Properties\PropertyInterface;
 use Notion\Databases\Properties\Title;
 use Notion\NotionException;
@@ -16,7 +17,7 @@ use Notion\NotionException;
  * @psalm-import-type EmojiJson from \Notion\Common\Emoji
  * @psalm-import-type FileJson from \Notion\Common\File
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
- * @psalm-import-type PropertyJson from \Notion\Databases\Properties\Property
+ * @psalm-import-type PropertyMetadataJson from \Notion\Databases\Properties\PropertyMetadata
  * @psalm-import-type DatabaseParentJson from DatabaseParent
  *
  * @psalm-type DatabaseJson = array{
@@ -26,7 +27,7 @@ use Notion\NotionException;
  *      title: list<RichTextJson>,
  *      icon: EmojiJson|FileJson|null,
  *      cover: FileJson|null,
- *      properties: array<string, PropertyJson>,
+ *      properties: array<string, PropertyMetadataJson>,
  *      parent: DatabaseParentJson,
  *      url: string,
  * }
@@ -35,32 +36,20 @@ use Notion\NotionException;
  */
 class Database
 {
-    private string $id;
-    private DateTimeImmutable $createdTime;
-    private DateTimeImmutable $lastEditedTime;
-    /** @var list<RichText> */
-    private array $title;
-    private Emoji|File|null $icon;
-    private File|null $cover;
-    /** @var array<string, PropertyInterface> */
-    private array $properties;
-    private DatabaseParent $parent;
-    private string $url;
-
     /**
-     * @param list<RichText> $title
+     * @param RichText[] $title
      * @param array<string, PropertyInterface> $properties
      */
     private function __construct(
-        string $id,
-        DateTimeImmutable $createdTime,
-        DateTimeImmutable $lastEditedTime,
-        array $title,
-        Emoji|File|null $icon,
-        File|null $cover,
-        array $properties,
-        DatabaseParent $parent,
-        string $url,
+        public readonly string $id,
+        public readonly DateTimeImmutable $createdTime,
+        public readonly DateTimeImmutable $lastEditedTime,
+        public readonly array $title,
+        public readonly Icon|null $icon,
+        public readonly File|null $cover,
+        public readonly array $properties,
+        public readonly DatabaseParent $parent,
+        public readonly string $url,
     ) {
         if ($cover !== null && $cover->isInternal()) {
             throw new \Exception("Internal cover image is not supported");
@@ -69,16 +58,6 @@ class Database
         if (!$this->hasTitleProperty($properties)) {
             throw new NotionException("A database must have a title property", "validation_error");
         }
-
-        $this->id = $id;
-        $this->createdTime = $createdTime;
-        $this->lastEditedTime = $lastEditedTime;
-        $this->title = $title;
-        $this->icon = $icon;
-        $this->cover = $cover;
-        $this->properties = $properties;
-        $this->parent = $parent;
-        $this->url = $url;
     }
 
     public static function create(DatabaseParent $parent): self
@@ -119,12 +98,14 @@ class Database
 
             if ($iconType === "emoji") {
                 /** @psalm-var EmojiJson $iconArray */
-                $icon = Emoji::fromArray($iconArray);
+                $emoji = Emoji::fromArray($iconArray);
+                $icon = Icon::fromEmoji($emoji);
             }
 
             if ($iconType === "file" || $iconType === "external") {
                 /** @psalm-var FileJson $iconArray */
-                $icon = File::fromArray($iconArray);
+                $file = File::fromArray($iconArray);
+                $icon = Icon::fromFile($file);
             }
         }
 
@@ -134,7 +115,7 @@ class Database
 
         $properties = [];
         foreach ($array["properties"] as $propertyName => $propertyArray) {
-            $properties[$propertyName] = Factory::fromArray($propertyArray);
+            $properties[$propertyName] = PropertyFactory::fromArray($propertyArray);
         }
 
         return new self(
@@ -166,82 +147,15 @@ class Database
         ];
     }
 
-    public function id(): string
-    {
-        return $this->id;
-    }
-
-    public function createdTime(): DateTimeImmutable
-    {
-        return $this->createdTime;
-    }
-
-    public function lastEditedTime(): DateTimeImmutable
-    {
-        return $this->lastEditedTime;
-    }
-
-    /** @return list<RichText> */
-    public function title(): array
-    {
-        return $this->title;
-    }
-
-    public function icon(): Emoji|File|null
-    {
-        return $this->icon;
-    }
-
-    /**
-     * @psalm-assert-if-true Emoji $this->icon
-     * @psalm-assert-if-true Emoji $this->icon()
-     */
-    public function iconIsEmoji(): bool
-    {
-        return $this->icon::class === Emoji::class;
-    }
-
-    /**
-     * @psalm-assert-if-true File $this->icon
-     * @psalm-assert-if-true File $this->icon()
-     */
-    public function iconIsFile(): bool
-    {
-        return $this->icon::class === File::class;
-    }
-
     /**
      * @psalm-assert-if-false null $this->icon
-     * @psalm-assert-if-false null $this->icon()
      */
     public function hasIcon(): bool
     {
         return $this->icon !== null;
     }
 
-    public function cover(): File|null
-    {
-        return $this->cover;
-    }
-
-    /** @return array<string, PropertyInterface> */
-    public function properties(): array
-    {
-        return $this->properties;
-    }
-
-    public function parent(): DatabaseParent
-    {
-        return $this->parent;
-    }
-
-    public function url(): string
-    {
-        return $this->url;
-    }
-
-    /** @param list<RichText> $title */
-    public function withAdvancedTitle(array $title): self
+    public function changeAdvancedTitle(RichText ...$title): self
     {
         return new self(
             $this->id,
@@ -256,7 +170,7 @@ class Database
         );
     }
 
-    public function withIcon(Emoji|File $icon): self
+    public function changeIcon(Icon $icon): self
     {
         return new self(
             $this->id,
@@ -271,7 +185,7 @@ class Database
         );
     }
 
-    public function withoutIcon(): self
+    public function removeIcon(): self
     {
         return new self(
             $this->id,
@@ -286,7 +200,7 @@ class Database
         );
     }
 
-    public function withCover(File $cover): self
+    public function changeCover(File $cover): self
     {
         return new self(
             $this->id,
@@ -301,7 +215,7 @@ class Database
         );
     }
 
-    public function withoutCover(): self
+    public function removeCover(): self
     {
         return new self(
             $this->id,
@@ -319,7 +233,7 @@ class Database
     public function addProperty(PropertyInterface $property): self
     {
         $properties = $this->properties;
-        $name = $property->property()->name();
+        $name = $property->metadata()->name;
         $properties[$name] = $property;
 
         return new self(
@@ -336,7 +250,7 @@ class Database
     }
 
     /** @param array<string, PropertyInterface> $properties */
-    public function withProperties(array $properties): self
+    public function changeProperties(array $properties): self
     {
         return new self(
             $this->id,
@@ -351,7 +265,7 @@ class Database
         );
     }
 
-    public function withParent(DatabaseParent $parent): self
+    public function changeParent(DatabaseParent $parent): self
     {
         return new self(
             $this->id,

@@ -96,7 +96,7 @@ class Client
         unset($data["created_time"]);
         unset($data["last_edited_time"]);
 
-        $databaseId = $database->id();
+        $databaseId = $database->id;
         $url = "https://api.notion.com/v1/databases/{$databaseId}";
         $request = $this->requestFactory->createRequest("PATCH", $url)
             ->withHeader("Authorization", "Bearer {$this->token}")
@@ -124,7 +124,7 @@ class Client
 
     public function delete(Database $database): void
     {
-        $databaseId = $database->id();
+        $databaseId = $database->id;
         $url = "https://api.notion.com/v1/blocks/{$databaseId}";
         $request = $this->requestFactory->createRequest("DELETE", $url)
             ->withHeader("Authorization", "Bearer {$this->token}")
@@ -146,7 +146,7 @@ class Client
     {
         $data = $query->toArray();
 
-        $databaseId = $database->id();
+        $databaseId = $database->id;
         $url = "https://api.notion.com/v1/databases/{$databaseId}/query";
         $request = $this->requestFactory->createRequest("POST", $url)
             ->withHeader("Authorization", "Bearer {$this->token}")
@@ -173,15 +173,15 @@ class Client
     }
 
     /**
-     * @param list<Sort> $sorts
+     * @param Sort[] $sorts
      *
-     * @return list<Page>
+     * @return Page[]
      */
     public function queryAllPages(Database $database, array $sorts = []): array
     {
         $query = Query::create()
-                    ->withSorts($sorts)
-                    ->withPageSize(Query::MAX_PAGE_SIZE);
+                    ->changeSorts(...$sorts)
+                    ->changePageSize(Query::MAX_PAGE_SIZE);
 
         $pages = [];
         $startCursor = null;
@@ -189,14 +189,14 @@ class Client
 
         while ($hasMore) {
             if ($startCursor !== null) {
-                $query = $query->withStartCursor($startCursor);
+                $query = $query->changeStartCursor($startCursor);
             }
 
             $result = $this->query($database, $query);
 
-            $pages = array_merge($pages, $result->pages());
-            $hasMore = $result->hasMore();
-            $startCursor = $result->nextCursor();
+            $pages = array_merge($pages, $result->pages);
+            $hasMore = $result->hasMore;
+            $startCursor = $result->nextCursor;
         }
 
         return $pages;

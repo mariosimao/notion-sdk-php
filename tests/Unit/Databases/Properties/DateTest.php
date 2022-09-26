@@ -2,18 +2,19 @@
 
 namespace Notion\Test\Unit\Databases\Properties;
 
-use Notion\Databases\Properties\Factory;
+use Notion\Databases\Properties\PropertyFactory;
 use Notion\Databases\Properties\Date;
+use Notion\Databases\Properties\PropertyType;
 use PHPUnit\Framework\TestCase;
 
 class DateTest extends TestCase
 {
     public function test_create(): void
     {
-        $title = Date::create("Dummy prop name");
+        $date = Date::create("Dummy prop name");
 
-        $this->assertEquals("Dummy prop name", $title->property()->name());
-        $this->assertTrue($title->property()->isDate());
+        $this->assertEquals("Dummy prop name", $date->metadata()->name);
+        $this->assertEquals(PropertyType::Date, $date->metadata()->type);
     }
 
     public function test_array_conversion(): void
@@ -25,7 +26,7 @@ class DateTest extends TestCase
             "date" => new \stdClass(),
         ];
         $date = Date::fromArray($array);
-        $fromFactory = Factory::fromArray($array);
+        $fromFactory = PropertyFactory::fromArray($array);
 
         $this->assertEquals($array, $date->toArray());
         $this->assertEquals($array, $fromFactory->toArray());

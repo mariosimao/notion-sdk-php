@@ -5,38 +5,29 @@ namespace Notion\Databases\Query;
 /** @psalm-immutable */
 class CheckboxFilter implements Filter, Condition
 {
-    private const OPERATOR_EQUALS = "equals";
-    private const OPERATOR_DOES_NOT_EQUAL = "does_not_equal";
+    private static array $validOperators = [
+        Operator::Equals,
+        Operator::DoesNotEqual,
+    ];
 
-    private string $propertyType = "property";
-    private string $propertyName;
-    /** @var self::OPERATOR_* */
-    private string $operator;
-    private bool $value;
-
-    /** @param self::OPERATOR_* $operator */
     private function __construct(
-        string $propertyName,
-        string $operator,
-        bool $value,
+        private readonly string $propertyName,
+        private readonly Operator $operator,
+        private readonly bool $value,
     ) {
-        $this->propertyName = $propertyName;
-        $this->operator = $operator;
-        $this->value = $value;
+        if (!in_array($operator, self::$validOperators)) {
+            throw new \Exception("Invalid operator");
+        }
     }
 
     public static function property(string $propertyName): self
     {
-        return new self(
-            $propertyName,
-            self::OPERATOR_EQUALS,
-            true
-        );
+        return new self($propertyName, Operator::Equals, true);
     }
 
     public function propertyType(): string
     {
-        return $this->propertyType;
+        return "property";
     }
 
     public function propertyName(): string
@@ -44,8 +35,7 @@ class CheckboxFilter implements Filter, Condition
         return $this->propertyName;
     }
 
-    /** @return static::OPERATOR_* */
-    public function operator(): string
+    public function operator(): Operator
     {
         return $this->operator;
     }
@@ -60,18 +50,18 @@ class CheckboxFilter implements Filter, Condition
         return [
             $this->propertyType() => $this->propertyName,
             "checkbox" => [
-                $this->operator => $this->value
+                $this->operator->value => $this->value
             ],
         ];
     }
 
     public function equals(bool $value): self
     {
-        return new self($this->propertyName, self::OPERATOR_EQUALS, $value);
+        return new self($this->propertyName, Operator::Equals, $value);
     }
 
     public function doesNotEqual(bool $value): self
     {
-        return new self($this->propertyName, self::OPERATOR_DOES_NOT_EQUAL, $value);
+        return new self($this->propertyName, Operator::DoesNotEqual, $value);
     }
 }

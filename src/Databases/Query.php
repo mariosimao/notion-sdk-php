@@ -11,40 +11,26 @@ class Query
 {
     public const MAX_PAGE_SIZE = 100;
 
-    private Filter|null $filter;
-
-    /** @var list<Sort> */
-    private array $sorts;
-
-    private string|null $startCursor;
-
-    private int $pageSize;
-
-    /** @param list<Sort> $sorts */
+    /** @param Sort[] $sorts */
     private function __construct(
-        Filter|null $filter,
-        array $sorts,
-        string|null $startCursor,
-        int $pageSize
-    ) {
-        $this->filter = $filter;
-        $this->sorts = $sorts;
-        $this->startCursor = $startCursor;
-        $this->pageSize = $pageSize;
-    }
+        public readonly Filter|null $filter,
+        public readonly array $sorts,
+        public readonly string|null $startCursor,
+        public readonly int $pageSize,
+    ) {}
 
     public static function create(): self
     {
         return new self(null, [], null, self::MAX_PAGE_SIZE);
     }
 
-    public function withFilter(Filter $filter): self
+    public function changeFilter(Filter $filter): self
     {
         return new self($filter, $this->sorts, $this->startCursor, $this->pageSize);
     }
 
-    /** Add new sort with lowest priority */
-    public function withAddedSort(Sort $sort): self
+    /** Add new sort change lowest priority */
+    public function changeAddedSort(Sort $sort): self
     {
         $sorts = $this->sorts;
         $sorts[] = $sort;
@@ -52,49 +38,24 @@ class Query
         return new self($this->filter, $sorts, $this->startCursor, $this->pageSize);
     }
 
-    /**
-     * Replace all sorts
-     *
-     * @param list<Sort> $sorts
-     */
-    public function withSorts(array $sorts): self
+    /** Replace all sorts */
+    public function changeSorts(Sort ...$sorts): self
     {
         return new self($this->filter, $sorts, $this->startCursor, $this->pageSize);
     }
 
-    public function withStartCursor(string $startCursor): self
+    public function changeStartCursor(string $startCursor): self
     {
         return new self($this->filter, $this->sorts, $startCursor, $this->pageSize);
     }
 
-    public function withPageSize(int $pageSize): self
+    public function changePageSize(int $pageSize): self
     {
         if ($pageSize < 0 || $pageSize > self::MAX_PAGE_SIZE) {
             throw new Exception("Maximum page size: " . self::MAX_PAGE_SIZE);
         }
 
         return new self($this->filter, $this->sorts, $this->startCursor, $pageSize);
-    }
-
-    public function filter(): Filter|null
-    {
-        return $this->filter;
-    }
-
-    /** @return list<Sort> */
-    public function sorts(): array
-    {
-        return $this->sorts;
-    }
-
-    public function startCursor(): string|null
-    {
-        return $this->startCursor;
-    }
-
-    public function pageSize(): int
-    {
-        return $this->pageSize;
     }
 
     public function toArray(): array
