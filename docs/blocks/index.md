@@ -20,7 +20,7 @@ $p->metadta->hasChildren;                     // false
 ## Available blocks:
 
 - [Bookmark](./Bookmark)
-- Breadcrumb
+- [Breadcrumb](./Breadcrumb)
 - [BulletedListItem](./BulletedListItem)
 - Callout
 - ChildDatabase
