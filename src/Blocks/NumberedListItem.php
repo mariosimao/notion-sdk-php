@@ -95,8 +95,7 @@ class NumberedListItem implements BlockInterface
         return $this->metadata;
     }
 
-    /** @param RichText[] $text */
-    public function changeText(array $text): self
+    public function changeText(RichText ...$text): self
     {
         return new self($this->metadata->update(), $text, $this->children);
     }
