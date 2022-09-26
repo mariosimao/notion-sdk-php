@@ -13,21 +13,13 @@ use Psr\Http\Message\RequestFactoryInterface;
 
 class Notion
 {
-    public const NOTION_VERSION = "2022-02-22";
-
-    private ClientInterface $psrClient;
-    private RequestFactoryInterface $requestFactory;
-    private string $token;
+    public const NOTION_VERSION = "2022-06-28";
 
     private function __construct(
-        ClientInterface $psrClient,
-        RequestFactoryInterface $requestFactory,
-        string $token,
-    ) {
-        $this->psrClient = $psrClient;
-        $this->requestFactory = $requestFactory;
-        $this->token = $token;
-    }
+        private readonly ClientInterface $psrClient,
+        private readonly RequestFactoryInterface $requestFactory,
+        private readonly string $token,
+    ) {}
 
     public static function create(string $token): self
     {
