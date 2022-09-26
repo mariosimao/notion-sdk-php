@@ -2,7 +2,7 @@
 
 namespace Notion\Blocks;
 
-use Notion\Blocks\Exceptions\ColumnException;
+use Notion\Exceptions\ColumnException;
 
 /**
  * @psalm-import-type BlockMetadataJson from BlockMetadata

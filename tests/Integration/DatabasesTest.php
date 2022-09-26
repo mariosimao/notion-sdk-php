@@ -12,6 +12,7 @@ use Notion\Databases\Query;
 use Notion\Databases\Query\CompoundFilter;
 use Notion\Databases\Query\DateFilter;
 use Notion\Databases\Query\SelectFilter;
+use Notion\Exceptions\ApiException;
 use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
@@ -89,7 +90,7 @@ class DatabasesTest extends TestCase
         }
         $client = Notion::create($token);
 
-        $this->expectException(NotionException::class);
+        $this->expectException(ApiException::class);
         $this->expectErrorMessage("Could not find database with ID: 60e79d42-4742-41ca-8d70-cc51660cbd3c.");
         $client->databases()->find("60e79d42-4742-41ca-8d70-cc51660cbd3c");
     }
@@ -104,7 +105,7 @@ class DatabasesTest extends TestCase
 
         $database = Database::create(DatabaseParent::page("60e79d42-4742-41ca-8d70-cc51660cbd3c"));
 
-        $this->expectException(NotionException::class);
+        $this->expectException(ApiException::class);
         $this->expectErrorMessage("Could not find page with ID: 60e79d42-4742-41ca-8d70-cc51660cbd3c.");
         $client->databases()->create($database);
     }
@@ -124,7 +125,7 @@ class DatabasesTest extends TestCase
 
         $client->databases()->delete($database);
 
-        $this->expectException(NotionException::class);
+        $this->expectException(ApiException::class);
         $client->databases()->update($database);
     }
 
@@ -138,7 +139,7 @@ class DatabasesTest extends TestCase
 
         $database = Database::create(DatabaseParent::page(self::DEFAULT_PARENT_ID));
 
-        $this->expectException(NotionException::class);
+        $this->expectException(ApiException::class);
         $client->databases()->delete($database);
     }
 
@@ -210,7 +211,7 @@ class DatabasesTest extends TestCase
         $database = Database::create(DatabaseParent::page("a-page-id"));
         $query = Query::create();
 
-        $this->expectException(NotionException::class);
+        $this->expectException(ApiException::class);
         $client->databases()->query($database, $query);
     }
 }

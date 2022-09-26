@@ -4,7 +4,7 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\EquationBlock;
-use Notion\Blocks\Exceptions\BlockException;
+use Notion\Exceptions\BlockException;
 use Notion\Common\Date;
 use Notion\Common\Equation;
 use Notion\NotionException;

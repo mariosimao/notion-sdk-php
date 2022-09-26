@@ -4,7 +4,7 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Embed;
-use Notion\Blocks\Exceptions\BlockException;
+use Notion\Exceptions\BlockException;
 use Notion\Common\Date;
 use Notion\NotionException;
 use PHPUnit\Framework\TestCase;

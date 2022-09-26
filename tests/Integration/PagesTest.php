@@ -4,6 +4,7 @@ namespace Notion\Test\Integration;
 
 use Notion\Notion;
 use Notion\Common\Emoji;
+use Notion\Exceptions\ApiException;
 use Notion\NotionException;
 use Notion\Pages\Page;
 use Notion\Pages\PageParent;
@@ -59,7 +60,7 @@ class PagesTest extends TestCase
         }
         $client = Notion::create($token);
 
-        $this->expectException(NotionException::class);
+        $this->expectException(ApiException::class);
         $this->expectErrorMessage("Could not find page with ID: 60e79d42-4742-41ca-8d70-cc51660cbd3c.");
         $client->pages()->find("60e79d42-4742-41ca-8d70-cc51660cbd3c");
     }
@@ -74,7 +75,7 @@ class PagesTest extends TestCase
 
         $page = Page::create(PageParent::page("60e79d42-4742-41ca-8d70-cc51660cbd3c"));
 
-        $this->expectException(NotionException::class);
+        $this->expectException(ApiException::class);
         $this->expectErrorMessage("Could not find page with ID: 60e79d42-4742-41ca-8d70-cc51660cbd3c.");
         $client->pages()->create($page);
     }
@@ -95,7 +96,7 @@ class PagesTest extends TestCase
 
         $page = $page->changeTitle("Title after deleted");
 
-        $this->expectException(NotionException::class);
+        $this->expectException(ApiException::class);
         $client->pages()->update($page);
     }
 }

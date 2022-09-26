@@ -2,7 +2,7 @@
 
 namespace Notion\Blocks;
 
-use Notion\Blocks\Exceptions\ColumnListException;
+use Notion\Exceptions\ColumnListException;
 use Notion\NotionException;
 
 /**

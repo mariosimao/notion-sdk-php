@@ -3,7 +3,7 @@
 namespace Notion\Blocks;
 
 use DateTimeImmutable;
-use Notion\Blocks\Exceptions\BlockException;
+use Notion\Exceptions\BlockException;
 use Notion\Common\Date;
 
 /**

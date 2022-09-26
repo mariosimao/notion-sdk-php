@@ -3,7 +3,7 @@
 namespace Notion\Blocks;
 
 use Exception;
-use Notion\Blocks\Exceptions\BlockException;
+use Notion\Exceptions\BlockException;
 use Notion\Common\Emoji;
 use Notion\Common\File;
 use Notion\Common\RichText;

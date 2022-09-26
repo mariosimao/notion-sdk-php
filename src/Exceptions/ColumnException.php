@@ -1,6 +1,6 @@
 <?php
 
-namespace Notion\Blocks\Exceptions;
+namespace Notion\Exceptions;
 
 class ColumnException extends BlockException
 {
