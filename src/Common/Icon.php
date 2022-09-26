@@ -2,6 +2,8 @@
 
 namespace Notion\Common;
 
+use Notion\Exceptions\IconException;
+
 class Icon
 {
     private function __construct(
@@ -9,11 +11,11 @@ class Icon
         public readonly File|null $file,
     ) {
         if ($emoji === null && $file === null) {
-            throw new \Exception("Icon must be either emoji or file, not both null.");
+            throw IconException::bothNull();
         }
 
         if ($emoji !== null && $file !== null) {
-            throw new \Exception("Icon must be either emoji or file, not both.");
+            throw IconException::bothSet();
         }
     }
 
