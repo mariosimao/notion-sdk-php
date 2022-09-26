@@ -156,8 +156,16 @@ class Page
         );
     }
 
-    public function changeIcon(Icon $icon): self
+    public function changeIcon(Emoji|File|Icon $icon): self
     {
+        if ($icon instanceof Emoji) {
+            $icon = Icon::fromEmoji($icon);
+        }
+
+        if ($icon instanceof File) {
+            $icon = Icon::fromFile($icon);
+        }
+
         return new self(
             $this->id,
             $this->createdTime,
