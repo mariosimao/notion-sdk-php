@@ -31,7 +31,7 @@ enum CodeLanguage: string
     case Haskell = "haskell";
     case Html = "html";
     case Java = "java";
-    case Javascript = "javaScript";
+    case Javascript = "javascript";
     case Json = "json";
     case Julia = "julia";
     case Kotlin = "kotlin";

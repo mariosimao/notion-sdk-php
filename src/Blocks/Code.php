@@ -115,7 +115,7 @@ class Code implements BlockInterface
         return new self($this->metadata, $this->text, $language);
     }
 
-    public function addCHild(BlockInterface $child): self
+    public function addChild(BlockInterface $child): self
     {
         throw BlockException::noChindrenSupport();
     }
