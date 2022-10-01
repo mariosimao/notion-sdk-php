@@ -26,7 +26,7 @@ class ChildDatabaseTest extends TestCase
 
         $childDatabase = ChildDatabase::fromArray($array);
 
-        $this->assertEquals("Database title", $childDatabase->databaseTitle);
+        $this->assertEquals("Database title", $childDatabase->title);
         $this->assertFalse($childDatabase->metadata()->archived);
 
         $this->assertEquals($childDatabase, BlockFactory::fromArray($array));
