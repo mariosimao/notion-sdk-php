@@ -4,14 +4,17 @@ namespace Notion\Blocks;
 
 use Notion\Exceptions\BlockException;
 use Notion\Common\RichText;
+use Notion\Exceptions\HeadingException;
 
 /**
  * @psalm-import-type BlockMetadataJson from BlockMetadata
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
  *
- * @psalm-type Heading3Json = array{
+ * @psalm-type Heading1Json = array{
  *      heading_3: array{
- *          rich_text: list<RichTextJson>,
+ *          rich_text: RichTextJson[],
+ *          is_toggleable: bool,
+ *          children?: BlockMetadataJson[]
  *      },
  * }
  *
@@ -21,10 +24,13 @@ class Heading3 implements BlockInterface
 {
     /**
      * @param RichText[] $text
+     * @param BlockInterface[]|null $children
      */
     private function __construct(
         private readonly BlockMetadata $metadata,
-        public readonly array $text
+        public readonly array $text,
+        public readonly bool $isToggleable,
+        public readonly array|null $children,
     ) {
         $metadata->checkType(BlockType::Heading3);
     }
@@ -33,7 +39,7 @@ class Heading3 implements BlockInterface
     {
         $block = BlockMetadata::create(BlockType::Heading3);
 
-        return new self($block, $text);
+        return new self($block, $text, false, []);
     }
 
     public static function fromString(string $content): self
@@ -41,7 +47,7 @@ class Heading3 implements BlockInterface
         $block = BlockMetadata::create(BlockType::Heading3);
         $text = [ RichText::createText($content) ];
 
-        return new self($block, $text);
+        return new self($block, $text, false, []);
     }
 
     public static function fromArray(array $array): self
@@ -49,12 +55,19 @@ class Heading3 implements BlockInterface
         /** @psalm-var BlockMetadataJson $array */
         $block = BlockMetadata::fromArray($array);
 
-        /** @psalm-var Heading3Json $array */
+        /** @psalm-var Heading1Json $array */
         $heading = $array["heading_3"];
 
         $text = array_map(fn($t) => RichText::fromArray($t), $heading["rich_text"]);
 
-        return new self($block, $text);
+        $isToggleable = $heading["is_toggleable"];
+
+        $children = null;
+        if ($isToggleable) {
+            $children = array_map(fn($b) => BlockFactory::fromArray($b), $heading["children"] ?? []);
+        }
+
+        return new self($block, $text, $isToggleable, $children);
     }
 
     public function toArray(): array
@@ -63,6 +76,8 @@ class Heading3 implements BlockInterface
 
         $array["heading_3"] = [
             "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "is_toggleable" => $this->isToggleable,
+            "children" => array_map(fn($b) => $b->toArray(), $this->children ?? [])
         ];
 
         return $array;
@@ -74,6 +89,7 @@ class Heading3 implements BlockInterface
         return [
             "heading_3" => [
                 "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+                "is_toggleable" => $this->isToggleable,
             ],
             "archived" => $this->metadata()->archived,
         ];
@@ -96,7 +112,7 @@ class Heading3 implements BlockInterface
 
     public function changeText(RichText ...$text): self
     {
-        return new self($this->metadata, $text);
+        return new self($this->metadata, $text, $this->isToggleable, $this->children);
     }
 
     public function addText(RichText $text): self
@@ -104,17 +120,44 @@ class Heading3 implements BlockInterface
         $texts = $this->text;
         $texts[] = $text;
 
-        return new self($this->metadata, $texts);
+        return new self($this->metadata, $texts, $this->isToggleable, $this->children);
+    }
+
+    public function toggllify(): self
+    {
+        return new self($this->metadata, $this->text, true, []);
+    }
+
+    public function untogglify(): self
+    {
+        if (!empty($this->children)) {
+            throw HeadingException::untogglifyWithChildren();
+        }
+
+        return new self($this->metadata, $this->text, false, null);
     }
 
     public function addChild(BlockInterface $child): self
     {
-        throw BlockException::noChindrenSupport();
+        if (!$this->isToggleable) {
+            throw BlockException::noChindrenSupport();
+        }
+
+        return new self(
+            $this->metadata,
+            $this->text,
+            $this->isToggleable,
+            [...$this->children, $child],
+        );
     }
 
     public function changeChildren(BlockInterface ...$children): self
     {
-        throw BlockException::noChindrenSupport();
+        if (!$this->isToggleable) {
+            throw BlockException::noChindrenSupport();
+        }
+
+        return new self($this->metadata, $this->text, $this->isToggleable, $children);
     }
 
     public function archive(): BlockInterface
@@ -122,6 +165,8 @@ class Heading3 implements BlockInterface
         return new self(
             $this->metadata->archive(),
             $this->text,
+            $this->isToggleable,
+            $this->children,
         );
     }
 }
