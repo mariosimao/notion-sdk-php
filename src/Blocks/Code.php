@@ -12,7 +12,8 @@ use Notion\NotionException;
  *
  * @psalm-type CodeJson = array{
  *      code: array{
- *          rich_text: list<RichTextJson>,
+ *          rich_text: RichTextJson[],
+ *          caption: RichTextJson[],
  *          language: string,
  *      },
  * }
@@ -21,11 +22,15 @@ use Notion\NotionException;
  */
 class Code implements BlockInterface
 {
-    /** @param RichText[] $text */
+    /**
+     * @param RichText[] $text
+     * @param RichText[] $caption
+     */
     private function __construct(
         private readonly BlockMetadata $metadata,
         public readonly array $text,
         public readonly CodeLanguage $language,
+        public readonly array $caption,
     ) {
         $metadata->checkType(BlockType::Code);
     }
@@ -37,7 +42,7 @@ class Code implements BlockInterface
     ): self {
         $metadata = BlockMetadata::create(BlockType::Code);
 
-        return new self($metadata, $text, $language);
+        return new self($metadata, $text, $language, []);
     }
 
     public static function createFromString(
@@ -47,7 +52,7 @@ class Code implements BlockInterface
         $metadata = BlockMetadata::create(BlockType::Code);
         $text = [ RichText::createText($code) ];
 
-        return new self($metadata, $text, $language);
+        return new self($metadata, $text, $language, []);
     }
 
     public static function fromArray(array $array): self
@@ -58,9 +63,10 @@ class Code implements BlockInterface
         /** @psalm-var CodeJson $array */
         $code = $array["code"];
         $text = array_map(fn($t) => RichText::fromArray($t), $code["rich_text"]);
+        $caption = array_map(fn($t) => RichText::fromArray($t), $code["caption"]);
         $language = CodeLanguage::from($code["language"]);
 
-        return new self($metadata, $text, $language);
+        return new self($metadata, $text, $language, $caption);
     }
 
     public function toArray(): array
@@ -69,6 +75,7 @@ class Code implements BlockInterface
 
         $array["code"] = [
             "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "caption"   => array_map(fn(RichText $t) => $t->toArray(), $this->caption),
             "language"  => $this->language->value,
         ];
 
@@ -85,8 +92,9 @@ class Code implements BlockInterface
     {
         return [
             "code" => [
-                "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
-                "language" => $this->language,
+                "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+                "caption" => array_map(fn(RichText $t) => $t->toArray(), $this->caption),
+                "language"  => $this->language,
             ],
             "archived" => $this->metadata()->archived,
         ];
@@ -99,7 +107,7 @@ class Code implements BlockInterface
 
     public function changeText(RichText ...$text): self
     {
-        return new self($this->metadata, $text, $this->language);
+        return new self($this->metadata, $text, $this->language, $this->caption);
     }
 
     public function addText(RichText $text): self
@@ -107,15 +115,20 @@ class Code implements BlockInterface
         $texts = $this->text;
         $texts[] = $text;
 
-        return new self($this->metadata, $texts, $this->language);
+        return new self($this->metadata, $texts, $this->language, $this->caption);
     }
 
     public function changeLanguage(CodeLanguage $language): self
     {
-        return new self($this->metadata, $this->text, $language);
+        return new self($this->metadata, $this->text, $language, $this->caption);
     }
 
-    public function addCHild(BlockInterface $child): self
+    public function changeCaption(RichText ...$caption): self
+    {
+        return new self($this->metadata, $this->text, $this->language, $caption);
+    }
+
+    public function addChild(BlockInterface $child): self
     {
         throw BlockException::noChindrenSupport();
     }
@@ -131,6 +144,7 @@ class Code implements BlockInterface
             $this->metadata->archive(),
             $this->text,
             $this->language,
+            $this->caption,
         );
     }
 }
