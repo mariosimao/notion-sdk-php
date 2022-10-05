@@ -26,7 +26,7 @@ use Notion\NotionException;
  *      created_time: string,
  *      last_edited_time: string,
  *      title: RichTextJson[],
- *      description: RichTextJson[]
+ *      description: RichTextJson[],
  *      icon: EmojiJson|FileJson|null,
  *      cover: FileJson|null,
  *      properties: array<string, PropertyMetadataJson>,

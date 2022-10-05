@@ -203,6 +203,7 @@ class DatabaseTest extends TestCase
                 "type" => "text",
                 "text" => [ "content" => "Database title" ],
             ]],
+            "description" => [],
             "icon" => [
                 "type" => "emoji",
                 "emoji" => "⭐",
@@ -249,6 +250,7 @@ class DatabaseTest extends TestCase
                 "type" => "text",
                 "text" => [ "content" => "Database title" ],
             ]],
+            "description" => [],
             "icon" => [
                 "type" => "external",
                 "external" => [ "url" => "https://my-site.com/image.png" ],
