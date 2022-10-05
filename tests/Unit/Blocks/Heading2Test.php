@@ -7,7 +7,6 @@ use Notion\Exceptions\BlockException;
 use Notion\Blocks\Heading2;
 use Notion\Common\Date;
 use Notion\Common\RichText;
-use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class Heading2Test extends TestCase
@@ -71,6 +70,7 @@ class Heading2Test extends TestCase
                         ],
                     ],
                 ],
+                "is_toggleable" => false,
                 "children" => [],
             ],
         ];
@@ -79,6 +79,7 @@ class Heading2Test extends TestCase
 
         $this->assertCount(2, $heading->text);
         $this->assertEquals("Notion headings rock!", $heading->toString());
+        $this->assertFalse($heading->isToggleable);
         $this->assertFalse($heading->metadata()->archived);
 
         $this->assertEquals($heading, BlockFactory::fromArray($array));
