@@ -20,11 +20,21 @@ $ composer init
 
 ## 2. Install Notion SDK PHP
 
+::: tip
+An implementation of `psr/http-client` should be previously installed.
+
+For example:
+```bash
+$ composer require guzzlehttp/guzzle
+```
+:::
+
 Add `notion-sdk-php` as dependency for the project.
 
 ```bash
 $ composer require mariosimao/notion-sdk-php
 ```
+
 
 ## 3. Get a Notion token
 
