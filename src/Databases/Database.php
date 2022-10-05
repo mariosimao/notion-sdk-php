@@ -99,7 +99,7 @@ class Database
             function (array $descriptionArray): RichText {
                 return RichText::fromArray($descriptionArray);
             },
-            $array["description"],
+            $array["description"] ?? [],
         );
 
         $icon = null;
