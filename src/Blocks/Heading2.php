@@ -24,7 +24,7 @@ class Heading2 implements BlockInterface
 {
     /**
      * @param RichText[] $text
-     * @param BlockInterface[] $children
+     * @param BlockInterface[]|null $children
      */
     private function __construct(
         private readonly BlockMetadata $metadata,
@@ -76,6 +76,8 @@ class Heading2 implements BlockInterface
 
         $array["heading_2"] = [
             "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "is_toggleable" => $this->isToggleable,
+            "children" => array_map(fn($b) => $b->toArray(), $this->children ?? [])
         ];
 
         return $array;
@@ -87,6 +89,7 @@ class Heading2 implements BlockInterface
         return [
             "heading_2" => [
                 "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+                "is_toggleable" => $this->isToggleable,
             ],
             "archived" => $this->metadata()->archived,
         ];

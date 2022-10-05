@@ -10,7 +10,7 @@ use Notion\Exceptions\HeadingException;
  * @psalm-import-type BlockMetadataJson from BlockMetadata
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
  *
- * @psalm-type Heading3Json = array{
+ * @psalm-type Heading1Json = array{
  *      heading_3: array{
  *          rich_text: RichTextJson[],
  *          is_toggleable: bool,
@@ -24,7 +24,7 @@ class Heading3 implements BlockInterface
 {
     /**
      * @param RichText[] $text
-     * @param BlockInterface[] $children
+     * @param BlockInterface[]|null $children
      */
     private function __construct(
         private readonly BlockMetadata $metadata,
@@ -55,7 +55,7 @@ class Heading3 implements BlockInterface
         /** @psalm-var BlockMetadataJson $array */
         $block = BlockMetadata::fromArray($array);
 
-        /** @psalm-var Heading3Json $array */
+        /** @psalm-var Heading1Json $array */
         $heading = $array["heading_3"];
 
         $text = array_map(fn($t) => RichText::fromArray($t), $heading["rich_text"]);
@@ -76,6 +76,8 @@ class Heading3 implements BlockInterface
 
         $array["heading_3"] = [
             "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "is_toggleable" => $this->isToggleable,
+            "children" => array_map(fn($b) => $b->toArray(), $this->children ?? [])
         ];
 
         return $array;
@@ -87,6 +89,7 @@ class Heading3 implements BlockInterface
         return [
             "heading_3" => [
                 "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+                "is_toggleable" => $this->isToggleable,
             ],
             "archived" => $this->metadata()->archived,
         ];

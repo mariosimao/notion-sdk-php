@@ -5,8 +5,10 @@ namespace Notion\Test\Unit\Blocks;
 use Notion\Blocks\BlockFactory;
 use Notion\Exceptions\BlockException;
 use Notion\Blocks\Heading1;
+use Notion\Blocks\Paragraph;
 use Notion\Common\Date;
 use Notion\Common\RichText;
+use Notion\Exceptions\HeadingException;
 use PHPUnit\Framework\TestCase;
 
 class Heading1Test extends TestCase
@@ -132,6 +134,8 @@ class Heading1Test extends TestCase
                         "color"         => "default",
                     ],
                 ]],
+                "is_toggleable" => false,
+                "children" => [],
             ],
         ];
 
@@ -179,5 +183,113 @@ class Heading1Test extends TestCase
         $array = $block->toUpdateArray();
 
         $this->assertCount(2, $array);
+    }
+
+    public function test_togglify(): void
+    {
+        $block = Heading1::create()
+            ->toggllify();
+
+        $this->assertTrue($block->isToggleable);
+    }
+
+    public function test_untogglify(): void
+    {
+        $block = Heading1::create()->toggllify()->untogglify();
+
+        $this->assertFalse($block->isToggleable);
+    }
+
+    public function test_untogglify_with_children(): void
+    {
+        $this->expectException(HeadingException::class);
+        Heading1::create()
+            ->toggllify()
+            ->addChild(Paragraph::fromString("Inside paragraph."))
+            ->untogglify();
+    }
+
+    public function test_change_children_from_toggleable_heading(): void
+    {
+        $block = Heading1::create()
+            ->toggllify()
+            ->changeChildren(
+                Paragraph::fromString("Paragraph 1"),
+                Paragraph::fromString("Paragraph 2"),
+            );
+
+        $this->assertCount(2, $block->children);
+    }
+
+    public function test_add_child_to_untoggleable_heading(): void
+    {
+        $this->expectException(BlockException::class);
+        Heading1::create()->addChild(Paragraph::fromString("Paragraph 1"));
+    }
+
+    public function test_toggleable_array_conversion(): void
+    {
+        $array = [
+            "object"           => "block",
+            "id"               => "04a13895-f072-4814-8af7-cd11af127040",
+            "created_time"     => "2021-10-18T17:09:00.000000Z",
+            "last_edited_time" => "2021-10-18T17:09:00.000000Z",
+            "archived"         => false,
+            "has_children"     => false,
+            "type"             => "heading_1",
+            "heading_1"        => [
+                "rich_text" => [
+                    [
+                        "plain_text"  => "Notion headings ",
+                        "href"        => null,
+                        "type"        => "text",
+                        "text"        => [
+                            "content" => "Notion headings ",
+                        ],
+                        "annotations" => [
+                            "bold"          => false,
+                            "italic"        => false,
+                            "strikethrough" => false,
+                            "underline"     => false,
+                            "code"          => false,
+                            "color"         => "default",
+                        ],
+                    ],
+                    [
+                        "plain_text"  => "rock!",
+                        "href"        => null,
+                        "type"        => "text",
+                        "text"        => [
+                            "content" => "rock!",
+                        ],
+                        "annotations" => [
+                            "bold"          => true,
+                            "italic"        => false,
+                            "strikethrough" => false,
+                            "underline"     => false,
+                            "code"          => false,
+                            "color"         => "red",
+                        ],
+                    ],
+                ],
+                "is_toggleable" => true,
+                "children" => [
+                    [
+                        "object"           => "block",
+                        "id"               => "a5dc4448-6c0a-48ab-9b43-0ea838bb6070",
+                        "created_time"     => "2021-10-18T17:09:00.000000Z",
+                        "last_edited_time" => "2021-10-18T17:09:00.000000Z",
+                        "archived"         => false,
+                        "has_children"     => false,
+                        "type"             => "divider",
+                        "divider"          => new \stdClass(),
+                    ]
+                ],
+            ],
+        ];
+
+        $heading = Heading1::fromArray($array);
+
+        $this->assertEquals($array, $heading->toArray());
     }
 }
