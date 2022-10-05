@@ -25,7 +25,8 @@ use Notion\NotionException;
  *      id: string,
  *      created_time: string,
  *      last_edited_time: string,
- *      title: list<RichTextJson>,
+ *      title: RichTextJson[],
+ *      description: RichTextJson[],
  *      icon: EmojiJson|FileJson|null,
  *      cover: FileJson|null,
  *      properties: array<string, PropertyMetadataJson>,
@@ -39,6 +40,7 @@ class Database
 {
     /**
      * @param RichText[] $title
+     * @param RichText[] $description
      * @param array<string, PropertyInterface> $properties
      */
     private function __construct(
@@ -46,6 +48,7 @@ class Database
         public readonly DateTimeImmutable $createdTime,
         public readonly DateTimeImmutable $lastEditedTime,
         public readonly array $title,
+        public readonly array $description,
         public readonly Icon|null $icon,
         public readonly File|null $cover,
         public readonly array $properties,
@@ -70,6 +73,7 @@ class Database
             $now,
             $now,
             [],
+            [],
             null,
             null,
             [ "Title" => Title::create() ],
@@ -90,6 +94,12 @@ class Database
                 return RichText::fromArray($richTextArray);
             },
             $array["title"],
+        );
+        $description = array_map(
+            function (array $descriptionArray): RichText {
+                return RichText::fromArray($descriptionArray);
+            },
+            $array["description"] ?? [],
         );
 
         $icon = null;
@@ -124,6 +134,7 @@ class Database
             new DateTimeImmutable($array["created_time"]),
             new DateTimeImmutable($array["last_edited_time"]),
             $title,
+            $description,
             $icon,
             $cover,
             $properties,
@@ -140,6 +151,7 @@ class Database
             "created_time"     => $this->createdTime->format(Date::FORMAT),
             "last_edited_time" => $this->lastEditedTime->format(Date::FORMAT),
             "title"            => array_map(fn(RichText $t) => $t->toArray(), $this->title),
+            "description"      => array_map(fn(RichText $t) => $t->toArray(), $this->description),
             "icon"             => $this->icon?->toArray(),
             "cover"            => $this->cover?->toArray(),
             "properties"       => array_map(fn(PropertyInterface $p) => $p->toArray(), $this->properties),
@@ -163,6 +175,7 @@ class Database
             $this->createdTime,
             $this->lastEditedTime,
             $title,
+            $this->description,
             $this->icon,
             $this->cover,
             $this->properties,
@@ -186,6 +199,7 @@ class Database
             $this->createdTime,
             $this->lastEditedTime,
             $this->title,
+            $this->description,
             $icon,
             $this->cover,
             $this->properties,
@@ -201,6 +215,7 @@ class Database
             $this->createdTime,
             $this->lastEditedTime,
             $this->title,
+            $this->description,
             null,
             $this->cover,
             $this->properties,
@@ -216,6 +231,7 @@ class Database
             $this->createdTime,
             $this->lastEditedTime,
             $this->title,
+            $this->description,
             $this->icon,
             $cover,
             $this->properties,
@@ -231,6 +247,7 @@ class Database
             $this->createdTime,
             $this->lastEditedTime,
             $this->title,
+            $this->description,
             $this->icon,
             null,
             $this->properties,
@@ -250,6 +267,7 @@ class Database
             $this->createdTime,
             $this->lastEditedTime,
             $this->title,
+            $this->description,
             $this->icon,
             $this->cover,
             $properties,
@@ -266,6 +284,7 @@ class Database
             $this->createdTime,
             $this->lastEditedTime,
             $this->title,
+            $this->description,
             $this->icon,
             $this->cover,
             $properties,
@@ -281,6 +300,7 @@ class Database
             $this->createdTime,
             $this->lastEditedTime,
             $this->title,
+            $this->description,
             $this->icon,
             $this->cover,
             $this->properties,
