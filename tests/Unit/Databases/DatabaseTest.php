@@ -122,7 +122,21 @@ class DatabaseTest extends TestCase
             "created_time" => "2020-12-08T12:00:00.000000Z",
             "last_edited_time" => "2020-12-08T12:00:00.000000Z",
             "title" => [[
-                "plain_text" => "Page title",
+                "plain_text" => "Database title",
+                "href" => null,
+                "annotations" => [
+                    "bold"          => false,
+                    "italic"        => false,
+                    "strikethrough" => false,
+                    "underline"     => false,
+                    "code"          => false,
+                    "color"         => "default",
+                ],
+                "type" => "text",
+                "text" => [ "content" => "Database title" ],
+            ]],
+            "description" => [[
+                "plain_text" => "Database description",
                 "href" => null,
                 "annotations" => [
                     "bold"          => false,
