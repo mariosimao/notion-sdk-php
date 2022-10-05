@@ -12,7 +12,16 @@ class ChildPageTest extends TestCase
 {
     public function test_create_from_array(): void
     {
-        $array = $this->mockArray();
+        $array = [
+            "object"           => "block",
+            "id"               => "04a13895-f072-4814-8af7-cd11af127040",
+            "created_time"     => "2021-10-18T17:09:00.000000Z",
+            "last_edited_time" => "2021-10-18T17:09:00.000000Z",
+            "archived"         => false,
+            "has_children"     => false,
+            "type"             => "child_page",
+            "child_page"       => [ "title" => "Page title" ],
+        ];
 
         $childPage = ChildPage::fromArray($array);
 
@@ -45,6 +54,7 @@ class ChildPageTest extends TestCase
         $block = ChildPage::fromArray($this->mockArray());
 
         $this->expectException(BlockException::class);
+        /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren(
             Paragraph::fromString("Sample paragraph.")
         );
@@ -55,6 +65,7 @@ class ChildPageTest extends TestCase
         $block = ChildPage::fromArray($this->mockArray());
 
         $this->expectException(BlockException::class);
+        /** @psalm-suppress UnusedMethodCall */
         $block->addChild(
             Paragraph::fromString("Sample paragraph.")
         );

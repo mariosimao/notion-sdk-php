@@ -13,8 +13,8 @@ class BlockMetadataTest extends TestCase
     {
         $metadata = BlockMetadata::create(BlockType::Paragraph);
 
-        $metadata->archive();
-        $metadata->restore();
+        $metadata = $metadata->archive();
+        $metadata = $metadata->restore();
 
         $this->assertFalse($metadata->archived);
     }

@@ -203,6 +203,7 @@ class Heading1Test extends TestCase
     public function test_untogglify_with_children(): void
     {
         $this->expectException(HeadingException::class);
+        /** @psalm-suppress UnusedMethodCall */
         Heading1::create()
             ->toggllify()
             ->addChild(Paragraph::fromString("Inside paragraph."))
@@ -218,12 +219,13 @@ class Heading1Test extends TestCase
                 Paragraph::fromString("Paragraph 2"),
             );
 
-        $this->assertCount(2, $block->children);
+        $this->assertCount(2, $block->children ?? []);
     }
 
     public function test_add_child_to_untoggleable_heading(): void
     {
         $this->expectException(BlockException::class);
+        /** @psalm-suppress UnusedMethodCall */
         Heading1::create()->addChild(Paragraph::fromString("Paragraph 1"));
     }
 

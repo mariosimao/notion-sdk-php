@@ -56,6 +56,7 @@ class ChildDatabaseTest extends TestCase
         $block = ChildDatabase::fromArray($this->mockArray());
 
         $this->expectException(BlockException::class);
+        /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren(
             Paragraph::fromString("Sample paragraph.")
         );
@@ -66,6 +67,7 @@ class ChildDatabaseTest extends TestCase
         $block = ChildDatabase::fromArray($this->mockArray());
 
         $this->expectException(BlockException::class);
+        /** @psalm-suppress UnusedMethodCall */
         $block->addChild(
             Paragraph::fromString("Sample paragraph.")
         );
