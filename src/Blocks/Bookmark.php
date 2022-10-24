@@ -102,7 +102,7 @@ class Bookmark implements BlockInterface
 
     public function changeChildren(BlockInterface ...$children): self
     {
-        throw throw BlockException::noChindrenSupport();
+        throw BlockException::noChindrenSupport();
     }
 
     public function archive(): BlockInterface

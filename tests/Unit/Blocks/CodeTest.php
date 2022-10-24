@@ -5,6 +5,8 @@ namespace Notion\Test\Unit\Blocks;
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Code;
 use Notion\Blocks\CodeLanguage;
+use Notion\Blocks\Divider;
+use Notion\Blocks\Paragraph;
 use Notion\Exceptions\BlockException;
 use Notion\Common\Date;
 use Notion\Common\RichText;
@@ -39,6 +41,24 @@ class CodeTest extends TestCase
                         "type"        => "text",
                         "text"        => [
                             "content" => "<?php\necho 'Hello World!';",
+                        ],
+                        "annotations" => [
+                            "bold"          => false,
+                            "italic"        => false,
+                            "strikethrough" => false,
+                            "underline"     => false,
+                            "code"          => false,
+                            "color"         => "default",
+                        ],
+                    ],
+                ],
+                "caption" => [
+                    [
+                        "plain_text"  => "Code caption example",
+                        "href"        => null,
+                        "type"        => "text",
+                        "text"        => [
+                            "content" => "Code caption example",
                         ],
                         "annotations" => [
                             "bold"          => false,
@@ -114,6 +134,7 @@ class CodeTest extends TestCase
                         "color"         => "default",
                     ],
                 ]],
+                "caption" => [],
             ],
         ];
 
@@ -162,6 +183,15 @@ class CodeTest extends TestCase
         $block->changeChildren();
     }
 
+    public function test_no_children_support_add(): void
+    {
+        $block = Code::create();
+
+        $this->expectException(BlockException::class);
+        /** @psalm-suppress UnusedMethodCall */
+        $block->addChild(Divider::create());
+    }
+
     public function test_array_for_update_operations(): void
     {
         $block = Code::create();
@@ -169,5 +199,15 @@ class CodeTest extends TestCase
         $array = $block->toUpdateArray();
 
         $this->assertCount(2, $array);
+    }
+
+    public function test_change_caption(): void
+    {
+        $block = Code::create()
+            ->addText(RichText::createText("<?php echo 'Hi!'"))
+            ->changeLanguage(CodeLanguage::Php)
+            ->changeCaption(RichText::createText("Code caption"));
+
+        $this->assertSame("Code caption", RichText::multipleToString(...$block->caption));
     }
 }
