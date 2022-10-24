@@ -86,6 +86,13 @@ class RichText
         );
     }
 
+    public static function newLine(): self
+    {
+        $text = Text::create("\n");
+
+        return self::createFromText($text);
+    }
+
     /**
      * @psalm-param RichTextJson $array
      *
