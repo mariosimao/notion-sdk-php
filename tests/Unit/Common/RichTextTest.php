@@ -2,8 +2,11 @@
 
 namespace Notion\Test\Unit\Common;
 
+use DateTimeImmutable;
 use Notion\Common\Color;
+use Notion\Common\Date;
 use Notion\Common\Equation;
+use Notion\Common\Mention;
 use Notion\Common\RichText;
 use Notion\Common\Text;
 use PHPUnit\Framework\TestCase;
@@ -47,6 +50,15 @@ class RichTextTest extends TestCase
 
         $this->assertTrue($richText->isEquation());
         $this->assertEquals("a^2 + b^2 = c^2", $richText->equation?->expression);
+    }
+
+    public function test_create_from_mention(): void
+    {
+        $date = Date::create(new DateTimeImmutable("2022-10-31"));
+        $mention = Mention::date($date);
+        $richText = RichText::fromMention($mention);
+
+        $this->assertTrue($richText->mention?->isDate());
     }
 
     public function test_change_to_bold(): void
