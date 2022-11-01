@@ -111,6 +111,11 @@ class RichText
         );
     }
 
+    public function toString(): string
+    {
+        return $this->plainText;
+    }
+
     public function toArray(): array
     {
         $array = [
@@ -232,7 +237,7 @@ class RichText
     {
         $string = "";
         foreach ($richText as $singleRichText) {
-            $string = $string . $singleRichText->plainText;
+            $string = $string . $singleRichText->toString();
         }
 
         return $string;
