@@ -28,7 +28,7 @@ $paragraph->toString(); // empty string
 // "Simple text" will be bold and italic
 $text = RichText::createText("Simple text")->bold()->italic();
 
-$paragraph = Paragraph::create()->appendText($text);
+$paragraph = Paragraph::create()->addText($text);
 ```
 
 ![](../images/paragraph-rich-text.png)
@@ -44,9 +44,9 @@ $text = [
     RichText::createText(" and much more!"),
 ];
 
-$paragraph = Paragraph::create()->withText($text);
+$paragraph = Paragraph::create()->changeText(...$text);
 ```
 
-Note that `withText()` will replace the text on a new instance of `Paragraph`.
+Note that `changeText()` will replace the text on a new instance of `Paragraph`.
 
 ![](../images/paragraph-rich-text-multiple.png)

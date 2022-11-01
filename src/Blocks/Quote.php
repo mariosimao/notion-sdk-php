@@ -57,7 +57,7 @@ class Quote implements BlockInterface
 
         $text = array_map(fn($t) => RichText::fromArray($t), $quote["rich_text"]);
 
-        $children = array_map(fn($b) => BlockFactory::fromArray($b), $quote["children"]);
+        $children = array_map(fn($b) => BlockFactory::fromArray($b), $quote["children"] ?? []);
 
         return new self($block, $text, $children);
     }
