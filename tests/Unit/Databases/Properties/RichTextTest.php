@@ -43,9 +43,9 @@ class RichTextTest extends TestCase
     public function test_mutiple_to_string(): void
     {
         $text = [
-            RichText::createText("Multiple ")->bold(),
-            RichText::createText("text ")->italic(),
-            RichText::createText("example")->underline(),
+            RichText::fromString("Multiple ")->bold(),
+            RichText::fromString("text ")->italic(),
+            RichText::fromString("example")->underline(),
         ];
 
         $this->assertSame("Multiple text example", RichText::multipleToString(...$text));

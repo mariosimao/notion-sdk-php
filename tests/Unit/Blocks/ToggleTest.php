@@ -13,7 +13,7 @@ class ToggleTest extends TestCase
 {
     public function test_create_empty_toggle(): void
     {
-        $toggle = Toggle::create();
+        $toggle = Toggle::createEmpty();
 
         $this->assertEmpty($toggle->text);
         $this->assertEmpty($toggle->children);
@@ -144,8 +144,8 @@ class ToggleTest extends TestCase
         $oldToggle = Toggle::fromString("This is an old toggle");
 
         $newToggle = $oldToggle->changeText(
-            RichText::createText("This is a "),
-            RichText::createText("new toggle"),
+            RichText::fromString("This is a "),
+            RichText::fromString("new toggle"),
         );
 
         $this->assertEquals("This is an old toggle", $oldToggle->toString());
@@ -157,7 +157,7 @@ class ToggleTest extends TestCase
         $oldToggle = Toggle::fromString("A toggle");
 
         $newToggle = $oldToggle->addText(
-            RichText::createText(" can be extended.")
+            RichText::fromString(" can be extended.")
         );
 
         $this->assertEquals("A toggle", $oldToggle->toString());
@@ -187,7 +187,7 @@ class ToggleTest extends TestCase
 
     public function test_array_for_update_operations(): void
     {
-        $block = Toggle::create();
+        $block = Toggle::createEmpty();
 
         $array = $block->toUpdateArray();
 

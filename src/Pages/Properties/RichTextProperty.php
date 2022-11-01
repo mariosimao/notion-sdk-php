@@ -24,17 +24,17 @@ class RichTextProperty implements PropertyInterface
     ) {
     }
 
-    public static function create(RichText ...$texts): self
+    public static function fromText(RichText ...$texts): self
     {
         $metadata = PropertyMetadata::create("", PropertyType::RichText);
 
         return new self($metadata, $texts);
     }
 
-    public static function fromString(string ...$texts): self
+    public static function fromString(string $text): self
     {
         $metadata = PropertyMetadata::create("", PropertyType::RichText);
-        $texts = array_map(fn (string $t) => RichText::createText($t), $texts);
+        $texts = [ RichText::fromString($text) ];
 
         return new self($metadata, $texts);
     }

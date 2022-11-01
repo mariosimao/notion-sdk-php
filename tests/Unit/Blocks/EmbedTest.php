@@ -13,7 +13,7 @@ class EmbedTest extends TestCase
 {
     public function test_create_embed(): void
     {
-        $embed = Embed::create("https://my-site.com");
+        $embed = Embed::fromUrl("https://my-site.com");
 
         $this->assertEquals("https://my-site.com", $embed->url);
     }
@@ -57,7 +57,7 @@ class EmbedTest extends TestCase
 
     public function test_transform_in_array(): void
     {
-        $embed = Embed::create("https://my-site.com");
+        $embed = Embed::fromUrl("https://my-site.com");
 
         $expected = [
             "object"           => "block",
@@ -74,7 +74,7 @@ class EmbedTest extends TestCase
 
     public function test_replace_url(): void
     {
-        $old = Embed::create("https://my-site.com");
+        $old = Embed::fromUrl("https://my-site.com");
         $new = $old->changeUrl("https://another-site.com");
 
         $this->assertEquals("https://my-site.com", $old->url);
@@ -83,7 +83,7 @@ class EmbedTest extends TestCase
 
     public function test_no_children_support(): void
     {
-        $block = Embed::create();
+        $block = Embed::fromUrl();
 
         $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
@@ -92,7 +92,7 @@ class EmbedTest extends TestCase
 
     public function test_array_for_update_operations(): void
     {
-        $block = Embed::create();
+        $block = Embed::fromUrl();
 
         $array = $block->toUpdateArray();
 
@@ -101,7 +101,7 @@ class EmbedTest extends TestCase
 
     public function test_archive(): void
     {
-        $block = Embed::create();
+        $block = Embed::fromUrl();
 
         $block = $block->archive();
 

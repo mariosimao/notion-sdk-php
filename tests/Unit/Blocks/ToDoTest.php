@@ -150,8 +150,8 @@ class ToDoTest extends TestCase
         $oldToDo = ToDo::fromString("This is an old to do");
 
         $newToDo = $oldToDo->changeText(
-            RichText::createText("This is a "),
-            RichText::createText("new to do"),
+            RichText::fromString("This is a "),
+            RichText::fromString("new to do"),
         );
 
         $this->assertEquals("This is an old to do", $oldToDo->toString());
@@ -163,7 +163,7 @@ class ToDoTest extends TestCase
         $oldToDo = ToDo::fromString("A to do");
 
         $newToDo = $oldToDo->addText(
-            RichText::createText(" can be extended.")
+            RichText::fromString(" can be extended.")
         );
 
         $this->assertEquals("A to do", $oldToDo->toString());

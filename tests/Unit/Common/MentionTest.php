@@ -13,7 +13,7 @@ class MentionTest extends TestCase
 {
     public function test_mention_page(): void
     {
-        $mention = Mention::createPage("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $mention = Mention::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
 
         $this->assertTrue($mention->isPage());
         $this->assertEquals(MentionType::Page, $mention->type);
@@ -22,7 +22,7 @@ class MentionTest extends TestCase
 
     public function test_mention_database(): void
     {
-        $mention = Mention::createDatabase("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $mention = Mention::database("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
 
         $this->assertTrue($mention->isDatabase());
         $this->assertEquals("1ce62b6f-b7f3-4201-afd0-08acb02e61c6", $mention->databaseId);
@@ -38,7 +38,7 @@ class MentionTest extends TestCase
             "person"     => [ "email" => "mariosimao@email.com" ],
         ]);
 
-        $mention = Mention::createUser($user);
+        $mention = Mention::user($user);
 
         $this->assertTrue($mention->isUser());
         $this->assertEquals($user, $mention->user);
@@ -47,7 +47,7 @@ class MentionTest extends TestCase
     public function test_mention_date(): void
     {
         $date = Date::create(new DateTimeImmutable("2021-01-01"));
-        $mention = Mention::createDate($date);
+        $mention = Mention::date($date);
 
         $this->assertTrue($mention->isDate());
         $this->assertEquals($date, $mention->date);

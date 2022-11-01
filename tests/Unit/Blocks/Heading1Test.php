@@ -15,7 +15,7 @@ class Heading1Test extends TestCase
 {
     public function test_create_empty_heading(): void
     {
-        $heading = Heading1::create();
+        $heading = Heading1::fromText();
 
         $this->assertEmpty($heading->text);
     }
@@ -147,8 +147,8 @@ class Heading1Test extends TestCase
         $oldHeading = Heading1::fromString("This is an old heading");
 
         $newHeading = $oldHeading->changeText(
-            RichText::createText("This is a "),
-            RichText::createText("new heading"),
+            RichText::fromString("This is a "),
+            RichText::fromString("new heading"),
         );
 
         $this->assertEquals("This is an old heading", $oldHeading->toString());
@@ -160,7 +160,7 @@ class Heading1Test extends TestCase
         $oldHeading = Heading1::fromString("A heading");
 
         $newHeading = $oldHeading->addText(
-            RichText::createText(" can be extended.")
+            RichText::fromString(" can be extended.")
         );
 
         $this->assertEquals("A heading", $oldHeading->toString());
@@ -169,7 +169,7 @@ class Heading1Test extends TestCase
 
     public function test_no_children_support(): void
     {
-        $block = Heading1::create();
+        $block = Heading1::fromText();
 
         $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
@@ -178,7 +178,7 @@ class Heading1Test extends TestCase
 
     public function test_array_for_update_operations(): void
     {
-        $block = Heading1::create();
+        $block = Heading1::fromText();
 
         $array = $block->toUpdateArray();
 
@@ -187,7 +187,7 @@ class Heading1Test extends TestCase
 
     public function test_togglify(): void
     {
-        $block = Heading1::create()
+        $block = Heading1::fromText()
             ->toggllify();
 
         $this->assertTrue($block->isToggleable);
@@ -195,7 +195,7 @@ class Heading1Test extends TestCase
 
     public function test_untogglify(): void
     {
-        $block = Heading1::create()->toggllify()->untogglify();
+        $block = Heading1::fromText()->toggllify()->untogglify();
 
         $this->assertFalse($block->isToggleable);
     }
@@ -204,7 +204,7 @@ class Heading1Test extends TestCase
     {
         $this->expectException(HeadingException::class);
         /** @psalm-suppress UnusedMethodCall */
-        Heading1::create()
+        Heading1::fromText()
             ->toggllify()
             ->addChild(Paragraph::fromString("Inside paragraph."))
             ->untogglify();
@@ -212,7 +212,7 @@ class Heading1Test extends TestCase
 
     public function test_change_children_from_toggleable_heading(): void
     {
-        $block = Heading1::create()
+        $block = Heading1::fromText()
             ->toggllify()
             ->changeChildren(
                 Paragraph::fromString("Paragraph 1"),
@@ -226,7 +226,7 @@ class Heading1Test extends TestCase
     {
         $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
-        Heading1::create()->addChild(Paragraph::fromString("Paragraph 1"));
+        Heading1::fromText()->addChild(Paragraph::fromString("Paragraph 1"));
     }
 
     public function test_toggleable_array_conversion(): void

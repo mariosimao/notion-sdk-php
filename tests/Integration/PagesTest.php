@@ -24,7 +24,7 @@ class PagesTest extends TestCase
 
         $page = Page::create(PageParent::page(self::DEFAULT_PARENT_ID))
             ->changeTitle("Empty page")
-            ->changeIcon(Emoji::create("⭐"));
+            ->changeIcon(Emoji::fromString("⭐"));
 
         $page = $client->pages()->create($page);
 

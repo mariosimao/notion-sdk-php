@@ -11,7 +11,7 @@ class TitleTest extends TestCase
 {
     public function test_create(): void
     {
-        $title = Title::create(RichText::createText("Dummy title"));
+        $title = Title::fromText(RichText::fromString("Dummy title"));
 
         $this->assertEquals("Dummy title", $title->title[0]->text?->content);
         $this->assertEquals("title", $title->metadata()->id);
@@ -47,14 +47,14 @@ class TitleTest extends TestCase
 
     public function test_string_conversion(): void
     {
-        $title = Title::create(RichText::createText("Dummy title"));
+        $title = Title::fromText(RichText::fromString("Dummy title"));
         $this->assertEquals("Dummy title", $title->toString());
     }
 
     public function test_change_text(): void
     {
-        $title = Title::create()->change(
-            RichText::createText("Dummy title")
+        $title = Title::fromText()->change(
+            RichText::fromString("Dummy title")
         );
         $this->assertEquals("Dummy title", $title->toString());
     }

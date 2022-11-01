@@ -14,7 +14,7 @@ class Equation
     ) {
     }
 
-    public static function create(string $expression): self
+    public static function fromString(string $expression): self
     {
         return new self($expression);
     }

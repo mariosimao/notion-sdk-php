@@ -35,7 +35,7 @@ class Bookmark implements BlockInterface
     /**
      * Create a bookmark from a URL
      */
-    public static function create(string $url): self
+    public static function fromUrl(string $url): self
     {
         $metadata = BlockMetadata::create(BlockType::Bookmark);
 

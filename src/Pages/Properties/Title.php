@@ -25,7 +25,7 @@ class Title implements PropertyInterface
     }
 
     /** @psalm-mutation-free */
-    public static function create(RichText ...$title): self
+    public static function fromText(RichText ...$title): self
     {
         $property = PropertyMetadata::create("title", PropertyType::Title);
 
@@ -35,9 +35,9 @@ class Title implements PropertyInterface
     /** @psalm-mutation-free */
     public static function fromString(string $title): self
     {
-        $title = RichText::createText($title);
+        $title = RichText::fromString($title);
 
-        return self::create($title);
+        return self::fromText($title);
     }
 
     public static function fromArray(array $array): self

@@ -16,7 +16,7 @@ class Text
     }
 
     /** @psalm-mutation-free */
-    public static function create(string $content): self
+    public static function fromString(string $content): self
     {
         return new self($content, null);
     }

@@ -41,7 +41,7 @@ class Paragraph implements BlockInterface
     public static function fromString(string $content): self
     {
         $block = BlockMetadata::create(BlockType::Paragraph);
-        $text = [ RichText::createText($content) ];
+        $text = [ RichText::fromString($content) ];
 
         return new self($block, $text, []);
     }

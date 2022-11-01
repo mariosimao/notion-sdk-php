@@ -145,8 +145,8 @@ class BulletedListItemTest extends TestCase
         $oldItem = BulletedListItem::fromString("This is an old item");
 
         $newItem = $oldItem->changeText(
-            RichText::createText("This is a "),
-            RichText::createText("new item"),
+            RichText::fromString("This is a "),
+            RichText::fromString("new item"),
         );
 
         $this->assertEquals("This is an old item", $oldItem->toString());
@@ -158,7 +158,7 @@ class BulletedListItemTest extends TestCase
         $oldItem = BulletedListItem::fromString("A item");
 
         $newItem = $oldItem->addText(
-            RichText::createText(" can be extended.")
+            RichText::fromString(" can be extended.")
         );
 
         $this->assertEquals("A item", $oldItem->toString());

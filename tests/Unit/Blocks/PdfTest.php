@@ -15,7 +15,7 @@ class PdfTest extends TestCase
     public function test_create_pdf(): void
     {
         $file = File::createExternal("https://my-site.com/document.pdf");
-        $pdf = Pdf::create($file);
+        $pdf = Pdf::fromFile($file);
 
         $this->assertEquals($file, $pdf->file);
     }
@@ -70,7 +70,7 @@ class PdfTest extends TestCase
     public function test_transform_in_array(): void
     {
         $file = File::createExternal("https://my-site.com/document.pdf");
-        $pdf = Pdf::create($file);
+        $pdf = Pdf::fromFile($file);
 
         $expected = [
             "object"           => "block",
@@ -95,7 +95,7 @@ class PdfTest extends TestCase
         $file1 = File::createExternal("https://my-site.com/pdf1.png");
         $file2 = File::createExternal("https://my-site.com/pdf2.png");
 
-        $old = Pdf::create($file1);
+        $old = Pdf::fromFile($file1);
         $new = $old->changeFile($file2);
 
         $this->assertEquals($file1, $old->file);
@@ -105,7 +105,7 @@ class PdfTest extends TestCase
     public function test_no_children_support(): void
     {
         $file = File::createExternal("https://my-site.com/document.pdf");
-        $block = Pdf::create($file);
+        $block = Pdf::fromFile($file);
 
         $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
@@ -115,7 +115,7 @@ class PdfTest extends TestCase
     public function test_array_for_update_operations(): void
     {
         $file = File::createExternal("https://example.com/document.pdf");
-        $block = Pdf::create($file);
+        $block = Pdf::fromFile($file);
 
         $array = $block->toUpdateArray();
 
@@ -125,7 +125,7 @@ class PdfTest extends TestCase
     public function test_archive(): void
     {
         $file = File::createExternal("https://example.com/document.pdf");
-        $block = Pdf::create($file);
+        $block = Pdf::fromFile($file);
 
         $block = $block->archive();
 

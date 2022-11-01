@@ -15,7 +15,7 @@ class ImageTest extends TestCase
     public function test_create_image(): void
     {
         $file = File::createExternal("https://my-site.com/image.png");
-        $image = Image::create($file);
+        $image = Image::fromFile($file);
 
         $this->assertEquals($file, $image->file);
     }
@@ -70,7 +70,7 @@ class ImageTest extends TestCase
     public function test_transform_in_array(): void
     {
         $file = File::createExternal("https://my-site.com/image.png");
-        $image = Image::create($file);
+        $image = Image::fromFile($file);
 
         $expected = [
             "object"           => "block",
@@ -95,7 +95,7 @@ class ImageTest extends TestCase
         $file1 = File::createExternal("https://my-site.com/image1.png");
         $file2 = File::createExternal("https://my-site.com/image2.png");
 
-        $old = Image::create($file1);
+        $old = Image::fromFile($file1);
         $new = $old->changeFile($file2);
 
         $this->assertEquals($file1, $old->file);
@@ -105,7 +105,7 @@ class ImageTest extends TestCase
     public function test_no_children_support(): void
     {
         $file = File::createExternal("https://my-site.com/image.png");
-        $block = Image::create($file);
+        $block = Image::fromFile($file);
 
         $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
@@ -115,7 +115,7 @@ class ImageTest extends TestCase
     public function test_array_for_update_operations(): void
     {
         $file = File::createExternal("https://my-site.com/image.png");
-        $block = Image::create($file);
+        $block = Image::fromFile($file);
 
         $array = $block->toUpdateArray();
 
@@ -125,7 +125,7 @@ class ImageTest extends TestCase
     public function test_archive(): void
     {
         $file = File::createExternal("https://my-site.com/image.png");
-        $block = Image::create($file);
+        $block = Image::fromFile($file);
 
         $block = $block->archive();
 

@@ -41,7 +41,7 @@ class Callout implements BlockInterface
     public static function create(): self
     {
         $metadata = BlockMetadata::create(BlockType::Callout);
-        $icon = Icon::fromEmoji(Emoji::create("⭐"));
+        $icon = Icon::fromEmoji(Emoji::fromString("⭐"));
 
         return new self($metadata, [], $icon, []);
     }
@@ -49,8 +49,8 @@ class Callout implements BlockInterface
     public static function fromString(string $emoji, string $content): self
     {
         $metadata = BlockMetadata::create(BlockType::Callout);
-        $text = [ RichText::createText($content) ];
-        $icon = Icon::fromEmoji(Emoji::create($emoji));
+        $text = [ RichText::fromString($content) ];
+        $icon = Icon::fromEmoji(Emoji::fromString($emoji));
 
         return new self($metadata, $text, $icon, []);
     }

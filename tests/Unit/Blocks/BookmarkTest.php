@@ -14,7 +14,7 @@ class BookmarkTest extends TestCase
 {
     public function test_create_bookmark(): void
     {
-        $bookmark = Bookmark::create("https://my-site.com");
+        $bookmark = Bookmark::fromUrl("https://my-site.com");
 
         $this->assertEquals("https://my-site.com", $bookmark->url);
     }
@@ -58,7 +58,7 @@ class BookmarkTest extends TestCase
 
     public function test_transform_in_array(): void
     {
-        $bookmark = Bookmark::create("https://my-site.com");
+        $bookmark = Bookmark::fromUrl("https://my-site.com");
 
         $expected = [
             "object"           => "block",
@@ -75,7 +75,7 @@ class BookmarkTest extends TestCase
 
     public function test_replace_url(): void
     {
-        $old = Bookmark::create("https://my-site.com");
+        $old = Bookmark::fromUrl("https://my-site.com");
         $new = $old->changeUrl("https://another-site.com");
 
         $this->assertEquals("https://my-site.com", $old->url);
@@ -84,15 +84,15 @@ class BookmarkTest extends TestCase
 
     public function test_replace_caption(): void
     {
-        $caption = [ RichText::createText("Bookmark caption") ];
-        $bookmark = Bookmark::create("https://my-site.com")->changeCaption(...$caption);
+        $caption = [ RichText::fromString("Bookmark caption") ];
+        $bookmark = Bookmark::fromUrl("https://my-site.com")->changeCaption(...$caption);
 
         $this->assertEquals($caption, $bookmark->caption);
     }
 
     public function test_no_children_support(): void
     {
-        $bookmark = Bookmark::create("https://my-site.com");
+        $bookmark = Bookmark::fromUrl("https://my-site.com");
 
         $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
@@ -101,7 +101,7 @@ class BookmarkTest extends TestCase
 
     public function test_array_for_update_operations(): void
     {
-        $bookmark = Bookmark::create("https://example.com");
+        $bookmark = Bookmark::fromUrl("https://example.com");
 
         $array = $bookmark->toUpdateArray();
 

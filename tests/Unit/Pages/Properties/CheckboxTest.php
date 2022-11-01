@@ -9,24 +9,32 @@ use PHPUnit\Framework\TestCase;
 
 class CheckboxTest extends TestCase
 {
-    public function test_create(): void
+    public function test_create_checked(): void
     {
-        $checkbox = Checkbox::create(true);
+        $checkbox = Checkbox::createChecked();
 
         $this->assertEquals(PropertyType::Checkbox, $checkbox->metadata()->type);
         $this->assertTrue($checkbox->checked);
     }
 
+    public function test_create_unchecked(): void
+    {
+        $checkbox = Checkbox::createUnchecked();
+
+        $this->assertEquals(PropertyType::Checkbox, $checkbox->metadata()->type);
+        $this->assertFalse($checkbox->checked);
+    }
+
     public function test_check(): void
     {
-        $checkbox = Checkbox::create()->check();
+        $checkbox = Checkbox::createUnchecked()->check();
 
         $this->assertTrue($checkbox->checked);
     }
 
     public function test_uncheck(): void
     {
-        $checkbox = Checkbox::create(true)->uncheck();
+        $checkbox = Checkbox::createChecked()->uncheck();
 
         $this->assertFalse($checkbox->checked);
     }

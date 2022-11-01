@@ -44,24 +44,24 @@ class BlocksTest extends TestCase
         $page = Page::create(PageParent::page(self::DEFAULT_PARENT_ID))->changeTitle("Blocks test");
 
         $content = [
-            Bookmark::create("https://notion.so"),
+            Bookmark::fromUrl("https://notion.so"),
             Breadcrumb::create(),
-            BulletedListItem::create()->changeText(RichText::createText("List item ")),
-            Callout::create()->changeText(RichText::createText("Callout")),
+            BulletedListItem::create()->changeText(RichText::fromString("List item ")),
+            Callout::create()->changeText(RichText::fromString("Callout")),
             // TODO: Child database
             // TODO: Child page
-            Code::create([
-                RichText::createText("<?php echo 'Hello world!';"),
+            Code::fromText([
+                RichText::fromString("<?php echo 'Hello world!';"),
             ], CodeLanguage::Php),
             Divider::create(),
             // TODO: Embed
-            EquationBlock::create("a^2 + b^2 = c^2"),
+            EquationBlock::fromString("a^2 + b^2 = c^2"),
             // TODO: File
-            Heading1::create()->changeText(RichText::createText("Heading 1")),
-            Heading2::create()->changeText(RichText::createText("Heading 2")),
-            Heading3::create()->changeText(RichText::createText("Heading 3")),
+            Heading1::fromText()->changeText(RichText::fromString("Heading 1")),
+            Heading2::fromText()->changeText(RichText::fromString("Heading 2")),
+            Heading3::fromText()->changeText(RichText::fromString("Heading 3")),
             // TODO: Image
-            NumberedListItem::create()->changeText(RichText::createText("List item ")),
+            NumberedListItem::create()->changeText(RichText::fromString("List item ")),
             Paragraph::fromString("Paragraph"),
             // TODO: PDF
             TableOfContents::create(),
@@ -96,7 +96,7 @@ class BlocksTest extends TestCase
         $page = Page::create(PageParent::page(self::DEFAULT_PARENT_ID))->changeTitle("Blocks test");
 
         $content = [
-            Heading1::create()->changeText(RichText::createText("Heading 1")),
+            Heading1::fromText()->changeText(RichText::fromString("Heading 1")),
         ];
 
         $newPage = $client->pages()->create($page, $content);
@@ -145,7 +145,7 @@ class BlocksTest extends TestCase
         $page = Page::create(PageParent::page(self::DEFAULT_PARENT_ID))->changeTitle("Blocks test");
 
         $content = [
-            Heading1::create()->changeText(RichText::createText("Heading 1")),
+            Heading1::fromText()->changeText(RichText::fromString("Heading 1")),
         ];
 
         $newPage = $client->pages()->create($page, $content);
@@ -220,24 +220,24 @@ class BlocksTest extends TestCase
         $blocks = $client->blocks()->append(
             self::DEFAULT_PARENT_ID,
             [
-                Bookmark::create("https://notion.so"),
+                Bookmark::fromUrl("https://notion.so"),
                 Breadcrumb::create(),
-                BulletedListItem::create()->changeText(RichText::createText("List item ")),
-                Callout::create()->changeText(RichText::createText("Callout")),
+                BulletedListItem::create()->changeText(RichText::fromString("List item ")),
+                Callout::create()->changeText(RichText::fromString("Callout")),
                 // TODO: Child database
                 // TODO: Child page
-                Code::create([
-                    RichText::createText("<?php echo 'Hello world!';"),
+                Code::fromText([
+                    RichText::fromString("<?php echo 'Hello world!';"),
                 ], CodeLanguage::Php),
                 Divider::create(),
                 // TODO: Embed
-                EquationBlock::create("a^2 + b^2 = c^2"),
+                EquationBlock::fromString("a^2 + b^2 = c^2"),
                 // TODO: File
-                Heading1::create()->changeText(RichText::createText("Heading 1")),
-                Heading2::create()->changeText(RichText::createText("Heading 2")),
-                Heading3::create()->changeText(RichText::createText("Heading 3")),
+                Heading1::fromText()->changeText(RichText::fromString("Heading 1")),
+                Heading2::fromText()->changeText(RichText::fromString("Heading 2")),
+                Heading3::fromText()->changeText(RichText::fromString("Heading 3")),
                 // TODO: Image
-                NumberedListItem::create()->changeText(RichText::createText("List item ")),
+                NumberedListItem::create()->changeText(RichText::fromString("List item ")),
                 Paragraph::fromString("Paragraph"),
                 // TODO: PDF
                 TableOfContents::create(),

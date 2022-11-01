@@ -20,7 +20,7 @@ class EquationTest extends TestCase
 
     public function test_create_from_expression(): void
     {
-        $equation = Equation::create("a^2 + b^2 = c^2");
+        $equation = Equation::fromString("a^2 + b^2 = c^2");
 
         $this->assertEquals("a^2 + b^2 = c^2", $equation->expression);
     }

@@ -49,11 +49,7 @@ class Formula implements PropertyInterface
 
         $date = null;
         if (isset($formula["date"])) {
-            $start = new DateTimeImmutable($formula["date"]["start"]);
-            $end = isset($formula["date"]["end"]) ?
-                new DateTimeImmutable($formula["date"]["end"]) : null;
-
-            $date = $end ? Date::createRange($start, $end) : Date::create($start);
+            $date = Date::fromArray($formula["date"]);
         }
 
         return new self($metadata, $type, $string, $number, $boolean, $date);

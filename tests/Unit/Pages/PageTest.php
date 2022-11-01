@@ -35,7 +35,7 @@ class PageTest extends TestCase
     public function test_add_icon(): void
     {
         $parent = PageParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
-        $page = Page::create($parent)->changeIcon(Icon::fromEmoji(Emoji::create("⭐")));
+        $page = Page::create($parent)->changeIcon(Icon::fromEmoji(Emoji::fromString("⭐")));
 
         if ($page->icon?->isEmoji()) {
             $this->assertEquals("⭐", $page->icon->emoji?->emoji);
@@ -48,7 +48,7 @@ class PageTest extends TestCase
     {
         $parent = PageParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
         $page = Page::create($parent)
-            ->changeIcon(Icon::fromEmoji(Emoji::create("⭐")))
+            ->changeIcon(Icon::fromEmoji(Emoji::fromString("⭐")))
             ->removeIcon();
 
         $this->assertFalse($page->hasIcon());

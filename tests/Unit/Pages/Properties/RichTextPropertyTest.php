@@ -12,7 +12,7 @@ class RichTextPropertyTest extends TestCase
 {
     public function test_create(): void
     {
-        $text = RichTextProperty::create(RichText::createText("Dummy text"));
+        $text = RichTextProperty::fromText(RichText::fromString("Dummy text"));
 
         $this->assertEquals("Dummy text", $text->text[0]->text?->content);
         $this->assertEquals("", $text->metadata()->id);
@@ -51,14 +51,14 @@ class RichTextPropertyTest extends TestCase
 
     public function test_string_conversion(): void
     {
-        $text = RichTextProperty::create(RichText::createText("Dummy text"));
+        $text = RichTextProperty::fromText(RichText::fromString("Dummy text"));
         $this->assertEquals("Dummy text", $text->toString());
     }
 
     public function test_change_text(): void
     {
-        $text = RichTextProperty::create()->changeText(
-            RichText::createText("Dummy text")
+        $text = RichTextProperty::fromText()->changeText(
+            RichText::fromString("Dummy text")
         );
         $this->assertEquals("Dummy text", $text->toString());
     }

@@ -34,22 +34,22 @@ class RichText
     }
 
     /** @psalm-mutation-free */
-    public static function createText(string $content): self
+    public static function fromString(string $content): self
     {
-        $text = Text::create($content);
+        $text = Text::fromString($content);
 
-        return self::createFromText($text);
+        return self::fromText($text);
     }
 
     public static function createLink(string $content, string $url): self
     {
-        $text = Text::create($content)->changeUrl($url);
+        $text = Text::fromString($content)->changeUrl($url);
 
-        return self::createFromText($text);
+        return self::fromText($text);
     }
 
     /** @psalm-mutation-free */
-    public static function createFromText(Text $text): self
+    public static function fromText(Text $text): self
     {
         $annotations = Annotations::create();
 
@@ -64,14 +64,7 @@ class RichText
         );
     }
 
-    public static function createEquation(string $expression): self
-    {
-        $equation = Equation::create($expression);
-
-        return self::createFromEquation($equation);
-    }
-
-    public static function createFromEquation(Equation $equation): self
+    public static function fromEquation(Equation $equation): self
     {
         $annotations = Annotations::create();
 
@@ -86,11 +79,24 @@ class RichText
         );
     }
 
+    public static function fromMention(Mention $mention): self
+    {
+        $annotations = Annotations::create();
+
+        return new self(
+            "",
+            null,
+            $annotations,
+            RichTextType::Equation,
+            null,
+            $mention,
+            null,
+        );
+    }
+
     public static function newLine(): self
     {
-        $text = Text::create("\n");
-
-        return self::createFromText($text);
+        return self::fromString("\n");
     }
 
     /**
