@@ -32,4 +32,9 @@ class Emoji
             "emoji" => $this->emoji,
         ];
     }
+
+    public function toString(): string
+    {
+        return $this->emoji;
+    }
 }

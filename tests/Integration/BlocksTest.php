@@ -184,7 +184,7 @@ class BlocksTest extends TestCase
         }
         $client = Notion::create($token);
 
-        $blocks = $client->blocks()->add(self::DEFAULT_PARENT_ID, [
+        $blocks = $client->blocks()->append(self::DEFAULT_PARENT_ID, [
             Paragraph::fromString("This is a simple paragraph"),
         ]);
 
@@ -204,7 +204,7 @@ class BlocksTest extends TestCase
         $client = Notion::create($token);
 
         $this->expectException(ApiException::class);
-        $client->blocks()->add("inexistentId", [
+        $client->blocks()->append("inexistentId", [
             Paragraph::fromString("This is a simple paragraph"),
         ]);
     }
@@ -217,7 +217,7 @@ class BlocksTest extends TestCase
         }
         $client = Notion::create($token);
 
-        $blocks = $client->blocks()->add(
+        $blocks = $client->blocks()->append(
             self::DEFAULT_PARENT_ID,
             [
                 Bookmark::create("https://notion.so"),

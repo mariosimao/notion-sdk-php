@@ -85,7 +85,7 @@ class BookmarkTest extends TestCase
     public function test_replace_caption(): void
     {
         $caption = [ RichText::createText("Bookmark caption") ];
-        $bookmark = Bookmark::create("https://my-site.com")->changeCaption($caption);
+        $bookmark = Bookmark::create("https://my-site.com")->changeCaption(...$caption);
 
         $this->assertEquals($caption, $bookmark->caption);
     }

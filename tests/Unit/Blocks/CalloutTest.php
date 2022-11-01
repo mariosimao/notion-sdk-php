@@ -85,8 +85,8 @@ class CalloutTest extends TestCase
         $this->assertCount(2, $callout->text);
         $this->assertEmpty($callout->children);
         $this->assertEquals("Notion callouts rock!", $callout->toString());
-        if ($callout->iconIsEmoji()) {
-            $this->assertEquals("☀️", $callout->icon->emoji);
+        if ($callout->icon->isEmoji()) {
+            $this->assertEquals("☀️", $callout->icon->emoji->toString());
         }
         $this->assertFalse($callout->metadata()->archived);
 
@@ -292,8 +292,8 @@ class CalloutTest extends TestCase
         $callout = Callout::fromString("☀️", "Simple callout.")
             ->changeIcon(Emoji::create("🌙"));
 
-        if ($callout->iconIsEmoji()) {
-            $this->assertEquals("🌙", $callout->icon->emoji);
+        if ($callout->icon->isEmoji()) {
+            $this->assertEquals("🌙", $callout->icon->emoji->toString());
         }
     }
 
