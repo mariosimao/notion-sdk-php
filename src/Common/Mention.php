@@ -29,22 +29,22 @@ class Mention
     ) {
     }
 
-    public static function createPage(string $pageId): self
+    public static function page(string $pageId): self
     {
         return new self(MentionType::Page, $pageId, null, null, null);
     }
 
-    public static function createDatabase(string $databaseId): self
+    public static function database(string $databaseId): self
     {
         return new self(MentionType::Database, null, $databaseId, null, null);
     }
 
-    public static function createUser(User $user): self
+    public static function user(User $user): self
     {
         return new self(MentionType::User, null, null, $user, null);
     }
 
-    public static function createDate(Date $date): self
+    public static function date(Date $date): self
     {
         return new self(MentionType::Date, null, null, null, $date);
     }

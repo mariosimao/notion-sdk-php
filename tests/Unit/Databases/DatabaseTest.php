@@ -28,7 +28,7 @@ class DatabaseTest extends TestCase
     {
         $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
         $database = Database::create($parent)->changeAdvancedTitle(
-            RichText::createText("Database title")
+            RichText::fromString("Database title")
         );
 
         $this->assertEquals("Database title", $database->title[0]->plainText);
@@ -38,7 +38,7 @@ class DatabaseTest extends TestCase
     {
         $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
         $database = Database::create($parent)->changeIcon(
-            Icon::fromEmoji(Emoji::create("⭐"))
+            Icon::fromEmoji(Emoji::fromString("⭐"))
         );
 
         if ($database->icon?->isEmoji()) {
@@ -50,7 +50,7 @@ class DatabaseTest extends TestCase
     {
         $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
         $database = Database::create($parent)
-            ->changeIcon(Icon::fromEmoji(Emoji::create("⭐")))
+            ->changeIcon(Icon::fromEmoji(Emoji::fromString("⭐")))
             ->removeIcon();
 
         $this->assertNull($database->icon);

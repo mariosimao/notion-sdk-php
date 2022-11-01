@@ -22,7 +22,7 @@ class Video implements BlockInterface
         $metadata->checkType(BlockType::Video);
     }
 
-    public static function create(File $file): self
+    public static function fromFile(File $file): self
     {
         $block = BlockMetadata::create(BlockType::Video);
 

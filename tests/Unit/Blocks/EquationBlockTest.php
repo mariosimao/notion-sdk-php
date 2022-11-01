@@ -14,7 +14,7 @@ class EquationBlockTest extends TestCase
 {
     public function test_create_equation(): void
     {
-        $equation = EquationBlock::create("a^2 + b^2 = c^2");
+        $equation = EquationBlock::fromString("a^2 + b^2 = c^2");
 
         $this->assertEquals("a^2 + b^2 = c^2", $equation->equation->expression);
     }
@@ -58,7 +58,7 @@ class EquationBlockTest extends TestCase
 
     public function test_transform_in_array(): void
     {
-        $equation = EquationBlock::create("a^2 + b^2 = c^2");
+        $equation = EquationBlock::fromString("a^2 + b^2 = c^2");
 
         $expected = [
             "object"           => "block",
@@ -75,15 +75,15 @@ class EquationBlockTest extends TestCase
 
     public function test_replace_equation(): void
     {
-        $equation = Equation::create("a^2 + b^2 = c^2");
-        $equationBlock = EquationBlock::create()->changeEquation($equation);
+        $equation = Equation::fromString("a^2 + b^2 = c^2");
+        $equationBlock = EquationBlock::fromString()->changeEquation($equation);
 
         $this->assertEquals($equation, $equationBlock->equation);
     }
 
     public function test_no_children_support(): void
     {
-        $block = EquationBlock::create();
+        $block = EquationBlock::fromString();
 
         $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
@@ -92,7 +92,7 @@ class EquationBlockTest extends TestCase
 
     public function test_array_for_update_operations(): void
     {
-        $block = EquationBlock::create();
+        $block = EquationBlock::fromString();
 
         $array = $block->toUpdateArray();
 

@@ -35,7 +35,7 @@ class Heading1 implements BlockInterface
         $metadata->checkType(BlockType::Heading1);
     }
 
-    public static function create(RichText ...$text): self
+    public static function fromText(RichText ...$text): self
     {
         $block = BlockMetadata::create(BlockType::Heading1);
 
@@ -45,7 +45,7 @@ class Heading1 implements BlockInterface
     public static function fromString(string $content): self
     {
         $block = BlockMetadata::create(BlockType::Heading1);
-        $text = [ RichText::createText($content) ];
+        $text = [ RichText::fromString($content) ];
 
         return new self($block, $text, false, []);
     }

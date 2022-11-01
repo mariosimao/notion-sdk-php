@@ -25,10 +25,10 @@ class EquationBlock implements BlockInterface
         $metadata->checkType(BlockType::Equation);
     }
 
-    public static function create(string $expression = ""): self
+    public static function fromString(string $expression = ""): self
     {
         $block = BlockMetadata::create(BlockType::Equation);
-        $equation = Equation::create($expression);
+        $equation = Equation::fromString($expression);
 
         return new self($block, $equation);
     }

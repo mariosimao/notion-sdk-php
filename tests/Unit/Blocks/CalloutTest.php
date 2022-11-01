@@ -246,8 +246,8 @@ class CalloutTest extends TestCase
         $oldCallout = Callout::fromString("☀️", "This is an old callout");
 
         $newCallout = $oldCallout->changeText(
-            RichText::createText("This is a "),
-            RichText::createText("new callout"),
+            RichText::fromString("This is a "),
+            RichText::fromString("new callout"),
         );
 
         $this->assertEquals("This is an old callout", $oldCallout->toString());
@@ -259,7 +259,7 @@ class CalloutTest extends TestCase
         $oldCallout = Callout::fromString("☀️", "A callout");
 
         $newCallout = $oldCallout->addText(
-            RichText::createText(" can be extended.")
+            RichText::fromString(" can be extended.")
         );
 
         $this->assertEquals("A callout", $oldCallout->toString());
@@ -290,7 +290,7 @@ class CalloutTest extends TestCase
     public function test_replace_icon(): void
     {
         $callout = Callout::fromString("☀️", "Simple callout.")
-            ->changeIcon(Emoji::create("🌙"));
+            ->changeIcon(Emoji::fromString("🌙"));
 
         if ($callout->icon->isEmoji()) {
             $this->assertEquals("🌙", $callout->icon->emoji->toString());

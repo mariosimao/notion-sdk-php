@@ -14,7 +14,7 @@ class Emoji
     ) {
     }
 
-    public static function create(string $emoji): self
+    public static function fromString(string $emoji): self
     {
         return new self($emoji);
     }

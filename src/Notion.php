@@ -13,7 +13,7 @@ use Psr\Http\Message\RequestFactoryInterface;
 
 class Notion
 {
-    public const NOTION_VERSION = "2022-06-28";
+    public const API_VERSION = "2022-06-28";
 
     private function __construct(
         private readonly ClientInterface $psrClient,
@@ -44,7 +44,7 @@ class Notion
             $this->psrClient,
             $this->requestFactory,
             $this->token,
-            self::NOTION_VERSION
+            self::API_VERSION
         );
     }
 
@@ -54,7 +54,7 @@ class Notion
             $this->psrClient,
             $this->requestFactory,
             $this->token,
-            self::NOTION_VERSION
+            self::API_VERSION
         );
     }
 
@@ -64,7 +64,7 @@ class Notion
             $this->psrClient,
             $this->requestFactory,
             $this->token,
-            self::NOTION_VERSION,
+            self::API_VERSION,
         );
     }
 
@@ -74,7 +74,7 @@ class Notion
             $this->psrClient,
             $this->requestFactory,
             $this->token,
-            self::NOTION_VERSION,
+            self::API_VERSION,
         );
     }
 }

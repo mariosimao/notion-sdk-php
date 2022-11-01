@@ -31,7 +31,7 @@ class Toggle implements BlockInterface
         $metadata->checkType(BlockType::Toggle);
     }
 
-    public static function create(): self
+    public static function createEmpty(): self
     {
         $block = BlockMetadata::create(BlockType::Toggle);
 
@@ -41,7 +41,7 @@ class Toggle implements BlockInterface
     public static function fromString(string $content): self
     {
         $block = BlockMetadata::create(BlockType::Toggle);
-        $text = [ RichText::createText($content) ];
+        $text = [ RichText::fromString($content) ];
 
         return new self($block, $text, []);
     }

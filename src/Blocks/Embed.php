@@ -22,7 +22,7 @@ class Embed implements BlockInterface
         $metadata->checkType(BlockType::Embed);
     }
 
-    public static function create(string $url = ""): self
+    public static function fromUrl(string $url = ""): self
     {
         $metadata = BlockMetadata::create(BlockType::Embed);
 

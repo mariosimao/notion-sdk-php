@@ -12,25 +12,20 @@ namespace Notion\Databases;
  */
 class DatabaseParent
 {
-    private const ALLOWED_TYPES = [ "page_id", "workspace" ];
-
     private function __construct(
-        public readonly string $type,
+        public readonly DatabaseParentType $type,
         public readonly string|null $id,
     ) {
-        if (!in_array($type, self::ALLOWED_TYPES)) {
-            throw new \Exception("Invalid parent type: '{$type}'.");
-        }
     }
 
     public static function page(string $pageId): self
     {
-        return new self("page_id", $pageId);
+        return new self(DatabaseParentType::Page, $pageId);
     }
 
     public static function workspace(): self
     {
-        return new self("workspace", null);
+        return new self(DatabaseParentType::Workspace, null);
     }
 
     /**
@@ -40,7 +35,7 @@ class DatabaseParent
      */
     public static function fromArray(array $array): self
     {
-        $type = $array["type"];
+        $type = DatabaseParentType::from($array["type"]);
 
         $id = $array["page_id"] ?? null;
 
@@ -63,11 +58,11 @@ class DatabaseParent
 
     public function isPage(): bool
     {
-        return $this->type === "page_id";
+        return $this->type === DatabaseParentType::Page;
     }
 
     public function isWorkspace(): bool
     {
-        return $this->type === "workspace";
+        return $this->type === DatabaseParentType::Workspace;
     }
 }

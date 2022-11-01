@@ -35,9 +35,14 @@ class Code implements BlockInterface
         $metadata->checkType(BlockType::Code);
     }
 
+    public static function create(): self
+    {
+        return self::fromText([]);
+    }
+
     /** @param RichText[] $text */
-    public static function create(
-        array $text = [],
+    public static function fromText(
+        array $text,
         CodeLanguage $language = CodeLanguage::PlainText,
     ): self {
         $metadata = BlockMetadata::create(BlockType::Code);
@@ -45,12 +50,12 @@ class Code implements BlockInterface
         return new self($metadata, $text, $language, []);
     }
 
-    public static function createFromString(
+    public static function fromString(
         string $code,
         CodeLanguage $language = CodeLanguage::PlainText,
     ): self {
         $metadata = BlockMetadata::create(BlockType::Code);
-        $text = [ RichText::createText($code) ];
+        $text = [ RichText::fromString($code) ];
 
         return new self($metadata, $text, $language, []);
     }

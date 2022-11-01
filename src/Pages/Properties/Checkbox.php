@@ -19,11 +19,18 @@ class Checkbox implements PropertyInterface
     ) {
     }
 
-    public static function create(bool $checked = false): self
+    public static function createChecked(): self
     {
         $property = PropertyMetadata::create("", PropertyType::Checkbox);
 
-        return new self($property, $checked);
+        return new self($property, true);
+    }
+
+    public static function createUnchecked(): self
+    {
+        $property = PropertyMetadata::create("", PropertyType::Checkbox);
+
+        return new self($property, false);
     }
 
     public static function fromArray(array $array): self

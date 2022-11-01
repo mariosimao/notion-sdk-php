@@ -23,7 +23,7 @@ class FileBlock implements BlockInterface
         $metadata->checkType(BlockType::File);
     }
 
-    public static function create(File $file): self
+    public static function fromFile(File $file): self
     {
         $metadata = BlockMetadata::create(BlockType::File);
 

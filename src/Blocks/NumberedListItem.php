@@ -42,7 +42,7 @@ class NumberedListItem implements BlockInterface
     public static function fromString(string $content): self
     {
         $block = BlockMetadata::create(BlockType::NumberedListItem);
-        $text = [ RichText::createText($content) ];
+        $text = [ RichText::fromString($content) ];
 
         return new self($block, $text, []);
     }

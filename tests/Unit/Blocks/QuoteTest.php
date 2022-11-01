@@ -145,8 +145,8 @@ class QuoteTest extends TestCase
         $oldQuote = Quote::fromString("This is an old quote");
 
         $newQuote = $oldQuote->changeText([
-            RichText::createText("This is a "),
-            RichText::createText("new quote"),
+            RichText::fromString("This is a "),
+            RichText::fromString("new quote"),
         ]);
 
         $this->assertEquals("This is an old quote", $oldQuote->toString());
@@ -158,7 +158,7 @@ class QuoteTest extends TestCase
         $oldQuote = Quote::fromString("A quote");
 
         $newQuote = $oldQuote->addText(
-            RichText::createText(" can be extended.")
+            RichText::fromString(" can be extended.")
         );
 
         $this->assertEquals("A quote", $oldQuote->toString());

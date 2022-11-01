@@ -49,7 +49,7 @@ class BulletedListItem implements BlockInterface
     public static function fromString(string $content): self
     {
         $metadata = BlockMetadata::create(BlockType::BulletedListItem);
-        $text = [ RichText::createText($content) ];
+        $text = [ RichText::fromString($content) ];
 
         return new self($metadata, $text, []);
     }

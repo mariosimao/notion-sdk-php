@@ -15,7 +15,7 @@ class FileBlockTest extends TestCase
     public function test_create_file(): void
     {
         $file = File::createExternal("https://my-site.com/file.doc");
-        $fileBlock = FileBlock::create($file);
+        $fileBlock = FileBlock::fromFile($file);
 
         $this->assertEquals($file, $fileBlock->file());
     }
@@ -70,7 +70,7 @@ class FileBlockTest extends TestCase
     public function test_transform_in_array(): void
     {
         $file = File::createExternal("https://my-site.com/file.doc");
-        $fileBlock = FileBlock::create($file);
+        $fileBlock = FileBlock::fromFile($file);
 
         $expected = [
             "object"           => "block",
@@ -95,7 +95,7 @@ class FileBlockTest extends TestCase
         $file1 = File::createExternal("https://my-site.com/file1.doc");
         $file2 = File::createExternal("https://my-site.com/file2.doc");
 
-        $old = FileBlock::create($file1);
+        $old = FileBlock::fromFile($file1);
         $new = $old->changeFile($file2);
 
         $this->assertEquals($file1, $old->file());
@@ -105,7 +105,7 @@ class FileBlockTest extends TestCase
     public function test_no_children_support(): void
     {
         $file = File::createExternal("https://my-site.com/file.doc");
-        $block = FileBlock::create($file);
+        $block = FileBlock::fromFile($file);
 
         $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
@@ -115,7 +115,7 @@ class FileBlockTest extends TestCase
     public function test_array_for_update_operations(): void
     {
         $file = File::createExternal("https://example.com/file.doc");
-        $block = FileBlock::create($file);
+        $block = FileBlock::fromFile($file);
 
         $array = $block->toUpdateArray();
 
@@ -125,7 +125,7 @@ class FileBlockTest extends TestCase
     public function test_archive(): void
     {
         $file = File::createExternal("https://example.com/file.doc");
-        $block = FileBlock::create($file);
+        $block = FileBlock::fromFile($file);
 
         $block = $block->archive();
 

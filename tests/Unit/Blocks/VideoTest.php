@@ -15,7 +15,7 @@ class VideoTest extends TestCase
     public function test_create_video(): void
     {
         $file = File::createExternal("https://my-site.com/video.mp4");
-        $video = Video::create($file);
+        $video = Video::fromFile($file);
 
         $this->assertEquals($file, $video->file);
     }
@@ -70,7 +70,7 @@ class VideoTest extends TestCase
     public function test_transform_in_array(): void
     {
         $file = File::createExternal("https://my-site.com/video.mp4");
-        $video = Video::create($file);
+        $video = Video::fromFile($file);
 
         $expected = [
             "object"           => "block",
@@ -95,7 +95,7 @@ class VideoTest extends TestCase
         $file1 = File::createExternal("https://my-site.com/video1.mp4");
         $file2 = File::createExternal("https://my-site.com/video2.mp4");
 
-        $old = Video::create($file1);
+        $old = Video::fromFile($file1);
         $new = $old->changeFile($file2);
 
         $this->assertEquals($file1, $old->file);
@@ -105,7 +105,7 @@ class VideoTest extends TestCase
     public function test_no_children_support(): void
     {
         $file = File::createExternal("https://my-site.com/video.mp4");
-        $block = Video::create($file);
+        $block = Video::fromFile($file);
 
         $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
@@ -115,7 +115,7 @@ class VideoTest extends TestCase
     public function test_array_for_update_operations(): void
     {
         $file = File::createExternal("https://my-site.com/video.mp4");
-        $block = Video::create($file);
+        $block = Video::fromFile($file);
 
         $array = $block->toUpdateArray();
 
@@ -125,7 +125,7 @@ class VideoTest extends TestCase
     public function test_archive(): void
     {
         $file = File::createExternal("https://my-site.com/video.mp4");
-        $block = Video::create($file);
+        $block = Video::fromFile($file);
 
         $block = $block->archive();
 

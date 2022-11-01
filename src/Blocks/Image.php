@@ -22,7 +22,7 @@ class Image implements BlockInterface
         $metadata->checkType(BlockType::Image);
     }
 
-    public static function create(File $file): self
+    public static function fromFile(File $file): self
     {
         $block = BlockMetadata::create(BlockType::Image);
 

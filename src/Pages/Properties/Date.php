@@ -4,7 +4,6 @@ namespace Notion\Pages\Properties;
 
 use DateTimeImmutable;
 use Notion\Common\Date as CommonDate;
-use Notion\Common\RichText;
 
 /**
  * @psalm-type DateJson = array{
@@ -22,18 +21,22 @@ class Date implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,
-        public readonly DateTimeImmutable $start,
-        public readonly DateTimeImmutable|null $end,
+        public readonly CommonDate $date,
     ) {
     }
 
-    public static function create(
-        DateTimeImmutable $start,
-        DateTimeImmutable|null $end = null,
-    ): self {
+    public static function create(DateTimeImmutable $date): self
+    {
         $property = PropertyMetadata::create("", PropertyType::Date);
 
-        return new self($property, $start, $end);
+        return new self($property, CommonDate::create($date));
+    }
+
+    public static function createRange(DateTimeImmutable $start, DateTimeImmutable $end): self
+    {
+        $property = PropertyMetadata::create("", PropertyType::Date);
+
+        return new self($property, CommonDate::createRange($start, $end));
     }
 
     public static function fromArray(array $array): self
@@ -42,21 +45,16 @@ class Date implements PropertyInterface
 
         $property = PropertyMetadata::fromArray($array);
 
-        $start = new DateTimeImmutable($array["date"]["start"]);
-        $end = isset($array["date"]["end"]) ?
-            new DateTimeImmutable($array["date"]["end"]) : null;
+        $date = CommonDate::fromArray($array["date"]);
 
-        return new self($property, $start, $end);
+        return new self($property, $date);
     }
 
     public function toArray(): array
     {
         $array = $this->metadata->toArray();
 
-        $array["date"] = [
-            "start" => $this->start->format(CommonDate::FORMAT),
-            "end"   => $this->end?->format(CommonDate::FORMAT),
-        ];
+        $array["date"] = $this->date->toArray();
 
         return $array;
     }
@@ -68,21 +66,31 @@ class Date implements PropertyInterface
 
     public function changeStart(DateTimeImmutable $start): self
     {
-        return new self($this->metadata, $start, $this->end);
+        return new self($this->metadata, $this->date->changeStart($start));
     }
 
     public function changeEnd(DateTimeImmutable $end): self
     {
-        return new self($this->metadata, $this->start, $end);
+        return new self($this->metadata, $this->date->changeEnd($end));
     }
 
     public function removeEnd(): self
     {
-        return new self($this->metadata, $this->start, null);
+        return new self($this->metadata, $this->date->removeEnd());
+    }
+
+    public function start(): DateTimeImmutable
+    {
+        return $this->date->start;
+    }
+
+    public function end(): DateTimeImmutable|null
+    {
+        return $this->date->end;
     }
 
     public function isRange(): bool
     {
-        return $this->end !== null;
+        return $this->date->isRange();
     }
 }

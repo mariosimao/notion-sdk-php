@@ -2,8 +2,11 @@
 
 namespace Notion\Test\Unit\Common;
 
+use DateTimeImmutable;
 use Notion\Common\Color;
+use Notion\Common\Date;
 use Notion\Common\Equation;
+use Notion\Common\Mention;
 use Notion\Common\RichText;
 use Notion\Common\Text;
 use PHPUnit\Framework\TestCase;
@@ -12,7 +15,7 @@ class RichTextTest extends TestCase
 {
     public function test_create_text(): void
     {
-        $richText = RichText::createText("Simple text");
+        $richText = RichText::fromString("Simple text");
 
         $this->assertTrue($richText->isText());
         $this->assertEquals("Simple text", $richText->text?->content);
@@ -31,77 +34,78 @@ class RichTextTest extends TestCase
 
     public function test_create_from_text(): void
     {
-        $text = Text::create("My text");
+        $text = Text::fromString("My text");
 
-        $richText = RichText::createFromText($text);
+        $richText = RichText::fromText($text);
 
         $this->assertTrue($richText->isText());
         $this->assertEquals("My text", $richText->plainText);
         $this->assertEquals("My text", $richText->text?->content);
     }
 
-    public function test_create_equation(): void
+    public function test_create_from_equation(): void
     {
-        $richText = RichText::createEquation("a^2 + b^2 = c^2");
+        $equation = Equation::fromString("a^2 + b^2 = c^2");
+        $richText = RichText::fromEquation($equation);
 
         $this->assertTrue($richText->isEquation());
         $this->assertEquals("a^2 + b^2 = c^2", $richText->equation?->expression);
     }
 
-    public function test_create_from_equation(): void
+    public function test_create_from_mention(): void
     {
-        $equation = Equation::create("a^2 + b^2 = c^2");
-        $richText = RichText::createFromEquation($equation);
+        $date = Date::create(new DateTimeImmutable("2022-10-31"));
+        $mention = Mention::date($date);
+        $richText = RichText::fromMention($mention);
 
-        $this->assertTrue($richText->isEquation());
-        $this->assertEquals("a^2 + b^2 = c^2", $richText->equation?->expression);
+        $this->assertTrue($richText->mention?->isDate());
     }
 
     public function test_change_to_bold(): void
     {
-        $richText = RichText::createText("Simple text")->bold();
+        $richText = RichText::fromString("Simple text")->bold();
 
         $this->assertTrue($richText->annotations->isBold);
     }
 
     public function test_change_to_italic(): void
     {
-        $richText = RichText::createText("Simple text")->italic();
+        $richText = RichText::fromString("Simple text")->italic();
 
         $this->assertTrue($richText->annotations->isItalic);
     }
 
     public function test_change_to_strike_through(): void
     {
-        $richText = RichText::createText("Simple text")->strikeThrough();
+        $richText = RichText::fromString("Simple text")->strikeThrough();
 
         $this->assertTrue($richText->annotations->isStrikeThrough);
     }
 
     public function test_change_to_underline(): void
     {
-        $richText = RichText::createText("Simple text")->underline();
+        $richText = RichText::fromString("Simple text")->underline();
 
         $this->assertTrue($richText->annotations->isUnderline);
     }
 
     public function test_change_to_code(): void
     {
-        $richText = RichText::createText("Simple text")->code();
+        $richText = RichText::fromString("Simple text")->code();
 
         $this->assertTrue($richText->annotations->isCode);
     }
 
     public function test_change_color(): void
     {
-        $richText = RichText::createText("Simple text")->color(Color::Red);
+        $richText = RichText::fromString("Simple text")->color(Color::Red);
 
         $this->assertEquals(Color::Red, $richText->annotations->color);
     }
 
     public function test_change_href(): void
     {
-        $richText = RichText::createText("Simple text")->changeHref("https://notion.so");
+        $richText = RichText::fromString("Simple text")->changeHref("https://notion.so");
 
         $this->assertEquals("https://notion.so", $richText->href);
     }

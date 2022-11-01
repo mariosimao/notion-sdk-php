@@ -20,7 +20,7 @@ class DatabaseParentTest extends TestCase
         $parent = DatabaseParent::workspace();
 
         $this->assertTrue($parent->isWorkspace());
-        $this->assertEquals("workspace", $parent->type);
+        $this->assertEquals("workspace", $parent->type->value);
     }
 
     public function test_page_array_conversion(): void
@@ -47,7 +47,7 @@ class DatabaseParentTest extends TestCase
 
     public function test_invalid_type_array(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(\ValueError::class);
         /** @psalm-suppress InvalidArgument */
         DatabaseParent::fromArray([ "type" => "invalid-type" ]);
     }

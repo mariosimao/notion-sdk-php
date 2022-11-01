@@ -104,8 +104,8 @@ class CodeTest extends TestCase
 
     public function test_transform_in_array(): void
     {
-        $h = Code::create(
-            [ RichText::createText("<?php\necho 'Hello World!';") ],
+        $h = Code::fromText(
+            [ RichText::fromString("<?php\necho 'Hello World!';") ],
             CodeLanguage::Php,
         );
 
@@ -143,11 +143,11 @@ class CodeTest extends TestCase
 
     public function test_replace_text(): void
     {
-        $oldHeading = Code::createFromString("This is an old code");
+        $oldHeading = Code::fromString("This is an old code");
 
         $newHeading = $oldHeading->changeText(
-            RichText::createText("This is a "),
-            RichText::createText("new code"),
+            RichText::fromString("This is a "),
+            RichText::fromString("new code"),
         );
 
         $this->assertEquals("This is an old code", $oldHeading->toString());
@@ -156,10 +156,10 @@ class CodeTest extends TestCase
 
     public function test_add_text(): void
     {
-        $oldHeading = Code::createFromString("A code");
+        $oldHeading = Code::fromString("A code");
 
         $newHeading = $oldHeading->addText(
-            RichText::createText(" can be extended.")
+            RichText::fromString(" can be extended.")
         );
 
         $this->assertEquals("A code", $oldHeading->toString());
@@ -169,7 +169,7 @@ class CodeTest extends TestCase
     public function test_change_language(): void
     {
         $language = CodeLanguage::Php;
-        $code = Code::createFromString("Simple code")->changeLanguage($language);
+        $code = Code::fromString("Simple code")->changeLanguage($language);
 
         $this->assertEquals($language, $code->language);
     }
@@ -204,9 +204,9 @@ class CodeTest extends TestCase
     public function test_change_caption(): void
     {
         $block = Code::create()
-            ->addText(RichText::createText("<?php echo 'Hi!'"))
+            ->addText(RichText::fromString("<?php echo 'Hi!'"))
             ->changeLanguage(CodeLanguage::Php)
-            ->changeCaption(RichText::createText("Code caption"));
+            ->changeCaption(RichText::fromString("Code caption"));
 
         $this->assertSame("Code caption", RichText::multipleToString(...$block->caption));
     }

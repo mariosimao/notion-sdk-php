@@ -144,8 +144,8 @@ class ParagraphTest extends TestCase
         $oldParagraph = Paragraph::fromString("This is an old paragraph");
 
         $newParagraph = $oldParagraph->changeText([
-            RichText::createText("This is a "),
-            RichText::createText("new paragraph"),
+            RichText::fromString("This is a "),
+            RichText::fromString("new paragraph"),
         ]);
 
         $this->assertEquals("This is an old paragraph", $oldParagraph->toString());
@@ -157,7 +157,7 @@ class ParagraphTest extends TestCase
         $oldParagraph = Paragraph::fromString("A paragraph");
 
         $newParagraph = $oldParagraph->addText(
-            RichText::createText(" can be extended.")
+            RichText::fromString(" can be extended.")
         );
 
         $this->assertEquals("A paragraph", $oldParagraph->toString());
