@@ -73,7 +73,7 @@ class Client
      *
      * @return BlockInterface[] Newly created blocks
      */
-    public function add(string $blockId, array $blocks): array
+    public function append(string $blockId, array $blocks): array
     {
         $data = json_encode([
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $blocks),

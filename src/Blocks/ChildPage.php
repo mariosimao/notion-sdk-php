@@ -17,7 +17,7 @@ class ChildPage implements BlockInterface
 {
     private function __construct(
         private readonly BlockMetadata $metadata,
-        public readonly string $pageTitle,
+        public readonly string $title,
     ) {
         $metadata->checkType(BlockType::ChildPage);
     }
@@ -37,7 +37,7 @@ class ChildPage implements BlockInterface
     {
         $array = $this->metadata->toArray();
 
-        $array["child_page"] = [ "title" => $this->pageTitle ];
+        $array["child_page"] = [ "title" => $this->title ];
 
         return $array;
     }
@@ -47,7 +47,7 @@ class ChildPage implements BlockInterface
     {
         return [
             "child_page" => [
-                "title" => $this->pageTitle,
+                "title" => $this->title,
             ],
             "archived" => $this->metadata()->archived,
         ];
@@ -72,7 +72,7 @@ class ChildPage implements BlockInterface
     {
         return new self(
             $this->metadata->archive(),
-            $this->pageTitle,
+            $this->title,
         );
     }
 }

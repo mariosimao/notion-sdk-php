@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Unit\Databases\Properties;
 
+use Notion\Common\RichText;
 use Notion\Databases\Properties\PropertyFactory;
 use Notion\Databases\Properties\PropertyType;
 use Notion\Databases\Properties\RichTextProperty;
@@ -30,5 +31,23 @@ class RichTextTest extends TestCase
 
         $this->assertEquals($array, $text->toArray());
         $this->assertEquals($array, $fromFactory->toArray());
+    }
+
+    public function test_new_line(): void
+    {
+        $text = RichText::newLine();
+
+        $this->assertSame("\n", $text->toString());
+    }
+
+    public function test_mutiple_to_string(): void
+    {
+        $text = [
+            RichText::createText("Multiple ")->bold(),
+            RichText::createText("text ")->italic(),
+            RichText::createText("example")->underline(),
+        ];
+
+        $this->assertSame("Multiple text example", RichText::multipleToString(...$text));
     }
 }

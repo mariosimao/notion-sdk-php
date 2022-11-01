@@ -86,6 +86,13 @@ class RichText
         );
     }
 
+    public static function newLine(): self
+    {
+        $text = Text::create("\n");
+
+        return self::createFromText($text);
+    }
+
     /**
      * @psalm-param RichTextJson $array
      *
@@ -102,6 +109,11 @@ class RichText
             array_key_exists("mention", $array) ? Mention::fromArray($array["mention"]) : null,
             array_key_exists("equation", $array) ? Equation::fromArray($array["equation"]) : null,
         );
+    }
+
+    public function toString(): string
+    {
+        return $this->plainText;
     }
 
     public function toArray(): array
@@ -225,7 +237,7 @@ class RichText
     {
         $string = "";
         foreach ($richText as $singleRichText) {
-            $string = $string . $singleRichText->plainText;
+            $string = $string . $singleRichText->toString();
         }
 
         return $string;

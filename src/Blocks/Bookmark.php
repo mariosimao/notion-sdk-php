@@ -89,12 +89,8 @@ class Bookmark implements BlockInterface
         return new self($this->metadata, $url, $this->caption);
     }
 
-    /**
-     * Change bookmark caption
-     *
-     * @param RichText[] $caption
-     */
-    public function changeCaption(array $caption): self
+    /** Change bookmark caption */
+    public function changeCaption(RichText ...$caption): self
     {
         return new self($this->metadata, $this->url, $caption);
     }

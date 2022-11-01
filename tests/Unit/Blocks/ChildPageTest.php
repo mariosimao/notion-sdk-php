@@ -25,7 +25,7 @@ class ChildPageTest extends TestCase
 
         $childPage = ChildPage::fromArray($array);
 
-        $this->assertEquals("Page title", $childPage->pageTitle);
+        $this->assertEquals("Page title", $childPage->title);
         $this->assertFalse($childPage->metadata()->archived);
 
         $this->assertEquals($childPage, BlockFactory::fromArray($array));

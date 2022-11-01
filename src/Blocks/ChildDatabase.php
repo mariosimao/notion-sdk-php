@@ -3,8 +3,6 @@
 namespace Notion\Blocks;
 
 use Notion\Exceptions\BlockException;
-use Notion\Common\RichText;
-use Notion\NotionException;
 
 /**
  * @psalm-import-type BlockMetadataJson from BlockMetadata
@@ -19,7 +17,7 @@ class ChildDatabase implements BlockInterface
 {
     private function __construct(
         private readonly BlockMetadata $metadata,
-        public readonly string $databaseTitle
+        public readonly string $title
     ) {
         $metadata->checkType(BlockType::ChildDatabase);
     }
@@ -39,7 +37,7 @@ class ChildDatabase implements BlockInterface
     {
         $array = $this->metadata->toArray();
 
-        $array["child_database"] = [ "title" => $this->databaseTitle ];
+        $array["child_database"] = [ "title" => $this->title ];
 
         return $array;
     }
@@ -49,7 +47,7 @@ class ChildDatabase implements BlockInterface
     {
         return [
             "child_database" => [
-                "title" => $this->databaseTitle,
+                "title" => $this->title,
             ],
             "archived" => $this->metadata()->archived,
         ];
@@ -74,7 +72,7 @@ class ChildDatabase implements BlockInterface
     {
         return new self(
             $this->metadata->archive(),
-            $this->databaseTitle,
+            $this->title,
         );
     }
 }
