@@ -7,13 +7,12 @@ use Notion\Common\Emoji;
 use Notion\Common\RichText;
 use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
-use Notion\Databases\Properties\RichTextProperty as PropertiesRichText;
+use Notion\Databases\Properties\RichTextProperty;
 use Notion\Databases\Query;
 use Notion\Databases\Query\CompoundFilter;
 use Notion\Databases\Query\DateFilter;
-use Notion\Databases\Query\SelectFilter;
+use Notion\Databases\Query\StatusFilter;
 use Notion\Exceptions\ApiException;
-use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class DatabasesTest extends TestCase
@@ -66,9 +65,7 @@ class DatabasesTest extends TestCase
         $client = Notion::create($token);
 
         $database = $client->databases()->find("a1acab7aeea2438bb0e9b23b73fb4a25");
-        $oldProperties = $database->properties;
-
-        $database = $database->addProperty(PropertiesRichText::create("Test"));
+        $database = $database->addProperty(RichTextProperty::create("Test"));
 
         $updatedDatabase = $client->databases()->update($database);
 
@@ -78,7 +75,7 @@ class DatabasesTest extends TestCase
         );
 
         // Back to original state
-        $original = $updatedDatabase->changeProperties($oldProperties);
+        $original = $updatedDatabase->removePropertyByName("Test");
         $client->databases()->update($original);
     }
 
@@ -181,23 +178,25 @@ class DatabasesTest extends TestCase
 
         $database = $client->databases()->find("a1acab7aeea2438bb0e9b23b73fb4a25");
 
-        // 70s and 90s movies
+        /**
+         * 90s movies not watched
+         *
+         * Status != Watched AND
+         * Release >= 1990-01-01 AND
+         * Release <= 1999-12-31
+         *
+         */
         $query = Query::create()->changeFilter(
-            CompoundFilter::or(
-                CompoundFilter::and(
-                    DateFilter::property("Release date")->onOrAfter("1990-01-01"),
-                    DateFilter::property("Release date")->onOrBefore("1999-12-31"),
-                ),
-                CompoundFilter::and(
-                    DateFilter::property("Release date")->onOrAfter("1970-01-01"),
-                    DateFilter::property("Release date")->onOrBefore("1979-12-31"),
-                ),
+            CompoundFilter::and(
+                StatusFilter::property("Status")->doesNotEqual("Watched"),
+                DateFilter::property("Release date")->onOrAfter("1990-01-01"),
+                DateFilter::property("Release date")->onOrBefore("1999-12-31"),
             ),
         );
 
         $result = $client->databases()->query($database, $query);
 
-        $this->assertCount(3, $result->pages);
+        $this->assertCount(2, $result->pages);
     }
 
     public function test_query_inexistent_database(): void

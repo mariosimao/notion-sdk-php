@@ -7,7 +7,6 @@ use Notion\Blocks\Column;
 use Notion\Blocks\ColumnList;
 use Notion\Exceptions\BlockException;
 use Notion\Blocks\Paragraph;
-use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class ColumnListTest extends TestCase

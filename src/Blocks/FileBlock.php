@@ -4,7 +4,6 @@ namespace Notion\Blocks;
 
 use Notion\Exceptions\BlockException;
 use Notion\Common\File;
-use Notion\NotionException;
 
 /**
  * @psalm-import-type BlockMetadataJson from BlockMetadata

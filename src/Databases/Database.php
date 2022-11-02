@@ -10,9 +10,9 @@ use Notion\Common\Icon;
 use Notion\Common\RichText;
 use Notion\Databases\Properties\PropertyFactory;
 use Notion\Databases\Properties\PropertyInterface;
+use Notion\Databases\Properties\Status;
 use Notion\Databases\Properties\Title;
 use Notion\Exceptions\DatabaseException;
-use Notion\NotionException;
 
 /**
  * @psalm-import-type EmojiJson from \Notion\Common\Emoji
@@ -154,7 +154,7 @@ class Database
             "description"      => array_map(fn(RichText $t) => $t->toArray(), $this->description),
             "icon"             => $this->icon?->toArray(),
             "cover"            => $this->cover?->toArray(),
-            "properties"       => array_map(fn(PropertyInterface $p) => $p->toArray(), $this->properties),
+            "properties"       => $this->propertiesToArray(),
             "parent"           => $this->parent->toArray(),
             "url"              => $this->url,
         ];
@@ -276,6 +276,25 @@ class Database
         );
     }
 
+    public function removePropertyByName(string $propertyName): self
+    {
+        $properties = $this->properties;
+        unset($properties[$propertyName]);
+
+        return new self(
+            $this->id,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $this->title,
+            $this->description,
+            $this->icon,
+            $this->cover,
+            $properties,
+            $this->parent,
+            $this->url,
+        );
+    }
+
     /** @param array<string, PropertyInterface> $properties */
     public function changeProperties(array $properties): self
     {
@@ -319,5 +338,20 @@ class Database
         }
 
         return false;
+    }
+
+    private function propertiesToArray(): array
+    {
+        $array = [];
+
+        $properties = $this->properties;
+        foreach ($properties as $name => $property) {
+            if ($property instanceof Status) {
+                continue;
+            }
+            $array[$name] = $property->toArray();
+        }
+
+        return $array;
     }
 }

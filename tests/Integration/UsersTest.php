@@ -4,7 +4,6 @@ namespace Notion\Test\Integration;
 
 use Notion\Exceptions\ApiException;
 use Notion\Notion;
-use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class UsersTest extends TestCase

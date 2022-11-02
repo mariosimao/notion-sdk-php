@@ -29,6 +29,7 @@ class PropertyFactory
             PropertyType::PhoneNumber    => PhoneNumber::fromArray($array),
             PropertyType::RichText       => RichTextProperty::fromArray($array),
             PropertyType::Select         => Select::fromArray($array),
+            PropertyType::Status         => Status::fromArray($array),
             PropertyType::Title          => Title::fromArray($array),
             PropertyType::Url            => Url::fromArray($array),
             default                      => throw new Exception("Invalid property type."),
