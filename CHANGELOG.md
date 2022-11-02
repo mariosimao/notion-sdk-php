@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0-beta.1]
 
 ### Added
+- Add database description (#125)
+- Add support to toggleable headings (#126)
+- Add caption to Code block (#127)
+- Add support to Status property (#132)
+
+### Changed
+- Unify constructor method names (#131)
+
+### Documentation
+- Express psr/http-client dependency on documentation (#128)
+- Document blocks (#129)
+
+## [1.0.0-beta.1]
+
+### Added
 - Icon value object instead of `File|Emoji`
 
 ### Changed
@@ -181,4 +196,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.6.1]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v0.6.1
 [0.6.2]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v0.6.2
 [1.0.0-beta.1]: https://github.com/mariosimao/notion-sdk-php/compare/v0.6.2...v1.0.0-beta.1
-[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.0.0-beta.1...HEAD
+[1.0.0-beta.2]: https://github.com/mariosimao/notion-sdk-php/compare/v0.6.2...v1.0.0-beta.2
+[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.0.0-beta.2...HEAD
