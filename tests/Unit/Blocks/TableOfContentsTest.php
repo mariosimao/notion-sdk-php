@@ -6,7 +6,6 @@ use Notion\Blocks\BlockFactory;
 use Notion\Exceptions\BlockException;
 use Notion\Blocks\TableOfContents;
 use Notion\Common\Date;
-use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class TableOfContentsTest extends TestCase

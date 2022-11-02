@@ -6,7 +6,6 @@ use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Breadcrumb;
 use Notion\Exceptions\BlockException;
 use Notion\Common\Date;
-use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class BreadcrumbTest extends TestCase

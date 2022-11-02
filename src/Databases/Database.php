@@ -13,7 +13,6 @@ use Notion\Databases\Properties\PropertyInterface;
 use Notion\Databases\Properties\Status;
 use Notion\Databases\Properties\Title;
 use Notion\Exceptions\DatabaseException;
-use Notion\NotionException;
 
 /**
  * @psalm-import-type EmojiJson from \Notion\Common\Emoji

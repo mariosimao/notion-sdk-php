@@ -24,7 +24,6 @@ use Notion\Blocks\Toggle;
 use Notion\Common\RichText;
 use Notion\Exceptions\ApiException;
 use Notion\Notion;
-use Notion\NotionException;
 use Notion\Pages\Page;
 use Notion\Pages\PageParent;
 use PHPUnit\Framework\TestCase;

@@ -4,7 +4,6 @@ namespace Notion\Blocks;
 
 use Notion\Blocks\BlockInterface;
 use Notion\Infrastructure\Http;
-use Notion\NotionException;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 

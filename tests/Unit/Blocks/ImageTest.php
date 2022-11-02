@@ -7,7 +7,6 @@ use Notion\Exceptions\BlockException;
 use Notion\Blocks\Image;
 use Notion\Common\Date;
 use Notion\Common\File;
-use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class ImageTest extends TestCase

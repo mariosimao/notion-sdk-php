@@ -3,7 +3,6 @@
 namespace Notion\Blocks;
 
 use Notion\Exceptions\BlockException;
-use Notion\NotionException;
 
 /**
  * Link Preview block.

@@ -2,7 +2,6 @@
 
 namespace Notion\Blocks;
 
-use Notion\NotionException;
 use Notion\Exceptions\BlockException;
 
 /**

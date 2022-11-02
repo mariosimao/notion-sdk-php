@@ -7,7 +7,6 @@ use Notion\Blocks\EquationBlock;
 use Notion\Exceptions\BlockException;
 use Notion\Common\Date;
 use Notion\Common\Equation;
-use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class EquationBlockTest extends TestCase

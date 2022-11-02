@@ -6,8 +6,6 @@ use Notion\Blocks\BlockFactory;
 use Notion\Blocks\ChildDatabase;
 use Notion\Blocks\Paragraph;
 use Notion\Exceptions\BlockException;
-use Notion\Common\Date;
-use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class ChildDatabaseTest extends TestCase

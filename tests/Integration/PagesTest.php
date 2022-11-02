@@ -5,7 +5,6 @@ namespace Notion\Test\Integration;
 use Notion\Notion;
 use Notion\Common\Emoji;
 use Notion\Exceptions\ApiException;
-use Notion\NotionException;
 use Notion\Pages\Page;
 use Notion\Pages\PageParent;
 use PHPUnit\Framework\TestCase;

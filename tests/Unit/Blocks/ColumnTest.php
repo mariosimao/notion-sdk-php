@@ -5,7 +5,6 @@ namespace Notion\Test\Unit\Blocks;
 use Notion\Blocks\Column;
 use Notion\Exceptions\BlockException;
 use Notion\Blocks\Paragraph;
-use Notion\NotionException;
 use PHPUnit\Framework\TestCase;
 
 class ColumnTest extends TestCase

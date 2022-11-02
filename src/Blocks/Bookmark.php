@@ -4,7 +4,6 @@ namespace Notion\Blocks;
 
 use Notion\Exceptions\BlockException;
 use Notion\Common\RichText;
-use Notion\NotionException;
 
 /**
  * Bookmark block
