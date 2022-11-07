@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0]
+
+### Added
+- Add database description (#125)
+- Add support to toggleable headings (#126)
+- Add caption to Code block (#127)
+- Add support to Status property (#132)
+- Icon value object instead of `File|Emoji`
+### Changed
+- Unify constructor method names (#131)
+- Require PHP 8.1
+- Enums instead of constants for everything. Example: collor, block type, ...
+- Readonly public properties and removal of getters
+- Many method signatures were changed
+
 ## [1.0.0-beta.1]
 
 ### Added
@@ -195,6 +210,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.6.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v0.6.0
 [0.6.1]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v0.6.1
 [0.6.2]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v0.6.2
-[1.0.0-beta.1]: https://github.com/mariosimao/notion-sdk-php/compare/v0.6.2...v1.0.0-beta.1
-[1.0.0-beta.2]: https://github.com/mariosimao/notion-sdk-php/compare/v0.6.2...v1.0.0-beta.2
-[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.0.0-beta.2...HEAD
+[1.0.0-beta.1]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.0.0-beta.1
+[1.0.0-beta.2]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.0.0-beta.2
+[1.0.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.0.0
+[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.0.0...HEAD
