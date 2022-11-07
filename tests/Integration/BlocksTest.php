@@ -248,7 +248,7 @@ class BlocksTest extends TestCase
         );
 
         foreach ($blocks as $block) {
-            $client->blocks()->update($block->archive());
+            $block = $client->blocks()->update($block->archive());
             $archivedBlock = $client->blocks()->find($block->metadata()->id);
             $this->assertTrue($archivedBlock->metadata()->archived);
         }

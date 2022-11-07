@@ -70,12 +70,12 @@ class Embed implements BlockInterface
         return new self($this->metadata, $url);
     }
 
-    public function addCHild(BlockInterface $child): self
+    public function addChild(BlockInterface $child): never
     {
         throw BlockException::noChindrenSupport();
     }
 
-    public function changeChildren(BlockInterface ...$children): self
+    public function changeChildren(BlockInterface ...$children): never
     {
         throw BlockException::noChindrenSupport();
     }

@@ -44,6 +44,7 @@ class DatabaseTest extends TestCase
         if ($database->icon?->isEmoji()) {
             $this->assertEquals("⭐", $database->icon->emoji?->emoji);
         }
+        $this->assertTrue($database->hasIcon());
     }
 
     public function test_remove_icon(): void
@@ -54,6 +55,7 @@ class DatabaseTest extends TestCase
             ->removeIcon();
 
         $this->assertNull($database->icon);
+        $this->assertFalse($database->hasIcon());
     }
 
     public function test_add_cover(): void
