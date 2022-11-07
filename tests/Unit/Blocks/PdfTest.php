@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
+use Notion\Blocks\Paragraph;
 use Notion\Exceptions\BlockException;
 use Notion\Blocks\Pdf;
 use Notion\Common\Date;
@@ -109,6 +110,16 @@ class PdfTest extends TestCase
         $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren();
+    }
+
+    public function test_no_children_support_2(): void
+    {
+        $file = File::createExternal("https://my-site.com/document.pdf");
+        $block = Pdf::fromFile($file);
+
+        $this->expectException(BlockException::class);
+        /** @psalm-suppress UnusedMethodCall */
+        $block->addChild(Paragraph::create());
     }
 
     public function test_array_for_update_operations(): void

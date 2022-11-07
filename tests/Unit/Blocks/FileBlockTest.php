@@ -5,6 +5,7 @@ namespace Notion\Test\Unit\Blocks;
 use Notion\Blocks\BlockFactory;
 use Notion\Exceptions\BlockException;
 use Notion\Blocks\FileBlock;
+use Notion\Blocks\Paragraph;
 use Notion\Common\Date;
 use Notion\Common\File;
 use PHPUnit\Framework\TestCase;
@@ -109,6 +110,16 @@ class FileBlockTest extends TestCase
         $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren();
+    }
+
+    public function test_no_children_support_2(): void
+    {
+        $file = File::createExternal("https://my-site.com/file.doc");
+        $block = FileBlock::fromFile($file);
+
+        $this->expectException(BlockException::class);
+        /** @psalm-suppress UnusedMethodCall */
+        $block->addChild(Paragraph::create());
     }
 
     public function test_array_for_update_operations(): void

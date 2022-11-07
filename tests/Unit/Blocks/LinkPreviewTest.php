@@ -5,6 +5,7 @@ namespace Notion\Test\Unit\Blocks;
 use Notion\Blocks\BlockFactory;
 use Notion\Exceptions\BlockException;
 use Notion\Blocks\LinkPreview;
+use Notion\Blocks\Paragraph;
 use PHPUnit\Framework\TestCase;
 
 class LinkPreviewTest extends TestCase
@@ -92,5 +93,27 @@ class LinkPreviewTest extends TestCase
         $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren();
+    }
+
+    public function test_no_children_support_2(): void
+    {
+        $array = [
+            "object"           => "block",
+            "id"               => "04a13895-f072-4814-8af7-cd11af127040",
+            "created_time"     => "2021-10-18T17:09:00.000000Z",
+            "last_edited_time" => "2021-10-18T17:09:00.000000Z",
+            "archived"         => false,
+            "has_children"     => false,
+            "type"             => "link_preview",
+            "link_preview"     => [
+                "url" => "https://github.com/mariosimao/notion-sdk-php/issues/1",
+            ],
+        ];
+
+        $block = LinkPreview::fromArray($array);
+
+        $this->expectException(BlockException::class);
+        /** @psalm-suppress UnusedMethodCall */
+        $block->addChild(Paragraph::create());
     }
 }
