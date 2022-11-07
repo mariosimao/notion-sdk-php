@@ -14,7 +14,7 @@ class ApiExceptionTest extends TestCase
             "object": "error",
             "status": 404,
             "code": "object_not_found",
-            "message": "Could not find page with ID: f077308f-dd9e-4cfe-87e6-7420a8488514. Make sure the relevant pages and databases are shared with your integration."
+            "message": "Could not find page with ID: f077308f-dd9e-4cfe-87e6-7420a8488514."
         }', true);
 
         $e = ApiException::fromResponseBody($responseBody);
