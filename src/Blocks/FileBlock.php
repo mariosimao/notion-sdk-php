@@ -73,12 +73,12 @@ class FileBlock implements BlockInterface
         return new self($this->metadata, $file);
     }
 
-    public function addChild(BlockInterface $child): self
+    public function addChild(BlockInterface $child): never
     {
         throw BlockException::noChindrenSupport();
     }
 
-    public function changeChildren(BlockInterface ...$children): self
+    public function changeChildren(BlockInterface ...$children): never
     {
         throw BlockException::noChindrenSupport();
     }

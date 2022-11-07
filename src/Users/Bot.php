@@ -13,7 +13,11 @@ class Bot
     {
     }
 
-    /** @param BotJson $array */
+    /**
+     * @param BotJson $array
+     *
+     * @psalm-suppress PossiblyUnusedParam
+     */
     public static function fromArray(array $array): self
     {
         return new self();

@@ -69,4 +69,13 @@ class DateTest extends TestCase
         $this->assertNull($date->end);
         $this->assertFalse($date->isRange());
     }
+
+    public function test_now(): void
+    {
+        $now = new DateTimeImmutable("now");
+        $date = Date::now();
+
+        $this->assertNull($date->end);
+        $this->assertSame($now->format("Y-m-d"), $date->start->format("Y-m-d"));
+    }
 }

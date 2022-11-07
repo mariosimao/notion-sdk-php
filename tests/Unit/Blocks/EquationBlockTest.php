@@ -4,6 +4,7 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\EquationBlock;
+use Notion\Blocks\Paragraph;
 use Notion\Exceptions\BlockException;
 use Notion\Common\Date;
 use Notion\Common\Equation;
@@ -87,6 +88,15 @@ class EquationBlockTest extends TestCase
         $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $block->changeChildren();
+    }
+
+    public function test_no_children_support_2(): void
+    {
+        $block = EquationBlock::fromString();
+
+        $this->expectException(BlockException::class);
+        /** @psalm-suppress UnusedMethodCall */
+        $block->addChild(Paragraph::create());
     }
 
     public function test_array_for_update_operations(): void

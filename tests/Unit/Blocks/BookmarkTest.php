@@ -4,6 +4,7 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Bookmark;
+use Notion\Blocks\Paragraph;
 use Notion\Exceptions\BlockException;
 use Notion\Common\Date;
 use Notion\Common\RichText;
@@ -96,6 +97,15 @@ class BookmarkTest extends TestCase
         $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $bookmark->changeChildren();
+    }
+
+    public function test_no_children_support_2(): void
+    {
+        $bookmark = Bookmark::fromUrl("https://my-site.com");
+
+        $this->expectException(BlockException::class);
+        /** @psalm-suppress UnusedMethodCall */
+        $bookmark->addChild(Paragraph::create());
     }
 
     public function test_array_for_update_operations(): void
