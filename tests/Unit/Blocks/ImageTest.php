@@ -122,16 +122,6 @@ class ImageTest extends TestCase
         $block->addChild(Paragraph::create());
     }
 
-    public function test_array_for_update_operations(): void
-    {
-        $file = File::createExternal("https://my-site.com/image.png");
-        $block = Image::fromFile($file);
-
-        $array = $block->toUpdateArray();
-
-        $this->assertCount(2, $array);
-    }
-
     public function test_archive(): void
     {
         $file = File::createExternal("https://my-site.com/image.png");

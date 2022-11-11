@@ -91,19 +91,6 @@ class Code implements BlockInterface
         return RichText::multipleToString(...$this->text);
     }
 
-    /** @internal */
-    public function toUpdateArray(): array
-    {
-        return [
-            "code" => [
-                "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
-                "caption" => array_map(fn(RichText $t) => $t->toArray(), $this->caption),
-                "language"  => $this->language,
-            ],
-            "archived" => $this->metadata()->archived,
-        ];
-    }
-
     public function metadata(): BlockMetadata
     {
         return $this->metadata;

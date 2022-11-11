@@ -99,15 +99,6 @@ class EmbedTest extends TestCase
         $block->addChild(Paragraph::create());
     }
 
-    public function test_array_for_update_operations(): void
-    {
-        $block = Embed::fromUrl();
-
-        $array = $block->toUpdateArray();
-
-        $this->assertCount(2, $array);
-    }
-
     public function test_archive(): void
     {
         $block = Embed::fromUrl();

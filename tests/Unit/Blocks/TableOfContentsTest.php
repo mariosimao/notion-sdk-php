@@ -87,13 +87,4 @@ class TableOfContentsTest extends TestCase
         /** @psalm-suppress UnusedMethodCall */
         $block->addChild(Paragraph::create());
     }
-
-    public function test_array_for_update_operations(): void
-    {
-        $block = TableOfContents::create();
-
-        $array = $block->toUpdateArray();
-
-        $this->assertCount(2, $array);
-    }
 }

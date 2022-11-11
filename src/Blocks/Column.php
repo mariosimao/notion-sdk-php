@@ -69,15 +69,6 @@ class Column implements BlockInterface
         return $array;
     }
 
-    /** @internal */
-    public function toUpdateArray(): array
-    {
-        return [
-            "column" => new \stdClass(),
-            "archived" => $this->metadata()->archived,
-        ];
-    }
-
     public function metadata(): BlockMetadata
     {
         return $this->block;

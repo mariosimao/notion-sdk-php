@@ -107,13 +107,4 @@ class BookmarkTest extends TestCase
         /** @psalm-suppress UnusedMethodCall */
         $bookmark->addChild(Paragraph::create());
     }
-
-    public function test_array_for_update_operations(): void
-    {
-        $bookmark = Bookmark::fromUrl("https://example.com");
-
-        $array = $bookmark->toUpdateArray();
-
-        $this->assertCount(2, $array);
-    }
 }

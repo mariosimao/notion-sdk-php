@@ -81,16 +81,6 @@ class BulletedListItem implements BlockInterface
         return $array;
     }
 
-    public function toUpdateArray(): array
-    {
-        return [
-            "bulleted_list_item" => [
-                "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
-            ],
-            "archived" => $this->metadata()->archived,
-        ];
-    }
-
     /** Get item content as string */
     public function toString(): string
     {

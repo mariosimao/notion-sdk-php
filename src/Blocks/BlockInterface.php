@@ -14,6 +14,4 @@ interface BlockInterface
     public static function fromArray(array $array): self;
     /** @internal */
     public function toArray(): array;
-    /** @internal */
-    public function toUpdateArray(): array;
 }
