@@ -36,4 +36,17 @@ class TextTest extends TestCase
 
         $this->assertNull($text->url);
     }
+
+    public function test_convert_test_with_url_to_array(): void
+    {
+        $text = Text::fromString("Simple text")
+            ->changeUrl("https://notion.so");
+
+        $expected = [
+            "content" => "Simple text",
+            "link"    => [ "url" => "https://notion.so" ],
+        ];
+
+        $this->assertSame($expected, $text->toArray());
+    }
 }

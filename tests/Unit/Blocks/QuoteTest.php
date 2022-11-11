@@ -185,4 +185,12 @@ class QuoteTest extends TestCase
         $this->assertCount(1, $quote->children);
         $this->assertEquals($nested, $quote->children[0]);
     }
+
+    public function test_archive(): void
+    {
+        $quote = Quote::fromString("Simple quote.");
+        $quote = $quote->archive();
+
+        $this->assertTrue($quote->metadata()->archived);
+    }
 }

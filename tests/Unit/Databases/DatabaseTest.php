@@ -47,6 +47,16 @@ class DatabaseTest extends TestCase
         $this->assertTrue($database->hasIcon());
     }
 
+    public function test_add_file_icon(): void
+    {
+        $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $database = Database::create($parent)->changeIcon(
+            File::createExternal("http://example.com/icon.png")
+        );
+
+        $this->assertTrue($database->icon?->isFile());
+    }
+
     public function test_remove_icon(): void
     {
         $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");

@@ -7,6 +7,7 @@ use Notion\Blocks\Column;
 use Notion\Blocks\ColumnList;
 use Notion\Exceptions\BlockException;
 use Notion\Blocks\Paragraph;
+use Notion\Exceptions\ColumnListException;
 use PHPUnit\Framework\TestCase;
 
 class ColumnListTest extends TestCase
@@ -106,6 +107,23 @@ class ColumnListTest extends TestCase
         $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $list->changeChildren(Paragraph::fromString("This should be a column."));
+    }
+
+    public function test_add_child(): void
+    {
+        $column = Column::create(Paragraph::fromString("Paragraph 1"));
+
+        $list = ColumnList::create()->addChild($column);
+        $this->assertEquals([ $column ], $list->columns);
+    }
+
+    public function test_add_child_that_is_not_column(): void
+    {
+        $child = Paragraph::fromString("Not a column");
+
+        $this->expectException(ColumnListException::class);
+        /** @psalm-suppress UnusedMethodCall */
+        ColumnList::create()->addChild($child);
     }
 
     public function test_archive(): void
