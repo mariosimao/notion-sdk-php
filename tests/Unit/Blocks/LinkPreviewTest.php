@@ -116,4 +116,24 @@ class LinkPreviewTest extends TestCase
         /** @psalm-suppress UnusedMethodCall */
         $block->addChild(Paragraph::create());
     }
+
+    public function test_archive(): void
+    {
+        $block = LinkPreview::fromArray([
+            "object"           => "block",
+            "id"               => "04a13895-f072-4814-8af7-cd11af127040",
+            "created_time"     => "2021-10-18T17:09:00.000000Z",
+            "last_edited_time" => "2021-10-18T17:09:00.000000Z",
+            "archived"         => false,
+            "has_children"     => false,
+            "type"             => "link_preview",
+            "link_preview"     => [
+                "url" => "https://github.com/mariosimao/notion-sdk-php/issues/1",
+            ],
+        ]);
+
+        $block = $block->archive();
+
+        $this->assertTrue($block->metadata()->archived);
+    }
 }

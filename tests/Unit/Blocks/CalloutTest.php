@@ -7,6 +7,7 @@ use Notion\Blocks\Callout;
 use Notion\Exceptions\BlockException;
 use Notion\Common\Date;
 use Notion\Common\Emoji;
+use Notion\Common\File;
 use Notion\Common\RichText;
 use PHPUnit\Framework\TestCase;
 
@@ -295,5 +296,15 @@ class CalloutTest extends TestCase
         if ($callout->icon->isEmoji()) {
             $this->assertEquals("🌙", $callout->icon->emoji->toString());
         }
+    }
+
+    public function test_replace_icon_file(): void
+    {
+        $file = File::createExternal("https://example.com/icon.png");
+
+        $callout = Callout::fromString("☀️", "Simple callout.")
+            ->changeIcon($file);
+
+        $this->assertTrue($callout->icon->isFile());
     }
 }

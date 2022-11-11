@@ -44,6 +44,17 @@ class PageTest extends TestCase
         $this->assertTrue($page->icon?->isEmoji());
     }
 
+    public function test_add_file_icon(): void
+    {
+        $parent = PageParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $page = Page::create($parent)->changeIcon(
+            File::createExternal("http://example.com/icon.png")
+        );
+
+        $this->assertTrue($page->hasIcon());
+        $this->assertTrue($page->icon?->isFile());
+    }
+
     public function test_remove_icon(): void
     {
         $parent = PageParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");

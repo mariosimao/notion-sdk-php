@@ -46,31 +46,31 @@ jobs:
           composer config --no-plugins allow-plugins.infection/extension-installer true
           composer ci:unit
 
-  integration-tests:
-    name: Integration tests (PHPUnit)
+  # integration-tests:
+  #   name: Integration tests (PHPUnit)
 
-    runs-on: ubuntu-latest
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
 
-      - name: Install PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: "8.1"
-          tools: none
+  #     - name: Install PHP
+  #       uses: shivammathur/setup-php@v2
+  #       with:
+  #         php-version: "8.1"
+  #         tools: none
 
-      - name: Install composer dependencies
-        uses: ramsey/composer-install@2.1.0
-        with:
-          dependency-versions: ${{ matrix.locked }}
-          composer-options: --no-ansi --no-interaction --no-progress
+  #     - name: Install composer dependencies
+  #       uses: ramsey/composer-install@2.1.0
+  #       with:
+  #         dependency-versions: ${{ matrix.locked }}
+  #         composer-options: --no-ansi --no-interaction --no-progress
 
-      - name: Run tests with phpunit
-        env:
-          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-        run: composer ci:integration
+  #     - name: Run tests with phpunit
+  #       env:
+  #         NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+  #       run: composer ci:integration
 
   mutation-tests:
     name: "Mutation tests (Infection)"
