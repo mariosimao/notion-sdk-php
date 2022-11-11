@@ -42,17 +42,6 @@ class ChildPage implements BlockInterface
         return $array;
     }
 
-    /** @internal */
-    public function toUpdateArray(): array
-    {
-        return [
-            "child_page" => [
-                "title" => $this->title,
-            ],
-            "archived" => $this->metadata()->archived,
-        ];
-    }
-
     public function metadata(): BlockMetadata
     {
         return $this->metadata;

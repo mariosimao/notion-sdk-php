@@ -66,17 +66,6 @@ class Bookmark implements BlockInterface
         return $array;
     }
 
-    public function toUpdateArray(): array
-    {
-        return [
-            "bookmark" => [
-                "url" => $this->url,
-                "caption" => array_map(fn(RichText $t) => $t->toArray(), $this->caption),
-            ],
-            "archived" => $this->metadata()->archived,
-        ];
-    }
-
     public function metadata(): BlockMetadata
     {
         return $this->metadata;

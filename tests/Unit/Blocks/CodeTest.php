@@ -190,15 +190,6 @@ class CodeTest extends TestCase
         $block->addChild(Divider::create());
     }
 
-    public function test_array_for_update_operations(): void
-    {
-        $block = Code::create();
-
-        $array = $block->toUpdateArray();
-
-        $this->assertCount(2, $array);
-    }
-
     public function test_change_caption(): void
     {
         $block = Code::create()

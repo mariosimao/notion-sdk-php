@@ -94,18 +94,6 @@ class Callout implements BlockInterface
         return $array;
     }
 
-    /** @internal */
-    public function toUpdateArray(): array
-    {
-        return [
-            "callout" => [
-                "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
-                "icon"     => $this->icon->toArray(),
-            ],
-            "archived" => $this->metadata()->archived,
-        ];
-    }
-
     public function toString(): string
     {
         return RichText::multipleToString(...$this->text);

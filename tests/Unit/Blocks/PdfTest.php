@@ -122,16 +122,6 @@ class PdfTest extends TestCase
         $block->addChild(Paragraph::create());
     }
 
-    public function test_array_for_update_operations(): void
-    {
-        $file = File::createExternal("https://example.com/document.pdf");
-        $block = Pdf::fromFile($file);
-
-        $array = $block->toUpdateArray();
-
-        $this->assertCount(2, $array);
-    }
-
     public function test_archive(): void
     {
         $file = File::createExternal("https://example.com/document.pdf");

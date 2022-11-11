@@ -83,18 +83,6 @@ class Heading2 implements BlockInterface
         return $array;
     }
 
-    /** @internal */
-    public function toUpdateArray(): array
-    {
-        return [
-            "heading_2" => [
-                "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
-                "is_toggleable" => $this->isToggleable,
-            ],
-            "archived" => $this->metadata()->archived,
-        ];
-    }
-
     public function toString(): string
     {
         $string = "";

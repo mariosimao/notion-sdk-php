@@ -122,16 +122,6 @@ class FileBlockTest extends TestCase
         $block->addChild(Paragraph::create());
     }
 
-    public function test_array_for_update_operations(): void
-    {
-        $file = File::createExternal("https://example.com/file.doc");
-        $block = FileBlock::fromFile($file);
-
-        $array = $block->toUpdateArray();
-
-        $this->assertCount(2, $array);
-    }
-
     public function test_archive(): void
     {
         $file = File::createExternal("https://example.com/file.doc");

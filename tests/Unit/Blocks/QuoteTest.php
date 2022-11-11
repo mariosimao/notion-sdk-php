@@ -185,13 +185,4 @@ class QuoteTest extends TestCase
         $this->assertCount(1, $quote->children);
         $this->assertEquals($nested, $quote->children[0]);
     }
-
-    public function test_array_for_update_operations(): void
-    {
-        $block = Quote::create();
-
-        $array = $block->toUpdateArray();
-
-        $this->assertCount(2, $array);
-    }
 }

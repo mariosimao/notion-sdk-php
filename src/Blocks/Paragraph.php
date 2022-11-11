@@ -73,17 +73,6 @@ class Paragraph implements BlockInterface
         return $array;
     }
 
-    /** @internal */
-    public function toUpdateArray(): array
-    {
-        return [
-            "paragraph" => [
-                "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
-            ],
-            "archived" => $this->metadata()->archived,
-        ];
-    }
-
     public function toString(): string
     {
         $string = "";

@@ -98,8 +98,20 @@ class Client
     public function update(BlockInterface $block): BlockInterface
     {
         $blockId = $block->metadata()->id;
+        $blockType = $block->metadata()->type->value;
 
-        $json = json_encode($block->toUpdateArray());
+        $data = $block->toArray();
+
+        unset($data["type"]);
+        unset($data["id"]);
+        unset($data["created_time"]);
+        unset($data["last_edited_time"]);
+        unset($data["has_children"]);
+        if (is_array($data[$blockType])) {
+            unset($data[$blockType]["children"]);
+        }
+
+        $json = json_encode($data);
 
         $url = "https://api.notion.com/v1/blocks/{$blockId}";
         $request = Http::createRequest($this->requestFactory, $this->version, $this->token, $url)

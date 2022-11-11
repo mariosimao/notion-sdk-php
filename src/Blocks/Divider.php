@@ -44,15 +44,6 @@ class Divider implements BlockInterface
         return $array;
     }
 
-    /** @internal */
-    public function toUpdateArray(): array
-    {
-        return [
-            "divider" => new \stdClass(),
-            "archived" => $this->metadata()->archived,
-        ];
-    }
-
     public function metadata(): BlockMetadata
     {
         return $this->metadata;

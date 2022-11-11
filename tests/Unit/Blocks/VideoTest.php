@@ -122,16 +122,6 @@ class VideoTest extends TestCase
         $block->addChild(Paragraph::create());
     }
 
-    public function test_array_for_update_operations(): void
-    {
-        $file = File::createExternal("https://my-site.com/video.mp4");
-        $block = Video::fromFile($file);
-
-        $array = $block->toUpdateArray();
-
-        $this->assertCount(2, $array);
-    }
-
     public function test_archive(): void
     {
         $file = File::createExternal("https://my-site.com/video.mp4");

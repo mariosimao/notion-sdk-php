@@ -45,14 +45,6 @@ class Breadcrumb implements BlockInterface
         return $array;
     }
 
-    public function toUpdateArray(): array
-    {
-        return [
-            "breadcrumb" => new \stdClass(),
-            "archived"   => $this->metadata()->archived,
-        ];
-    }
-
     public function metadata(): BlockMetadata
     {
         return $this->metadata;

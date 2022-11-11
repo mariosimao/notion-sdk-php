@@ -74,17 +74,6 @@ class NumberedListItem implements BlockInterface
         return $array;
     }
 
-    /** @internal */
-    public function toUpdateArray(): array
-    {
-        return [
-            "numbered_list_item" => [
-                "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
-            ],
-            "archived" => $this->metadata()->archived,
-        ];
-    }
-
     public function toString(): string
     {
         return RichText::multipleToString(...$this->text);
