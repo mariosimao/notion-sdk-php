@@ -11,4 +11,4 @@ Versions that are currently being supported with security updates.
 
 ## Reporting a Vulnerability
 
-To report a vulnerability, please send an email to mariosimao@poli.ufrj.br.
+Report a vulnerability via [GitHub Security Advisories](https://github.com/mariosimao/notion-sdk-php/security/advisories/new).
