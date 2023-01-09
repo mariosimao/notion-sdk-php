@@ -5,3 +5,4 @@ dist
 test.php
 vendor
 node_modules
+.idea/
