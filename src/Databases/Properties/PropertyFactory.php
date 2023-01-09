@@ -32,7 +32,7 @@ class PropertyFactory
             PropertyType::Status         => Status::fromArray($array),
             PropertyType::Title          => Title::fromArray($array),
             PropertyType::Url            => Url::fromArray($array),
-            default                      => throw new Exception("Invalid property type."),
+            default                      => throw new Exception("Invalid property type: '{$array['type']}'"),
         };
     }
 }
