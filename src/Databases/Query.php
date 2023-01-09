@@ -30,8 +30,8 @@ class Query
         return new self($filter, $this->sorts, $this->startCursor, $this->pageSize);
     }
 
-    /** Add new sort change lowest priority */
-    public function changeAddedSort(Sort $sort): self
+    /** Add new sort with lowest priority */
+    public function addSort(Sort $sort): self
     {
         $sorts = $this->sorts;
         $sorts[] = $sort;
