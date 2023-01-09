@@ -130,7 +130,7 @@ jobs:
       - name: Calculate test coverage
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-        run: php test-ci.php
+        run: composer ci:coverage
 
       - name: Send code coverage report to Codecov.io
         uses: codecov/codecov-action@v1
