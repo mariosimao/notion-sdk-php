@@ -23,7 +23,7 @@ $query = Query::create()
             TextFilter::property("Name")->contains("John"),
         )
     )
-    ->withAddedSort(Sort::property("Name")->ascending())
+    ->addSort(Sort::property("Name")->ascending())
     ->withPageSize(20);
 
 $result = $notion->databases()->query($database, $query);

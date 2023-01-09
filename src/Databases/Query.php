@@ -30,13 +30,22 @@ class Query
         return new self($filter, $this->sorts, $this->startCursor, $this->pageSize);
     }
 
-    /** Add new sort change lowest priority */
-    public function changeAddedSort(Sort $sort): self
+    /** Add new sort with lowest priority */
+    public function addSort(Sort $sort): self
     {
         $sorts = $this->sorts;
         $sorts[] = $sort;
 
         return new self($this->filter, $sorts, $this->startCursor, $this->pageSize);
+    }
+
+    /**
+     * @deprecated 1.1.0 This method will be removed in future versions. Use 'addSort' instead.
+     * @see \Notion\Databases\Query::addSort()
+     */
+    public function changeAddedSort(Sort $sort): self
+    {
+        return $this->addSort($sort);
     }
 
     /** Replace all sorts */
