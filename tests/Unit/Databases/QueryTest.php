@@ -31,8 +31,8 @@ class QueryTest extends TestCase
     public function test_add_sort(): void
     {
         $query = Query::create()
-            ->changeAddedSort(Sort::createdTime()->descending())
-            ->changeAddedSort(Sort::property("Title")->ascending());
+            ->addSort(Sort::createdTime()->descending())
+            ->addSort(Sort::property("Title")->ascending());
 
         $this->assertCount(2, $query->sorts);
     }
@@ -40,11 +40,21 @@ class QueryTest extends TestCase
     public function test_replace_sorts(): void
     {
         $query = Query::create()
-            ->changeAddedSort(Sort::createdTime()->descending())
-            ->changeAddedSort(Sort::property("Title")->ascending())
+            ->addSort(Sort::createdTime()->descending())
+            ->addSort(Sort::property("Title")->ascending())
             ->changeSorts(Sort::lastEditedTime()->descending());
 
         $this->assertCount(1, $query->sorts);
+    }
+
+    /** @psalm-suppress DeprecatedMethod */
+    public function test_deprecated_change_added_sort(): void
+    {
+        $query = Query::create()
+            ->changeAddedSort(Sort::createdTime()->descending())
+            ->changeAddedSort(Sort::property("Title")->ascending());
+
+        $this->assertCount(2, $query->sorts);
     }
 
     public function test_query_change_start_cursor(): void
@@ -87,7 +97,7 @@ class QueryTest extends TestCase
     {
         $query = Query::create()
             ->changeFilter(TextFilter::property("Title")->contains("abc"))
-            ->changeAddedSort(Sort::property("Title")->ascending())
+            ->addSort(Sort::property("Title")->ascending())
             ->changeStartCursor("889431ed-4f50-460b-a926-36f6cf0f9669")
             ->changePageSize(20);
 
