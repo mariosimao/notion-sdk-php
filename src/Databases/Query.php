@@ -39,6 +39,15 @@ class Query
         return new self($this->filter, $sorts, $this->startCursor, $this->pageSize);
     }
 
+    /**
+     * @deprecated 1.1.0 This method will be removed in future versions. Use 'addSort' instead.
+     * @see \Notion\Databases\Query::addSort()
+     */
+    public function changeAddedSort(Sort $sort): self
+    {
+        return $this->addSort($sort);
+    }
+
     /** Replace all sorts */
     public function changeSorts(Sort ...$sorts): self
     {
