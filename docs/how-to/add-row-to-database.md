@@ -14,13 +14,13 @@ $notion = Notion::create($token);
 $databaseId = "your_database_id_here";
 $parent = \Notion\Pages\PageParent::database($databaseId);
 
-$title    = \Notion\Pages\Properties\Title::create("Superbad");
+$title    = \Notion\Pages\Properties\Title::fromText("Superbad");
 $release  = \Notion\Pages\Properties\Date::create(new DateTimeImmutable("2007-10-19"));
 $category = \Notion\Pages\Properties\Select::fromName("Comedy")
-    ->withColor(\Notion\Pages\Properties\Option::COLOR_BROWN);
+    ->changeColor(\Notion\Common\Color::Brown);
 
 $page = \Notion\Pages\Page::create($parent)
-    ->withAddedProperty("Title", $title)
-    ->withAddedProperty("Release date", $release)
-    ->withAddedProperty("Category", $category);
+    ->addProperty("Title", $title)
+    ->addProperty("Release date", $release)
+    ->addProperty("Category", $category);
 ```

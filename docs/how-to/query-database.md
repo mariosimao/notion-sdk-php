@@ -17,14 +17,14 @@ $databaseId = "c986d7b0-7051-4f18-b165-cc0b9503ffc2";
 $database = $notion->databases()->find($databaseId);
 
 $query = Query::create()
-    ->withFilter(
+    ->changeFilter(
         CompoundFilter::and(
             DateFilter::createdTime::pastWeek(),
             TextFilter::property("Name")->contains("John"),
         )
     )
     ->addSort(Sort::property("Name")->ascending())
-    ->withPageSize(20);
+    ->changePageSize(20);
 
 $result = $notion->databases()->query($database, $query);
 
