@@ -47,6 +47,16 @@ class QueryTest extends TestCase
         $this->assertCount(1, $query->sorts);
     }
 
+    /** @psalm-suppress DeprecatedMethod */
+    public function test_deprecated_change_added_sort(): void
+    {
+        $query = Query::create()
+            ->changeAddedSort(Sort::createdTime()->descending())
+            ->changeAddedSort(Sort::property("Title")->ascending());
+
+        $this->assertCount(2, $query->sorts);
+    }
+
     public function test_query_change_start_cursor(): void
     {
         $query = Query::create()
