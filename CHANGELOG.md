@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support to nullable page properties (#149)
   - Properties: `Date`, `Email`, `Number`, `PhoneNumber`, `Select`, `Url`.
   - New method `isEmpty()` on those properties.
+- Support `Relation` database property (#150)
 
 ## [1.1.0]
 
