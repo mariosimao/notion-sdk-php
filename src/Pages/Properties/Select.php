@@ -8,7 +8,7 @@ use Notion\Databases\Properties\SelectOption;
  * @psalm-type SelectJson = array{
  *      id: string,
  *      type: "select",
- *      select: array{ id: string, name: string, color: string }
+ *      select: array{ id: string, name: string, color: string }|null
  * }
  *
  * @psalm-immutable
@@ -17,7 +17,7 @@ class Select implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,
-        public readonly SelectOption $option
+        public readonly SelectOption|null $option
     ) {
     }
 
@@ -49,7 +49,7 @@ class Select implements PropertyInterface
         /** @psalm-var SelectJson $array */
         $metadata = PropertyMetadata::fromArray($array);
 
-        $option = SelectOption::fromArray($array["select"] ?? []);
+        $option = $array["select"] !== null ? SelectOption::fromArray($array["select"]) : null;
 
         return new self($metadata, $option);
     }
@@ -57,7 +57,7 @@ class Select implements PropertyInterface
     public function toArray(): array
     {
         $array = $this->metadata->toArray();
-        $array["select"] = $this->option->toArray();
+        $array["select"] = $this->option?->toArray();
 
         return $array;
     }
@@ -70,5 +70,10 @@ class Select implements PropertyInterface
     public function changeOption(SelectOption $option): self
     {
         return new self($this->metadata, $option);
+    }
+
+    public function isEmpty(): bool
+    {
+        return $this->option === null;
     }
 }

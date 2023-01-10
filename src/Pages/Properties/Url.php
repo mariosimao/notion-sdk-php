@@ -6,7 +6,7 @@ namespace Notion\Pages\Properties;
  * @psalm-type UrlJson = array{
  *      id: string,
  *      type: "url",
- *      url: string,
+ *      url: string|null,
  * }
  *
  * @psalm-immutable
@@ -15,7 +15,7 @@ class Url implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,
-        public readonly string $url
+        public readonly string|null $url
     ) {
     }
 
@@ -54,5 +54,10 @@ class Url implements PropertyInterface
     public function changeUrl(string $url): self
     {
         return new self($this->metadata, $url);
+    }
+
+    public function isEmpty(): bool
+    {
+        return $this->url === null;
     }
 }
