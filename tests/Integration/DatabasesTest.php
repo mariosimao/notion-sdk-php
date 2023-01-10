@@ -151,7 +151,7 @@ class DatabasesTest extends TestCase
         $database = $client->databases()->find("a1acab7aeea2438bb0e9b23b73fb4a25");
 
         $pages = $client->databases()->queryAllPages($database);
-        $this->assertCount(6, $pages);
+        $this->assertCount(7, $pages);
     }
 
     public function test_query_big_database(): void

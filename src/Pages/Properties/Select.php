@@ -49,7 +49,7 @@ class Select implements PropertyInterface
         /** @psalm-var SelectJson $array */
         $metadata = PropertyMetadata::fromArray($array);
 
-        $option = $array["select"] !== null ? SelectOption::fromArray($array["select"]) : null;
+        $option = $array["select"] ? SelectOption::fromArray($array["select"]) : null;
 
         return new self($metadata, $option);
     }

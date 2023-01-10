@@ -38,7 +38,7 @@ class SelectOption
 
         $id = $array["id"] ?? null;
         $name = $array["name"] ?? null;
-        $color = Color::tryFrom($array["color"] ?? "") ?? Color::Default;
+        $color = Color::tryFrom($array["color"]) ?? Color::Default;
 
         return new self($id, $name, $color);
     }
