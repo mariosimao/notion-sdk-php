@@ -26,10 +26,10 @@ class Relation implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,
-        private readonly string $databaseId,
-        private readonly RelationType $type,
-        private readonly string|null $syncedPropertyName,
-        private readonly string|null $syncedPropertyId,
+        public readonly string $databaseId,
+        public readonly RelationType $type,
+        public readonly string|null $syncedPropertyName,
+        public readonly string|null $syncedPropertyId,
     ) {
         if ($type === RelationType::DualProperty && $syncedPropertyName === null) {
             throw RelationException::emptySyncedPropertyName();
@@ -40,7 +40,7 @@ class Relation implements PropertyInterface
         }
     }
 
-    public static function createSingleProperty(string $propertyName, string $databaseId): self
+    public static function createUnidirectional(string $propertyName, string $databaseId): self
     {
         $metadata = PropertyMetadata::create("", $propertyName, PropertyType::Relation);
         $type = RelationType::SingleProperty;
@@ -48,16 +48,36 @@ class Relation implements PropertyInterface
         return new self($metadata, $databaseId, $type, null, null);
     }
 
-    public static function createDualProperty(
+    public static function createBidirectional(
         string $propertyName,
         string $databaseId,
         string $syncedPropertyName,
         string $syncedPropertyId,
     ): self {
         $metadata = PropertyMetadata::create("", $propertyName, PropertyType::Relation);
-        $type = RelationType::SingleProperty;
+        $type = RelationType::DualProperty;
 
         return new self($metadata, $databaseId, $type, $syncedPropertyName, $syncedPropertyId);
+    }
+
+    public function changeToUnidirectional(): self
+    {
+        $newType = RelationType::SingleProperty;
+
+        return new self($this->metadata(), $this->databaseId, $newType, null, null);
+    }
+
+    public function changeToBidirectional(string $syncedPropertyName, string $syncedPropertyId): self
+    {
+        $newType = RelationType::DualProperty;
+
+        return new self(
+            $this->metadata(),
+            $this->databaseId,
+            $newType,
+            $syncedPropertyName,
+            $syncedPropertyId
+        );
     }
 
     public function metadata(): PropertyMetadata

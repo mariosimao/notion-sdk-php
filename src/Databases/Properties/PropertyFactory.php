@@ -27,6 +27,7 @@ class PropertyFactory
             PropertyType::Number         => Number::fromArray($array),
             PropertyType::People         => People::fromArray($array),
             PropertyType::PhoneNumber    => PhoneNumber::fromArray($array),
+            PropertyType::Relation       => Relation::fromArray($array),
             PropertyType::RichText       => RichTextProperty::fromArray($array),
             PropertyType::Select         => Select::fromArray($array),
             PropertyType::Status         => Status::fromArray($array),
