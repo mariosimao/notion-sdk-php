@@ -38,4 +38,17 @@ class UrlTest extends TestCase
         $this->assertEquals($array, $url->toArray());
         $this->assertEquals($array, $fromFactory->toArray());
     }
+
+    public function test_is_empty(): void
+    {
+        $array = [
+            "id" => "abc",
+            "type" => "url",
+            "url" => null,
+        ];
+
+        $url = Url::fromArray($array);
+
+        $this->assertTrue($url->isEmpty());
+    }
 }

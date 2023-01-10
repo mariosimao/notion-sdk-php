@@ -39,4 +39,17 @@ class NumberTest extends TestCase
         $text = Number::create(123)->changeNumber(0.25);
         $this->assertEquals(0.25, $text->number);
     }
+
+    public function test_is_empty(): void
+    {
+        $array = [
+            "id"    => "a7ede3b7-c7ae-4eb8-b415-a7f80ac4dfe5",
+            "type"  => "number",
+            "number" => null,
+        ];
+
+        $text = Number::fromArray($array);
+
+        $this->assertTrue($text->isEmpty());
+    }
 }
