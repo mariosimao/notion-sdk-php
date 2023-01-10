@@ -6,7 +6,7 @@ namespace Notion\Pages\Properties;
  * @psalm-type PhoneNumberJson = array{
  *      id: string,
  *      type: "phone_number",
- *      phone_number: string,
+ *      phone_number: string|null,
  * }
  *
  * @psalm-immutable
@@ -15,7 +15,7 @@ class PhoneNumber implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,
-        public readonly string $phone
+        public readonly string|null $phone
     ) {
     }
 
@@ -54,5 +54,10 @@ class PhoneNumber implements PropertyInterface
     public function changePhone(string $phone): self
     {
         return new self($this->metadata, $phone);
+    }
+
+    public function isEmpty(): bool
+    {
+        return $this->phone === null;
     }
 }

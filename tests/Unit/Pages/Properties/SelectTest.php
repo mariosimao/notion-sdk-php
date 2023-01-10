@@ -15,8 +15,8 @@ class SelectTest extends TestCase
     {
         $select = Select::fromId("e69017d3-9027-46c4-9b6f-490d243e459b");
 
-        $this->assertEquals("e69017d3-9027-46c4-9b6f-490d243e459b", $select->option->id);
-        $this->assertNull($select->option->name);
+        $this->assertEquals("e69017d3-9027-46c4-9b6f-490d243e459b", $select->option?->id);
+        $this->assertNull($select->option?->name);
         $this->assertEquals("", $select->metadata()->id);
         $this->assertTrue($select->metadata()->type === PropertyType::Select);
     }
@@ -25,8 +25,8 @@ class SelectTest extends TestCase
     {
         $select = Select::fromName("Option A");
 
-        $this->assertEquals("Option A", $select->option->name);
-        $this->assertNull($select->option->id);
+        $this->assertEquals("Option A", $select->option?->name);
+        $this->assertNull($select->option?->id);
         $this->assertEquals("", $select->metadata()->id);
         $this->assertTrue($select->metadata()->type === PropertyType::Select);
     }
@@ -37,7 +37,7 @@ class SelectTest extends TestCase
 
         $select = Select::fromOption($option);
 
-        $this->assertEquals("abc", $select->option->id);
+        $this->assertEquals("abc", $select->option?->id);
     }
 
     public function test_change_option(): void
@@ -68,5 +68,18 @@ class SelectTest extends TestCase
 
         $this->assertEquals($array, $select->toArray());
         $this->assertEquals($array, $fromFactory->toArray());
+    }
+
+    public function test_is_empty(): void
+    {
+        $array = [
+            "id"     => "a7ede3b7-c7ae-4eb8-b415-a7f80ac4dfe5",
+            "type"   => "select",
+            "select" => null,
+        ];
+
+        $select = Select::fromArray($array);
+
+        $this->assertTrue($select->isEmpty());
     }
 }
