@@ -12,7 +12,7 @@ use Notion\Common\Date as CommonDate;
  *      date: array{
  *          start: string,
  *          end?: string,
- *      },
+ *      }|null,
  * }
  *
  * @psalm-immutable
@@ -21,7 +21,7 @@ class Date implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,
-        public readonly CommonDate $date,
+        public readonly CommonDate|null $date,
     ) {
     }
 
@@ -45,7 +45,7 @@ class Date implements PropertyInterface
 
         $property = PropertyMetadata::fromArray($array);
 
-        $date = CommonDate::fromArray($array["date"]);
+        $date = $array["date"] !== null ? CommonDate::fromArray($array["date"]) : null;
 
         return new self($property, $date);
     }
@@ -54,7 +54,7 @@ class Date implements PropertyInterface
     {
         $array = $this->metadata->toArray();
 
-        $array["date"] = $this->date->toArray();
+        $array["date"] = $this->date?->toArray();
 
         return $array;
     }
@@ -66,31 +66,40 @@ class Date implements PropertyInterface
 
     public function changeStart(DateTimeImmutable $start): self
     {
-        return new self($this->metadata, $this->date->changeStart($start));
+        return new self($this->metadata, $this->date?->changeStart($start));
     }
 
     public function changeEnd(DateTimeImmutable $end): self
     {
-        return new self($this->metadata, $this->date->changeEnd($end));
+        return new self($this->metadata, $this->date?->changeEnd($end));
     }
 
     public function removeEnd(): self
     {
-        return new self($this->metadata, $this->date->removeEnd());
+        return new self($this->metadata, $this->date?->removeEnd());
     }
 
-    public function start(): DateTimeImmutable
+    public function start(): DateTimeImmutable|null
     {
-        return $this->date->start;
+        return $this->date?->start;
     }
 
     public function end(): DateTimeImmutable|null
     {
-        return $this->date->end;
+        return $this->date?->end;
     }
 
     public function isRange(): bool
     {
+        if ($this->date === null) {
+            return false;
+        }
+
         return $this->date->isRange();
+    }
+
+    public function isEmpty(): bool
+    {
+        return $this->date === null;
     }
 }

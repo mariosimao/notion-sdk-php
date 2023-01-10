@@ -6,7 +6,7 @@ namespace Notion\Pages\Properties;
  * @psalm-type EmailJson = array{
  *      id: string,
  *      type: "email",
- *      email: string,
+ *      email: string|null,
  * }
  *
  * @psalm-immutable
@@ -15,7 +15,7 @@ class Email implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,
-        public readonly string $email,
+        public readonly string|null $email,
     ) {
     }
 
@@ -54,5 +54,10 @@ class Email implements PropertyInterface
     public function changeEmail(string $email): self
     {
         return new self($this->metadata, $email);
+    }
+
+    public function isEmpty(): bool
+    {
+        return $this->email === null;
     }
 }

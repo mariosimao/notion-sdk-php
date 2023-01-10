@@ -38,4 +38,17 @@ class EmailTest extends TestCase
         $this->assertEquals($array, $email->toArray());
         $this->assertEquals($array, $fromFactory->toArray());
     }
+
+    public function test_is_empty(): void
+    {
+        $array = [
+            "id" => "abc",
+            "type" => "email",
+            "email" => null,
+        ];
+
+        $email = Email::fromArray($array);
+
+        $this->assertTrue($email->isEmpty());
+    }
 }

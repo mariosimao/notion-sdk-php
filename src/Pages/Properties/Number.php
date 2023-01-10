@@ -8,7 +8,7 @@ use Notion\Common\RichText;
  * @psalm-type NumberJson = array{
  *      id: string,
  *      type: "number",
- *      number: int|float,
+ *      number: int|float|null,
  * }
  *
  * @psalm-immutable
@@ -17,7 +17,7 @@ class Number implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,
-        public readonly int|float $number
+        public readonly int|float|null $number
     ) {
     }
 
@@ -56,5 +56,10 @@ class Number implements PropertyInterface
     public function changeNumber(int|float $number): self
     {
         return new self($this->metadata, $number);
+    }
+
+    public function isEmpty(): bool
+    {
+        return $this->number === null;
     }
 }

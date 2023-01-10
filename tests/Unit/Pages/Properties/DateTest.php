@@ -81,4 +81,16 @@ class DateTest extends TestCase
         $this->assertEquals($array, $date->toArray());
         $this->assertEquals($array, $fromFactory->toArray());
     }
+
+    public function test_is_empty(): void
+    {
+        $array = [
+            "id"   => "a7ede3b7-c7ae-4eb8-b415-a7f80ac4dfe5",
+            "type" => "date",
+            "date" => null,
+        ];
+        $date = Date::fromArray($array);
+
+        $this->assertTrue($date->isEmpty());
+    }
 }

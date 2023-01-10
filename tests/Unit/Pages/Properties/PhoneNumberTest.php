@@ -38,4 +38,17 @@ class PhoneNumberTest extends TestCase
         $this->assertEquals($array, $phone->toArray());
         $this->assertEquals($array, $fromFactory->toArray());
     }
+
+    public function test_is_empty(): void
+    {
+        $array = [
+            "id" => "abc",
+            "type" => "phone_number",
+            "phone_number" => null,
+        ];
+
+        $phone = PhoneNumber::fromArray($array);
+
+        $this->assertTrue($phone->isEmpty());
+    }
 }
