@@ -18,10 +18,10 @@ $blocks = [
 
 ```php
 $block = Heading1::create(
-    RichText::createText("Heading "),
-    RichText::createText("with ")->italic(),
-    RichText::createText("Rich")->underline(),
-    RichText::createText("Text")->bold(),
+    RichText::fromString("Heading "),
+    RichText::fromString("with ")->italic(),
+    RichText::fromString("Rich")->underline(),
+    RichText::fromString("Text")->bold(),
 );
 ```
 
@@ -31,10 +31,10 @@ $block = Heading1::create(
 
 ```php
 $block = Heading1::create(
-    RichText::createText("Heading "),
-    RichText::createText("with ")->italic(),
-    RichText::createText("Rich")->underline(),
-    RichText::createText("Text")->bold(),
+    RichText::fromString("Heading "),
+    RichText::fromString("with ")->italic(),
+    RichText::fromString("Rich")->underline(),
+    RichText::fromString("Text")->bold(),
 );
 
 echo $block->toString();
@@ -50,8 +50,8 @@ Heading with RichText
 ```php
 $block = Heading1::fromString("Old heading");
 $block = $block->changeText(
-    RichText::createText("New "),
-    RichText::createText("heading")->bold(),
+    RichText::fromString("New "),
+    RichText::fromString("heading")->bold(),
 );
 
 echo $block->toString();
@@ -68,7 +68,7 @@ New heading
 ```php
 $block = Heading1::fromString("Heading");
 
-$block = $block->addText(RichText::createText(" extended"));
+$block = $block->addText(RichText::fromString(" extended"));
 
 echo $block->toString();
 ```

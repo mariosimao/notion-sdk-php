@@ -26,7 +26,7 @@ $paragraph->toString(); // empty string
 <?php
 
 // "Simple text" will be bold and italic
-$text = RichText::createText("Simple text")->bold()->italic();
+$text = RichText::fromString("Simple text")->bold()->italic();
 
 $paragraph = Paragraph::create()->addText($text);
 ```
@@ -37,11 +37,11 @@ While working with multiple texts:
 
 ```php
 $text = [
-    RichText::createText("Paragraphs can be "),
-    RichText::createText("bold")->bold(),
-    RichText::createText(", "),
-    RichText::createText("underlined")->underline(),
-    RichText::createText(" and much more!"),
+    RichText::fromString("Paragraphs can be "),
+    RichText::fromString("bold")->bold(),
+    RichText::fromString(", "),
+    RichText::fromString("underlined")->underline(),
+    RichText::fromString(" and much more!"),
 ];
 
 $paragraph = Paragraph::create()->changeText(...$text);

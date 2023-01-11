@@ -19,7 +19,7 @@ $item = BulletedListItem::fromString("Item content");
 ## Create from `RichText`
 
 ```php
-$text = RichText::createText("Item text")->italic();
+$text = RichText::fromString("Item text")->italic();
 
 $item = BulletedListItem::create()->changeText($text);
 ```
@@ -31,7 +31,7 @@ $item = BulletedListItem::create()->changeText($text);
 ```php
 $item = BulletedListItem::fromString("Item text");
 $item = $item->addText(
-    RichText::createText(" can be extended!")
+    RichText::fromString(" can be extended!")
 );
 
 echo $item->toString();

@@ -22,9 +22,9 @@ $block = Callout::fromString("💡", "A brilliant idea");
 
 ```php
 $block = Callout::create()->changeText(
-    RichText::createText("Rich text ")->italic(),
-    RichText::createText("is")->underline(),
-    RichText::createText(" amazing")->bold(),
+    RichText::fromString("Rich text ")->italic(),
+    RichText::fromString("is")->underline(),
+    RichText::fromString(" amazing")->bold(),
 );
 ```
 
@@ -49,7 +49,7 @@ A brilliant idea
 $block = Callout::fromString("💡", "Old text");
 
 $block = $block->changeText(
-    RichText::createText("New text"),
+    RichText::fromString("New text"),
 );
 
 echo $block->toString();
@@ -65,7 +65,7 @@ New text
 
 ```php
 $block = Callout::fromString("💡", "ABC")
-    ->addText(RichText::createText("123"));
+    ->addText(RichText::fromString("123"));
 
 echo $block->toString();
 ```
@@ -83,7 +83,7 @@ ABC123
 ```php
 $block = Callout::fromString("😎", "A brilliant idea");
 
-$newIcon = Emoji::create("💡");
+$newIcon = Emoji::fromString("💡");
 $block = $block->changeIcon($newIcon);
 
 echo $block->icon->emoji->emoji;
@@ -116,10 +116,10 @@ https://cdn-icons-png.flaticon.com/512/648/648675.png
 
 ```php
 $block = Callout::create()
-    ->chageIcon(Emoji::create("💡"))
+    ->chageIcon(Emoji::fromString("💡"))
     ->changeText(
-        RichText::createText("Heraclitus")->bold(),
-        RichText::createText(" once said:"),
+        RichText::fromString("Heraclitus")->bold(),
+        RichText::fromString(" once said:"),
     )->addChild(
         Quote::fromString("One cannot step twice in the same river")
     );
