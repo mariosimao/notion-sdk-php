@@ -6,7 +6,7 @@ Creating a bookmark from a URL string:
 ```php
 <?php
 
-$bookmark = Bookmark::create("https://notion.so");
+$bookmark = Bookmark::fromUrl("https://notion.so");
 ```
 
 ![](../images/bookmark.png)
@@ -14,9 +14,9 @@ $bookmark = Bookmark::create("https://notion.so");
 ## Add caption
 
 ```php
-$caption = RichText::createText("An awesome bookmark caption");
+$caption = RichText::fromString("An awesome bookmark caption");
 
-$bookmark = Bookmark::create("https://notion.so")
+$bookmark = Bookmark::fromUrl("https://notion.so")
                     ->changeCaption($caption);
 ```
 
@@ -25,7 +25,7 @@ $bookmark = Bookmark::create("https://notion.so")
 ## Change URL
 
 ```php
-$bookmark = Bookmark::create("https://notion.so");
+$bookmark = Bookmark::fromUrl("https://notion.so");
 $bookmark = $bookmark->changeUrl("https://google.com");
 
 echo $bookmark->url;
@@ -39,11 +39,11 @@ https://google.com
 ## Change caption
 
 ```php
-$oldCaption = RichText::createText("An awesome bookmark caption");
-$bookmark = Bookmark::create("https://notion.so")
+$oldCaption = RichText::fromString("An awesome bookmark caption");
+$bookmark = Bookmark::fromUrl("https://notion.so")
                     ->changeCaption($oldCaption);
 
-$newCaption = RichText::createText("A new caption!");
+$newCaption = RichText::fromString("A new caption!");
 $bookmark = $bookmark->changeCaption($newCaption);
 
 echo RichText::multipleToString($bookmark->caption);

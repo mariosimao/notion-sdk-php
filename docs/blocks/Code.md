@@ -21,8 +21,8 @@ $block = Code::createFromString($text, CodeLanguage::Php);
 
 ```php
 $text = [
-    RichText::createText("<?php\n"),
-    RichText::createText("echo 'Hello, world!';"),
+    RichText::fromString("<?php\n"),
+    RichText::fromString("echo 'Hello, world!';"),
 ];
 $block = Code::create($text, CodeLanguage::Php);
 ```
@@ -41,7 +41,7 @@ $block = Code::createFromString("console.log('Hello!');")->changeLanguage(CodeLa
 
 ```php
 $block = Code::create()
-    ->addText(RichText::createText("console.log('Hello!')"))
+    ->addText(RichText::fromString("console.log('Hello!')"))
     ->changeLanguage(CodeLangugae::Javascript);
 ```
 
@@ -49,8 +49,8 @@ $block = Code::create()
 
 ```php
 $text = [
-    RichText::createText("<?php\n"),
-    RichText::createText("echo 'Hello, world!';"),
+    RichText::fromString("<?php\n"),
+    RichText::fromString("echo 'Hello, world!';"),
 ];
 
 $block = Code::create()

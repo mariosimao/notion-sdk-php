@@ -16,7 +16,7 @@ $notion = Notion::create($token);
 $parent = PageParent::page("c986d7b0-7051-4f18-b165-cc0b9503ffc2");
 $page = Page::create($parent)
             ->changeTitle("Empty page")
-            ->changeIcon(Emoji::create("⭐"));
+            ->changeIcon(Emoji::fromString("⭐"));
 
 $page = $notion->pages()->create($page);
 ```
@@ -39,7 +39,7 @@ $notion = Notion::create($token);
 $parent = PageParent::page("c986d7b0-7051-4f18-b165-cc0b9503ffc2");
 $page = Page::create($parent)
             ->changeTitle("Shopping list")
-            ->changeIcon(Emoji::create("🛒"));
+            ->changeIcon(Emoji::fromString("🛒"));
 
 $content = [
     Heading1::fromString("Supermarket"),

@@ -59,6 +59,6 @@ $notion = Notion::create($token);
 $users = $notion->users()->findAll();
 
 foreach ($users as $user) {
-    echo $user->name() . PHP_EOL;
+    echo $user->name . PHP_EOL;
 }
 ```

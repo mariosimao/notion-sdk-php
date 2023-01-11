@@ -28,7 +28,7 @@ $query = Query::create()
 
 $result = $notion->databases()->query($database, $query);
 
-$pages = $result->pages(); // array of Page
-$result->hasMore(); // true or false
-$result->nextCursor() // cursor ID or null
+$pages = $result->pages; // array of Page
+$result->hasMore; // true or false
+$result->nextCursor // cursor ID or null
 ```
