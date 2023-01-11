@@ -15,8 +15,7 @@ class Http
         $body = json_decode((string) $response->getBody(), true);
 
         if ($response->getStatusCode() !== 200) {
-            /** @var array{ message: string, code: string} $body */
-            throw ApiException::fromResponseBody($body);
+            throw ApiException::fromResponse($response);
         }
 
         return $body;
