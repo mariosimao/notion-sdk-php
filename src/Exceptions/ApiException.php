@@ -2,27 +2,42 @@
 
 namespace Notion\Exceptions;
 
+use Psr\Http\Message\ResponseInterface;
+
 /**
  * Exception from Notion API
  */
-final class ApiException extends NotionException
+class ApiException extends NotionException
 {
-    private string $notionCode;
+    public readonly string $notionCode;
+    public readonly ResponseInterface $response;
 
-    private function __construct(string $message, string $notionCode)
-    {
+    final public function __construct(
+        string $message,
+        string $notionCode,
+        ResponseInterface $response,
+    ) {
         $this->notionCode = $notionCode;
+        $this->response = $response;
 
         parent::__construct($message);
     }
 
-    /** @param array{ message: string, code: string} $body */
-    public static function fromResponseBody(array $body): self
+    final public static function fromResponse(ResponseInterface $response): static
     {
-        return new self($body["message"], $body["code"]);
+        /** @var array{ message: string, code: string} $body */
+        $body = json_decode((string) $response->getBody(), true);
+
+        return match ($body["code"]) {
+            "conflict_error" => new ConflictException($body["message"], $body["code"], $response),
+            default          => new static($body["message"], $body["code"], $response),
+        };
     }
 
-    public function getNotionCode(): string
+    /**
+     * @deprecated 1.3.0 This method will be removed in future versions. Use 'notionCode' property.
+     */
+    final public function getNotionCode(): string
     {
         return $this->notionCode;
     }

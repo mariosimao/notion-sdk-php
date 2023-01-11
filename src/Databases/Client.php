@@ -2,12 +2,11 @@
 
 namespace Notion\Databases;
 
+use Notion\Configuration;
 use Notion\Databases\Query\Result;
 use Notion\Databases\Query\Sort;
 use Notion\Infrastructure\Http;
 use Notion\Pages\Page;
-use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
 
 /**
  * @psalm-import-type DatabaseJson from Database
@@ -19,22 +18,17 @@ class Client
      * @internal Use `\Notion\Notion::databases()` instead
      */
     public function __construct(
-        private readonly ClientInterface $psrClient,
-        private readonly RequestFactoryInterface $requestFactory,
-        private readonly string $token,
-        private readonly string $version,
+        private readonly Configuration $config,
     ) {
     }
 
     public function find(string $databaseId): Database
     {
         $url = "https://api.notion.com/v1/databases/{$databaseId}";
-        $request = Http::createRequest($this->requestFactory, $this->version, $this->token, $url);
-
-        $response = $this->psrClient->sendRequest($request);
+        $request = Http::createRequest($url, $this->config);
 
         /** @psalm-var DatabaseJson $body */
-        $body = Http::parseBody($response);
+        $body = Http::sendRequest($request, $this->config);
 
         return Database::fromArray($body);
     }
@@ -45,15 +39,13 @@ class Client
         unset($data["id"]);
 
         $url = "https://api.notion.com/v1/databases";
-        $request = Http::createRequest($this->requestFactory, $this->version, $this->token, $url)
+        $request = Http::createRequest($url, $this->config)
             ->withMethod("POST")
             ->withHeader("Content-Type", "application/json");
         $request->getBody()->write(json_encode($data));
 
-        $response = $this->psrClient->sendRequest($request);
-
         /** @psalm-var DatabaseJson $body */
-        $body = Http::parseBody($response);
+        $body = Http::sendRequest($request, $this->config);
 
         return Database::fromArray($body);
     }
@@ -67,16 +59,14 @@ class Client
 
         $databaseId = $database->id;
         $url = "https://api.notion.com/v1/databases/{$databaseId}";
-        $request = Http::createRequest($this->requestFactory, $this->version, $this->token, $url)
+        $request = Http::createRequest($url, $this->config)
             ->withMethod("PATCH")
             ->withHeader("Content-Type", "application/json");
 
         $request->getBody()->write(json_encode($data));
 
-        $response = $this->psrClient->sendRequest($request);
-
         /** @psalm-var DatabaseJson $body */
-        $body = Http::parseBody($response);
+        $body = Http::sendRequest($request, $this->config);
 
         return Database::fromArray($body);
     }
@@ -85,12 +75,10 @@ class Client
     {
         $databaseId = $database->id;
         $url = "https://api.notion.com/v1/blocks/{$databaseId}";
-        $request = Http::createRequest($this->requestFactory, $this->version, $this->token, $url)
+        $request = Http::createRequest($url, $this->config)
             ->withMethod("DELETE");
 
-        $response = $this->psrClient->sendRequest($request);
-
-        Http::parseBody($response);
+        Http::sendRequest($request, $this->config);
     }
 
     public function query(Database $database, Query $query): Result
@@ -99,16 +87,14 @@ class Client
 
         $databaseId = $database->id;
         $url = "https://api.notion.com/v1/databases/{$databaseId}/query";
-        $request = Http::createRequest($this->requestFactory, $this->version, $this->token, $url)
+        $request = Http::createRequest($url, $this->config)
             ->withMethod("POST")
             ->withHeader("Content-Type", "application/json");
 
         $request->getBody()->write(json_encode($data));
 
-        $response = $this->psrClient->sendRequest($request);
-
         /** @psalm-var QueryResultJson $body */
-        $body = Http::parseBody($response);
+        $body = Http::sendRequest($request, $this->config);
 
         return Result::fromArray($body);
     }

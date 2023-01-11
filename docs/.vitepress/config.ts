@@ -71,19 +71,28 @@ export default defineConfig({
                 ],
             },
             {
+                text: 'How to',
+                collapsible: true,
+                collapsed: true,
+                items: [
+                    ...howToItems,
+                ],
+            },
+            {
                 text: 'Blocks',
                 collapsible: true,
+                collapsed: true,
                 items: [
                     { text: 'Introduction', link: '/blocks/' },
                     ...blockItems,
                 ],
             },
             {
-                text: 'How to',
+                text: 'Advanced',
                 collapsible: true,
                 items: [
-                    ...howToItems,
-                ],
+                    { text: 'Configuration', link: '/advanced/configuration' },
+                ]
             }
         ],
         footer: {

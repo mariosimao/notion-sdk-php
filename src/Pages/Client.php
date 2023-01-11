@@ -3,10 +3,9 @@
 namespace Notion\Pages;
 
 use Notion\Blocks\BlockInterface;
+use Notion\Configuration;
 use Notion\Infrastructure\Http;
 use Notion\Pages\Properties\PropertyInterface;
-use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
 
 /**
  * @psalm-import-type PageJson from Page
@@ -17,22 +16,17 @@ class Client
      * @internal Use `\Notion\Notion::pages()` instead
      */
     public function __construct(
-        private readonly ClientInterface $psrClient,
-        private readonly RequestFactoryInterface $requestFactory,
-        private readonly string $token,
-        private readonly string $version,
+        private readonly Configuration $config,
     ) {
     }
 
     public function find(string $pageId): Page
     {
         $url = "https://api.notion.com/v1/pages/{$pageId}";
-        $request = Http::createRequest($this->requestFactory, $this->version, $this->token, $url);
-
-        $response = $this->psrClient->sendRequest($request);
+        $request = Http::createRequest($url, $this->config);
 
         /** @psalm-var PageJson $body */
-        $body = Http::parseBody($response);
+        $body = Http::sendRequest($request, $this->config);
 
         return Page::fromArray($body);
     }
@@ -49,17 +43,14 @@ class Client
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $content),
         ], JSON_PRETTY_PRINT);
 
-
         $url = "https://api.notion.com/v1/pages";
-        $request = Http::createRequest($this->requestFactory, $this->version, $this->token, $url)
+        $request = Http::createRequest($url, $this->config)
             ->withMethod("POST")
             ->withHeader("Content-Type", "application/json");
         $request->getBody()->write($data);
 
-        $response = $this->psrClient->sendRequest($request);
-
         /** @psalm-var PageJson $body */
-        $body = Http::parseBody($response);
+        $body = Http::sendRequest($request, $this->config);
 
         return Page::fromArray($body);
     }
@@ -76,15 +67,13 @@ class Client
 
         $pageId = $page->id;
         $url = "https://api.notion.com/v1/pages/{$pageId}";
-        $request = Http::createRequest($this->requestFactory, $this->version, $this->token, $url)
+        $request = Http::createRequest($url, $this->config)
             ->withMethod("PATCH")
             ->withHeader("Content-Type", "application/json");
         $request->getBody()->write($data);
 
-        $response = $this->psrClient->sendRequest($request);
-
         /** @psalm-var PageJson $body */
-        $body = Http::parseBody($response);
+        $body = Http::sendRequest($request, $this->config);
 
         return Page::fromArray($body);
     }
