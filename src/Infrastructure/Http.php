@@ -40,8 +40,10 @@ class Http
         try {
             $body = self::parseBody($response);
         } catch (ConflictException $e) {
-            if (!$config->retryOnConflict ||
-                $currentAttempt >= $config->retryOnConflictAttempts) {
+            if (
+                !$config->retryOnConflict ||
+                $currentAttempt >= $config->retryOnConflictAttempts
+            ) {
                 throw $e;
             }
 

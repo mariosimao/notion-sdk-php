@@ -45,7 +45,7 @@ class Configuration
         );
     }
 
-    public static function createWithPsrImplementations(
+    public static function createFromPsrImplementations(
         string $token,
         ClientInterface $httpClient,
         RequestFactoryInterface $requestFactory,

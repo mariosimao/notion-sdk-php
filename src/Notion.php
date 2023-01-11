@@ -30,7 +30,7 @@ class Notion
         RequestFactoryInterface $requestFactory,
         string $token,
     ): self {
-        $configuration = Configuration::createWithPsrImplementations(
+        $configuration = Configuration::createFromPsrImplementations(
             $token,
             $psrClient,
             $requestFactory,

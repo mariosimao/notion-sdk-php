@@ -12,7 +12,7 @@ class ApiException extends NotionException
     public readonly string $notionCode;
     public readonly ResponseInterface $response;
 
-    public final function __construct(
+    final public function __construct(
         string $message,
         string $notionCode,
         ResponseInterface $response,
@@ -23,7 +23,7 @@ class ApiException extends NotionException
         parent::__construct($message);
     }
 
-    public static final function fromResponse(ResponseInterface $response): static
+    final public static function fromResponse(ResponseInterface $response): static
     {
         /** @var array{ message: string, code: string} $body */
         $body = json_decode((string) $response->getBody(), true);
@@ -37,7 +37,7 @@ class ApiException extends NotionException
     /**
      * @deprecated 1.3.0 This method will be removed in future versions. Use 'notionCode' property.
      */
-    public final function getNotionCode(): string
+    final public function getNotionCode(): string
     {
         return $this->notionCode;
     }
