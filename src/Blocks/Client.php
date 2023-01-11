@@ -3,9 +3,8 @@
 namespace Notion\Blocks;
 
 use Notion\Blocks\BlockInterface;
+use Notion\Configuration;
 use Notion\Infrastructure\Http;
-use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
 
 class Client
 {
@@ -13,22 +12,17 @@ class Client
      * @internal Use `\Notion\Notion::blocks()` instead
      */
     public function __construct(
-        private readonly ClientInterface $psrClient,
-        private readonly RequestFactoryInterface $requestFactory,
-        private readonly string $token,
-        private readonly string $version,
+        private readonly Configuration $config,
     ) {
     }
 
     public function find(string $blockId): BlockInterface
     {
         $url = "https://api.notion.com/v1/blocks/{$blockId}";
-        $request = Http::createRequest($this->requestFactory, $this->version, $this->token, $url);
-
-        $response = $this->psrClient->sendRequest($request);
+        $request = Http::createRequest($url, $this->config);
 
         /** @var array{ type: string } $body */
-        $body = Http::parseBody($response);
+        $body = Http::sendRequest($request, $this->config);
 
         return BlockFactory::fromArray($body);
     }
@@ -37,12 +31,10 @@ class Client
     public function findChildren(string $blockId): array
     {
         $url = "https://api.notion.com/v1/blocks/{$blockId}/children";
-        $request = Http::createRequest($this->requestFactory, $this->version, $this->token, $url);
-
-        $response = $this->psrClient->sendRequest($request);
+        $request = Http::createRequest($url, $this->config);
 
         /** @var array{ results: list<array{ type: string }> } $body */
-        $body = Http::parseBody($response);
+        $body = Http::sendRequest($request, $this->config);
 
         return array_map(
             fn(array $blockArray) => BlockFactory::fromArray($blockArray),
@@ -79,15 +71,13 @@ class Client
         ]);
 
         $url = "https://api.notion.com/v1/blocks/{$blockId}/children";
-        $request = Http::createRequest($this->requestFactory, $this->version, $this->token, $url)
+        $request = Http::createRequest($url, $this->config)
             ->withMethod("PATCH")
             ->withHeader("Content-Type", "application/json");
         $request->getBody()->write($data);
 
-        $response = $this->psrClient->sendRequest($request);
-
         /** @var array{ results: list<array{ type: string }> } $body */
-        $body = Http::parseBody($response);
+        $body = Http::sendRequest($request, $this->config);
 
         return array_map(
             fn(array $blockArray): BlockInterface => BlockFactory::fromArray($blockArray),
@@ -114,16 +104,14 @@ class Client
         $json = json_encode($data);
 
         $url = "https://api.notion.com/v1/blocks/{$blockId}";
-        $request = Http::createRequest($this->requestFactory, $this->version, $this->token, $url)
+        $request = Http::createRequest($url, $this->config)
             ->withMethod("PATCH")
             ->withHeader("Content-Type", "application/json");
 
         $request->getBody()->write($json);
 
-        $response = $this->psrClient->sendRequest($request);
-
         /** @var array{ type: string } $body */
-        $body = Http::parseBody($response);
+        $body = Http::sendRequest($request, $this->config);
 
         return BlockFactory::fromArray($body);
     }
@@ -131,13 +119,11 @@ class Client
     public function delete(string $blockId): BlockInterface
     {
         $url = "https://api.notion.com/v1/blocks/{$blockId}";
-        $request = Http::createRequest($this->requestFactory, $this->version, $this->token, $url)
+        $request = Http::createRequest($url, $this->config)
             ->withMethod("DELETE");
 
-        $response = $this->psrClient->sendRequest($request);
-
         /** @var array{ type: string } $body */
-        $body = Http::parseBody($response);
+        $body = Http::sendRequest($request, $this->config);
 
         return BlockFactory::fromArray($body);
     }

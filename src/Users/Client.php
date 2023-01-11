@@ -2,42 +2,27 @@
 
 namespace Notion\Users;
 
+use Notion\Configuration;
 use Notion\Infrastructure\Http;
-use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
 
 /** @psalm-import-type UserJson from User */
 class Client
 {
-    private ClientInterface $psrClient;
-    private RequestFactoryInterface $requestFactory;
-    private string $token;
-    private string $version;
-
     /**
      * @internal Use `\Notion\Notion::pages()` instead
      */
     public function __construct(
-        ClientInterface $psrClient,
-        RequestFactoryInterface $requestFactory,
-        string $token,
-        string $version,
+        private readonly Configuration $config,
     ) {
-        $this->psrClient = $psrClient;
-        $this->requestFactory = $requestFactory;
-        $this->token = $token;
-        $this->version = $version;
     }
 
     public function find(string $userId): User
     {
         $url = "https://api.notion.com/v1/users/{$userId}";
-        $request = Http::createRequest($this->requestFactory, $this->version, $this->token, $url);
-
-        $response = $this->psrClient->sendRequest($request);
+        $request = Http::createRequest($url, $this->config);
 
         /** @psalm-var UserJson $body */
-        $body = Http::parseBody($response);
+        $body = Http::sendRequest($request, $this->config);
 
         return User::fromArray($body);
     }
@@ -48,12 +33,10 @@ class Client
     public function findAll(): array
     {
         $url = "https://api.notion.com/v1/users";
-        $request = Http::createRequest($this->requestFactory, $this->version, $this->token, $url);
-
-        $response = $this->psrClient->sendRequest($request);
+        $request = Http::createRequest($url, $this->config);
 
         /** @var array{ results: UserJson[] } $body */
-        $body = Http::parseBody($response);
+        $body = Http::sendRequest($request, $this->config);
 
         return array_map(
             function (array $userData): User {
@@ -66,12 +49,10 @@ class Client
     public function me(): User
     {
         $url = "https://api.notion.com/v1/users/me";
-        $request = Http::createRequest($this->requestFactory, $this->version, $this->token, $url);
-
-        $response = $this->psrClient->sendRequest($request);
+        $request = Http::createRequest($url, $this->config);
 
         /** @psalm-var UserJson $body */
-        $body = Http::parseBody($response);
+        $body = Http::sendRequest($request, $this->config);
 
         return User::fromArray($body);
     }

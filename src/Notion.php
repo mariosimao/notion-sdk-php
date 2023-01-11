@@ -2,8 +2,6 @@
 
 namespace Notion;
 
-use Http\Discovery\Psr17FactoryDiscovery;
-use Http\Discovery\Psr18ClientDiscovery;
 use Notion\Blocks\Client as BlocksClient;
 use Notion\Databases\Client as DatabasesClient;
 use Notion\Pages\Client as PagesClient;
@@ -16,18 +14,15 @@ class Notion
     public const API_VERSION = "2022-06-28";
 
     private function __construct(
-        private readonly ClientInterface $psrClient,
-        private readonly RequestFactoryInterface $requestFactory,
-        private readonly string $token,
+        private readonly Configuration $configuration,
     ) {
     }
 
     public static function create(string $token): self
     {
-        $psrClient = Psr18ClientDiscovery::find();
-        $requestFactory = Psr17FactoryDiscovery::findRequestFactory();
+        $configuration = Configuration::create($token);
 
-        return new self($psrClient, $requestFactory, $token);
+        return new self($configuration);
     }
 
     public static function createWithPsrImplementations(
@@ -35,46 +30,32 @@ class Notion
         RequestFactoryInterface $requestFactory,
         string $token,
     ): self {
-        return new self($psrClient, $requestFactory, $token);
+        $configuration = Configuration::createWithPsrImplementations(
+            $token,
+            $psrClient,
+            $requestFactory,
+        );
+
+        return new self($configuration);
     }
 
     public function users(): UsersClient
     {
-        return new UsersClient(
-            $this->psrClient,
-            $this->requestFactory,
-            $this->token,
-            self::API_VERSION
-        );
+        return new UsersClient($this->configuration);
     }
 
     public function pages(): PagesClient
     {
-        return new PagesClient(
-            $this->psrClient,
-            $this->requestFactory,
-            $this->token,
-            self::API_VERSION
-        );
+        return new PagesClient($this->configuration);
     }
 
     public function databases(): DatabasesClient
     {
-        return new DatabasesClient(
-            $this->psrClient,
-            $this->requestFactory,
-            $this->token,
-            self::API_VERSION,
-        );
+        return new DatabasesClient($this->configuration);
     }
 
     public function blocks(): BlocksClient
     {
-        return new BlocksClient(
-            $this->psrClient,
-            $this->requestFactory,
-            $this->token,
-            self::API_VERSION,
-        );
+        return new BlocksClient($this->configuration);
     }
 }
