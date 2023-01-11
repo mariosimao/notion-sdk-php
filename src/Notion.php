@@ -25,6 +25,11 @@ class Notion
         return new self($configuration);
     }
 
+    public static function createFromConfig(Configuration $config): self
+    {
+        return new self($config);
+    }
+
     public static function createWithPsrImplementations(
         ClientInterface $psrClient,
         RequestFactoryInterface $requestFactory,

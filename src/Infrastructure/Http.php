@@ -15,7 +15,7 @@ class Http
         /** @var array */
         $body = json_decode((string) $response->getBody(), true);
 
-        if ($response->getStatusCode() !== 200) {
+        if ($response->getStatusCode() >= 400) {
             throw ApiException::fromResponse($response);
         }
 
@@ -47,6 +47,7 @@ class Http
                 throw $e;
             }
 
+            // Try again
             return self::sendRequest($request, $config, $currentAttempt + 1);
         }
 
