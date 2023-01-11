@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Added
+- Configuration support for custom options (#155)
+- Retry after `conflict_error` (#155)
+
+## Documentation
+- Reflect breaking changes from v1 on the documentation.
+
 ## [1.2.0]
 
 ## Added
