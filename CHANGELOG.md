@@ -4,11 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.3.0]
 
 ## Added
 - Configuration support for custom options (#155)
 - Retry after `conflict_error` (#155)
+- `changeColor` methods on `StatusOption` and `Status` property (#159)
+
+## Fixed
+- Status page property update (#159)
 
 ## Documentation
 - Reflect breaking changes from v1 on the documentation.
