@@ -2,6 +2,7 @@
 
 namespace Notion\Pages\Properties;
 
+use Notion\Common\Color;
 use Notion\Databases\Properties\StatusOption;
 
 /**
@@ -23,7 +24,7 @@ class Status implements PropertyInterface
 
     public static function fromId(string $id): self
     {
-        $metadata = PropertyMetadata::create("", PropertyType::Select);
+        $metadata = PropertyMetadata::create("", PropertyType::Status);
         $option = StatusOption::fromId($id);
 
         return new self($metadata, $option);
@@ -31,15 +32,21 @@ class Status implements PropertyInterface
 
     public static function fromName(string $name): self
     {
-        $metadata = PropertyMetadata::create("", PropertyType::Select);
+        $metadata = PropertyMetadata::create("", PropertyType::Status);
         $option = StatusOption::fromName($name);
 
         return new self($metadata, $option);
     }
 
+    public function changeColor(Color $color): self
+    {
+        return new self($this->metadata, $this->option->changeColor($color));
+    }
+
+
     public static function fromOption(StatusOption $option): self
     {
-        $metadata = PropertyMetadata::create("", PropertyType::Select);
+        $metadata = PropertyMetadata::create("", PropertyType::Status);
 
         return new self($metadata, $option);
     }

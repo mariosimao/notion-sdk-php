@@ -43,6 +43,11 @@ class StatusOption
         return new self($id, $name, $color);
     }
 
+    public function changeColor(Color $color): self
+    {
+        return new self($this->id, $this->name, $color);
+    }
+
     public function toArray(): array
     {
         $option = [ "color" => $this->color->value ];
