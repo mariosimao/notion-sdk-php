@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Unit\Pages\Properties;
 
+use Notion\Common\Color;
 use Notion\Databases\Properties\StatusOption;
 use Notion\Pages\Properties\PropertyType;
 use Notion\Pages\Properties\Status;
@@ -31,6 +32,16 @@ class StatusTest extends TestCase
         $status = Status::fromOption($option);
 
         $this->assertSame($option, $status->option);
+    }
+
+    public function test_change_color(): void
+    {
+        $color = Color::Green;
+
+        $status = Status::fromId("5fdb657e-27d1-4832-842e-32231952a560")
+            ->changeColor($color);
+
+        $this->assertSame($color, $status->option->color);
     }
 
     public function test_array_conversion(): void
