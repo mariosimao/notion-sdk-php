@@ -3,6 +3,7 @@
 namespace Notion;
 
 use Notion\Blocks\Client as BlocksClient;
+use Notion\Comments\Client as CommentsClient;
 use Notion\Databases\Client as DatabasesClient;
 use Notion\Pages\Client as PagesClient;
 use Notion\Users\Client as UsersClient;
@@ -62,5 +63,10 @@ class Notion
     public function blocks(): BlocksClient
     {
         return new BlocksClient($this->configuration);
+    }
+
+    public function comments(): CommentsClient
+    {
+        return new CommentsClient($this->configuration);
     }
 }

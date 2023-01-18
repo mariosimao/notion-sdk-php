@@ -105,6 +105,14 @@ export default defineConfig({
                 ],
             },
             {
+                text: 'Comments',
+                collapsible: true,
+                collapsed: true,
+                items: [
+                    { text: 'Introduction', link: '/comments/' },
+                ],
+            },
+            {
                 text: 'Advanced',
                 collapsible: true,
                 items: [
