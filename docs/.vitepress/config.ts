@@ -24,6 +24,14 @@ const blockItems = fs.readdirSync('./blocks')
         link: `/blocks/${file}`,
     }));
 
+const pagePropsItems = fs.readdirSync('./page-properties')
+.filter(file => file !== 'index.md')
+.sort()
+.map(file => ({
+    text: blockTitle(file),
+    link: `/page-properties/${file}`,
+}));
+
 const howToItems = fs.readdirSync('./how-to')
     .filter(file => file !== 'index.md')
     .sort()
@@ -85,6 +93,15 @@ export default defineConfig({
                 items: [
                     { text: 'Introduction', link: '/blocks/' },
                     ...blockItems,
+                ],
+            },
+            {
+                text: 'Page properties',
+                collapsible: true,
+                collapsed: true,
+                items: [
+                    { text: 'Introduction', link: '/page-properties/' },
+                    ...pagePropsItems,
                 ],
             },
             {
