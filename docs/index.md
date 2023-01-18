@@ -8,6 +8,8 @@ hero:
   name: Notion SDK PHP
   text: "🐘 + 🇳 = 💜"
   tagline: A complete Notion SDK for PHP developers.
+  image:
+    src: /logo.png
   actions:
     - theme: brand
       text: Get Started
@@ -25,5 +27,5 @@ features:
     details: Stop guessing method names! Enjoy IDE autocompletes on a 100% typed API.
   - icon: ⛔
     title: No dependencies
-    details: Good by dependency hell! You only need PHP 8 and your favorite implementation of PSR-18.
+    details: Goodbye dependency hell! You only need PHP 8.1 and your favorite implementation of PSR-18.
 ---
