@@ -28,12 +28,12 @@ class CommentsTest extends TestCase
         $page = $notion->pages()->create($page);
 
         $comment = Comment::create($page->id, RichText::fromString("Sample comment"));
-        $notion->comments()->create($comment);
+        $comment = $notion->comments()->create($comment);
 
         $comments = $notion->comments()->list($page->id);
-        $comment = $comments[0]->text[0]->toString();
 
-        $this->assertSame("Sample comment", $comment);
+        $this->assertSame($comment->id, $comments[0]->id);
+        $this->assertSame("Sample comment", $comments[0]->text[0]->toString());
 
         $notion->pages()->delete($page);
     }

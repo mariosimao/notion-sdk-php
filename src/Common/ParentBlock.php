@@ -44,7 +44,7 @@ class ParentBlock
     {
         $type = ParentType::from($array["type"]);
 
-        $id = match($type) {
+        $id = match ($type) {
             ParentType::Database => $array["database_id"] ?? "",
             ParentType::Page => $array["page_id"] ?? "",
             ParentType::Block => $array["block_id"] ?? "",
