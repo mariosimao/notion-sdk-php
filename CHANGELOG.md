@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Fixed
+- Update options without color (#166)
 ## Documentation
 - Document `People` page property (#162)
 
