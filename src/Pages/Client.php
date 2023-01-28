@@ -5,6 +5,8 @@ namespace Notion\Pages;
 use Notion\Blocks\BlockInterface;
 use Notion\Configuration;
 use Notion\Infrastructure\Http;
+use Notion\Pages\Properties\LastEditedBy;
+use Notion\Pages\Properties\LastEditedTime;
 use Notion\Pages\Properties\PropertyInterface;
 
 /**
@@ -57,11 +59,17 @@ class Client
 
     public function update(Page $page): Page
     {
+        $updatableProps = array_filter($page->properties, function (PropertyInterface $p) {
+            $notUpdatableProps = [ LastEditedBy::class, LastEditedTime::class ];
+
+            return (!in_array($p::class, $notUpdatableProps));
+        });
+
         $data = json_encode([
             "archived" => $page->archived,
             "icon" => $page->icon?->toArray(),
             "cover" => $page->cover?->toArray(),
-            "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $page->properties),
+            "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $updatableProps),
             "parent" => $page->parent->toArray(),
         ]);
 
