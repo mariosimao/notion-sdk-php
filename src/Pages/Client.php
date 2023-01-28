@@ -71,9 +71,7 @@ class Client
             "cover" => $page->cover?->toArray(),
             "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $updatableProps),
             "parent" => $page->parent->toArray(),
-        ], JSON_PRETTY_PRINT);
-
-        echo $data;
+        ]);
 
         $pageId = $page->id;
         $url = "https://api.notion.com/v1/pages/{$pageId}";
