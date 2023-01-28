@@ -8,7 +8,7 @@ use Notion\Common\Color;
  * @psalm-type StatusOptionJson = array{
  *      id?: string,
  *      name?: string,
- *      color: string
+ *      color?: string
  * }
  *
  * @psalm-immutable
@@ -18,18 +18,18 @@ class StatusOption
     private function __construct(
         public readonly string|null $id,
         public readonly string|null $name,
-        public readonly Color $color,
+        public readonly Color|null $color,
     ) {
     }
 
     public static function fromId(string $id): self
     {
-        return new self($id, null, Color::Default);
+        return new self($id, null, null);
     }
 
     public static function fromName(string $name): self
     {
-        return new self(null, $name, Color::Default);
+        return new self(null, $name, null);
     }
 
     public static function fromArray(array $array): self
@@ -38,7 +38,7 @@ class StatusOption
 
         $id = $array["id"] ?? null;
         $name = $array["name"] ?? null;
-        $color = Color::tryFrom($array["color"]) ?? Color::Default;
+        $color = Color::tryFrom($array["color"] ?? "");
 
         return new self($id, $name, $color);
     }
@@ -50,13 +50,16 @@ class StatusOption
 
     public function toArray(): array
     {
-        $option = [ "color" => $this->color->value ];
+        $option = [];
 
         if ($this->name !== null) {
             $option["name"] = $this->name;
         }
         if ($this->id !== null) {
             $option["id"] = $this->id;
+        }
+        if ($this->color !== null) {
+            $option["color"] = $this->color->value;
         }
 
         return $option;
