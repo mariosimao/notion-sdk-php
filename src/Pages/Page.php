@@ -225,7 +225,7 @@ class Page
         );
     }
 
-    public function getProprety(string $propertyName): PropertyInterface
+    public function getProperty(string $propertyName): PropertyInterface
     {
         return $this->properties[$propertyName];
     }
