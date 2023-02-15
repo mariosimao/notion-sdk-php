@@ -115,7 +115,7 @@ class PageTest extends TestCase
 
         $page = $page->addProperty("Rating", RichTextProperty::fromString("⭐⭐⭐"));
 
-        $this->assertEquals(PropertyType::RichText, $page->getProprety("Rating")->metadata()->type);
+        $this->assertEquals(PropertyType::RichText, $page->getProperty("Rating")->metadata()->type);
     }
 
     public function test_replace_properties(): void
