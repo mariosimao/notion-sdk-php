@@ -60,7 +60,7 @@ class PagesTest extends TestCase
         $client = Notion::create($token);
 
         $this->expectException(ApiException::class);
-        $this->expectErrorMessage("Could not find page with ID: 60e79d42-4742-41ca-8d70-cc51660cbd3c.");
+        $this->expectExceptionMessage("Could not find page with ID: 60e79d42-4742-41ca-8d70-cc51660cbd3c.");
         $client->pages()->find("60e79d42-4742-41ca-8d70-cc51660cbd3c");
     }
 
@@ -75,7 +75,7 @@ class PagesTest extends TestCase
         $page = Page::create(PageParent::page("60e79d42-4742-41ca-8d70-cc51660cbd3c"));
 
         $this->expectException(ApiException::class);
-        $this->expectErrorMessage("Could not find page with ID: 60e79d42-4742-41ca-8d70-cc51660cbd3c.");
+        $this->expectExceptionMessage("Could not find page with ID: 60e79d42-4742-41ca-8d70-cc51660cbd3c.");
         $client->pages()->create($page);
     }
 

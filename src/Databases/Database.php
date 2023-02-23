@@ -22,6 +22,7 @@ use Notion\Exceptions\DatabaseException;
  * @psalm-import-type DatabaseParentJson from DatabaseParent
  *
  * @psalm-type DatabaseJson = array{
+ *      object: "database",
  *      id: string,
  *      created_time: string,
  *      last_edited_time: string,

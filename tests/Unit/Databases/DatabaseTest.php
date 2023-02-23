@@ -198,6 +198,7 @@ class DatabaseTest extends TestCase
     public function test_from_array_change_emoji_icon(): void
     {
         $array = [
+            "object" => "database",
             "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
             "created_time" => "2020-12-08T12:00:00.000000Z",
             "last_edited_time" => "2020-12-08T12:00:00.000000Z",
@@ -245,6 +246,7 @@ class DatabaseTest extends TestCase
     public function test_from_array_change_file_icon(): void
     {
         $array = [
+            "object" => "database",
             "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
             "created_time" => "2020-12-08T12:00:00.000000Z",
             "last_edited_time" => "2020-12-08T12:00:00.000000Z",

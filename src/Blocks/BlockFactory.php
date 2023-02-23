@@ -7,7 +7,7 @@ use Notion\Exceptions\BlockException;
 class BlockFactory
 {
     /**
-     * @param array{ type: string } $array
+     * @param array{ type: string, ... } $array
      */
     public static function fromArray(array $array): BlockInterface
     {

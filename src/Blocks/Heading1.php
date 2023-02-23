@@ -131,11 +131,12 @@ class Heading1 implements BlockInterface
             throw BlockException::noChindrenSupport();
         }
 
+        $children = $this->children ? [...$this->children, $child] : [$child];
         return new self(
             $this->metadata,
             $this->text,
             $this->isToggleable,
-            [...$this->children, $child],
+            $children,
         );
     }
 
