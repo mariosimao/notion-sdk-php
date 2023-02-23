@@ -118,6 +118,16 @@ class PageTest extends TestCase
         $this->assertEquals(PropertyType::RichText, $page->getProperty("Rating")->metadata()->type);
     }
 
+    public function test_get_property_deprecated(): void
+    {
+        $page = Page::create(PageParent::workspace());
+
+        $page = $page->addProperty("Rating", RichTextProperty::fromString("⭐⭐⭐"));
+
+        /** @psalm-suppress DeprecatedMethod */
+        $this->assertEquals(PropertyType::RichText, $page->getProprety("Rating")->metadata()->type);
+    }
+
     public function test_replace_properties(): void
     {
         $parent = PageParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
