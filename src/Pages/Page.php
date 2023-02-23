@@ -230,6 +230,12 @@ class Page
         return $this->properties[$propertyName];
     }
 
+    /** @deprecated 1.4.0 Typo. Use `getProperty()` instead. */
+    public function getProprety(string $propertyName): PropertyInterface
+    {
+        return $this->getProperty($propertyName);
+    }
+
     public function addProperty(string $name, PropertyInterface $property): self
     {
         $properties = $this->properties;
