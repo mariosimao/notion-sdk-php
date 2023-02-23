@@ -10,7 +10,7 @@ use Notion\Exceptions\HeadingException;
  * @psalm-import-type BlockMetadataJson from BlockMetadata
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
  *
- * @psalm-type Heading1Json = array{
+ * @psalm-type Heading3Json = array{
  *      heading_3: array{
  *          rich_text: RichTextJson[],
  *          is_toggleable: bool,
@@ -55,7 +55,7 @@ class Heading3 implements BlockInterface
         /** @psalm-var BlockMetadataJson $array */
         $block = BlockMetadata::fromArray($array);
 
-        /** @psalm-var Heading1Json $array */
+        /** @psalm-var Heading3Json $array */
         $heading = $array["heading_3"];
 
         $text = array_map(fn($t) => RichText::fromArray($t), $heading["rich_text"]);
@@ -131,11 +131,12 @@ class Heading3 implements BlockInterface
             throw BlockException::noChindrenSupport();
         }
 
+        $children = $this->children ? [...$this->children, $child] : [$child];
         return new self(
             $this->metadata,
             $this->text,
             $this->isToggleable,
-            [...$this->children, $child],
+            $children,
         );
     }
 
