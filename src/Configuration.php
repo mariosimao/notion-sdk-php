@@ -16,7 +16,8 @@ use Psr\Http\Message\RequestFactoryInterface;
  *     httpClient: ClientInterface,
  *     requestFactory: RequestFactoryInterface,
  *     retryOnConflict: bool,
- *     retryOnConflictAttempts: int
+ *     retryOnConflictAttempts: int,
+ *     ...
  * }
  *
  * @psalm-immutable

@@ -6,6 +6,7 @@ namespace Notion\Databases;
  * @psalm-type DatabaseParentJson = array{
  *      type: "page_id"|"workspace",
  *      page_id?: string,
+ *      workspace?: true,
  * }
  *
  * @psalm-immutable

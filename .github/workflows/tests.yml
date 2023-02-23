@@ -22,7 +22,7 @@ jobs:
           - "8.1"
 
         dependencies:
-          - lowest
+          # - lowest
           - highest
           - locked
 

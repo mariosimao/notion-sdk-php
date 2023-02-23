@@ -13,12 +13,12 @@ use Notion\Common\Date;
  *          type: "string"|"number"|"boolean"|"date",
  *          string?: string,
  *          number?: int|float,
- *          boolean?: bool,
+ *          'boolean'?: bool,
  *          date?: array{
  *              start: string,
- *              end: string|null,
- *          },
- *      },
+ *              end: string|null
+ *          }
+ *      }
  * }
  *
  * @psalm-immutable
@@ -45,7 +45,7 @@ class Formula implements PropertyInterface
 
         $string = $formula["string"] ?? null;
         $number = $formula["number"] ?? null;
-        $boolean = isset($formula["boolean"]) ? (bool) $formula["boolean"] : null;
+        $boolean = isset($formula["boolean"]) ? $formula["boolean"] : null;
 
         $date = null;
         if (isset($formula["date"])) {

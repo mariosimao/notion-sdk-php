@@ -3,7 +3,7 @@
 namespace Notion\Pages\Properties;
 
 /**
- * @psalm-type PropertyMetadataJson = array{ id: string, type: string }
+ * @psalm-type PropertyMetadataJson = array{ id: string, type: string, ... }
  *
  * @psalm-immutable
  */

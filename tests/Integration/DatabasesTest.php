@@ -88,7 +88,7 @@ class DatabasesTest extends TestCase
         $client = Notion::create($token);
 
         $this->expectException(ApiException::class);
-        $this->expectErrorMessage("Could not find database with ID: 60e79d42-4742-41ca-8d70-cc51660cbd3c.");
+        $this->expectExceptionMessage("Could not find database with ID: 60e79d42-4742-41ca-8d70-cc51660cbd3c.");
         $client->databases()->find("60e79d42-4742-41ca-8d70-cc51660cbd3c");
     }
 
@@ -103,7 +103,7 @@ class DatabasesTest extends TestCase
         $database = Database::create(DatabaseParent::page("60e79d42-4742-41ca-8d70-cc51660cbd3c"));
 
         $this->expectException(ApiException::class);
-        $this->expectErrorMessage("Could not find page with ID: 60e79d42-4742-41ca-8d70-cc51660cbd3c.");
+        $this->expectExceptionMessage("Could not find page with ID: 60e79d42-4742-41ca-8d70-cc51660cbd3c.");
         $client->databases()->create($database);
     }
 
