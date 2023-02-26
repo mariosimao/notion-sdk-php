@@ -26,7 +26,8 @@ class BlockMetadata
         public readonly DateTimeImmutable $lastEditedTime,
         public readonly bool $archived,
         public readonly bool $hasChildren,
-        public readonly BlockType $type
+        public readonly BlockType $type,
+        private readonly string|null $unknownType = null
     ) {
     }
 
@@ -45,10 +46,7 @@ class BlockMetadata
      */
     public static function fromArray(array $array): self
     {
-        $type = BlockType::tryFrom($array["type"]);
-        if ($type === null) {
-            throw BlockException::invalidType($array["type"]);
-        }
+        $type = BlockType::tryFrom($array["type"]) ?? BlockType::Unknown;
 
         return new self(
             $array["id"],
@@ -57,19 +55,22 @@ class BlockMetadata
             $array["archived"],
             $array["has_children"],
             $type,
+            $type === BlockType::Unknown ? $array["type"] : null,
         );
     }
 
     /** @internal */
     public function toArray(): array
     {
+        $type = $this->type !== BlockType::Unknown ? $this->type->value : $this->unknownType;
+
         $array = [
             "object"           => "block",
             "created_time"     => $this->createdTime->format(Date::FORMAT),
             "last_edited_time" => $this->lastEditedTime->format(Date::FORMAT),
             "archived"         => $this->archived,
             "has_children"     => $this->hasChildren,
-            "type"             => $this->type->value,
+            "type"             => $type,
         ];
 
         if ($this->id !== "") {

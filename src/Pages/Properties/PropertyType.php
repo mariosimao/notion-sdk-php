@@ -24,4 +24,5 @@ enum PropertyType: string
     case Status = "status";
     case Title = "title";
     case Url = "url";
+    case Unknown = "unknown";
 }

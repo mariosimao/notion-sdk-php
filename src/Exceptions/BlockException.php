@@ -16,9 +16,4 @@ class BlockException extends NotionException
     {
         return new self("This block does not support children.");
     }
-
-    public static function invalidType(string $invalidType): self
-    {
-        return new self("Invalid type: '{$invalidType}'");
-    }
 }

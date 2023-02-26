@@ -2,8 +2,6 @@
 
 namespace Notion\Databases\Properties;
 
-use Exception;
-
 class PropertyFactory
 {
     /**
@@ -33,7 +31,7 @@ class PropertyFactory
             PropertyType::Status         => Status::fromArray($array),
             PropertyType::Title          => Title::fromArray($array),
             PropertyType::Url            => Url::fromArray($array),
-            default                      => throw new Exception("Invalid property type: '{$array['type']}'"),
+            default                      => Unknown::fromArray($array),
         };
     }
 }

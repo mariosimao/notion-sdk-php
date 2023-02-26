@@ -100,6 +100,7 @@ class Heading2Test extends TestCase
             "type"             => "wrong-type",
             "heading_2"        => [
                 "rich_text"     => [],
+                "is_toggleable" => true,
             ],
         ];
 

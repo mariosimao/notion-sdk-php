@@ -12,6 +12,7 @@ class PropertyMetadata
     private function __construct(
         public readonly string $id,
         public readonly PropertyType $type,
+        private readonly string|null $unknownType = null,
     ) {
     }
 
@@ -28,14 +29,22 @@ class PropertyMetadata
      */
     public static function fromArray(array $array): self
     {
-        return new self($array["id"], PropertyType::from($array["type"]));
+        $type = PropertyType::tryFrom($array["type"]) ?? PropertyType::Unknown;
+
+        return new self(
+            $array["id"],
+            $type,
+            $type === PropertyType::Unknown ? $array["type"] : null,
+        );
     }
 
     public function toArray(): array
     {
+        $type = $this->type !== PropertyType::Unknown ? $this->type->value : $this->unknownType;
+
         return [
             "id"   => $this->id,
-            "type" => $this->type->value,
+            "type" => $type,
         ];
     }
 }
