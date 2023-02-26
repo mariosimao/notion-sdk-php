@@ -91,8 +91,9 @@ class CodeTest extends TestCase
             "has_children"     => false,
             "type"             => "wrong-type",
             "code"             => [
-                "language" => "php",
+                "language"  => "php",
                 "rich_text" => [],
+                "caption"   => [],
             ],
         ];
 
