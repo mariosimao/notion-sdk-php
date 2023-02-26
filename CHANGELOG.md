@@ -6,42 +6,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Support unknown blocks and page/database properties. Pages and databases with unsuported resources will be loaded without errors.
+
 ## [1.4.1]
 
-## Fixed
+### Fixed
 - Fix `Page::getProperty()` typo (#170)
 
-## Chore
+### Chore
 - Update dependencies (#171)
 
 ## [1.4.0]
 
-## Added
+### Added
 - Support to comments (#163)
 
-## Fixed
+### Fixed
 - Update options without color (#166)
 - Prevent `LastEditedBy` errors on page update (#167)
 
-## Documentation
+### Documentation
 - Document `People` page property (#162)
 
 ## [1.3.0]
 
-## Added
+### Added
 - Configuration support for custom options (#155)
 - Retry after `conflict_error` (#155)
 - `changeColor` methods on `StatusOption` and `Status` property (#159)
 
-## Fixed
+### Fixed
 - Status page property update (#159)
 
-## Documentation
+### Documentation
 - Reflect breaking changes from v1 on the documentation.
 
 ## [1.2.0]
 
-## Added
+### Added
 - Support to nullable page properties (#149)
   - Properties: `Date`, `Email`, `Number`, `PhoneNumber`, `Select`, `Url`.
   - New method `isEmpty()` on those properties.
@@ -49,14 +52,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.0]
 
-## Added
+### Added
 - Add Query::addSort() (#144)
-## Changed
+### Changed
 - Improve PropertyFactory Exception message (#141)
 - Deprecate Query::changeAddedSort() (#144)
-## Documentation
+### Documentation
 - Correct documentation for `->change...()` methods (#145)
-## Internal
+### Internal
 - Remove toUpdateArray method from blocks (#136)
 - Increase unit test coverage (#137)
 - Add Intellij Idea default directory .idea to .gitignore (#142)
@@ -153,7 +156,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Append blocks (#60)
 - Delete block (#61)
 
-## Changed
+### Changed
 - Notion version to `2022-02-22` (#69)
 
 ## [0.3.0] - 2021-12-04
