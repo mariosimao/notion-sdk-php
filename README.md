@@ -1,3 +1,6 @@
+<h1 align="center">notion-sdk-php</h1>
+<p align="center">A complete Notion SDK for PHP developers.</p>
+
 <p align="center">
     <img src="./docs/public/logo.png" width="300">
 </p>
@@ -20,10 +23,7 @@
     </a>
 </p>
 
-# notion-sdk-php
-
-A complete Notion SDK for PHP developers.
-
+    
 ## Installation
 
 ```
