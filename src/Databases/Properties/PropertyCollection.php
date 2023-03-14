@@ -8,7 +8,8 @@ final class PropertyCollection
     /** @param array<string, PropertyInterface> $properties */
     private function __construct(
         private readonly array $properties
-    ) {}
+    ) {
+    }
 
     /**
      * @psalm-mutation-free
