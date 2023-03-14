@@ -8,6 +8,7 @@ use Notion\Common\Emoji;
 use Notion\Common\File;
 use Notion\Common\Icon;
 use Notion\Common\RichText;
+use Notion\Databases\Properties\PropertyCollection;
 use Notion\Databases\Properties\PropertyFactory;
 use Notion\Databases\Properties\PropertyInterface;
 use Notion\Databases\Properties\Status;
@@ -169,6 +170,22 @@ class Database
         return $this->icon !== null;
     }
 
+    public function changeTitle(string $title): self
+    {
+        return new self(
+            $this->id,
+            $this->createdTime,
+            $this->lastEditedTime,
+            [ RichText::fromString($title) ],
+            $this->description,
+            $this->icon,
+            $this->cover,
+            $this->properties,
+            $this->parent,
+            $this->url,
+        );
+    }
+
     public function changeAdvancedTitle(RichText ...$title): self
     {
         return new self(
@@ -257,12 +274,13 @@ class Database
         );
     }
 
+    public function properties(): PropertyCollection
+    {
+        return PropertyCollection::create(...$this->properties);
+    }
+
     public function addProperty(PropertyInterface $property): self
     {
-        $properties = $this->properties;
-        $name = $property->metadata()->name;
-        $properties[$name] = $property;
-
         return new self(
             $this->id,
             $this->createdTime,
@@ -271,7 +289,7 @@ class Database
             $this->description,
             $this->icon,
             $this->cover,
-            $properties,
+            $this->properties()->add($property)->getAll(),
             $this->parent,
             $this->url,
         );
@@ -279,9 +297,6 @@ class Database
 
     public function removePropertyByName(string $propertyName): self
     {
-        $properties = $this->properties;
-        unset($properties[$propertyName]);
-
         return new self(
             $this->id,
             $this->createdTime,
@@ -290,7 +305,23 @@ class Database
             $this->description,
             $this->icon,
             $this->cover,
-            $properties,
+            $this->properties()->remove($propertyName)->getAll(),
+            $this->parent,
+            $this->url,
+        );
+    }
+
+    public function changeProperty(PropertyInterface $property): self
+    {
+        return new self(
+            $this->id,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $this->title,
+            $this->description,
+            $this->icon,
+            $this->cover,
+            $this->properties()->change($property)->getAll(),
             $this->parent,
             $this->url,
         );
@@ -307,7 +338,7 @@ class Database
             $this->description,
             $this->icon,
             $this->cover,
-            $properties,
+            PropertyCollection::create(...$properties)->getAll(),
             $this->parent,
             $this->url,
         );

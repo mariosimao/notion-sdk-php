@@ -7,6 +7,7 @@ use Notion\Common\Date;
 use Notion\Common\Emoji;
 use Notion\Common\File;
 use Notion\Common\Icon;
+use Notion\Pages\Properties\PropertyCollection;
 use Notion\Pages\Properties\PropertyFactory;
 use Notion\Pages\Properties\PropertyInterface;
 use Notion\Pages\Properties\Title;
@@ -225,9 +226,14 @@ class Page
         );
     }
 
+    public function properties(): PropertyCollection
+    {
+        return PropertyCollection::create($this->properties);
+    }
+
     public function getProperty(string $propertyName): PropertyInterface
     {
-        return $this->properties[$propertyName];
+        return $this->properties()->get($propertyName);
     }
 
     /** @deprecated 1.4.0 Typo. Use `getProperty()` instead. */
@@ -238,9 +244,6 @@ class Page
 
     public function addProperty(string $name, PropertyInterface $property): self
     {
-        $properties = $this->properties;
-        $properties[$name] = $property;
-
         return new self(
             $this->id,
             $this->createdTime,
@@ -248,7 +251,7 @@ class Page
             $this->archived,
             $this->icon,
             $this->cover,
-            $properties,
+            $this->properties()->add($name, $property)->getAll(),
             $this->parent,
             $this->url,
         );
@@ -264,7 +267,7 @@ class Page
             $this->archived,
             $this->icon,
             $this->cover,
-            $properties,
+            PropertyCollection::create($properties)->getAll(),
             $this->parent,
             $this->url,
         );
@@ -278,9 +281,7 @@ class Page
 
     public function title(): Title|null
     {
-        $title = $this->properties["title"];
-
-        return $title instanceof Title ? $title : null;
+        return $this->properties()->title();
     }
 
     public function changeParent(PageParent $parent): self

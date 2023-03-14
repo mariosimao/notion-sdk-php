@@ -10,6 +10,8 @@ use Notion\Common\RichText;
 use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
 use Notion\Databases\Properties\CreatedBy;
+use Notion\Databases\Properties\Number;
+use Notion\Databases\Properties\NumberFormat;
 use Notion\Databases\Properties\Title;
 use PHPUnit\Framework\TestCase;
 
@@ -25,6 +27,14 @@ class DatabaseTest extends TestCase
     }
 
     public function test_add_title(): void
+    {
+        $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $database = Database::create($parent)->changeTitle("Database title");
+
+        $this->assertEquals("Database title", RichText::multipleToString(...$database->title));
+    }
+
+    public function test_add_advanced_title(): void
     {
         $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
         $database = Database::create($parent)->changeAdvancedTitle(
@@ -118,12 +128,28 @@ class DatabaseTest extends TestCase
 
     public function test_add_property(): void
     {
-        $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
-        $database = Database::create($parent)->addProperty(
-            CreatedBy::create("Dummy prop name")
-        );
+        $prop = Number::create("Price");
 
-        $this->assertCount(2, $database->properties); // Title + CreatedBy
+        $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $database = Database::create($parent)
+            ->addProperty($prop);
+
+        $this->assertSame($prop, $database->properties()->get("Price"));
+    }
+
+    public function test_change_property(): void
+    {
+        $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $database = Database::create($parent)->addProperty(Number::create("Price"));
+
+        $prop = $database->properties()->getNumber("Price")->changeFormat(NumberFormat::Dollar);
+
+        $database = $database->changeProperty($prop);
+
+        $this->assertSame(
+            NumberFormat::Dollar,
+            $database->properties()->getNumber("Price")->format
+        );
     }
 
     public function test_array_conversion(): void
