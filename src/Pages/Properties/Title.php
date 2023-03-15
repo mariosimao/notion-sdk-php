@@ -4,6 +4,8 @@ namespace Notion\Pages\Properties;
 
 use Notion\Common\RichText;
 
+use function PHPUnit\Framework\isEmpty;
+
 /**
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
  *
@@ -75,13 +77,15 @@ class Title implements PropertyInterface
         return new self($this->metadata, $title);
     }
 
+    public function isEmpty(): bool
+    {
+        $title = RichText::multipleToString(...$this->title);
+
+        return strlen(trim($title)) === 0;
+    }
+
     public function toString(): string
     {
-        $string = "";
-        foreach ($this->title as $richText) {
-            $string = $string . $richText->plainText;
-        }
-
-        return $string;
+        return RichText::multipleToString(...$this->title);
     }
 }

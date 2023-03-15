@@ -58,4 +58,14 @@ class TitleTest extends TestCase
         );
         $this->assertEquals("Dummy title", $title->toString());
     }
+
+    public function test_is_empty_on_empty_string(): void
+    {
+        $this->assertTrue(Title::fromString("")->isEmpty());
+    }
+
+    public function test_is_empty_on_no_rich_text(): void
+    {
+        $this->assertTrue(Title::fromText()->isEmpty());
+    }
 }

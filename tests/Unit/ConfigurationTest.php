@@ -18,7 +18,7 @@ final class ConfigurationTest extends TestCase
         $this->assertSame($token, $config->token);
         $this->assertSame(Notion::API_VERSION, $config->version);
         $this->assertSame(true, $config->retryOnConflict);
-        $this->assertSame(1, $config->retryOnConflictAttempts);
+        $this->assertSame(3, $config->retryOnConflictAttempts);
     }
 
     public function test_create_from_psr_implementations(): void
