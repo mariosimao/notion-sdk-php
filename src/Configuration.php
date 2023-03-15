@@ -42,7 +42,7 @@ class Configuration
             httpClient: Psr18ClientDiscovery::find(),
             requestFactory: Psr17FactoryDiscovery::findRequestFactory(),
             retryOnConflict: true,
-            retryOnConflictAttempts: 1,
+            retryOnConflictAttempts: 3,
         );
     }
 
@@ -57,7 +57,7 @@ class Configuration
             httpClient: $httpClient,
             requestFactory: $requestFactory,
             retryOnConflict: true,
-            retryOnConflictAttempts: 1,
+            retryOnConflictAttempts: 3,
         );
     }
 

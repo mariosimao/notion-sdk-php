@@ -6,8 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0]
+
 ### Added
-- Support unknown blocks and page/database properties. Pages and databases with unsuported resources will be loaded without errors.
+- Support unknown blocks and page/database properties. Pages and databases with unsuported resources will be loaded without errors. (#173)
+- Add page and database properties collection with typed getters. (#179)
 
 ## [1.4.1]
 
@@ -277,4 +280,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.3.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.3.0
 [1.4.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.4.0
 [1.4.1]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.4.1
-[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.4.1...HEAD
+[1.5.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.5.0
+[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.5.0...HEAD
