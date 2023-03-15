@@ -88,7 +88,7 @@ class FormulaTest extends TestCase
         $this->assertEquals($array, $formula->toArray());
         $this->assertEquals($array, PropertyFactory::fromArray($array)->toArray());
         $this->assertTrue($formula->type === FormulaType::Date);
-        $this->assertEquals(new DateTimeImmutable("2021-01-01"), $formula->date?->start);
+        $this->assertEquals(new DateTimeImmutable("2021-01-01T00:00:00.000000Z"), $formula->date?->start);
         $this->assertNull($formula->date?->end);
     }
 }

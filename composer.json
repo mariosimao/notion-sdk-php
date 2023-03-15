@@ -28,12 +28,13 @@
         "php-http/discovery": "^1.15"
     },
     "require-dev": {
-        "vimeo/psalm": "^5.7",
-        "phpunit/phpunit": "^10.0",
+        "brianium/paratest": "^7.1",
         "guzzlehttp/guzzle": "^7.5",
-        "squizlabs/php_codesniffer": "^3.7",
+        "infection/infection": "^0.26.19",
+        "phpunit/phpunit": "^10.0",
         "psalm/plugin-phpunit": "^0.18.4",
-        "infection/infection": "^0.26.19"
+        "squizlabs/php_codesniffer": "^3.7",
+        "vimeo/psalm": "^5.7"
     },
     "scripts": {
         "ci:phpcs": "phpcs -q --report=checkstyle | cs2pr",
@@ -41,7 +42,7 @@
         "ci:coverage": "phpunit --coverage-clover dist/phpunit/clover.xml",
         "ci:unit": "phpunit --testsuite Unit",
         "ci:integration": "phpunit --testsuite Integration",
-        "ci:mutation": "infection --threads=4",
+        "ci:mutation": "infection --threads=max",
         "test": [
             "@test:phpcs",
             "@test:psalm",
@@ -51,7 +52,7 @@
         "test:psalm": "psalm --no-cache",
         "test:unit": "phpunit --testsuite Unit",
         "test:integration": "phpunit --testsuite Integration",
-        "test:coverage": "phpunit --coverage-html dist/phpunit/html && echo \"Open the result on your browser: $PWD/dist/phpunit/html/index.html\""
+        "test:coverage": "paratest --coverage-html dist/phpunit/html && echo \"Open the result on your browser: $PWD/dist/phpunit/html/index.html\""
     },
     "config": {
         "allow-plugins": {
