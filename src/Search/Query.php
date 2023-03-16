@@ -85,7 +85,7 @@ class Query
      * @internal
      *
      * @return array{
-     *      query: string,
+     *      query?: string,
      *      filter?: array{ value: string, property: string },
      *      sort?: array{ direction: string, timestamp: string },
      *      start_cursor?: string,
