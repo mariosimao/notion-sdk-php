@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Support unknown blocks and page/database properties. Pages and databases with unsuported resources will be loaded without errors. (#173)
-- Add page and database properties collection with typed getters. (#179)
+- Page and database properties collection with typed getters. (#179)
+- Search pages and databases.
 
 ## [1.4.1]
 
