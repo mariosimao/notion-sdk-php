@@ -19,6 +19,7 @@ use Notion\Pages\Properties\Title;
  * @psalm-import-type PageParentJson from PageParent
  *
  * @psalm-type PageJson = array{
+ *      object: "page",
  *      id: string,
  *      created_time: string,
  *      last_edited_time: string,
@@ -108,6 +109,7 @@ class Page
     public function toArray(): array
     {
         return [
+            "object"           => "page",
             "id"               => $this->id,
             "created_time"     => $this->createdTime->format(Date::FORMAT),
             "last_edited_time" => $this->lastEditedTime->format(Date::FORMAT),

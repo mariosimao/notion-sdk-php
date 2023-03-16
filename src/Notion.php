@@ -6,6 +6,7 @@ use Notion\Blocks\Client as BlocksClient;
 use Notion\Comments\Client as CommentsClient;
 use Notion\Databases\Client as DatabasesClient;
 use Notion\Pages\Client as PagesClient;
+use Notion\Search\Client as SearchClient;
 use Notion\Users\Client as UsersClient;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -68,5 +69,10 @@ class Notion
     public function comments(): CommentsClient
     {
         return new CommentsClient($this->configuration);
+    }
+
+    public function search(): SearchClient
+    {
+        return new SearchClient($this->configuration);
     }
 }

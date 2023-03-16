@@ -113,6 +113,14 @@ export default defineConfig({
                 ],
             },
             {
+                text: 'Search',
+                collapsible: true,
+                collapsed: true,
+                items: [
+                    { text: 'Introduction', link: '/search/' },
+                ],
+            },
+            {
                 text: 'Advanced',
                 collapsible: true,
                 items: [
