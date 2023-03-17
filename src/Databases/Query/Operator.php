@@ -26,4 +26,5 @@ enum Operator: string
     case PastWeek = "past_week";
     case PastYear = "past_year";
     case StartsWith = "starts_with";
+    case ThisWeek = "this_week";
 }
