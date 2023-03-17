@@ -193,4 +193,16 @@ class DateFilterTest extends TestCase
         ];
         $this->assertSame($expected, $filter->toArray());
     }
+
+    public function test_this_week(): void
+    {
+        $filter = DateFilter::property("Release date")
+            ->thisWeek();
+
+        $expected = [
+            "property" => "Release date",
+            "date" => [ "this_week" => [] ],
+        ];
+        $this->assertSame($expected, $filter->toArray());
+    }
 }

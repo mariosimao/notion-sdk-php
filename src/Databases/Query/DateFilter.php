@@ -22,6 +22,7 @@ class DateFilter implements Filter, Condition
         Operator::NextWeek,
         Operator::NextMonth,
         Operator::NextYear,
+        Operator::ThisWeek,
     ];
 
     /**
@@ -161,5 +162,10 @@ class DateFilter implements Filter, Condition
     public function nextYear(): self
     {
         return new self($this->propertyType, $this->propertyName, Operator::NextYear, []);
+    }
+
+    public function thisWeek(): self
+    {
+        return new self($this->propertyType, $this->propertyName, Operator::ThisWeek, []);
     }
 }
