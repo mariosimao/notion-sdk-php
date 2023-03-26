@@ -5,6 +5,7 @@ namespace Notion\Pages;
 use Notion\Blocks\BlockInterface;
 use Notion\Configuration;
 use Notion\Infrastructure\Http;
+use Notion\Pages\Properties\CreatedTime;
 use Notion\Pages\Properties\LastEditedBy;
 use Notion\Pages\Properties\LastEditedTime;
 use Notion\Pages\Properties\PropertyInterface;
@@ -60,7 +61,7 @@ class Client
     public function update(Page $page): Page
     {
         $updatableProps = array_filter($page->properties, function (PropertyInterface $p) {
-            $notUpdatableProps = [ LastEditedBy::class, LastEditedTime::class ];
+            $notUpdatableProps = [ CreatedTime::class, LastEditedBy::class, LastEditedTime::class ];
 
             return (!in_array($p::class, $notUpdatableProps));
         });
