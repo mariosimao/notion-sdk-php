@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.1]
+
+### Fixed
+- Do not update created time page property. (#187)
+
+## [1.6.0]
+
+### Added
+- This week on date filter for database queries. (#184)
+- Relation filter for database queries. (#185) 
+
 ## [1.5.0]
 
 ### Added
@@ -282,4 +293,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.4.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.4.0
 [1.4.1]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.4.1
 [1.5.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.5.0
-[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.5.0...HEAD
+[1.6.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.6.0
+[1.6.1]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.6.1
+[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.6.1...HEAD
