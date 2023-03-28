@@ -198,9 +198,9 @@ class DatabasesTest extends TestCase
         $pages = [
             self::moviePage($database->id, "A Clockwork Orange", "1972-12-19", "Drama"),
             self::moviePage($database->id, "Dead Poets Society", "1989-06-02", "Drama"),
-            self::moviePage($database->id, "Batman",             "1989-10-26", "Action"),
-            self::moviePage($database->id, "The Mask",           "1994-12-23", "Comedy"),
-            self::moviePage($database->id, "American Beauty",    "1999-09-08", "Drama"),
+            self::moviePage($database->id, "Batman", "1989-10-26", "Action"),
+            self::moviePage($database->id, "The Mask", "1994-12-23", "Comedy"),
+            self::moviePage($database->id, "American Beauty", "1999-09-08", "Drama"),
         ];
 
         $client = Helper::client();
@@ -216,8 +216,7 @@ class DatabasesTest extends TestCase
         string $title,
         string $releaseDate,
         string $category
-    ): Page
-    {
+    ): Page {
         $date = new DateTimeImmutable($releaseDate);
         return Page::create(PageParent::database($databaseId))
             ->changeTitle($title)
