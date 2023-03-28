@@ -20,7 +20,7 @@ use Notion\Pages\Page;
  */
 class Result
 {
-    /** @param list{Page, Database} $results */
+    /** @psalm-param list{Page, Database} $results */
     private function __construct(
         public readonly array $results,
         public readonly string|null $nextCursor,

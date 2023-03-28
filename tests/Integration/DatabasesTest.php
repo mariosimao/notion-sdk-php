@@ -2,33 +2,38 @@
 
 namespace Notion\Test\Integration;
 
-use Notion\Notion;
+use DateTimeImmutable;
+use Notion\Common\Color;
 use Notion\Common\Emoji;
 use Notion\Common\RichText;
 use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
+use Notion\Databases\Properties\Date;
 use Notion\Databases\Properties\RichTextProperty;
+use Notion\Databases\Properties\Select;
+use Notion\Databases\Properties\SelectOption;
+use Notion\Databases\Properties\Title;
 use Notion\Databases\Query;
 use Notion\Databases\Query\CompoundFilter;
 use Notion\Databases\Query\DateFilter;
-use Notion\Databases\Query\StatusFilter;
+use Notion\Databases\Query\SelectFilter;
 use Notion\Exceptions\ApiException;
+use Notion\Pages\Page;
+use Notion\Pages\PageParent;
+use Notion\Pages\Properties\Date as DateProp;
+use Notion\Pages\Properties\Select as SelectProp;
 use PHPUnit\Framework\TestCase;
 
 class DatabasesTest extends TestCase
 {
-    private const DEFAULT_PARENT_ID = "3f4c46dee17f43b79587094b61407a31";
+    private static int $bigDatabaseSize = 110;
 
     public function test_create_empty_database(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
-        $database = Database::create(DatabaseParent::page(self::DEFAULT_PARENT_ID))
-            ->changeAdvancedTitle(RichText::fromString("Empty database"))
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()))
+            ->changeTitle("Empty database")
             ->changeIcon(Emoji::fromString("🌻"));
 
         $database = $client->databases()->create($database);
@@ -43,79 +48,50 @@ class DatabasesTest extends TestCase
         $client->databases()->delete($database);
     }
 
-    public function test_find_database(): void
-    {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
-
-        $database = $client->databases()->find("a1acab7aeea2438bb0e9b23b73fb4a25");
-
-        $this->assertEquals("Movies", $database->title[0]->plainText);
-    }
-
     public function test_update_database(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
-        $database = $client->databases()->find("a1acab7aeea2438bb0e9b23b73fb4a25");
-        $database = $database->addProperty(RichTextProperty::create("Test"));
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()))
+            ->changeTitle("Test database");
+        $database = $client->databases()->create($database);
 
-        $updatedDatabase = $client->databases()->update($database);
+        $database = $database->addProperty(RichTextProperty::create("Test prop"));
+        $database = $client->databases()->update($database);
 
         $this->assertEquals(
-            "Test",
-            $updatedDatabase->properties["Test"]->metadata()->name
+            "Test prop",
+            $database->properties()->get("Test prop")->metadata()->name
         );
 
-        // Back to original state
-        $original = $updatedDatabase->removePropertyByName("Test");
-        $client->databases()->update($original);
+        $client->databases()->delete($database);
     }
 
     public function test_find_inexistent_database(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
         $this->expectException(ApiException::class);
-        $this->expectExceptionMessage("Could not find database with ID: 60e79d42-4742-41ca-8d70-cc51660cbd3c.");
-        $client->databases()->find("60e79d42-4742-41ca-8d70-cc51660cbd3c");
+        $this->expectExceptionMessage("Could not find database with ID: b30f9991-ffcb-4b72-847a-39a74e0a774b.");
+        $client->databases()->find("b30f9991-ffcb-4b72-847a-39a74e0a774b");
     }
 
     public function test_create_change_inexistent_parent(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
-        $database = Database::create(DatabaseParent::page("60e79d42-4742-41ca-8d70-cc51660cbd3c"));
+        $database = Database::create(DatabaseParent::page("b30f9991-ffcb-4b72-847a-39a74e0a774b"));
 
         $this->expectException(ApiException::class);
-        $this->expectExceptionMessage("Could not find page with ID: 60e79d42-4742-41ca-8d70-cc51660cbd3c.");
+        $this->expectExceptionMessage("Could not find page with ID: b30f9991-ffcb-4b72-847a-39a74e0a774b.");
         $client->databases()->create($database);
     }
 
     public function test_update_deleted_database(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
-        $database = Database::create(DatabaseParent::page(self::DEFAULT_PARENT_ID))
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()))
             ->changeAdvancedTitle(RichText::fromString("Dummy database"));
 
         $database = $client->databases()->create($database);
@@ -128,13 +104,9 @@ class DatabasesTest extends TestCase
 
     public function test_delete_inexistent(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
-        $database = Database::create(DatabaseParent::page(self::DEFAULT_PARENT_ID));
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()));
 
         $this->expectException(ApiException::class);
         $client->databases()->delete($database);
@@ -142,53 +114,44 @@ class DatabasesTest extends TestCase
 
     public function test_query_all_pages_from_database(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $database = self::moviesDatabase();
 
-        $database = $client->databases()->find("a1acab7aeea2438bb0e9b23b73fb4a25");
-
+        $client = Helper::client();
         $pages = $client->databases()->queryAllPages($database);
-        $this->assertCount(7, $pages);
+
+        $client->databases()->delete($database);
+
+        $this->assertCount(5, $pages);
     }
 
     public function test_query_big_database(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
+        $bigDatabase = self::bigDatabase();
 
-        $database = $client->databases()->find("7b23ad4e145c41aea5604374406c2bc0");
+        $pages = $client->databases()->queryAllPages($bigDatabase);
+        $client->databases()->delete($bigDatabase);
 
-        $pages = $client->databases()->queryAllPages($database);
-        $this->assertCount(102, $pages);
+        $this->assertCount(self::$bigDatabaseSize, $pages);
     }
 
     public function test_query_database(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
-        $database = $client->databases()->find("a1acab7aeea2438bb0e9b23b73fb4a25");
+        $database = self::moviesDatabase();
 
         /**
-         * 90s movies not watched
+         * 90s drama movies
          *
-         * Status != Watched AND
+         * Category == Drama AND
          * Release >= 1990-01-01 AND
          * Release <= 1999-12-31
          *
          */
         $query = Query::create()->changeFilter(
             CompoundFilter::and(
-                StatusFilter::property("Status")->doesNotEqual("Watched"),
+                SelectFilter::property("Category")->equals("Drama"),
                 DateFilter::property("Release date")->onOrAfter("1990-01-01"),
                 DateFilter::property("Release date")->onOrBefore("1999-12-31"),
             ),
@@ -196,21 +159,87 @@ class DatabasesTest extends TestCase
 
         $result = $client->databases()->query($database, $query);
 
-        $this->assertCount(2, $result->pages);
+        $client->databases()->delete($database);
+
+        $this->assertCount(1, $result->pages);
     }
 
     public function test_query_inexistent_database(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
         $database = Database::create(DatabaseParent::page("a-page-id"));
         $query = Query::create();
 
         $this->expectException(ApiException::class);
         $client->databases()->query($database, $query);
+    }
+
+    private static function moviesDatabase(): Database
+    {
+        $databaseParent = DatabaseParent::page(Helper::testPageId());
+
+        $categories = [
+            SelectOption::fromName("Action")->changeColor(Color::Orange),
+            SelectOption::fromname("Comedy")->changeColor(Color::Yellow),
+            SelectOption::fromName("Drama")->changeColor(Color::Red),
+        ];
+
+        $database = Database::create($databaseParent)
+            ->changeTitle("Movies")
+            ->changeProperties([
+                "Movies" => Title::create("Movie"),
+                "Release date" => Date::create("Release date"),
+                "Category" => Select::create("Category", $categories),
+            ]);
+
+        $database = Helper::client()->databases()->create($database);
+
+        $pages = [
+            self::moviePage($database->id, "A Clockwork Orange", "1972-12-19", "Drama"),
+            self::moviePage($database->id, "Dead Poets Society", "1989-06-02", "Drama"),
+            self::moviePage($database->id, "Batman",             "1989-10-26", "Action"),
+            self::moviePage($database->id, "The Mask",           "1994-12-23", "Comedy"),
+            self::moviePage($database->id, "American Beauty",    "1999-09-08", "Drama"),
+        ];
+
+        $client = Helper::client();
+        foreach ($pages as $page) {
+            $client->pages()->create($page);
+        }
+
+        return $database;
+    }
+
+    private static function moviePage(
+        string $databaseId,
+        string $title,
+        string $releaseDate,
+        string $category
+    ): Page
+    {
+        $date = new DateTimeImmutable($releaseDate);
+        return Page::create(PageParent::database($databaseId))
+            ->changeTitle($title)
+            ->addProperty("Release date", DateProp::create($date))
+            ->addProperty("Category", SelectProp::fromname($category));
+    }
+
+    private static function bigDatabase(): Database
+    {
+        $client = Helper::client();
+
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()))
+            ->changeTitle("Big database");
+
+        $database = $client->databases()->create($database);
+
+        $parent = PageParent::database($database->id);
+        for ($i = 0; $i < self::$bigDatabaseSize; $i++) {
+            $page = Page::create($parent)->changeTitle("Page #{$i}");
+            $client->pages()->create($page);
+        }
+
+        return $database;
     }
 }

@@ -43,7 +43,7 @@ class Client
             "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $page->properties),
             "parent" => $page->parent->toArray(),
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $content),
-        ], JSON_PRETTY_PRINT);
+        ]);
 
         $url = "https://api.notion.com/v1/pages";
         $request = Http::createRequest($url, $this->config)

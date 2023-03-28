@@ -23,24 +23,14 @@ use Notion\Blocks\ToDo;
 use Notion\Blocks\Toggle;
 use Notion\Common\RichText;
 use Notion\Exceptions\ApiException;
-use Notion\Notion;
-use Notion\Pages\Page;
-use Notion\Pages\PageParent;
 use PHPUnit\Framework\TestCase;
 
 class BlocksTest extends TestCase
 {
-    private const DEFAULT_PARENT_ID = "3f4c46dee17f43b79587094b61407a31";
-
     public function test_create_page_change_all_blocks(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
-
-        $page = Page::create(PageParent::page(self::DEFAULT_PARENT_ID))->changeTitle("Blocks test");
+        $client = Helper::client();
+        $page = Helper::newPage()->changeTitle("Blocks test");
 
         $content = [
             Bookmark::fromUrl("https://notion.so"),
@@ -86,13 +76,8 @@ class BlocksTest extends TestCase
 
     public function test_find_block(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
-
-        $page = Page::create(PageParent::page(self::DEFAULT_PARENT_ID))->changeTitle("Blocks test");
+        $client = Helper::client();
+        $page = Helper::newPage()->changeTitle("Blocks test");
 
         $content = [
             Heading1::fromText()->changeText(RichText::fromString("Heading 1")),
@@ -111,11 +96,7 @@ class BlocksTest extends TestCase
 
     public function test_find_inexistent_block(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
         $this->expectException(ApiException::class);
         $client->blocks()->find("inexistentId");
@@ -123,11 +104,7 @@ class BlocksTest extends TestCase
 
     public function test_find_children_of_inexistent_block(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
         $this->expectException(ApiException::class);
         $client->blocks()->findChildren("inexistentId");
@@ -135,13 +112,8 @@ class BlocksTest extends TestCase
 
     public function test_delete_block(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
-
-        $page = Page::create(PageParent::page(self::DEFAULT_PARENT_ID))->changeTitle("Blocks test");
+        $client = Helper::client();
+        $page = Helper::newPage()->changeTitle("Blocks test");
 
         $content = [
             Heading1::fromText()->changeText(RichText::fromString("Heading 1")),
@@ -165,11 +137,7 @@ class BlocksTest extends TestCase
 
     public function test_delete_inexistent(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
         $this->expectException(ApiException::class);
         $client->blocks()->delete("inexistentId");
@@ -177,13 +145,9 @@ class BlocksTest extends TestCase
 
     public function test_add_block(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
-        $blocks = $client->blocks()->append(self::DEFAULT_PARENT_ID, [
+        $blocks = $client->blocks()->append(Helper::testPageId(), [
             Paragraph::fromString("This is a simple paragraph"),
         ]);
 
@@ -196,11 +160,7 @@ class BlocksTest extends TestCase
 
     public function test_add_to_inexistent_block(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
         $this->expectException(ApiException::class);
         $client->blocks()->append("inexistentId", [
@@ -210,14 +170,10 @@ class BlocksTest extends TestCase
 
     public function test_update_block(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
         $blocks = $client->blocks()->append(
-            self::DEFAULT_PARENT_ID,
+            Helper::testPageId(),
             [
                 Bookmark::fromUrl("https://notion.so"),
                 Breadcrumb::create(),
@@ -256,11 +212,7 @@ class BlocksTest extends TestCase
 
     public function test_update_newly_created_block(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
         $paragraph = Paragraph::fromString("This is a simple paragraph");
 
