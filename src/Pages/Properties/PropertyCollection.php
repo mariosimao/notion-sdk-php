@@ -71,6 +71,17 @@ final class PropertyCollection
         return null;
     }
 
+    public function titleKey(): string
+    {
+        foreach ($this->properties as $key => $property) {
+            if ($property::class === Title::class) {
+                return $key;
+            }
+        }
+
+        return "title";
+    }
+
     public function getCheckbox(string $propertyName): Checkbox
     {
         return $this->getTyped($propertyName, Checkbox::class);

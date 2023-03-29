@@ -2,7 +2,6 @@
 
 namespace Notion\Test\Integration;
 
-use Notion\Notion;
 use Notion\Common\Emoji;
 use Notion\Exceptions\ApiException;
 use Notion\Pages\Page;
@@ -11,17 +10,11 @@ use PHPUnit\Framework\TestCase;
 
 class PagesTest extends TestCase
 {
-    private const DEFAULT_PARENT_ID = "3f4c46dee17f43b79587094b61407a31";
-
     public function test_create_empty_page(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
-        $page = Page::create(PageParent::page(self::DEFAULT_PARENT_ID))
+        $page = Helper::newPage()
             ->changeTitle("Empty page")
             ->changeIcon(Emoji::fromString("⭐"));
 
@@ -40,24 +33,16 @@ class PagesTest extends TestCase
 
     public function test_find_page(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
-        $page = $client->pages()->find("3f4c46dee17f43b79587094b61407a31");
+        $page = $client->pages()->find(Helper::testPageId());
 
-        $this->assertEquals("Integration Tests", $page->title()?->toString());
+        $this->assertNotNull($page->title()?->toString());
     }
 
     public function test_find_inexistent_page(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
         $this->expectException(ApiException::class);
         $this->expectExceptionMessage("Could not find page with ID: 60e79d42-4742-41ca-8d70-cc51660cbd3c.");
@@ -66,11 +51,7 @@ class PagesTest extends TestCase
 
     public function test_create_change_inexistent_parent(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
         $page = Page::create(PageParent::page("60e79d42-4742-41ca-8d70-cc51660cbd3c"));
 
@@ -81,14 +62,10 @@ class PagesTest extends TestCase
 
     public function test_update_archived_page(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
-        $page = Page::create(PageParent::page(self::DEFAULT_PARENT_ID))
-            ->changeTitle("Deleted page");
+        $page = Helper::newPage()
+            ->changeTitle("Page to be deleted");
 
         $page = $client->pages()->create($page);
         $page = $client->pages()->delete($page);

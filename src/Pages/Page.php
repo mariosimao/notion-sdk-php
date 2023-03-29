@@ -278,7 +278,9 @@ class Page
     public function changeTitle(string $title): self
     {
         $property = Title::fromString($title);
-        return $this->addProperty("title", $property);
+        $key = $this->properties()->titleKey();
+
+        return $this->addProperty($key, $property);
     }
 
     public function title(): Title|null

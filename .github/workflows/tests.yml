@@ -70,6 +70,7 @@ jobs:
   #     - name: Run tests with phpunit
   #       env:
   #         NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+  #         TEST_PAGE_ID: ${{ secrets.TEST_PAGE_ID }}
   #       run: composer ci:integration
 
   mutation-tests:
@@ -100,6 +101,7 @@ jobs:
       - name: Run mutation tests with Infection
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          TEST_PAGE_ID: ${{ secrets.TEST_PAGE_ID }}
         run: composer ci:mutation
 
   coverage:
@@ -130,6 +132,7 @@ jobs:
       - name: Calculate test coverage
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          TEST_PAGE_ID: ${{ secrets.TEST_PAGE_ID }}
         run: composer ci:coverage
 
       - name: Send code coverage report to Codecov.io

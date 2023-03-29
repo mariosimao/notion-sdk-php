@@ -11,19 +11,10 @@ use PHPUnit\Framework\TestCase;
 
 class CommentsTest extends TestCase
 {
-    private const DEFAULT_PARENT_ID = "3f4c46dee17f43b79587094b61407a31";
-
-    /** @group test */
     public function test_create_and_read_page_comment(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $notion = Notion::create($token);
-
-        $page = Page::create(PageParent::page(self::DEFAULT_PARENT_ID))
-            ->changeTitle("Comments test");
+        $notion = Helper::client();
+        $page = Helper::newPage()->changeTitle("Comments test");
 
         $page = $notion->pages()->create($page);
 

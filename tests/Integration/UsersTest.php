@@ -3,19 +3,13 @@
 namespace Notion\Test\Integration;
 
 use Notion\Exceptions\ApiException;
-use Notion\Notion;
 use PHPUnit\Framework\TestCase;
 
 class UsersTest extends TestCase
 {
     public function test_find_current_user(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-
-        $client = Notion::create($token);
+        $client = Helper::client();
 
         $user = $client->users()->me();
         $sameUser = $client->users()->find($user->id);
@@ -26,26 +20,16 @@ class UsersTest extends TestCase
 
     public function test_find_all_users(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
         $users = $client->users()->findAll();
 
-        $this->assertCount(2, $users);
-        $this->assertTrue($users[0]->isPerson());
-        $this->assertTrue($users[1]->isBot());
+        $this->assertTrue(count($users) > 1);
     }
 
     public function test_find_inexistent_user(): void
     {
-        $token = getenv("NOTION_TOKEN");
-        if (!$token) {
-            $this->markTestSkipped("Notion token is required to run integration tests.");
-        }
-        $client = Notion::create($token);
+        $client = Helper::client();
 
         $this->expectException(ApiException::class);
         $this->expectExceptionMessage(
