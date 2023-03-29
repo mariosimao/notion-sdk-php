@@ -59,7 +59,6 @@
             "infection/extension-installer": true,
             "php-http/discovery": true
         },
-        "sort-packages": true,
-        "process-timeout": 600
+        "sort-packages": true
     }
 }
