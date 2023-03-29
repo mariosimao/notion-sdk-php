@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Unit\Databases;
 
+use Exception;
 use Notion\Common\Date;
 use Notion\Common\Emoji;
 use Notion\Common\File;
@@ -9,7 +10,6 @@ use Notion\Common\Icon;
 use Notion\Common\RichText;
 use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
-use Notion\Databases\Properties\CreatedBy;
 use Notion\Databases\Properties\Number;
 use Notion\Databases\Properties\NumberFormat;
 use Notion\Databases\Properties\Title;
@@ -150,6 +150,18 @@ class DatabaseTest extends TestCase
             NumberFormat::Dollar,
             $database->properties()->getNumber("Price")->format
         );
+    }
+
+    public function test_remove_property(): void
+    {
+        $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $database = Database::create($parent)->addProperty(Number::create("Price"));
+
+        $database = $database->removePropertyByName("Price");
+
+        $this->expectException(Exception::class);
+        /** @psalm-suppress UnusedMethodCall */
+        $database->properties()->get("Price");
     }
 
     public function test_array_conversion(): void

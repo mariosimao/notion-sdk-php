@@ -13,14 +13,14 @@ use Notion\Pages\Page;
  *
  * @psalm-type ResultJson = array{
  *      object: string,
- *      results: list{PageJson, DatabaseJson},
+ *      results: array<int, PageJson|DatabaseJson>,
  *      next_cursor: string|null,
  *      has_more: bool
  * }
  */
 class Result
 {
-    /** @psalm-param list{Page, Database} $results */
+    /** @psalm-param array<int, Page|Database> $results */
     private function __construct(
         public readonly array $results,
         public readonly string|null $nextCursor,
@@ -46,7 +46,7 @@ class Result
             }
         }
 
-        /** @psalm-var list{Page, Database} $results */
+        /** @psalm-var array<int, Page|Database> $results */
         return new self(
             $results,
             $array["next_cursor"],
