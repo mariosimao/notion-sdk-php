@@ -130,7 +130,8 @@ class DatabasesTest extends TestCase
         $client = Helper::client();
         $result = $client->search()->search(SearchQuery::title("Big database"));
 
-        if (count($result->results) > 0 &&
+        if (
+            count($result->results) > 0 &&
             $result->results[0]::class === Database::class
         ) {
             /** @var Database */
