@@ -22,6 +22,7 @@ use Notion\Pages\Page;
 use Notion\Pages\PageParent;
 use Notion\Pages\Properties\Date as DateProp;
 use Notion\Pages\Properties\Select as SelectProp;
+use Notion\Search\Query as SearchQuery;
 use PHPUnit\Framework\TestCase;
 
 class DatabasesTest extends TestCase
@@ -127,10 +128,18 @@ class DatabasesTest extends TestCase
     public function test_query_big_database(): void
     {
         $client = Helper::client();
-        $bigDatabase = self::bigDatabase();
+        $result = $client->search()->search(SearchQuery::title("Big database"));
+
+        if (count($result->results) > 0 &&
+            $result->results[0]::class === Database::class
+        ) {
+            /** @var Database */
+            $bigDatabase = $result->results[0];
+        } else {
+            $bigDatabase = self::bigDatabase();
+        }
 
         $pages = $client->databases()->queryAllPages($bigDatabase);
-        $client->databases()->delete($bigDatabase);
 
         $this->assertCount(self::$bigDatabaseSize, $pages);
     }
