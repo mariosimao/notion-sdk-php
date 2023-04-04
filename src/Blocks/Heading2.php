@@ -2,6 +2,7 @@
 
 namespace Notion\Blocks;
 
+use Notion\Common\Color;
 use Notion\Exceptions\BlockException;
 use Notion\Common\RichText;
 use Notion\Exceptions\HeadingException;
@@ -14,6 +15,7 @@ use Notion\Exceptions\HeadingException;
  *      heading_2: array{
  *          rich_text: RichTextJson[],
  *          is_toggleable: bool,
+ *          color?: string,
  *          children?: BlockMetadataJson[]
  *      },
  * }
@@ -30,6 +32,7 @@ class Heading2 implements BlockInterface
         private readonly BlockMetadata $metadata,
         public readonly array $text,
         public readonly bool $isToggleable,
+        public readonly Color $color,
         public readonly array|null $children,
     ) {
         $metadata->checkType(BlockType::Heading2);
@@ -39,7 +42,7 @@ class Heading2 implements BlockInterface
     {
         $block = BlockMetadata::create(BlockType::Heading2);
 
-        return new self($block, $text, false, []);
+        return new self($block, $text, false, Color::Default, []);
     }
 
     public static function fromString(string $content): self
@@ -47,7 +50,7 @@ class Heading2 implements BlockInterface
         $block = BlockMetadata::create(BlockType::Heading2);
         $text = [ RichText::fromString($content) ];
 
-        return new self($block, $text, false, []);
+        return new self($block, $text, false, Color::Default, []);
     }
 
     public static function fromArray(array $array): self
@@ -62,12 +65,14 @@ class Heading2 implements BlockInterface
 
         $isToggleable = $heading["is_toggleable"];
 
+        $color = Color::tryFrom($heading["color"] ?? "") ?? Color::Default;
+
         $children = null;
         if ($isToggleable) {
             $children = array_map(fn($b) => BlockFactory::fromArray($b), $heading["children"] ?? []);
         }
 
-        return new self($block, $text, $isToggleable, $children);
+        return new self($block, $text, $isToggleable, $color, $children);
     }
 
     public function toArray(): array
@@ -77,6 +82,7 @@ class Heading2 implements BlockInterface
         $array["heading_2"] = [
             "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
             "is_toggleable" => $this->isToggleable,
+            "color" => $this->color->value,
             "children" => array_map(fn($b) => $b->toArray(), $this->children ?? [])
         ];
 
@@ -100,7 +106,7 @@ class Heading2 implements BlockInterface
 
     public function changeText(RichText ...$text): self
     {
-        return new self($this->metadata, $text, $this->isToggleable, $this->children);
+        return new self($this->metadata, $text, $this->isToggleable, $this->color, $this->children);
     }
 
     public function addText(RichText $text): self
@@ -108,12 +114,12 @@ class Heading2 implements BlockInterface
         $texts = $this->text;
         $texts[] = $text;
 
-        return new self($this->metadata, $texts, $this->isToggleable, $this->children);
+        return new self($this->metadata, $texts, $this->isToggleable, $this->color, $this->children);
     }
 
     public function toggllify(): self
     {
-        return new self($this->metadata, $this->text, true, []);
+        return new self($this->metadata, $this->text, true, $this->color, []);
     }
 
     public function untogglify(): self
@@ -122,7 +128,18 @@ class Heading2 implements BlockInterface
             throw HeadingException::untogglifyWithChildren();
         }
 
-        return new self($this->metadata, $this->text, false, null);
+        return new self($this->metadata, $this->text, false, $this->color, null);
+    }
+
+    public function changeColor(Color $color): self
+    {
+        return new self(
+            $this->metadata->update(),
+            $this->text,
+            $this->isToggleable,
+            $color,
+            $this->children,
+        );
     }
 
     public function addChild(BlockInterface $child): self
@@ -136,6 +153,7 @@ class Heading2 implements BlockInterface
             $this->metadata,
             $this->text,
             $this->isToggleable,
+            $this->color,
             $children,
         );
     }
@@ -146,7 +164,7 @@ class Heading2 implements BlockInterface
             throw BlockException::noChindrenSupport();
         }
 
-        return new self($this->metadata, $this->text, $this->isToggleable, $children);
+        return new self($this->metadata, $this->text, $this->isToggleable, $this->color, $children);
     }
 
     public function archive(): BlockInterface
@@ -155,6 +173,7 @@ class Heading2 implements BlockInterface
             $this->metadata->archive(),
             $this->text,
             $this->isToggleable,
+            $this->color,
             $this->children,
         );
     }

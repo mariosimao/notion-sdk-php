@@ -50,7 +50,7 @@
         ],
         "test:phpcs": "phpcs",
         "test:psalm": "psalm --no-cache",
-        "test:unit": "paratest --testsuite Unit",
+        "test:unit": "phpunit --testsuite Unit",
         "test:integration": "paratest --testsuite Integration",
         "test:coverage": "paratest --coverage-html dist/phpunit/html && echo \"Open the result on your browser: $PWD/dist/phpunit/html/index.html\""
     },

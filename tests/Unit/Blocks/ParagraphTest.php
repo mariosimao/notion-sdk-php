@@ -5,6 +5,7 @@ namespace Notion\Test\Unit\Blocks;
 use Notion\Blocks\BlockFactory;
 use Notion\Exceptions\BlockException;
 use Notion\Blocks\Paragraph;
+use Notion\Common\Color;
 use Notion\Common\Date;
 use Notion\Common\RichText;
 use PHPUnit\Framework\TestCase;
@@ -72,6 +73,7 @@ class ParagraphTest extends TestCase
                     ],
                 ],
                 "children" => [],
+                "color" => "green",
             ],
         ];
 
@@ -133,6 +135,7 @@ class ParagraphTest extends TestCase
                     ],
                 ]],
                 "children" => [],
+                "color" => "default",
             ],
         ];
 
@@ -183,5 +186,12 @@ class ParagraphTest extends TestCase
 
         $this->assertCount(1, $paragraph->children);
         $this->assertEquals($nested, $paragraph->children[0]);
+    }
+
+    public function test_change_color(): void
+    {
+        $paragraph = Paragraph::fromString("Hello World!")->changeColor(Color::Red);
+
+        $this->assertSame(Color::Red, $paragraph->color);
     }
 }
