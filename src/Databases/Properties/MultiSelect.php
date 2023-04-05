@@ -10,7 +10,7 @@ namespace Notion\Databases\Properties;
  *      name: string,
  *      type: "multi_select",
  *      multi_select: array{
- *          options: list<list<SelectOptionJson>
+ *          options: list<SelectOptionJson>
  *      },
  * }
  *
