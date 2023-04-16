@@ -25,11 +25,11 @@ class CompoundFilterTest extends TestCase
                 ],
                 [
                     "timestamp" => "created_time",
-                    "date" => [ "past_week" => [] ],
+                    "date" => [ "past_week" => (object) [] ],
                 ],
             ],
         ];
-        $this->assertSame($expected, $filter->toArray());
+        $this->assertEquals($expected, $filter->toArray());
     }
 
     public function test_or(): void
@@ -47,11 +47,11 @@ class CompoundFilterTest extends TestCase
                 ],
                 [
                     "timestamp" => "created_time",
-                    "date" => [ "past_week" => [] ],
+                    "date" => [ "past_week" => (object) [] ],
                 ],
             ],
         ];
-        $this->assertSame($expected, $filter->toArray());
+        $this->assertEquals($expected, $filter->toArray());
     }
 
     public function test_nested(): void

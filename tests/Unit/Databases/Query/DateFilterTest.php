@@ -129,9 +129,9 @@ class DateFilterTest extends TestCase
 
         $expected = [
             "property" => "Release date",
-            "date" => [ "past_week" => [] ],
+            "date" => [ "past_week" => (object) [] ],
         ];
-        $this->assertSame($expected, $filter->toArray());
+        $this->assertEquals($expected, $filter->toArray());
     }
 
     public function test_past_month(): void
@@ -141,9 +141,9 @@ class DateFilterTest extends TestCase
 
         $expected = [
             "property" => "Release date",
-            "date" => [ "past_month" => [] ],
+            "date" => [ "past_month" => (object) [] ],
         ];
-        $this->assertSame($expected, $filter->toArray());
+        $this->assertEquals($expected, $filter->toArray());
     }
 
     public function test_past_year(): void
@@ -153,9 +153,9 @@ class DateFilterTest extends TestCase
 
         $expected = [
             "property" => "Release date",
-            "date" => [ "past_year" => [] ],
+            "date" => [ "past_year" => (object) [] ],
         ];
-        $this->assertSame($expected, $filter->toArray());
+        $this->assertEquals($expected, $filter->toArray());
     }
 
     public function test_next_week(): void
@@ -165,9 +165,9 @@ class DateFilterTest extends TestCase
 
         $expected = [
             "property" => "Release date",
-            "date" => [ "next_week" => [] ],
+            "date" => [ "next_week" => (object) [] ],
         ];
-        $this->assertSame($expected, $filter->toArray());
+        $this->assertEquals($expected, $filter->toArray());
     }
 
     public function test_next_month(): void
@@ -177,9 +177,9 @@ class DateFilterTest extends TestCase
 
         $expected = [
             "property" => "Release date",
-            "date" => [ "next_month" => [] ],
+            "date" => [ "next_month" => (object) [] ],
         ];
-        $this->assertSame($expected, $filter->toArray());
+        $this->assertEquals($expected, $filter->toArray());
     }
 
     public function test_next_year(): void
@@ -189,9 +189,9 @@ class DateFilterTest extends TestCase
 
         $expected = [
             "property" => "Release date",
-            "date" => [ "next_year" => [] ],
+            "date" => [ "next_year" => (object) [] ],
         ];
-        $this->assertSame($expected, $filter->toArray());
+        $this->assertEquals($expected, $filter->toArray());
     }
 
     public function test_this_week(): void
@@ -201,8 +201,8 @@ class DateFilterTest extends TestCase
 
         $expected = [
             "property" => "Release date",
-            "date" => [ "this_week" => [] ],
+            "date" => [ "this_week" => (object) [] ],
         ];
-        $this->assertSame($expected, $filter->toArray());
+        $this->assertEquals($expected, $filter->toArray());
     }
 }
