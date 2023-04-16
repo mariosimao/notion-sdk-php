@@ -7,6 +7,7 @@ use Notion\Databases\Query\DateFilter;
 use Notion\Databases\Query\SelectFilter;
 use Notion\Databases\Query\TextFilter;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 class CompoundFilterTest extends TestCase
 {
@@ -25,7 +26,7 @@ class CompoundFilterTest extends TestCase
                 ],
                 [
                     "timestamp" => "created_time",
-                    "date" => [ "past_week" => (object) [] ],
+                    "date" => [ "past_week" => new stdClass() ],
                 ],
             ],
         ];
@@ -47,7 +48,7 @@ class CompoundFilterTest extends TestCase
                 ],
                 [
                     "timestamp" => "created_time",
-                    "date" => [ "past_week" => (object) [] ],
+                    "date" => [ "past_week" => new stdClass() ],
                 ],
             ],
         ];
