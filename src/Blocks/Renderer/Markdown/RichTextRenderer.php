@@ -25,10 +25,10 @@ final class RichTextRenderer
                 $markdown = "*{$markdown}*";
             }
             if ($t->annotations->isStrikeThrough) {
-                $markdown = "~{$markdown}~";
+                $markdown = "~~{$markdown}~~";
             }
             if ($t->annotations->isUnderline) {
-                $markdown = "_{$markdown}_";
+                $markdown = "<u>{$markdown}</u>";
             }
 
             if ($t->href !== null) {
