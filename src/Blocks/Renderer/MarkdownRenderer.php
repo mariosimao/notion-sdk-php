@@ -20,7 +20,7 @@ class MarkdownRenderer implements RendererInterface
 
     public static function renderBlock(BlockInterface $block, int $depth = 0): string
     {
-        return match($block->metadata()->type) {
+        return match ($block->metadata()->type) {
             BlockType::Bookmark         => Markdown\BookmarkRenderer::render($block, $depth),
             BlockType::Breadcrumb       => Markdown\BreadcrumbRenderer::render($block, $depth),
             BlockType::BulletedListItem => Markdown\BulletedListItemRenderer::render($block, $depth),

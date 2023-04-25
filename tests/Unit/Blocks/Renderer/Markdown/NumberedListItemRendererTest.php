@@ -14,8 +14,7 @@ class NumberedListItemRendererTest extends TestCase
         $block = NumberedListItem::fromString("Item 1")
             ->addChild(NumberedListItem::fromString("Item 2"))
             ->addChild(NumberedListItem::fromString("Item 3")
-                ->addChild(NumberedListItem::fromString("Item 4"))
-            );
+                ->addChild(NumberedListItem::fromString("Item 4")));
 
         $markdown = NumberedListItemRenderer::render($block);
 

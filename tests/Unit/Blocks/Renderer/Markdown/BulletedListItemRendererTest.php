@@ -14,8 +14,7 @@ class BulletedListItemRendererTest extends TestCase
         $block = BulletedListItem::fromString("Item 1")
             ->addChild(BulletedListItem::fromString("Item 2"))
             ->addChild(BulletedListItem::fromString("Item 3")
-                ->addChild(BulletedListItem::fromString("Item 4"))
-            );
+                ->addChild(BulletedListItem::fromString("Item 4")));
 
         $markdown = BulletedListItemRenderer::render($block);
 

@@ -14,8 +14,7 @@ class ToDoRendererTest extends TestCase
         $block = ToDo::fromString("Item 1")
             ->addChild(ToDo::fromString("Item 2")->check())
             ->addChild(ToDo::fromString("Item 3")
-                ->addChild(ToDo::fromString("Item 4"))
-            );
+                ->addChild(ToDo::fromString("Item 4")));
 
         $markdown = ToDoRenderer::render($block);
 
