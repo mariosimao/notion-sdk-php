@@ -19,7 +19,7 @@ final class BulletedListItemRenderer implements BlockRendererInterface
         $markdown = MarkdownRenderer::ident("- {$main}", $depth);
 
         foreach ($block->children as $child) {
-            $markdown .= "\n\n" . MarkdownRenderer::renderBlock($child, $depth + 1);
+            $markdown .= "\n" . MarkdownRenderer::renderBlock($child, $depth + 1);
         }
 
         return $markdown;

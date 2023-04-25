@@ -19,13 +19,13 @@ final class RichTextRenderer
                 $markdown = "`{$markdown}`";
             }
             if ($t->annotations->isBold) {
-                $markdown = "**{$markdown}**";
+                $markdown = self::around($markdown, "**");
             }
             if ($t->annotations->isItalic) {
-                $markdown = "*{$markdown}*";
+                $markdown = self::around($markdown, "*");
             }
             if ($t->annotations->isStrikeThrough) {
-                $markdown = "~~{$markdown}~~";
+                $markdown = self::around($markdown, "~~");
             }
             if ($t->annotations->isUnderline) {
                 $markdown = "<u>{$markdown}</u>";
@@ -39,5 +39,15 @@ final class RichTextRenderer
         }
 
         return $result;
+    }
+
+    private static function around(string $text, string $around): string
+    {
+        preg_match("/^(\s*)/", $text, $leftSpace);
+        preg_match("/(\s*)$/", $text, $righSpace);
+
+        $text = trim($text);
+
+        return "{$leftSpace[0]}{$around}{$text}{$around}{$righSpace[0]}";
     }
 }

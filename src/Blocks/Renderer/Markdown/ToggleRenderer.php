@@ -20,7 +20,7 @@ final class ToggleRenderer implements BlockRendererInterface
 
         $markdown = MarkdownRenderer::ident("<details>", $depth);
 
-        $markdown .= MarkdownRenderer::ident("<summary>{$text}</summary>", $depth + 1);
+        $markdown .= MarkdownRenderer::ident("\n<summary>{$text}</summary>", $depth);
         foreach ($block->children as $child) {
             $markdown .= "\n\n" . MarkdownRenderer::renderBlock($child, $depth);
         }

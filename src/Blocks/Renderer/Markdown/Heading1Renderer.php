@@ -16,15 +16,6 @@ final class Heading1Renderer implements BlockRendererInterface
         }
 
         $main = RichTextRenderer::render(...$block->text);
-        $markdown = MarkdownRenderer::ident("# {$main}", $depth);
-
-        if ($block->children === null) {
-            return $markdown;
-        }
-
-        foreach ($block->children as $child) {
-            $markdown .= "\n\n" . MarkdownRenderer::renderBlock($child, $depth + 1);
-        }
-        return $markdown;
+        return MarkdownRenderer::ident("# {$main}", $depth);
     }
 }

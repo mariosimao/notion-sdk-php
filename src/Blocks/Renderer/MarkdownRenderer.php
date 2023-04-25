@@ -12,7 +12,7 @@ class MarkdownRenderer implements RendererInterface
     {
         $markdown = "";
         foreach ($blocks as $block) {
-            $markdown = $markdown . self::renderBlock($block) . "\n\n";
+            $markdown = $markdown . self::renderBlock($block) . "\n";
         }
 
         return $markdown;
@@ -55,6 +55,10 @@ class MarkdownRenderer implements RendererInterface
     {
         $lines = array_map(
             function (string $line) use ($depth): string {
+                if (strlen($line) == 0) {
+                    return $line;
+                }
+
                 $padding = str_repeat(" ", $depth * 2);
                 return $padding . $line;
             },

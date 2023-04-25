@@ -17,10 +17,10 @@ final class ToDoRenderer implements BlockRendererInterface
 
         $text = RichTextRenderer::render(...$block->text);
         $check = $block->checked ? "x" : " ";
-        $markdown = MarkdownRenderer::ident("[{$check}] {$text}", $depth);
+        $markdown = MarkdownRenderer::ident("- [{$check}] {$text}", $depth);
 
         foreach ($block->children as $child) {
-            $markdown .= "\n\n" . MarkdownRenderer::renderBlock($child, $depth + 1);
+            $markdown .= "\n" . MarkdownRenderer::renderBlock($child, $depth + 1);
         }
 
         return $markdown;
