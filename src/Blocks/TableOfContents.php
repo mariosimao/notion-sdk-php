@@ -37,7 +37,7 @@ class TableOfContents implements BlockInterface
         /** @psalm-var BlockMetadataJson $array */
         $block = BlockMetadata::fromArray($array);
 
-        /** @psalm-var TableOfContetsJson $array */
+        /** @psalm-var TableOfContentsJson $array */
         $toc = $array["table_of_contents"];
 
         $color = Color::tryFrom($toc["color"] ?? "") ?? Color::Default;

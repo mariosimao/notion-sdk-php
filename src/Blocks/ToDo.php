@@ -64,7 +64,7 @@ class ToDo implements BlockInterface
 
         $checked = $todo["checked"];
 
-        $color = Color::tryFrom($item["color"] ?? "") ?? Color::Default;
+        $color = Color::tryFrom($todo["color"] ?? "") ?? Color::Default;
 
         $children = array_map(fn($b) => BlockFactory::fromArray($b), $todo["children"] ?? []);
 
