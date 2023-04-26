@@ -2,6 +2,7 @@
 
 namespace Notion\Blocks;
 
+use Notion\Common\Color;
 use Notion\Common\Emoji;
 use Notion\Common\File;
 use Notion\Common\Icon;
@@ -16,6 +17,7 @@ use Notion\Common\RichText;
  * @psalm-type CalloutJson = array{
  *      callout: array{
  *          rich_text: list<RichTextJson>,
+ *          color?: string,
  *          children?: list<BlockMetadataJson>,
  *          icon: EmojiJson|FileJson,
  *      },
@@ -33,6 +35,7 @@ class Callout implements BlockInterface
         private readonly BlockMetadata $metadata,
         public readonly array $text,
         public readonly Icon $icon,
+        public readonly Color $color,
         public readonly array $children,
     ) {
         $metadata->checkType(BlockType::Callout);
@@ -43,7 +46,7 @@ class Callout implements BlockInterface
         $metadata = BlockMetadata::create(BlockType::Callout);
         $icon = Icon::fromEmoji(Emoji::fromString("⭐"));
 
-        return new self($metadata, [], $icon, []);
+        return new self($metadata, [], $icon, Color::Default, []);
     }
 
     public static function fromString(string $emoji, string $content): self
@@ -52,7 +55,7 @@ class Callout implements BlockInterface
         $text = [ RichText::fromString($content) ];
         $icon = Icon::fromEmoji(Emoji::fromString($emoji));
 
-        return new self($metadata, $text, $icon, []);
+        return new self($metadata, $text, $icon, Color::Default, []);
     }
 
     public static function fromArray(array $array): self
@@ -76,9 +79,11 @@ class Callout implements BlockInterface
             $icon = Icon::fromFile($file);
         }
 
+        $color = Color::tryFrom($callout["color"] ?? "") ?? Color::Default;
+
         $children = array_map(fn($b) => BlockFactory::fromArray($b), $callout["children"] ?? []);
 
-        return new self($metadata, $text, $icon, $children);
+        return new self($metadata, $text, $icon, $color, $children);
     }
 
     public function toArray(): array
@@ -88,6 +93,7 @@ class Callout implements BlockInterface
         $array["callout"] = [
             "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
             "icon"     => $this->icon->toArray(),
+            "color"    => $this->color->value,
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
         ];
 
@@ -106,7 +112,7 @@ class Callout implements BlockInterface
 
     public function changeText(RichText ...$text): self
     {
-        return new self($this->metadata, $text, $this->icon, $this->children);
+        return new self($this->metadata, $text, $this->icon, $this->color, $this->children);
     }
 
     public function addText(RichText $text): self
@@ -114,7 +120,7 @@ class Callout implements BlockInterface
         $texts = $this->text;
         $texts[] = $text;
 
-        return new self($this->metadata, $texts, $this->icon, $this->children);
+        return new self($this->metadata, $texts, $this->icon, $this->color, $this->children);
     }
 
     public function changeIcon(Emoji|File|Icon $icon): self
@@ -127,7 +133,7 @@ class Callout implements BlockInterface
             $icon = Icon::fromFile($icon);
         }
 
-        return new self($this->metadata, $this->text, $icon, $this->children);
+        return new self($this->metadata, $this->text, $icon, $this->color, $this->children);
     }
 
     public function changeChildren(BlockInterface ...$children): self
@@ -138,6 +144,7 @@ class Callout implements BlockInterface
             $this->metadata->updateHasChildren($hasChildren),
             $this->text,
             $this->icon,
+            $this->color,
             $children,
         );
     }
@@ -151,7 +158,19 @@ class Callout implements BlockInterface
             $this->metadata->updateHasChildren(true),
             $this->text,
             $this->icon,
+            $this->color,
             $children,
+        );
+    }
+
+    public function changeColor(Color $color): self
+    {
+        return new self(
+            $this->metadata->update(),
+            $this->text,
+            $this->icon,
+            $color,
+            $this->children,
         );
     }
 
@@ -161,6 +180,7 @@ class Callout implements BlockInterface
             $this->metadata->archive(),
             $this->text,
             $this->icon,
+            $this->color,
             $this->children,
         );
     }

@@ -39,7 +39,10 @@
     "scripts": {
         "ci:phpcs": "phpcs -q --report=checkstyle | cs2pr",
         "ci:psalm": "psalm --output-format=github --shepherd --stats",
-        "ci:coverage": "paratest --coverage-clover dist/phpunit/clover.xml",
+        "ci:coverage": [
+            "Composer\\Config::disableProcessTimeout",
+            "paratest --coverage-clover dist/phpunit/clover.xml"
+        ],
         "ci:unit": "paratest --testsuite Unit",
         "ci:integration": "paratest --testsuite Integration",
         "ci:mutation": "infection --threads=max",

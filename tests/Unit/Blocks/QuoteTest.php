@@ -5,6 +5,7 @@ namespace Notion\Test\Unit\Blocks;
 use Notion\Blocks\BlockFactory;
 use Notion\Exceptions\BlockException;
 use Notion\Blocks\Quote;
+use Notion\Common\Color;
 use Notion\Common\Date;
 use Notion\Common\RichText;
 use PHPUnit\Framework\TestCase;
@@ -133,6 +134,7 @@ class QuoteTest extends TestCase
                         "color"         => "default",
                     ],
                 ]],
+                "color" => "default",
                 "children" => [],
             ],
         ];
@@ -192,5 +194,12 @@ class QuoteTest extends TestCase
         $quote = $quote->archive();
 
         $this->assertTrue($quote->metadata()->archived);
+    }
+
+    public function test_change_color(): void
+    {
+        $block = Quote::fromString("Hello World!")->changeColor(Color::Red);
+
+        $this->assertSame(Color::Red, $block->color);
     }
 }

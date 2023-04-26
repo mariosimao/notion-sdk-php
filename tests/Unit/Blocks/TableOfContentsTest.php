@@ -6,6 +6,7 @@ use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Paragraph;
 use Notion\Exceptions\BlockException;
 use Notion\Blocks\TableOfContents;
+use Notion\Common\Color;
 use Notion\Common\Date;
 use PHPUnit\Framework\TestCase;
 
@@ -28,7 +29,9 @@ class TableOfContentsTest extends TestCase
             "archived"         => false,
             "has_children"     => false,
             "type"             => "table_of_contents",
-            "table_of_contents" => new \stdClass(),
+            "table_of_contents" => [
+                "color" => "green",
+            ]
         ];
 
         $tableOfContents = TableOfContents::fromArray($array);
@@ -47,7 +50,7 @@ class TableOfContentsTest extends TestCase
             "archived"         => false,
             "has_children"     => false,
             "type"             => "wrong-type",
-            "table_of_contents" => new \stdClass(),
+            "table_of_contents" => []
         ];
 
         TableOfContents::fromArray($array);
@@ -86,5 +89,12 @@ class TableOfContentsTest extends TestCase
         $this->expectException(BlockException::class);
         /** @psalm-suppress UnusedMethodCall */
         $block->addChild(Paragraph::create());
+    }
+
+    public function test_change_color(): void
+    {
+        $block = TableOfContents::create()->changeColor(Color::Red);
+
+        $this->assertSame(Color::Red, $block->color);
     }
 }

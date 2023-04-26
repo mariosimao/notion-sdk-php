@@ -3,8 +3,10 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
+use Notion\Blocks\ToDo;
 use Notion\Exceptions\BlockException;
 use Notion\Blocks\Toggle;
+use Notion\Common\Color;
 use Notion\Common\Date;
 use Notion\Common\RichText;
 use PHPUnit\Framework\TestCase;
@@ -132,6 +134,7 @@ class ToggleTest extends TestCase
                         "color"         => "default",
                     ],
                 ]],
+                "color" => "default",
                 "children" => [],
             ],
         ];
@@ -183,5 +186,12 @@ class ToggleTest extends TestCase
 
         $this->assertCount(1, $toggle->children);
         $this->assertEquals($nestedToggle, $toggle->children[0]);
+    }
+
+    public function test_change_color(): void
+    {
+        $block = ToDo::fromString("Hello World!")->changeColor(Color::Red);
+
+        $this->assertSame(Color::Red, $block->color);
     }
 }
