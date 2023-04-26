@@ -2,6 +2,7 @@
 
 namespace Notion\Blocks;
 
+use Notion\Common\Color;
 use Notion\Common\RichText;
 
 /**
@@ -12,6 +13,7 @@ use Notion\Common\RichText;
  *      paragraph: array{
  *          rich_text: list<RichTextJson>,
  *          children?: list<BlockMetadataJson>,
+ *          color?: string,
  *      },
  * }
  *
@@ -27,6 +29,7 @@ class Paragraph implements BlockInterface
         private readonly BlockMetadata $metadata,
         public readonly array $text,
         public readonly array $children,
+        public readonly Color $color,
     ) {
         $metadata->checkType(BlockType::Paragraph);
     }
@@ -35,7 +38,7 @@ class Paragraph implements BlockInterface
     {
         $block = BlockMetadata::create(BlockType::Paragraph);
 
-        return new self($block, [], []);
+        return new self($block, [], [], Color::Default);
     }
 
     public static function fromString(string $content): self
@@ -43,7 +46,7 @@ class Paragraph implements BlockInterface
         $block = BlockMetadata::create(BlockType::Paragraph);
         $text = [ RichText::fromString($content) ];
 
-        return new self($block, $text, []);
+        return new self($block, $text, [], Color::Default);
     }
 
     public static function fromArray(array $array): self
@@ -58,7 +61,9 @@ class Paragraph implements BlockInterface
 
         $children = array_map(fn($b) => BlockFactory::fromArray($b), $paragraph["children"] ?? []);
 
-        return new self($block, $text, $children);
+        $color = Color::tryFrom($paragraph["color"] ?? "") ?? Color::Default;
+
+        return new self($block, $text, $children, $color);
     }
 
     public function toArray(): array
@@ -68,6 +73,7 @@ class Paragraph implements BlockInterface
         $array["paragraph"] = [
             "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
             "children"  => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
+            "color"     => $this->color->value,
         ];
 
         return $array;
@@ -91,7 +97,7 @@ class Paragraph implements BlockInterface
     /** @param RichText[] $text */
     public function changeText(array $text): self
     {
-        return new self($this->metadata, $text, $this->children);
+        return new self($this->metadata, $text, $this->children, $this->color);
     }
 
     public function addText(RichText $text): self
@@ -99,7 +105,7 @@ class Paragraph implements BlockInterface
         $texts = $this->text;
         $texts[] = $text;
 
-        return new self($this->metadata, $texts, $this->children);
+        return new self($this->metadata, $texts, $this->children, $this->color);
     }
 
     public function changeChildren(BlockInterface ...$children): self
@@ -110,6 +116,7 @@ class Paragraph implements BlockInterface
             $this->metadata->updateHasChildren($hasChildren),
             $this->text,
             $children,
+            $this->color,
         );
     }
 
@@ -122,6 +129,17 @@ class Paragraph implements BlockInterface
             $this->metadata->updateHasChildren(true),
             $this->text,
             $children,
+            $this->color,
+        );
+    }
+
+    public function changeColor(Color $color): self
+    {
+        return new self(
+            $this->metadata->update(),
+            $this->text,
+            $this->children,
+            $color,
         );
     }
 
@@ -131,6 +149,7 @@ class Paragraph implements BlockInterface
             $this->metadata->archive(),
             $this->text,
             $this->children,
+            $this->color,
         );
     }
 }

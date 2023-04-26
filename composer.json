@@ -39,7 +39,10 @@
     "scripts": {
         "ci:phpcs": "phpcs -q --report=checkstyle | cs2pr",
         "ci:psalm": "psalm --output-format=github --shepherd --stats",
-        "ci:coverage": "paratest --coverage-clover dist/phpunit/clover.xml",
+        "ci:coverage": [
+            "Composer\\Config::disableProcessTimeout",
+            "paratest --coverage-clover dist/phpunit/clover.xml"
+        ],
         "ci:unit": "paratest --testsuite Unit",
         "ci:integration": "paratest --testsuite Integration",
         "ci:mutation": [
@@ -53,7 +56,7 @@
         ],
         "test:phpcs": "phpcs",
         "test:psalm": "psalm --no-cache",
-        "test:unit": "paratest --testsuite Unit",
+        "test:unit": "phpunit --testsuite Unit",
         "test:integration": "paratest --testsuite Integration",
         "test:coverage": "paratest --coverage-html dist/phpunit/html && echo \"Open the result on your browser: $PWD/dist/phpunit/html/index.html\""
     },

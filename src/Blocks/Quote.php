@@ -2,6 +2,7 @@
 
 namespace Notion\Blocks;
 
+use Notion\Common\Color;
 use Notion\Exceptions\BlockException;
 use Notion\Common\RichText;
 
@@ -12,6 +13,7 @@ use Notion\Common\RichText;
  * @psalm-type QuoteJson = array{
  *      quote: array{
  *          rich_text: list<RichTextJson>,
+ *          color?: string,
  *          children: list<BlockMetadataJson>,
  *      },
  * }
@@ -27,6 +29,7 @@ class Quote implements BlockInterface
     private function __construct(
         private readonly BlockMetadata $metadata,
         public readonly array $text,
+        public readonly Color $color,
         public readonly array $children,
     ) {
         $metadata->checkType(BlockType::Quote);
@@ -36,7 +39,7 @@ class Quote implements BlockInterface
     {
         $block = BlockMetadata::create(BlockType::Quote);
 
-        return new self($block, [], []);
+        return new self($block, [], Color::Default, []);
     }
 
     public static function fromString(string $content): self
@@ -44,7 +47,7 @@ class Quote implements BlockInterface
         $block = BlockMetadata::create(BlockType::Quote);
         $text = [ RichText::fromString($content) ];
 
-        return new self($block, $text, []);
+        return new self($block, $text, Color::Default, []);
     }
 
     public static function fromArray(array $array): self
@@ -57,9 +60,11 @@ class Quote implements BlockInterface
 
         $text = array_map(fn($t) => RichText::fromArray($t), $quote["rich_text"]);
 
+        $color = Color::tryFrom($quote["color"] ?? "") ?? Color::Default;
+
         $children = array_map(fn($b) => BlockFactory::fromArray($b), $quote["children"] ?? []);
 
-        return new self($block, $text, $children);
+        return new self($block, $text, $color, $children);
     }
 
     public function toArray(): array
@@ -68,6 +73,7 @@ class Quote implements BlockInterface
 
         $array["quote"] = [
             "rich_text"     => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "color"    => $this->color->value,
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
         ];
 
@@ -92,7 +98,7 @@ class Quote implements BlockInterface
     /** @param RichText[] $text */
     public function changeText(array $text): self
     {
-        return new self($this->metadata, $text, $this->children);
+        return new self($this->metadata, $text, $this->color, $this->children);
     }
 
     public function addText(RichText $text): self
@@ -100,7 +106,7 @@ class Quote implements BlockInterface
         $texts = $this->text;
         $texts[] = $text;
 
-        return new self($this->metadata, $texts, $this->children);
+        return new self($this->metadata, $texts, $this->color, $this->children);
     }
 
     public function changeChildren(BlockInterface ...$children): self
@@ -110,6 +116,7 @@ class Quote implements BlockInterface
         return new self(
             $this->metadata->updateHasChildren($hasChildren),
             $this->text,
+            $this->color,
             $children,
         );
     }
@@ -122,7 +129,18 @@ class Quote implements BlockInterface
         return new self(
             $this->metadata->updateHasChildren(true),
             $this->text,
+            $this->color,
             $children,
+        );
+    }
+
+    public function changeColor(Color $color): self
+    {
+        return new self(
+            $this->metadata->update(),
+            $this->text,
+            $color,
+            $this->children,
         );
     }
 
@@ -131,6 +149,7 @@ class Quote implements BlockInterface
         return new self(
             $this->metadata->archive(),
             $this->text,
+            $this->color,
             $this->children,
         );
     }

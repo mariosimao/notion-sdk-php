@@ -2,6 +2,7 @@
 
 namespace Notion\Blocks;
 
+use Notion\Common\Color;
 use Notion\Common\RichText;
 
 /**
@@ -13,6 +14,7 @@ use Notion\Common\RichText;
  * @psalm-type BulletedListItemJson = array{
  *      bulleted_list_item: array{
  *          rich_text: list<RichTextJson>,
+ *          color?: string,
  *          children?: list<BlockMetadataJson>,
  *      },
  * }
@@ -28,6 +30,7 @@ class BulletedListItem implements BlockInterface
     private function __construct(
         private readonly BlockMetadata $metadata,
         public readonly array $text,
+        public readonly Color $color,
         public readonly array $children,
     ) {
         $this->metadata->checkType(BlockType::BulletedListItem);
@@ -40,7 +43,7 @@ class BulletedListItem implements BlockInterface
     {
         $metadata = BlockMetadata::create(BlockType::BulletedListItem);
 
-        return new self($metadata, [], []);
+        return new self($metadata, [], Color::Default, []);
     }
 
     /**
@@ -51,7 +54,7 @@ class BulletedListItem implements BlockInterface
         $metadata = BlockMetadata::create(BlockType::BulletedListItem);
         $text = [ RichText::fromString($content) ];
 
-        return new self($metadata, $text, []);
+        return new self($metadata, $text, Color::Default, []);
     }
 
     public static function fromArray(array $array): self
@@ -64,9 +67,11 @@ class BulletedListItem implements BlockInterface
 
         $text = array_map(fn($t) => RichText::fromArray($t), $item["rich_text"]);
 
+        $color = Color::tryFrom($item["color"] ?? "") ?? Color::Default;
+
         $children = array_map(fn($b) => BlockFactory::fromArray($b), $item["children"] ?? []);
 
-        return new self($metadata, $text, $children);
+        return new self($metadata, $text, $color, $children);
     }
 
     public function toArray(): array
@@ -75,6 +80,7 @@ class BulletedListItem implements BlockInterface
 
         $array["bulleted_list_item"] = [
             "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "color"     => $this->color->value,
             "children"  => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
         ];
 
@@ -94,7 +100,7 @@ class BulletedListItem implements BlockInterface
 
     public function changeText(RichText ...$text): self
     {
-        return new self($this->metadata->update(), $text, $this->children);
+        return new self($this->metadata->update(), $text, $this->color, $this->children);
     }
 
     /**
@@ -105,7 +111,7 @@ class BulletedListItem implements BlockInterface
         $texts = $this->text;
         $texts[] = $text;
 
-        return new self($this->metadata, $texts, $this->children);
+        return new self($this->metadata, $texts, $this->color, $this->children);
     }
 
     public function changeChildren(BlockInterface ...$children): self
@@ -115,6 +121,7 @@ class BulletedListItem implements BlockInterface
         return new self(
             $this->metadata->updateHasChildren($hasChildren),
             $this->text,
+            $this->color,
             $children,
         );
     }
@@ -127,7 +134,18 @@ class BulletedListItem implements BlockInterface
         return new self(
             $this->metadata->updateHasChildren(true),
             $this->text,
+            $this->color,
             $children,
+        );
+    }
+
+    public function changeColor(Color $color): self
+    {
+        return new self(
+            $this->metadata->update(),
+            $this->text,
+            $color,
+            $this->children,
         );
     }
 
@@ -136,6 +154,7 @@ class BulletedListItem implements BlockInterface
         return new self(
             $this->metadata->archive(),
             $this->text,
+            $this->color,
             $this->children,
         );
     }

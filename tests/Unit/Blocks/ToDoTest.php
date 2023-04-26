@@ -5,6 +5,7 @@ namespace Notion\Test\Unit\Blocks;
 use Notion\Blocks\BlockFactory;
 use Notion\Exceptions\BlockException;
 use Notion\Blocks\ToDo;
+use Notion\Common\Color;
 use Notion\Common\Date;
 use Notion\Common\RichText;
 use PHPUnit\Framework\TestCase;
@@ -138,6 +139,7 @@ class ToDoTest extends TestCase
                         "color"         => "default",
                     ],
                 ]],
+                "color" => "default",
                 "children" => [],
             ],
         ];
@@ -204,5 +206,12 @@ class ToDoTest extends TestCase
         $toDo = ToDo::fromString("Simple to do.")->check()->uncheck();
 
         $this->assertFalse($toDo->checked);
+    }
+
+    public function test_change_color(): void
+    {
+        $block = ToDo::fromString("Hello World!")->changeColor(Color::Red);
+
+        $this->assertSame(Color::Red, $block->color);
     }
 }

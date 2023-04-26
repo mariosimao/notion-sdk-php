@@ -2,6 +2,7 @@
 
 namespace Notion\Blocks;
 
+use Notion\Common\Color;
 use Notion\Exceptions\BlockException;
 use Notion\Common\RichText;
 
@@ -13,6 +14,7 @@ use Notion\Common\RichText;
  *      to_do: array{
  *          checked: bool,
  *          rich_text: list<RichTextJson>,
+ *          color?: string,
  *          children?: list<BlockMetadataJson>,
  *      },
  * }
@@ -29,6 +31,7 @@ class ToDo implements BlockInterface
         private readonly BlockMetadata $metadata,
         public readonly array $text,
         public readonly bool $checked,
+        public readonly Color $color,
         public readonly array $children,
     ) {
         $metadata->checkType(BlockType::ToDo);
@@ -38,7 +41,7 @@ class ToDo implements BlockInterface
     {
         $block = BlockMetadata::create(BlockType::ToDo);
 
-        return new self($block, [], false, []);
+        return new self($block, [], false, Color::Default, []);
     }
 
     public static function fromString(string $content): self
@@ -46,7 +49,7 @@ class ToDo implements BlockInterface
         $block = BlockMetadata::create(BlockType::ToDo);
         $text = [ RichText::fromString($content) ];
 
-        return new self($block, $text, false, []);
+        return new self($block, $text, false, Color::Default, []);
     }
 
     public static function fromArray(array $array): self
@@ -61,9 +64,11 @@ class ToDo implements BlockInterface
 
         $checked = $todo["checked"];
 
+        $color = Color::tryFrom($todo["color"] ?? "") ?? Color::Default;
+
         $children = array_map(fn($b) => BlockFactory::fromArray($b), $todo["children"] ?? []);
 
-        return new self($block, $text, $checked, $children);
+        return new self($block, $text, $checked, $color, $children);
     }
 
     public function toArray(): array
@@ -73,6 +78,7 @@ class ToDo implements BlockInterface
         $array["to_do"] = [
             "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
             "checked"   => $this->checked,
+            "color"     => $this->color->value,
             "children"  => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
         ];
 
@@ -96,7 +102,7 @@ class ToDo implements BlockInterface
 
     public function changeText(RichText ...$text): self
     {
-        return new self($this->metadata, $text, $this->checked, $this->children);
+        return new self($this->metadata, $text, $this->checked, $this->color, $this->children);
     }
 
     public function addText(RichText $text): self
@@ -104,17 +110,17 @@ class ToDo implements BlockInterface
         $texts = $this->text;
         $texts[] = $text;
 
-        return new self($this->metadata, $texts, $this->checked, $this->children);
+        return new self($this->metadata, $texts, $this->checked, $this->color, $this->children);
     }
 
     public function check(): self
     {
-        return new self($this->metadata, $this->text, true, $this->children);
+        return new self($this->metadata, $this->text, true, $this->color, $this->children);
     }
 
     public function uncheck(): self
     {
-        return new self($this->metadata, $this->text, false, $this->children);
+        return new self($this->metadata, $this->text, false, $this->color, $this->children);
     }
 
     public function changeChildren(BlockInterface ...$children): self
@@ -125,6 +131,7 @@ class ToDo implements BlockInterface
             $this->metadata->updateHasChildren($hasChildren),
             $this->text,
             $this->checked,
+            $this->color,
             $children,
         );
     }
@@ -138,7 +145,19 @@ class ToDo implements BlockInterface
             $this->metadata->updateHasChildren(true),
             $this->text,
             $this->checked,
+            $this->color,
             $children,
+        );
+    }
+
+    public function changeColor(Color $color): self
+    {
+        return new self(
+            $this->metadata->update(),
+            $this->text,
+            $this->checked,
+            $color,
+            $this->children,
         );
     }
 
@@ -148,6 +167,7 @@ class ToDo implements BlockInterface
             $this->metadata->archive(),
             $this->text,
             $this->checked,
+            $this->color,
             $this->children,
         );
     }

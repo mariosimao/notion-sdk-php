@@ -4,6 +4,7 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Callout;
+use Notion\Common\Color;
 use Notion\Exceptions\BlockException;
 use Notion\Common\Date;
 use Notion\Common\Emoji;
@@ -235,6 +236,7 @@ class CalloutTest extends TestCase
                     "type"  => "emoji",
                     "emoji" => "☀️",
                 ],
+                "color" => "default",
                 "children" => [],
             ],
         ];
@@ -306,5 +308,12 @@ class CalloutTest extends TestCase
             ->changeIcon($file);
 
         $this->assertTrue($callout->icon->isFile());
+    }
+
+    public function test_change_color(): void
+    {
+        $block = Callout::fromString("☀️", "Hello World!")->changeColor(Color::Red);
+
+        $this->assertSame(Color::Red, $block->color);
     }
 }

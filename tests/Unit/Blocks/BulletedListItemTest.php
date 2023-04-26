@@ -4,6 +4,7 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\BulletedListItem;
+use Notion\Common\Color;
 use Notion\Exceptions\BlockException;
 use Notion\Common\Date;
 use Notion\Common\RichText;
@@ -133,6 +134,7 @@ class BulletedListItemTest extends TestCase
                         "color"         => "default",
                     ],
                 ]],
+                "color" => "default",
                 "children" => [],
             ],
         ];
@@ -184,5 +186,12 @@ class BulletedListItemTest extends TestCase
 
         $this->assertCount(1, $item->children);
         $this->assertEquals($nested, $item->children[0]);
+    }
+
+    public function test_change_color(): void
+    {
+        $block = BulletedListItem::fromString("Hello World!")->changeColor(Color::Red);
+
+        $this->assertSame(Color::Red, $block->color);
     }
 }

@@ -5,6 +5,7 @@ namespace Notion\Test\Unit\Blocks;
 use Notion\Blocks\BlockFactory;
 use Notion\Exceptions\BlockException;
 use Notion\Blocks\NumberedListItem;
+use Notion\Common\Color;
 use Notion\Common\Date;
 use Notion\Common\RichText;
 use PHPUnit\Framework\TestCase;
@@ -133,6 +134,7 @@ class NumberedListItemTest extends TestCase
                         "color"         => "default",
                     ],
                 ]],
+                "color" => "default",
                 "children" => [],
             ],
         ];
@@ -184,5 +186,12 @@ class NumberedListItemTest extends TestCase
 
         $this->assertCount(1, $item->children);
         $this->assertEquals($nested, $item->children[0]);
+    }
+
+    public function test_change_color(): void
+    {
+        $block = NumberedListItem::fromString("Hello World!")->changeColor(Color::Red);
+
+        $this->assertSame(Color::Red, $block->color);
     }
 }

@@ -6,6 +6,7 @@ use Notion\Blocks\BlockFactory;
 use Notion\Exceptions\BlockException;
 use Notion\Blocks\Heading2;
 use Notion\Blocks\Paragraph;
+use Notion\Common\Color;
 use Notion\Common\Date;
 use Notion\Common\RichText;
 use Notion\Exceptions\HeadingException;
@@ -74,6 +75,7 @@ class Heading2Test extends TestCase
                 ],
                 "is_toggleable" => false,
                 "children" => [],
+                "color" => "default",
             ],
         ];
 
@@ -100,7 +102,7 @@ class Heading2Test extends TestCase
             "type"             => "wrong-type",
             "heading_2"        => [
                 "rich_text"     => [],
-                "is_toggleable" => true,
+                "is_toggleable"  => false,
             ],
         ];
 
@@ -137,6 +139,7 @@ class Heading2Test extends TestCase
                 ]],
                 "is_toggleable" => false,
                 "children" => [],
+                "color" => "default",
             ],
         ];
 
@@ -279,11 +282,19 @@ class Heading2Test extends TestCase
                         "divider"          => new \stdClass(),
                     ]
                 ],
+                "color" => "default",
             ],
         ];
 
         $heading = Heading2::fromArray($array);
 
         $this->assertEquals($array, $heading->toArray());
+    }
+
+    public function test_change_color(): void
+    {
+        $h1 = Heading2::fromString("Hello!")->changeColor(Color::Green);
+
+        $this->assertSame(Color::Green, $h1->color);
     }
 }
