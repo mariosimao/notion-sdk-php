@@ -42,7 +42,10 @@
         "ci:coverage": "paratest --coverage-clover dist/phpunit/clover.xml",
         "ci:unit": "paratest --testsuite Unit",
         "ci:integration": "paratest --testsuite Integration",
-        "ci:mutation": "infection --threads=max",
+        "ci:mutation": [
+            "Composer\\Config::disableProcessTimeout",
+            "infection --threads=max"
+        ],
         "test": [
             "@test:phpcs",
             "@test:psalm",
