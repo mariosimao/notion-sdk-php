@@ -5,6 +5,7 @@ namespace Notion\Test\Unit\Databases\Query;
 use Notion\Databases\Query\DateFilter;
 use Notion\Databases\Query\Operator;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 class DateFilterTest extends TestCase
 {
@@ -129,9 +130,9 @@ class DateFilterTest extends TestCase
 
         $expected = [
             "property" => "Release date",
-            "date" => [ "past_week" => [] ],
+            "date" => [ "past_week" => new stdClass() ],
         ];
-        $this->assertSame($expected, $filter->toArray());
+        $this->assertEquals($expected, $filter->toArray());
     }
 
     public function test_past_month(): void
@@ -141,9 +142,9 @@ class DateFilterTest extends TestCase
 
         $expected = [
             "property" => "Release date",
-            "date" => [ "past_month" => [] ],
+            "date" => [ "past_month" => new stdClass() ],
         ];
-        $this->assertSame($expected, $filter->toArray());
+        $this->assertEquals($expected, $filter->toArray());
     }
 
     public function test_past_year(): void
@@ -153,9 +154,9 @@ class DateFilterTest extends TestCase
 
         $expected = [
             "property" => "Release date",
-            "date" => [ "past_year" => [] ],
+            "date" => [ "past_year" => new stdClass() ],
         ];
-        $this->assertSame($expected, $filter->toArray());
+        $this->assertEquals($expected, $filter->toArray());
     }
 
     public function test_next_week(): void
@@ -165,9 +166,9 @@ class DateFilterTest extends TestCase
 
         $expected = [
             "property" => "Release date",
-            "date" => [ "next_week" => [] ],
+            "date" => [ "next_week" => new stdClass() ],
         ];
-        $this->assertSame($expected, $filter->toArray());
+        $this->assertEquals($expected, $filter->toArray());
     }
 
     public function test_next_month(): void
@@ -177,9 +178,9 @@ class DateFilterTest extends TestCase
 
         $expected = [
             "property" => "Release date",
-            "date" => [ "next_month" => [] ],
+            "date" => [ "next_month" => new stdClass() ],
         ];
-        $this->assertSame($expected, $filter->toArray());
+        $this->assertEquals($expected, $filter->toArray());
     }
 
     public function test_next_year(): void
@@ -189,9 +190,9 @@ class DateFilterTest extends TestCase
 
         $expected = [
             "property" => "Release date",
-            "date" => [ "next_year" => [] ],
+            "date" => [ "next_year" => new stdClass() ],
         ];
-        $this->assertSame($expected, $filter->toArray());
+        $this->assertEquals($expected, $filter->toArray());
     }
 
     public function test_this_week(): void
@@ -201,8 +202,8 @@ class DateFilterTest extends TestCase
 
         $expected = [
             "property" => "Release date",
-            "date" => [ "this_week" => [] ],
+            "date" => [ "this_week" => new stdClass() ],
         ];
-        $this->assertSame($expected, $filter->toArray());
+        $this->assertEquals($expected, $filter->toArray());
     }
 }

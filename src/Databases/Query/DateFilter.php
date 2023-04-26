@@ -2,6 +2,8 @@
 
 namespace Notion\Databases\Query;
 
+use stdClass;
+
 /** @psalm-immutable */
 class DateFilter implements Filter, Condition
 {
@@ -32,7 +34,7 @@ class DateFilter implements Filter, Condition
         private readonly string $propertyType,
         private readonly string $propertyName,
         private readonly Operator $operator,
-        private readonly string|bool|array $value,
+        private readonly string|bool|array|stdClass $value,
     ) {
         if (!in_array($operator, self::$validOperators)) {
             throw new \Exception("Invalid operator");
@@ -84,7 +86,7 @@ class DateFilter implements Filter, Condition
         return $this->operator;
     }
 
-    public function value(): string|bool|array
+    public function value(): string|bool|array|stdClass
     {
         return $this->value;
     }
@@ -136,36 +138,36 @@ class DateFilter implements Filter, Condition
 
     public function pastWeek(): self
     {
-        return new self($this->propertyType, $this->propertyName, Operator::PastWeek, []);
+        return new self($this->propertyType, $this->propertyName, Operator::PastWeek, new stdClass());
     }
 
     public function pastMonth(): self
     {
-        return new self($this->propertyType, $this->propertyName, Operator::PastMonth, []);
+        return new self($this->propertyType, $this->propertyName, Operator::PastMonth, new stdClass());
     }
 
     public function pastYear(): self
     {
-        return new self($this->propertyType, $this->propertyName, Operator::PastYear, []);
+        return new self($this->propertyType, $this->propertyName, Operator::PastYear, new stdClass());
     }
 
     public function nextWeek(): self
     {
-        return new self($this->propertyType, $this->propertyName, Operator::NextWeek, []);
+        return new self($this->propertyType, $this->propertyName, Operator::NextWeek, new stdClass());
     }
 
     public function nextMonth(): self
     {
-        return new self($this->propertyType, $this->propertyName, Operator::NextMonth, []);
+        return new self($this->propertyType, $this->propertyName, Operator::NextMonth, new stdClass());
     }
 
     public function nextYear(): self
     {
-        return new self($this->propertyType, $this->propertyName, Operator::NextYear, []);
+        return new self($this->propertyType, $this->propertyName, Operator::NextYear, new stdClass());
     }
 
     public function thisWeek(): self
     {
-        return new self($this->propertyType, $this->propertyName, Operator::ThisWeek, []);
+        return new self($this->propertyType, $this->propertyName, Operator::ThisWeek, new stdClass());
     }
 }
