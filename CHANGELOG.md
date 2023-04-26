@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.0] 2023-04-26
+
+## Added
+- Support block colors (#209)
+- Render blocks as markdown (#207)
+
+## Fixed
+- API exception on query all pages (#211)
+
+## Build
+- Bump phpunit from 10.0.19 to 10.1.2 (#206)
+- Bump infection from 0.26.19 to 0.26.20 (#204)
+- Bump paratest from 7.1.2 to 7.1.3 (#205)
+- Bump guzzle from 7.5.0 to 7.5.1 (#203)
+
 ## [1.6.2]
 
 ### Fixed
@@ -20,7 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - This week on date filter for database queries. (#184)
-- Relation filter for database queries. (#185) 
+- Relation filter for database queries. (#185)
 
 ## [1.5.0]
 
@@ -301,4 +316,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.6.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.6.0
 [1.6.1]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.6.1
 [1.6.2]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.6.2
-[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.6.2...HEAD
+[1.7.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.7.0
+[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.7.0...HEAD
