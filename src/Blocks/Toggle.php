@@ -59,7 +59,7 @@ class Toggle implements BlockInterface
 
         $text = array_map(fn($t) => RichText::fromArray($t), $toggle["rich_text"]);
 
-        $color = Color::tryFrom($item["color"] ?? "") ?? Color::Default;
+        $color = Color::tryFrom($toggle["color"] ?? "") ?? Color::Default;
 
         $children = array_map(fn($b) => BlockFactory::fromArray($b), $toggle["children"] ?? []);
 
