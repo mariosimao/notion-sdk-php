@@ -19,4 +19,14 @@ class SearchTest extends TestCase
 
         $this->assertGreaterThan(0, count($result->results));
     }
+
+    public function test_search_all(): void
+    {
+        $client = Helper::client();
+
+        $query = Query::all();
+        $result = $client->search()->search($query);
+
+        $this->assertGreaterThan(0, count($result->results));
+    }
 }
