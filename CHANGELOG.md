@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Added
+- Support block as page and database parent
+
 ## [1.7.0] 2023-04-26
 
 ## Added

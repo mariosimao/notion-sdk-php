@@ -4,9 +4,10 @@ namespace Notion\Databases;
 
 /**
  * @psalm-type DatabaseParentJson = array{
- *      type: "page_id"|"workspace",
+ *      type: "page_id"|"workspace"|"block_id",
  *      page_id?: string,
  *      workspace?: true,
+ *      block_id?: string,
  * }
  *
  * @psalm-immutable
@@ -29,6 +30,11 @@ class DatabaseParent
         return new self(DatabaseParentType::Workspace, null);
     }
 
+    public static function block(string $blockId): self
+    {
+        return new self(DatabaseParentType::Block, $blockId);
+    }
+
     /**
      * @param DatabaseParentJson $array
      *
@@ -38,7 +44,7 @@ class DatabaseParent
     {
         $type = DatabaseParentType::from($array["type"]);
 
-        $id = $array["page_id"] ?? null;
+        $id = $array["page_id"] ?? $array["block_id"] ?? null;
 
         return new self($type, $id);
     }
@@ -53,6 +59,9 @@ class DatabaseParent
         if ($this->isWorkspace()) {
             $array["workspace"] = true;
         }
+        if ($this->isBlock()) {
+            $array["block_id"] = $this->id;
+        }
 
         return $array;
     }
@@ -65,5 +74,10 @@ class DatabaseParent
     public function isWorkspace(): bool
     {
         return $this->type === DatabaseParentType::Workspace;
+    }
+
+    public function isBlock(): bool
+    {
+        return $this->type === DatabaseParentType::Block;
     }
 }
