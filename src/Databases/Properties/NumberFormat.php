@@ -6,6 +6,7 @@ enum NumberFormat: string
 {
     case Number = "number";
     case NumberChangeCommas = "number_change_commas";
+    case NumberWithCommas = "number_with_commas";
     case Percent = "percent";
     case Dollar = "dollar";
     case CanadianDollar = "canadian_dollar";
