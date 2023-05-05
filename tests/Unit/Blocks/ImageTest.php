@@ -81,6 +81,7 @@ class ImageTest extends TestCase
             "type"             => "image",
             "image"            => [
                 "type"     => "external",
+                "name" => "File",
                 "external" => [
                     "url" => "https://my-site.com/image.png"
                 ],

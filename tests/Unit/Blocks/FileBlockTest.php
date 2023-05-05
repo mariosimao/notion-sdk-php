@@ -81,6 +81,7 @@ class FileBlockTest extends TestCase
             "type"             => "file",
             "file"            => [
                 "type"     => "external",
+                "name" => "File",
                 "external" => [
                     "url" => "https://my-site.com/file.doc"
                 ],

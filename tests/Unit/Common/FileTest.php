@@ -34,6 +34,7 @@ class FileTest extends TestCase
     {
         $array = [
             "type" => "file",
+            "name" => "Test file",
             "file" => [
                 "url" => "https://notion.so/image.png",
                 "expiry_time" => "2020-12-08T12:00:00.000000Z",
@@ -48,6 +49,7 @@ class FileTest extends TestCase
     {
         $array = [
             "type" => "external",
+            "name" => "Test file",
             "external" => [ "url" => "https://my-site.com/image.png" ],
         ];
         $file = File::fromArray($array);
@@ -60,5 +62,12 @@ class FileTest extends TestCase
         $file = File::createExternal("")->changeUrl("https://my-site.com/image.png");
 
         $this->assertEquals("https://my-site.com/image.png", $file->url);
+    }
+
+    public function test_change_name(): void
+    {
+        $file = File::createExternal("")->changeName("My file name");
+
+        $this->assertSame("My file name", $file->name);
     }
 }
