@@ -125,10 +125,11 @@ class DatabasesTest extends TestCase
         $this->assertCount(5, $pages);
     }
 
+    /** @group bigdb */
     public function test_query_big_database(): void
     {
         $client = Helper::client();
-        $result = $client->search()->search(SearchQuery::title("Big database"));
+        $result = $client->search()->search(SearchQuery::title("Big dataset")->filterByDatabases());
 
         if (
             count($result->results) > 0 &&
@@ -239,7 +240,7 @@ class DatabasesTest extends TestCase
         $client = Helper::client();
 
         $database = Database::create(DatabaseParent::page(Helper::testPageId()))
-            ->changeTitle("Big database");
+            ->changeTitle("Big dataset");
 
         $database = $client->databases()->create($database);
 

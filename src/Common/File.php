@@ -7,6 +7,7 @@ use DateTimeImmutable;
 /**
  * @psalm-type FileJson = array{
  *      type: "external"|"file",
+ *      name: string,
  *      file?: array{ url: string, expiry_time: string },
  *      external?: array{ url: string },
  * }
@@ -19,19 +20,20 @@ class File
         public readonly FileType $type,
         public readonly string $url,
         public readonly DateTimeImmutable|null $expiryTime,
+        public readonly string $name,
     ) {
     }
 
     public static function createExternal(string $url): self
     {
-        return new self(FileType::External, $url, null);
+        return new self(FileType::External, $url, null, "File");
     }
 
     public static function createInternal(
         string $url,
         DateTimeImmutable|null $expiryTime = null
     ): self {
-        return new self(FileType::Internal, $url, $expiryTime);
+        return new self(FileType::Internal, $url, $expiryTime, "File");
     }
 
     /**
@@ -49,6 +51,7 @@ class File
             FileType::from($type),
             $file["url"] ?? "",
             isset($file["expiry_time"]) ? new DateTimeImmutable($file["expiry_time"]) : null,
+            $array["name"] ?? "File",
         );
     }
 
@@ -60,6 +63,7 @@ class File
         if ($type === FileType::Internal) {
             $array = [
                 "type" => "file",
+                "name" => $this->name,
                 "file" => [
                     "url" => $this->url,
                     "expiry_time" => $this->expiryTime?->format(Date::FORMAT),
@@ -70,6 +74,7 @@ class File
         if ($type === FileType::External) {
             $array = [
                 "type" => "external",
+                "name" => $this->name,
                 "external" => [ "url" => $this->url ],
             ];
         }
@@ -89,6 +94,11 @@ class File
 
     public function changeUrl(string $url): self
     {
-        return new self($this->type, $url, $this->expiryTime);
+        return new self($this->type, $url, $this->expiryTime, $this->name);
+    }
+
+    public function changeName(string $name): self
+    {
+        return new self($this->type, $this->url, $this->expiryTime, $name);
     }
 }
