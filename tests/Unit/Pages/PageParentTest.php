@@ -73,6 +73,17 @@ class PageParentTest extends TestCase
         $this->assertEquals($array["workspace"], $parent->toArray()["workspace"]);
     }
 
+    public function test_block_array_conversion(): void
+    {
+        $array = [
+            "type" => "block_id",
+            "block_id" => "7a774b5d-ca74-4679-9f18-689b5a98f138",
+        ];
+        $parent = PageParent::fromArray($array);
+
+        $this->assertEquals($array["block_id"], $parent->toArray()["block_id"]);
+    }
+
     public function test_invalid_type_array(): void
     {
         $this->expectException(\ValueError::class);

@@ -3,7 +3,6 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
-use Notion\Blocks\ToDo;
 use Notion\Exceptions\BlockException;
 use Notion\Blocks\Toggle;
 use Notion\Common\Color;
@@ -190,7 +189,7 @@ class ToggleTest extends TestCase
 
     public function test_change_color(): void
     {
-        $block = ToDo::fromString("Hello World!")->changeColor(Color::Red);
+        $block = Toggle::fromString("Hello World!")->changeColor(Color::Red);
 
         $this->assertSame(Color::Red, $block->color);
     }
