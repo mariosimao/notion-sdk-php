@@ -81,6 +81,7 @@ class PdfTest extends TestCase
             "type"             => "pdf",
             "pdf"            => [
                 "type"     => "external",
+                "name" => "File",
                 "external" => [
                     "url" => "https://my-site.com/document.pdf"
                 ],

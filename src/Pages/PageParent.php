@@ -4,10 +4,11 @@ namespace Notion\Pages;
 
 /**
  * @psalm-type PageParentJson = array{
- *      type: "page_id"|"database_id"|"workspace",
+ *      type: "page_id"|"database_id"|"workspace"|"block_id",
  *      page_id?: string,
  *      database_id?: string,
  *      workspace?: true,
+ *      block_id?: string,
  * }
  *
  * @psalm-immutable
@@ -35,6 +36,11 @@ class PageParent
         return new self(PageParentType::Workspace, null);
     }
 
+    public static function block(string $blockId): self
+    {
+        return new self(PageParentType::Block, $blockId);
+    }
+
     /**
      * @psalm-param PageParentJson $array
      *
@@ -44,7 +50,7 @@ class PageParent
     {
         $type = PageParentType::from($array["type"]);
 
-        $id = $array["page_id"] ?? $array["database_id"] ?? null;
+        $id = $array["page_id"] ?? $array["database_id"] ?? $array["block_id"] ?? null;
 
         return new self($type, $id);
     }
@@ -61,6 +67,9 @@ class PageParent
         }
         if ($this->isWorkspace()) {
             $array["workspace"] = true;
+        }
+        if ($this->isBlock()) {
+            $array["block_id"] = $this->id;
         }
 
         return $array;
@@ -79,5 +88,10 @@ class PageParent
     public function isWorkspace(): bool
     {
         return $this->type === PageParentType::Workspace;
+    }
+
+    public function isBlock(): bool
+    {
+        return $this->type === PageParentType::Block;
     }
 }

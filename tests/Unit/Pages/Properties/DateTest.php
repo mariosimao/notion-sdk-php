@@ -92,5 +92,6 @@ class DateTest extends TestCase
         $date = Date::fromArray($array);
 
         $this->assertTrue($date->isEmpty());
+        $this->assertFalse($date->isRange());
     }
 }
