@@ -24,6 +24,14 @@ class PageParentTest extends TestCase
         $this->assertEquals("058d158b-09de-4d69-be07-901c20a7ca5c", $parent->id);
     }
 
+    public function test_create_parent_block(): void
+    {
+        $parent = PageParent::block("0181c3aa-1112-489f-b34a-515b4e3583ed");
+
+        $this->assertTrue($parent->isBlock());
+        $this->assertSame("0181c3aa-1112-489f-b34a-515b4e3583ed", $parent->id);
+    }
+
     public function test_create_parent_workspace(): void
     {
         $parent = PageParent::workspace();

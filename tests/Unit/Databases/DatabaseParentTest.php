@@ -23,6 +23,14 @@ class DatabaseParentTest extends TestCase
         $this->assertEquals("workspace", $parent->type->value);
     }
 
+    public function test_create_parent_block(): void
+    {
+        $parent = DatabaseParent::block("0181c3aa-1112-489f-b34a-515b4e3583ed");
+
+        $this->assertTrue($parent->isBlock());
+        $this->assertSame("0181c3aa-1112-489f-b34a-515b4e3583ed", $parent->id);
+    }
+
     public function test_page_array_conversion(): void
     {
         $array = [
