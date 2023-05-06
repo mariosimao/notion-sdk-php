@@ -48,6 +48,7 @@ class FilesTest extends TestCase
             "files" => [
                 [
                     "type" => "external",
+                    "name" => "Test file",
                     "external" => [
                         "url"  => "https://example.com/image.png",
                     ],
