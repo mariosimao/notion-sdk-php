@@ -1,1 +1,0 @@
-import{_ as s,c as a,o as n,a as p}from"./app.ee221cd3.js";const C=JSON.parse('{"title":"Child page","description":"","frontmatter":{},"headers":[],"relativePath":"blocks/ChildPage.md","lastUpdated":1683584484000}'),l={name:"blocks/ChildPage.md"},o=p("",4),e=[o];function t(c,r,D,F,y,d){return n(),a("div",null,e)}const A=s(l,[["render",t]]);export{C as __pageData,A as default};
