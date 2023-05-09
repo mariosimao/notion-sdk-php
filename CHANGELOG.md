@@ -6,19 +6,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## Added
-- Support block as page and database parent
+## [v1.8.0] 2023-05-09
+
+### Added
+- Support block as page and database parent (#214)
+- `number_with_commas` format in Number database properties (#216)
+
+### Fixed
+- API error while updating page file property (#220)
+
+### Build
+- Bump php-http/discovery from 1.15.3 to 1.17.0 (#217)
+- Bump infection/infection from 0.26.20 to 0.26.21 (#218)
+- Bump brianium/paratest from 7.1.3 to 7.1.4 (#221)
+- Bump php-http/discovery from 1.17.0 to 1.18.0 (#222)
+- Bump vimeo/psalm from 5.9.0 to 5.11.0 (#223)
 
 ## [1.7.0] 2023-04-26
 
-## Added
+### Added
 - Support block colors (#209)
 - Render blocks as markdown (#207)
 
-## Fixed
+### Fixed
 - API exception on query all pages (#211)
 
-## Build
+### Build
 - Bump phpunit from 10.0.19 to 10.1.2 (#206)
 - Bump infection from 0.26.19 to 0.26.20 (#204)
 - Bump paratest from 7.1.2 to 7.1.3 (#205)
@@ -320,4 +333,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.6.1]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.6.1
 [1.6.2]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.6.2
 [1.7.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.7.0
-[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.7.0...HEAD
+[1.8.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.8.0
+[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.8.0...HEAD
