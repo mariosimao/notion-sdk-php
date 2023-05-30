@@ -7,9 +7,9 @@ use DateTimeImmutable;
 /**
  * @psalm-type FileJson = array{
  *      type: "external"|"file",
- *      name: string,
  *      file?: array{ url: string, expiry_time: string },
  *      external?: array{ url: string },
+ *      name?: string,
  * }
  *
  * @psalm-immutable
@@ -20,20 +20,20 @@ class File
         public readonly FileType $type,
         public readonly string $url,
         public readonly DateTimeImmutable|null $expiryTime,
-        public readonly string $name,
+        public readonly string|null $name,
     ) {
     }
 
     public static function createExternal(string $url): self
     {
-        return new self(FileType::External, $url, null, "File");
+        return new self(FileType::External, $url, null, null);
     }
 
     public static function createInternal(
         string $url,
         DateTimeImmutable|null $expiryTime = null
     ): self {
-        return new self(FileType::Internal, $url, $expiryTime, "File");
+        return new self(FileType::Internal, $url, $expiryTime, null);
     }
 
     /**
@@ -51,7 +51,7 @@ class File
             FileType::from($type),
             $file["url"] ?? "",
             isset($file["expiry_time"]) ? new DateTimeImmutable($file["expiry_time"]) : null,
-            $array["name"] ?? "File",
+            $array["name"] ?? null,
         );
     }
 
@@ -63,7 +63,6 @@ class File
         if ($type === FileType::Internal) {
             $array = [
                 "type" => "file",
-                "name" => $this->name,
                 "file" => [
                     "url" => $this->url,
                     "expiry_time" => $this->expiryTime?->format(Date::FORMAT),
@@ -74,9 +73,12 @@ class File
         if ($type === FileType::External) {
             $array = [
                 "type" => "external",
-                "name" => $this->name,
                 "external" => [ "url" => $this->url ],
             ];
+        }
+
+        if ($this->name !== null) {
+            $array["name"] = $this->name;
         }
 
         return $array;
