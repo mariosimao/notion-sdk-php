@@ -28,6 +28,14 @@ class Files implements PropertyInterface
     {
         $property = PropertyMetadata::create("", PropertyType::Files);
 
+        $files = array_map(function (File $f): File {
+            if ($f->name === null) {
+                $f = $f->changeName("File");
+            }
+
+            return $f;
+        }, $files);
+
         return new self($property, $files);
     }
 
