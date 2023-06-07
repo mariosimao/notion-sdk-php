@@ -87,4 +87,4 @@ This policy may change in the future and exceptions may be made on a case-by-cas
 
 An special thanks to all sponsors who activelly support the SKD!
 
-<!-- sponsors --><!-- sponsors -->
+<!-- sponsors --><a href="https://github.com/rickyheijnen"><img src="https://github.com/rickyheijnen.png" width="60px" alt="Ricky Heijnen" /></a><!-- sponsors -->
