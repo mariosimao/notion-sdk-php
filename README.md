@@ -82,3 +82,9 @@ When a new minor version (e.g. 1.3 -> 1.4) is released, the previous one (1.3) w
 When a new major version is released (e.g. 1.6 -> 2.0), the previous one (1.6) will receive critical bug fixes for at least 3 months and security updates for 6 months after that new release comes out.
 
 This policy may change in the future and exceptions may be made on a case-by-case basis.
+        
+## ❤️ Sponsors
+
+An special thanks to all sponsors who activelly support the SKD!
+
+<!-- sponsors --><!-- sponsors -->
