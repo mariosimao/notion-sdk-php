@@ -17,8 +17,5 @@ jobs:
           file: 'README.md'
           minimum: 1000
           
-      - name: Deploy to GitHub
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: main
-          folder: '.'
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
