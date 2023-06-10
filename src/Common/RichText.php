@@ -87,7 +87,7 @@ class RichText
             "",
             null,
             $annotations,
-            RichTextType::Equation,
+            RichTextType::Mention,
             null,
             $mention,
             null,
