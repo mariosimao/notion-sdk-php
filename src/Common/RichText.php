@@ -177,7 +177,7 @@ class RichText
             $href,
             $this->annotations,
             $this->type,
-            $this->text,
+            $this->text->changeUrl($href),
             $this->mention,
             $this->equation,
         );
