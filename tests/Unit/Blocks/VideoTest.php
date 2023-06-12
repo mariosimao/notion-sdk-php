@@ -81,7 +81,6 @@ class VideoTest extends TestCase
             "type"             => "video",
             "video"            => [
                 "type"     => "external",
-                "name" => "File",
                 "external" => [
                     "url" => "https://my-site.com/video.mp4"
                 ],
