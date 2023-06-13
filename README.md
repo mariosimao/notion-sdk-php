@@ -25,19 +25,19 @@
     </a>
 </p>
 
-    
+
 ## 📦 Installation
 
 This project requires PHP 8.1 or higher. To install it with Composer run:
-        
+
 ```bash
 $ composer require mariosimao/notion-sdk-php
 ```
-        
+
 ## 👩‍💻 Basic usage
-        
+
 Creating a page on Notion with the SDK is easy.
-        
+
 ```php
 use Notion\Blocks\Heading1;
 use Notion\Blocks\ToDo;
@@ -69,7 +69,7 @@ $page = $notion->pages()->create($page, $content);
 ## 📄 Documentation
 
 Further documentation can be found at https://mario.engineering/notion-sdk-php.
-        
+
 ## 🏷️ Versioning
 
 [SemVer](semver.org) is followed closely. Minor and patch releases should not introduce breaking changes to the codebase.
@@ -82,9 +82,9 @@ When a new minor version (e.g. 1.3 -> 1.4) is released, the previous one (1.3) w
 When a new major version is released (e.g. 1.6 -> 2.0), the previous one (1.6) will receive critical bug fixes for at least 3 months and security updates for 6 months after that new release comes out.
 
 This policy may change in the future and exceptions may be made on a case-by-case basis.
-        
+
 ## ❤️ Sponsors
 
-An special thanks to all sponsors who activelly support the SKD!
+An special thanks to all sponsors who activelly support the SDK!
 
 <!-- sponsors --><a href="https://github.com/rickyheijnen"><img src="https://github.com/rickyheijnen.png" width="60px" alt="Ricky Heijnen" /></a><!-- sponsors -->

@@ -15,7 +15,6 @@ class IconTest extends TestCase
 
         $expected = [
             "type" => "external",
-            "name" => "File",
             "external" => ["url" => "http://example.com/icon.png"],
         ];
 

@@ -6,6 +6,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.8.1] 2023-06-12
+
+## Fixed
+- Rich Text mention creation (#241)
+- Possible null pointer on RichText (#246)
+- Change rich text URL
+- Only send to API file name when set (#234)
+
+## Build
+- Bump phpunit/phpunit from 10.1.2 to 10.1.3 (#227)
+- Bump guzzlehttp/guzzle from 7.5.1 to 7.6.1 (#226)
+- Bump php-http/discovery from 1.18.0 to 1.18.1 (#228)
+- Bump infection/infection from 0.26.21 to 0.27.0 (#229)
+- Bump guzzlehttp/guzzle from 7.6.1 to 7.7.0 (#230)
+- Bump vimeo/psalm from 5.11.0 to 5.12.0 (#233)
+- Bump vite from 3.1.3 to 3.2.7 in /docs (#236)
+- Bump phpunit/phpunit from 10.1.3 to 10.2.2 (#244)
+
+## Test
+- Fix file-related tests (#245)
+
+## Chore
+- Add sponsors to README (#237)
+
 ## [v1.8.0] 2023-05-09
 
 ### Added
@@ -334,4 +358,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.6.2]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.6.2
 [1.7.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.7.0
 [1.8.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.8.0
-[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.8.0...HEAD
+[1.8.1]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.8.1
+[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.8.1...HEAD
