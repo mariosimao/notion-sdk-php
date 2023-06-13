@@ -4,6 +4,7 @@ namespace Notion\Blocks;
 
 use Notion\Exceptions\BlockException;
 use Notion\Common\File;
+use Notion\Common\RichText;
 
 /**
  * @psalm-import-type BlockMetadataJson from BlockMetadata
@@ -17,16 +18,17 @@ class Image implements BlockInterface
 {
     private function __construct(
         private readonly BlockMetadata $metadata,
-        public readonly File $file
+        public readonly File $file,
+        public readonly array $caption
     ) {
         $metadata->checkType(BlockType::Image);
     }
 
-    public static function fromFile(File $file): self
+    public static function fromFile(File $file, RichText ...$caption): self
     {
         $block = BlockMetadata::create(BlockType::Image);
 
-        return new self($block, $file);
+        return new self($block, $file, $caption);
     }
 
     public static function fromArray(array $array): self
@@ -37,7 +39,10 @@ class Image implements BlockInterface
         /** @psalm-var ImageJson $array */
         $file = File::fromArray($array["image"]);
 
-        return new self($block, $file);
+        /** @psalm-var RichTextJson $array */
+        $caption = array_map(fn($t) => RichText::fromArray($t), $array["image"]["caption"]);
+
+        return new self($block, $file, $caption);
     }
 
     public function toArray(): array
@@ -45,6 +50,8 @@ class Image implements BlockInterface
         $array = $this->metadata->toArray();
 
         $array["image"] = $this->file->toArray();
+
+        $array["image"]["caption"] = array_map(fn(RichText $t) => $t->toArray(), $this->caption);
 
         return $array;
     }
@@ -56,7 +63,7 @@ class Image implements BlockInterface
 
     public function changeFile(File $file): self
     {
-        return new self($this->metadata, $file);
+        return new self($this->metadata, $file, $this->caption);
     }
 
     public function addChild(BlockInterface $child): never
@@ -74,6 +81,7 @@ class Image implements BlockInterface
         return new self(
             $this->metadata->archive(),
             $this->file,
+            $this->caption,
         );
     }
 }
