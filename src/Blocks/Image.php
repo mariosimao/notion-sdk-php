@@ -4,6 +4,7 @@ namespace Notion\Blocks;
 
 use Notion\Exceptions\BlockException;
 use Notion\Common\File;
+use Notion\Common\RichText;
 
 /**
  * @psalm-import-type BlockMetadataJson from BlockMetadata
@@ -17,7 +18,7 @@ class Image implements BlockInterface
 {
     private function __construct(
         private readonly BlockMetadata $metadata,
-        public readonly File $file
+        public readonly File $file,
     ) {
         $metadata->checkType(BlockType::Image);
     }
@@ -57,6 +58,11 @@ class Image implements BlockInterface
     public function changeFile(File $file): self
     {
         return new self($this->metadata, $file);
+    }
+
+    public function changeCaption(RichText ...$caption): self
+    {
+        return new self($this->metadata, $this->file->changeCaption(...$caption));
     }
 
     public function addChild(BlockInterface $child): never

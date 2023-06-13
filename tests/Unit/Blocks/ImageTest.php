@@ -8,6 +8,7 @@ use Notion\Blocks\Image;
 use Notion\Blocks\Paragraph;
 use Notion\Common\Date;
 use Notion\Common\File;
+use Notion\Common\RichText;
 use PHPUnit\Framework\TestCase;
 
 class ImageTest extends TestCase
@@ -130,5 +131,15 @@ class ImageTest extends TestCase
         $block = $block->archive();
 
         $this->assertTrue($block->metadata()->archived);
+    }
+
+    public function test_change_caption(): void
+    {
+        $file = File::createExternal("https://my-site.com/image.png");
+
+        $caption = RichText::fromString("Sample caption");
+        $block = Image::fromFile($file)->changeCaption($caption);
+
+        $this->assertEquals([$caption], $block->file->caption);
     }
 }
