@@ -5,6 +5,7 @@ namespace Notion\Test\Unit\Common;
 use DateTimeImmutable;
 use Notion\Common\File;
 use Notion\Common\FileType;
+use Notion\Common\RichText;
 use PHPUnit\Framework\TestCase;
 
 class FileTest extends TestCase
@@ -51,6 +52,20 @@ class FileTest extends TestCase
             "type" => "external",
             "name" => "Test file",
             "external" => [ "url" => "https://my-site.com/image.png" ],
+            "caption" => [[
+                "plain_text" => "Sample caption",
+                "href" => null,
+                "annotations" => [
+                    "bold"          => false,
+                    "italic"        => false,
+                    "strikethrough" => false,
+                    "underline"     => false,
+                    "code"          => false,
+                    "color"         => "default",
+                ],
+                "type" => "text",
+                "text" => [ "content" => "Sample caption" ],
+            ]],
         ];
         $file = File::fromArray($array);
 
@@ -69,5 +84,13 @@ class FileTest extends TestCase
         $file = File::createExternal("")->changeName("My file name");
 
         $this->assertSame("My file name", $file->name);
+    }
+
+    public function test_change_caption(): void
+    {
+        $caption = [ RichText::fromString("Sample caption.") ];
+
+        $file = File::createExternal("")->changeCaption(...$caption);
+        $this->assertEquals($caption, $file->caption);
     }
 }
