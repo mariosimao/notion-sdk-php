@@ -12,11 +12,11 @@ All block objects have the `metadata()` method, witch exposes some metadata.
 ```php
 $p = Paragraph::fromString("Simple paragraph.");
 
-$p->metadta()->id;                              // a9f03ee5...
-$p->metadta()->createdTime->format("Y-m-d");    // 2022-07-01
-$p->metadta()->lastEditedTime->format("Y-m-d"); // 2022-07-01
-$p->metadta()->archived;                        // false
-$p->metadta()->hasChildren;                     // false
+$p->metadata()->id;                              // a9f03ee5...
+$p->metadata()->createdTime->format("Y-m-d");    // 2022-07-01
+$p->metadata()->lastEditedTime->format("Y-m-d"); // 2022-07-01
+$p->metadata()->archived;                        // false
+$p->metadata()->hasChildren;                     // false
 ```
 
 ## Children
