@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.9.0] 2023-06-15
+
+## Added
+- Caption on image block and file objects (#250)
+
+## Fixed
+- Do not update CreatedBy prop on pages (#251)
+
 ## [v1.8.1] 2023-06-12
 
 ## Fixed
@@ -359,4 +367,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.7.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.7.0
 [1.8.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.8.0
 [1.8.1]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.8.1
-[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.8.1...HEAD
+[1.9.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.9.0
+[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.9.0...HEAD
