@@ -6,8 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.10.0] 2023-06-27
+
 ### Added
 - Page properties with empty values (#260)
+
+### Build
+- Bump php-http/discovery from 1.18.1 to 1.19.0 (#254)
+- Bump brianium/paratest from 7.1.4 to 7.2.0 (#255)
+- Bump vimeo/psalm from 5.12.0 to 5.13.0 (#259)
+- Bump brianium/paratest from 7.2.0 to 7.2.2 (#258)
+
+### Documentation
+- Fix typo on `metadata` method (#253)
 
 ## [v1.9.0] 2023-06-15
 
@@ -371,4 +382,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.8.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.8.0
 [1.8.1]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.8.1
 [1.9.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.9.0
-[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.9.0...HEAD
+[1.10.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.10.0
+[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.10.0...HEAD
