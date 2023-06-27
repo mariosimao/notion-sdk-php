@@ -6,23 +6,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Page properties with empty values (#260)
+
 ## [v1.9.0] 2023-06-15
 
-## Added
+### Added
 - Caption on image block and file objects (#250)
 
-## Fixed
+### Fixed
 - Do not update CreatedBy prop on pages (#251)
 
 ## [v1.8.1] 2023-06-12
 
-## Fixed
+### Fixed
 - Rich Text mention creation (#241)
 - Possible null pointer on RichText (#246)
 - Change rich text URL
 - Only send to API file name when set (#234)
 
-## Build
+### Build
 - Bump phpunit/phpunit from 10.1.2 to 10.1.3 (#227)
 - Bump guzzlehttp/guzzle from 7.5.1 to 7.6.1 (#226)
 - Bump php-http/discovery from 1.18.0 to 1.18.1 (#228)
@@ -32,10 +35,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump vite from 3.1.3 to 3.2.7 in /docs (#236)
 - Bump phpunit/phpunit from 10.1.3 to 10.2.2 (#244)
 
-## Test
+### Test
 - Fix file-related tests (#245)
 
-## Chore
+### Chore
 - Add sponsors to README (#237)
 
 ## [v1.8.0] 2023-05-09
