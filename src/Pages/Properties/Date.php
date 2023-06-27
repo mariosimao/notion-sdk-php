@@ -86,6 +86,11 @@ class Date implements PropertyInterface
         return new self($this->metadata, $this->date?->removeEnd());
     }
 
+    public function clear(): self
+    {
+        return new self($this->metadata, null);
+    }
+
     public function start(): DateTimeImmutable|null
     {
         return $this->date?->start;

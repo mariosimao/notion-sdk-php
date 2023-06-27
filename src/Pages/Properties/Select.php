@@ -79,6 +79,11 @@ class Select implements PropertyInterface
         return new self($this->metadata, $option);
     }
 
+    public function clear(): self
+    {
+        return new self($this->metadata, null);
+    }
+
     public function isEmpty(): bool
     {
         return $this->option === null;

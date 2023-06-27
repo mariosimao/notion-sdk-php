@@ -34,6 +34,13 @@ class DateTest extends TestCase
         $this->assertEquals($end, $date->end());
     }
 
+    public function test_create_empty(): void
+    {
+        $date = Date::createEmpty();
+
+        $this->assertTrue($date->isEmpty());
+    }
+
     public function test_change_start(): void
     {
         $newStart = new DateTimeImmutable("2021-01-01");
@@ -63,6 +70,15 @@ class DateTest extends TestCase
 
         $this->assertNull($date->end());
         $this->assertFalse($date->isRange());
+    }
+
+    public function test_clear(): void
+    {
+        $someday = new DateTimeImmutable("2021-01-01");
+
+        $date = Date::create($someday)->clear();
+
+        $this->assertTrue($date->isEmpty());
     }
 
     public function test_array_conversion(): void
