@@ -19,6 +19,13 @@ class RichTextPropertyTest extends TestCase
         $this->assertTrue($text->metadata()->type === PropertyType::RichText);
     }
 
+    public function test_create_empty(): void
+    {
+        $text = RichTextProperty::createEmpty();
+
+        $this->assertTrue($text->isEmpty());
+    }
+
     public function test_array_conversion(): void
     {
         $array = [
@@ -61,5 +68,12 @@ class RichTextPropertyTest extends TestCase
             RichText::fromString("Dummy text")
         );
         $this->assertEquals("Dummy text", $text->toString());
+    }
+
+    public function test_clear(): void
+    {
+        $text = RichTextProperty::fromString("Dummy text")->clear();
+
+        $this->assertTrue($text->isEmpty());
     }
 }

@@ -26,6 +26,13 @@ class Email implements PropertyInterface
         return new self($property, $email);
     }
 
+    public static function createEmpty(): self
+    {
+        $property = PropertyMetadata::create("", PropertyType::Email);
+
+        return new self($property, null);
+    }
+
     public static function fromArray(array $array): self
     {
         /** @psalm-var EmailJson $array */
@@ -54,6 +61,11 @@ class Email implements PropertyInterface
     public function changeEmail(string $email): self
     {
         return new self($this->metadata, $email);
+    }
+
+    public function clear(): self
+    {
+        return new self($this->metadata, null);
     }
 
     public function isEmpty(): bool

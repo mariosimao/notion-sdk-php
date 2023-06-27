@@ -12,11 +12,18 @@ class NumberTest extends TestCase
 {
     public function test_create(): void
     {
-        $text = Number::create(123);
+        $number = Number::create(123);
 
-        $this->assertEquals(123, $text->number);
-        $this->assertEquals("", $text->metadata()->id);
-        $this->assertEquals(PropertyType::Number, $text->metadata()->type);
+        $this->assertEquals(123, $number->number);
+        $this->assertEquals("", $number->metadata()->id);
+        $this->assertEquals(PropertyType::Number, $number->metadata()->type);
+    }
+
+    public function test_create_empty(): void
+    {
+        $number = Number::createEmpty();
+
+        $this->assertTrue($number->isEmpty());
     }
 
     public function test_array_conversion(): void
@@ -27,17 +34,24 @@ class NumberTest extends TestCase
             "number" => 123,
         ];
 
-        $text = Number::fromArray($array);
+        $number = Number::fromArray($array);
         $fromFactory = PropertyFactory::fromArray($array);
 
-        $this->assertEquals($array, $text->toArray());
+        $this->assertEquals($array, $number->toArray());
         $this->assertEquals($array, $fromFactory->toArray());
     }
 
     public function test_change_value(): void
     {
-        $text = Number::create(123)->changeNumber(0.25);
-        $this->assertEquals(0.25, $text->number);
+        $number = Number::create(123)->changeNumber(0.25);
+        $this->assertEquals(0.25, $number->number);
+    }
+
+    public function test_clear(): void
+    {
+        $number = Number::create(123)->clear();
+
+        $this->assertTrue($number->isEmpty());
     }
 
     public function test_is_empty(): void
@@ -48,8 +62,8 @@ class NumberTest extends TestCase
             "number" => null,
         ];
 
-        $text = Number::fromArray($array);
+        $number = Number::fromArray($array);
 
-        $this->assertTrue($text->isEmpty());
+        $this->assertTrue($number->isEmpty());
     }
 }

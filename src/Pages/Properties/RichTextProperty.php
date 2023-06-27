@@ -39,6 +39,13 @@ class RichTextProperty implements PropertyInterface
         return new self($metadata, $texts);
     }
 
+    public static function createEmpty(): self
+    {
+        $metadata = PropertyMetadata::create("", PropertyType::RichText);
+
+        return new self($metadata, []);
+    }
+
     public static function fromArray(array $array): self
     {
         /** @psalm-var RichTextPropertyMetadataJson $array */
@@ -72,6 +79,16 @@ class RichTextProperty implements PropertyInterface
     public function changeText(RichText ...$texts): self
     {
         return new self($this->metadata, $texts);
+    }
+
+    public function clear(): self
+    {
+        return new self($this->metadata, []);
+    }
+
+    public function isEmpty(): bool
+    {
+        return count($this->text) === 0;
     }
 
     public function toString(): string

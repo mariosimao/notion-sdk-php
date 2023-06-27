@@ -44,6 +44,13 @@ class Select implements PropertyInterface
         return new self($metadata, $option);
     }
 
+    public static function createEmpty(): self
+    {
+        $metadata = PropertyMetadata::create("", PropertyType::Select);
+
+        return new self($metadata, null);
+    }
+
     public static function fromArray(array $array): self
     {
         /** @psalm-var SelectJson $array */
@@ -70,6 +77,11 @@ class Select implements PropertyInterface
     public function changeOption(SelectOption $option): self
     {
         return new self($this->metadata, $option);
+    }
+
+    public function clear(): self
+    {
+        return new self($this->metadata, null);
     }
 
     public function isEmpty(): bool

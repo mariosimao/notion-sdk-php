@@ -17,11 +17,25 @@ class PhoneNumberTest extends TestCase
         $this->assertEquals("415-000-1111", $phone->phone);
     }
 
+    public function test_create_empty(): void
+    {
+        $phone = PhoneNumber::createEmpty();
+
+        $this->assertTrue($phone->isEmpty());
+    }
+
     public function test_change_phone(): void
     {
         $phone = PhoneNumber::create("415-000-1111")->changePhone("415-000-2222");
 
         $this->assertEquals("415-000-2222", $phone->phone);
+    }
+
+    public function test_clear(): void
+    {
+        $phone = PhoneNumber::create("415-000-1111")->clear();
+
+        $this->assertTrue($phone->isEmpty());
     }
 
     public function test_array_conversion(): void

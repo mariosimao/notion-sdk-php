@@ -40,6 +40,13 @@ class SelectTest extends TestCase
         $this->assertEquals("abc", $select->option?->id);
     }
 
+    public function test_create_empty(): void
+    {
+        $select = Select::createEmpty();
+
+        $this->assertTrue($select->isEmpty());
+    }
+
     public function test_change_option(): void
     {
         $optionA = SelectOption::fromId("abc");
@@ -49,6 +56,15 @@ class SelectTest extends TestCase
         $select = $select->changeOption($optionB);
 
         $this->assertEquals($optionB, $select->option);
+    }
+
+    public function test_clear(): void
+    {
+        $option = SelectOption::fromId("abc");
+
+        $select = Select::fromOption($option)->clear();
+
+        $this->assertTrue($select->isEmpty());
     }
 
     public function test_array_conversion(): void

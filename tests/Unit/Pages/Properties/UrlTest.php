@@ -17,11 +17,25 @@ class UrlTest extends TestCase
         $this->assertEquals("https://notion.so", $url->url);
     }
 
+    public function test_create_empty(): void
+    {
+        $url = Url::createEmpty();
+
+        $this->assertTrue($url->isEmpty());
+    }
+
     public function test_change_url(): void
     {
         $url = Url::create("https://notion.so")->changeUrl("https://google.com");
 
         $this->assertEquals("https://google.com", $url->url);
+    }
+
+    public function test_clear(): void
+    {
+        $url = Url::create("https://notion.so")->clear();
+
+        $this->assertTrue($url->isEmpty());
     }
 
     public function test_array_conversion(): void

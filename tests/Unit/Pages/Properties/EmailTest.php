@@ -17,11 +17,25 @@ class EmailTest extends TestCase
         $this->assertEquals("mario@domain.com", $email->email);
     }
 
+    public function test_create_empty(): void
+    {
+        $email = Email::createEmpty();
+
+        $this->assertTrue($email->isEmpty());
+    }
+
     public function test_change_email(): void
     {
         $email = Email::create("mario@domain.com")->changeEmail("luigi@domain.com");
 
         $this->assertEquals("luigi@domain.com", $email->email);
+    }
+
+    public function test_clear(): void
+    {
+        $email = Email::create("mario@domain.com")->clear();
+
+        $this->assertTrue($email->isEmpty());
     }
 
     public function test_array_conversion(): void

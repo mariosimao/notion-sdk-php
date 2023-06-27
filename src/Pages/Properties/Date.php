@@ -39,6 +39,13 @@ class Date implements PropertyInterface
         return new self($property, CommonDate::createRange($start, $end));
     }
 
+    public static function createEmpty(): self
+    {
+        $metadata = PropertyMetadata::create("", PropertyType::Date);
+
+        return new self($metadata, null);
+    }
+
     public static function fromArray(array $array): self
     {
         /** @psalm-var DateJson $array */
@@ -77,6 +84,11 @@ class Date implements PropertyInterface
     public function removeEnd(): self
     {
         return new self($this->metadata, $this->date?->removeEnd());
+    }
+
+    public function clear(): self
+    {
+        return new self($this->metadata, null);
     }
 
     public function start(): DateTimeImmutable|null

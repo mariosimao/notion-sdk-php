@@ -26,6 +26,13 @@ class PhoneNumber implements PropertyInterface
         return new self($property, $phone);
     }
 
+    public static function createEmpty(): self
+    {
+        $property = PropertyMetadata::create("", PropertyType::PhoneNumber);
+
+        return new self($property, null);
+    }
+
     public static function fromArray(array $array): self
     {
         /** @psalm-var PhoneNumberJson $array */
@@ -54,6 +61,11 @@ class PhoneNumber implements PropertyInterface
     public function changePhone(string $phone): self
     {
         return new self($this->metadata, $phone);
+    }
+
+    public function clear(): self
+    {
+        return new self($this->metadata, null);
     }
 
     public function isEmpty(): bool

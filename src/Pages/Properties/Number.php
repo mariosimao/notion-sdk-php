@@ -2,8 +2,6 @@
 
 namespace Notion\Pages\Properties;
 
-use Notion\Common\RichText;
-
 /**
  * @psalm-type NumberJson = array{
  *      id: string,
@@ -26,6 +24,13 @@ class Number implements PropertyInterface
         $property = PropertyMetadata::create("", PropertyType::Number);
 
         return new self($property, $number);
+    }
+
+    public static function createEmpty(): self
+    {
+        $property = PropertyMetadata::create("", PropertyType::Number);
+
+        return new self($property, null);
     }
 
     public static function fromArray(array $array): self
@@ -56,6 +61,11 @@ class Number implements PropertyInterface
     public function changeNumber(int|float $number): self
     {
         return new self($this->metadata, $number);
+    }
+
+    public function clear(): self
+    {
+        return new self($this->metadata, null);
     }
 
     public function isEmpty(): bool
