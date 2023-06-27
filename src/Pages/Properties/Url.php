@@ -26,6 +26,13 @@ class Url implements PropertyInterface
         return new self($metadata, $url);
     }
 
+    public static function createEmpty(): self
+    {
+        $metadata = PropertyMetadata::create("", PropertyType::Url);
+
+        return new self($metadata, null);
+    }
+
     public static function fromArray(array $array): self
     {
         /** @psalm-var UrlJson $array */
@@ -54,6 +61,11 @@ class Url implements PropertyInterface
     public function changeUrl(string $url): self
     {
         return new self($this->metadata, $url);
+    }
+
+    public function clear(): self
+    {
+        return new self($this->metadata, null);
     }
 
     public function isEmpty(): bool

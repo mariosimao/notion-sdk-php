@@ -5,9 +5,11 @@ namespace Notion\Pages\Properties;
 /** @psalm-immutable */
 final class PropertyCollection
 {
-    /** @param array<string, PropertyInterface> $properties */
+    /**
+     * @param array<string, PropertyInterface> $properties
+     */
     private function __construct(
-        private readonly array $properties
+        private readonly array $properties,
     ) {
     }
 

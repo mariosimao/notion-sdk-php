@@ -39,6 +39,13 @@ class Date implements PropertyInterface
         return new self($property, CommonDate::createRange($start, $end));
     }
 
+    public static function createEmpty(): self
+    {
+        $metadata = PropertyMetadata::create("", PropertyType::Date);
+
+        return new self($metadata, null);
+    }
+
     public static function fromArray(array $array): self
     {
         /** @psalm-var DateJson $array */
