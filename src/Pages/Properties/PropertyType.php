@@ -23,6 +23,7 @@ enum PropertyType: string
     case Select = "select";
     case Status = "status";
     case Title = "title";
+    case UniqueId = "unique_id";
     case Url = "url";
     case Unknown = "unknown";
 }
