@@ -10,6 +10,8 @@ use Notion\Pages\Properties\CreatedTime;
 use Notion\Pages\Properties\LastEditedBy;
 use Notion\Pages\Properties\LastEditedTime;
 use Notion\Pages\Properties\PropertyInterface;
+use Notion\Pages\Properties\PropertyType;
+use Notion\Pages\Properties\UniqueId;
 
 /**
  * @psalm-import-type PageJson from Page
@@ -61,11 +63,19 @@ class Client
 
     public function update(Page $page): Page
     {
-        $updatableProps = array_filter($page->properties, function (PropertyInterface $p) {
-            $notUpdatableProps = [ CreatedTime::class, LastEditedBy::class, LastEditedTime::class, CreatedBy::class ];
-
-            return (!in_array($p::class, $notUpdatableProps));
-        });
+        $notUpdatableProps = [
+            PropertyType::CreatedBy,
+            PropertyType::CreatedTime,
+            PropertyType::LastEditedBy,
+            PropertyType::LastEditedTime,
+            PropertyType::UniqueId,
+        ];
+        $updatableProps = array_filter(
+            $page->properties,
+            function (PropertyInterface $p) use ($notUpdatableProps) {
+                return (!in_array($p->metadata()->type, $notUpdatableProps));
+            }
+        );
 
         $data = json_encode([
             "archived" => $page->archived,
