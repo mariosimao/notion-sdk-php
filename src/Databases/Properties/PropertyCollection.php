@@ -251,6 +251,16 @@ final class PropertyCollection
         return $this->getTypedById($propertyId, Title::class);
     }
 
+    public function getUniqueId(string $propertyName): UniqueId
+    {
+        return $this->getTyped($propertyName, UniqueId::class);
+    }
+
+    public function getUniqueIdById(string $propertyName): UniqueId
+    {
+        return $this->getTypedById($propertyName, UniqueId::class);
+    }
+
     public function getUrl(string $propertyName): Url
     {
         return $this->getTyped($propertyName, Url::class);

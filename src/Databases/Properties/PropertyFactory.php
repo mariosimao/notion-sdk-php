@@ -30,6 +30,7 @@ class PropertyFactory
             PropertyType::Select         => Select::fromArray($array),
             PropertyType::Status         => Status::fromArray($array),
             PropertyType::Title          => Title::fromArray($array),
+            PropertyType::UniqueId       => UniqueId::fromArray($array),
             PropertyType::Url            => Url::fromArray($array),
             default                      => Unknown::fromArray($array),
         };

@@ -620,4 +620,36 @@ class PropertyCollectionTest extends TestCase
 
         $this->assertSame($prop, $c->getUrl("Name"));
     }
+
+    public function test_get_unique_id_by_id(): void
+    {
+        $prop = Properties\UniqueId::fromArray([
+            "id" => "abc",
+            "type" => "unique_id",
+            "unique_id" => [
+                "number" => 123,
+                "prefix" => "ISSUE",
+            ],
+        ]);
+
+        $c = PropertyCollection::create([ "Name" => $prop ]);
+
+        $this->assertSame($prop, $c->getUniqueIdById("abc"));
+    }
+
+    public function test_get_unique_id(): void
+    {
+        $prop = Properties\UniqueId::fromArray([
+            "id" => "abc",
+            "type" => "unique_id",
+            "unique_id" => [
+                "number" => 123,
+                "prefix" => "ISSUE",
+            ],
+        ]);
+
+        $c = PropertyCollection::create([ "Name" => $prop ]);
+
+        $this->assertSame($prop, $c->getUniqueId("Name"));
+    }
 }

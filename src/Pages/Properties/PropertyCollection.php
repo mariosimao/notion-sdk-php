@@ -254,14 +254,24 @@ final class PropertyCollection
         return $this->getTypedById($propertyId, Status::class);
     }
 
+    public function getUniqueId(string $propertyName): UniqueId
+    {
+        return $this->getTyped($propertyName, UniqueId::class);
+    }
+
+    public function getUniqueIdById(string $propertyId): UniqueId
+    {
+        return $this->getTypedById($propertyId, UniqueId::class);
+    }
+
     public function getUrl(string $propertyName): Url
     {
         return $this->getTyped($propertyName, Url::class);
     }
 
-    public function getUrlById(string $propertyName): Url
+    public function getUrlById(string $propertyId): Url
     {
-        return $this->getTypedById($propertyName, Url::class);
+        return $this->getTypedById($propertyId, Url::class);
     }
 
     /**
