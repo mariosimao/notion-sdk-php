@@ -68,6 +68,7 @@ class Client
             PropertyType::CreatedTime,
             PropertyType::LastEditedBy,
             PropertyType::LastEditedTime,
+            PropertyType::Rollup,
             PropertyType::UniqueId,
         ];
         $updatableProps = array_filter(
