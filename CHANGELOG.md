@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.11.0] 2023-08-02
+
+### Added
+- UniqueId page and database property (#268)
+### Fixed
+- Do not update Unique ID property (#269)
+- Do not update Rollup properties (#272)
+### Build
+- Bump vimeo/psalm from 5.13.0 to 5.13.1 (#263)
+- Bump phpunit/phpunit from 10.2.2 to 10.2.3 (#262)
+- Bump phpunit/phpunit from 10.2.3 to 10.2.4 (#264)
+- Bump php-http/discovery from 1.19.0 to 1.19.1 (#266)
+- Bump phpunit/phpunit from 10.2.4 to 10.2.6 (#265)
+- Bump brianium/paratest from 7.2.2 to 7.2.3 (#267)
+- Bump vimeo/psalm from 5.13.1 to 5.14.0 (#271)
+
 ## [v1.10.0] 2023-06-27
 
 ### Added
@@ -383,4 +399,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.8.1]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.8.1
 [1.9.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.9.0
 [1.10.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.10.0
-[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.10.0...HEAD
+[1.11.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.11.0
+[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.11.0...HEAD
