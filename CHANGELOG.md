@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.11.1] 2023-08-02
+## Fixed
+- Error when Notion sends an empty response (#289)
+### Build
+- Bump brianium/paratest from 7.2.3 to 7.2.4 (#274)
+- Bump vimeo/psalm from 5.14.0 to 5.14.1 (#275)
+- Bump brianium/paratest from 7.2.4 to 7.2.5 (#277)
+- Bump phpunit/phpunit from 10.3.1 to 10.3.2 (#278)
+- Bump vimeo/psalm from 5.14.1 to 5.15.0 (#279)
+- Bump guzzlehttp/guzzle from 7.7.0 to 7.8.0 (#280)
+- Bump brianium/paratest from 7.2.5 to 7.2.6 (#283)
+- Bump phpunit/phpunit from 10.3.2 to 10.3.3 (#284)
+- Bump phpunit/phpunit from 10.3.3 to 10.3.4 (#286)
+- Bump brianium/paratest from 7.2.6 to 7.2.7 (#288)
+- Bump infection/infection from 0.27.0 to 0.27.2 (#287)
+
 ## [v1.11.0] 2023-08-02
 
 ### Added
@@ -400,4 +416,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.9.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.9.0
 [1.10.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.10.0
 [1.11.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.11.0
-[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.11.0...HEAD
+[1.11.1]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.11.1
+[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.11.1...HEAD

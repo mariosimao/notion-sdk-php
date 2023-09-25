@@ -25,8 +25,12 @@ class ApiException extends NotionException
 
     final public static function fromResponse(ResponseInterface $response): static
     {
-        /** @var array{ message: string, code: string} $body */
+        /** @var array{ message: string, code: string}|false|null $body */
         $body = json_decode((string) $response->getBody(), true);
+
+        if ($body === null || $body === false) {
+            return new static("", "", $response);
+        }
 
         return match ($body["code"]) {
             "conflict_error" => new ConflictException($body["message"], $body["code"], $response),
