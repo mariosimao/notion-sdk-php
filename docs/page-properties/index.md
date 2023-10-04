@@ -72,7 +72,7 @@ $price = $price->changeNumber(49.99);
 $page = $page->addProperty("Price", $price);
 
 // Send to Notion
-$notion->pages->update($page);
+$notion->pages()->update($page);
 ```
 
 ## Available properties
