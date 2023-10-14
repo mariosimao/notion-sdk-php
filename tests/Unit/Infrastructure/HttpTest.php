@@ -8,7 +8,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\HttpFactory;
 use GuzzleHttp\Psr7\Response;
 use Notion\Configuration;
-use Notion\Exceptions\ConflictException;
+use Notion\Exceptions\ApiException\ConflictException;
 use Notion\Notion;
 use Notion\Pages\Page;
 use Notion\Pages\PageParent;

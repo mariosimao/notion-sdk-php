@@ -5,9 +5,9 @@ namespace Notion\Test\Unit\Blocks;
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\BulletedListItem;
 use Notion\Common\Color;
-use Notion\Exceptions\BlockException;
 use Notion\Common\Date;
 use Notion\Common\RichText;
+use Notion\Exceptions\BlockException\BlockException;
 use PHPUnit\Framework\TestCase;
 
 class BulletedListItemTest extends TestCase

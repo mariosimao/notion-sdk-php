@@ -4,10 +4,10 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Paragraph;
-use Notion\Exceptions\BlockException;
 use Notion\Blocks\TableOfContents;
 use Notion\Common\Color;
 use Notion\Common\Date;
+use Notion\Exceptions\BlockException\BlockException;
 use PHPUnit\Framework\TestCase;
 
 class TableOfContentsTest extends TestCase

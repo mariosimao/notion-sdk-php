@@ -3,7 +3,7 @@
 namespace Notion\Blocks;
 
 use Notion\Common\Color;
-use Notion\Exceptions\BlockException;
+use Notion\Exceptions\BlockException\BlockException;
 
 /**
  * @psalm-import-type BlockMetadataJson from BlockMetadata

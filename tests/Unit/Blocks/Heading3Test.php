@@ -3,13 +3,13 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
-use Notion\Exceptions\BlockException;
 use Notion\Blocks\Heading3;
 use Notion\Blocks\Paragraph;
 use Notion\Common\Color;
 use Notion\Common\Date;
 use Notion\Common\RichText;
-use Notion\Exceptions\HeadingException;
+use Notion\Exceptions\BlockException\BlockException;
+use Notion\Exceptions\BlockException\HeadingException;
 use PHPUnit\Framework\TestCase;
 
 class Heading3Test extends TestCase

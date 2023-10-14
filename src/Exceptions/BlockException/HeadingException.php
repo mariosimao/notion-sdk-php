@@ -1,6 +1,6 @@
 <?php
 
-namespace Notion\Exceptions;
+namespace Notion\Exceptions\BlockException;
 
 class HeadingException extends BlockException
 {

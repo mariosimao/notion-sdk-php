@@ -2,7 +2,7 @@
 
 namespace Notion\Test\Integration;
 
-use Notion\Exceptions\ApiException;
+use Notion\Exceptions\ApiException\ApiException;
 use PHPUnit\Framework\TestCase;
 
 class UsersTest extends TestCase

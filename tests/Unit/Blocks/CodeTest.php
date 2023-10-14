@@ -6,9 +6,9 @@ use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Code;
 use Notion\Blocks\CodeLanguage;
 use Notion\Blocks\Divider;
-use Notion\Exceptions\BlockException;
 use Notion\Common\Date;
 use Notion\Common\RichText;
+use Notion\Exceptions\BlockException\BlockException;
 use PHPUnit\Framework\TestCase;
 
 class CodeTest extends TestCase

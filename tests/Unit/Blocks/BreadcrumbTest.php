@@ -5,8 +5,8 @@ namespace Notion\Test\Unit\Blocks;
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Breadcrumb;
 use Notion\Blocks\Paragraph;
-use Notion\Exceptions\BlockException;
 use Notion\Common\Date;
+use Notion\Exceptions\BlockException\BlockException;
 use PHPUnit\Framework\TestCase;
 
 class BreadcrumbTest extends TestCase

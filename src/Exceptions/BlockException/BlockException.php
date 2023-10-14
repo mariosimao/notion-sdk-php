@@ -1,6 +1,6 @@
 <?php
 
-namespace Notion\Exceptions;
+namespace Notion\Exceptions\BlockException;
 
 use Notion\Blocks\BlockType;
 use Notion\Exceptions\NotionException;

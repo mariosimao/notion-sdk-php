@@ -4,7 +4,7 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockMetadata;
 use Notion\Blocks\BlockType;
-use Notion\Exceptions\BlockException;
+use Notion\Exceptions\BlockException\BlockException;
 use PHPUnit\Framework\TestCase;
 
 class BlockMetadataTest extends TestCase

@@ -2,9 +2,9 @@
 
 namespace Notion\Blocks;
 
-use Notion\Exceptions\BlockException;
 use Notion\Common\File;
 use Notion\Common\RichText;
+use Notion\Exceptions\BlockException\BlockException;
 
 /**
  * @psalm-import-type BlockMetadataJson from BlockMetadata

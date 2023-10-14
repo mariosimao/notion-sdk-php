@@ -3,8 +3,8 @@
 namespace Notion\Infrastructure;
 
 use Notion\Configuration;
-use Notion\Exceptions\ApiException;
-use Notion\Exceptions\ConflictException;
+use Notion\Exceptions\ApiException\ApiException;
+use Notion\Exceptions\ApiException\ConflictException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 

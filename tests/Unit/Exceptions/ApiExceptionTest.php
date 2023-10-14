@@ -3,7 +3,7 @@
 namespace Notion\Test\Unit\Exceptions;
 
 use GuzzleHttp\Psr7\Response;
-use Notion\Exceptions\ApiException;
+use Notion\Exceptions\ApiException\ApiException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 

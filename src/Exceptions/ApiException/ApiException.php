@@ -1,7 +1,8 @@
 <?php
 
-namespace Notion\Exceptions;
+namespace Notion\Exceptions\ApiException;
 
+use Notion\Exceptions\NotionException;
 use Psr\Http\Message\ResponseInterface;
 
 /**

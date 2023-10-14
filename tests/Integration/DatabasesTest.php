@@ -17,7 +17,7 @@ use Notion\Databases\Query;
 use Notion\Databases\Query\CompoundFilter;
 use Notion\Databases\Query\DateFilter;
 use Notion\Databases\Query\SelectFilter;
-use Notion\Exceptions\ApiException;
+use Notion\Exceptions\ApiException\ApiException;
 use Notion\Pages\Page;
 use Notion\Pages\PageParent;
 use Notion\Pages\Properties\Date as DateProp;

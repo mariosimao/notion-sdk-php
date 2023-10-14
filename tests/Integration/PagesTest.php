@@ -3,7 +3,7 @@
 namespace Notion\Test\Integration;
 
 use Notion\Common\Emoji;
-use Notion\Exceptions\ApiException;
+use Notion\Exceptions\ApiException\ApiException;
 use Notion\Pages\Page;
 use Notion\Pages\PageParent;
 use PHPUnit\Framework\TestCase;

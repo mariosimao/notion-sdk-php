@@ -3,8 +3,8 @@
 namespace Notion\Blocks;
 
 use DateTimeImmutable;
-use Notion\Exceptions\BlockException;
 use Notion\Common\Date;
+use Notion\Exceptions\BlockException\BlockException;
 
 /**
  * @psalm-type BlockMetadataJson = array{

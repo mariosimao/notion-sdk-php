@@ -3,8 +3,8 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\Column;
-use Notion\Exceptions\BlockException;
 use Notion\Blocks\Paragraph;
+use Notion\Exceptions\BlockException\BlockException;
 use PHPUnit\Framework\TestCase;
 
 class ColumnTest extends TestCase

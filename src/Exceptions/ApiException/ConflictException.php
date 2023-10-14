@@ -1,6 +1,6 @@
 <?php
 
-namespace Notion\Exceptions;
+namespace Notion\Exceptions\ApiException;
 
 class ConflictException extends ApiException
 {

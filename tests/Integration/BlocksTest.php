@@ -22,7 +22,7 @@ use Notion\Blocks\TableOfContents;
 use Notion\Blocks\ToDo;
 use Notion\Blocks\Toggle;
 use Notion\Common\RichText;
-use Notion\Exceptions\ApiException;
+use Notion\Exceptions\ApiException\ApiException;
 use PHPUnit\Framework\TestCase;
 
 class BlocksTest extends TestCase

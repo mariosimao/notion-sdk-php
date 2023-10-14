@@ -5,9 +5,9 @@ namespace Notion\Test\Unit\Blocks;
 use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Column;
 use Notion\Blocks\ColumnList;
-use Notion\Exceptions\BlockException;
 use Notion\Blocks\Paragraph;
-use Notion\Exceptions\ColumnListException;
+use Notion\Exceptions\BlockException\BlockException;
+use Notion\Exceptions\BlockException\ColumnListException;
 use PHPUnit\Framework\TestCase;
 
 class ColumnListTest extends TestCase

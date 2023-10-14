@@ -3,11 +3,11 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
-use Notion\Exceptions\BlockException;
 use Notion\Blocks\Toggle;
 use Notion\Common\Color;
 use Notion\Common\Date;
 use Notion\Common\RichText;
+use Notion\Exceptions\BlockException\BlockException;
 use PHPUnit\Framework\TestCase;
 
 class ToggleTest extends TestCase
