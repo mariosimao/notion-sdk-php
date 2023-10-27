@@ -25,6 +25,8 @@ enum BlockType: string
     case Bookmark = "bookmark";
     case Equation = "equation";
     case Divider = "divider";
+    case Table = "table";
+    case TableRow = "table_row";
     case TableOfContents = "table_of_contents";
     case Breadcrumb = "breadcrumb";
     case Column = "column";
