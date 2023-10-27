@@ -62,6 +62,14 @@ class TableRow implements BlockInterface
         return $array;
     }
 
+    public function addCell(RichText ...$cell): self
+    {
+        $cells = $this->cells;
+        $cells[] = $cell;
+
+        return new self($this->metadata, $cells);
+    }
+
     public function metadata(): BlockMetadata
     {
         return $this->metadata;
