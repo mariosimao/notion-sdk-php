@@ -42,7 +42,7 @@ final class PropertyCollection
             return $this->properties[$propertyName];
         }
 
-        throw new \Exception("Property not found");
+        throw new \Exception("Property '{$propertyName}' not found");
     }
 
     public function getById(string $propertyId): PropertyInterface
@@ -53,7 +53,7 @@ final class PropertyCollection
             }
         }
 
-        throw new \Exception("Property not found.");
+        throw new \Exception("Property '{$propertyId}' not found.");
     }
 
     /** @return array<string, PropertyInterface> */
