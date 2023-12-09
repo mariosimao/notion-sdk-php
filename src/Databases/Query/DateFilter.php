@@ -93,9 +93,11 @@ class DateFilter implements Filter, Condition
 
     public function toArray(): array
     {
+        $type = $this->propertyType === self::TYPE_PROPERTY ? "date" : $this->propertyName;
+
         return [
             $this->propertyType() => $this->propertyName,
-            "date" => [
+            $type => [
                 $this->operator->value => $this->value
             ],
         ];
