@@ -19,7 +19,7 @@ $database = $notion->databases()->find($databaseId);
 $query = Query::create()
     ->changeFilter(
         CompoundFilter::and(
-            DateFilter::createdTime::pastWeek(),
+            DateFilter::createdTime()->pastWeek(),
             TextFilter::property("Name")->contains("John"),
         )
     )
