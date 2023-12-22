@@ -8,7 +8,7 @@ namespace Notion\Users;
  *
  * @psalm-type UserJson = array{
  *     id: string,
- *     name: string,
+ *     name: string|null,
  *     avatar_url: string|null,
  *     type: "person"|"bot",
  *     person?: PersonJson,
@@ -21,9 +21,9 @@ class User
 {
     private function __construct(
         public readonly string $id,
-        public readonly string $name,
+        public readonly string|null $name,
         public readonly string|null $avatarUrl,
-        public readonly UserType $type,
+        public readonly UserType|null $type,
         public readonly Person|null $person,
         public readonly Bot|null $bot,
     ) {
@@ -35,11 +35,15 @@ class User
         $person = array_key_exists("person", $array) ? Person::fromArray($array["person"]) : null;
         $bot = array_key_exists("bot", $array) ? Bot::fromArray($array["bot"]) : null;
 
+        $name = array_key_exists("name", $array) ? $array["name"] : null;
+        $avatarUrl = array_key_exists("avatar_url", $array) ? $array["avatar_url"] : null;
+        $userType = array_key_exists("type", $array) ? UserType::from($array["type"]) : null;
+
         return new self(
             $array["id"],
-            $array["name"],
-            $array["avatar_url"],
-            UserType::from($array["type"]),
+            $name,
+            $avatarUrl,
+            $userType,
             $person,
             $bot,
         );
