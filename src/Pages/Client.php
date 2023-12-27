@@ -7,6 +7,7 @@ use Notion\Configuration;
 use Notion\Infrastructure\Http;
 use Notion\Pages\Properties\CreatedBy;
 use Notion\Pages\Properties\CreatedTime;
+use Notion\Pages\Properties\Formula;
 use Notion\Pages\Properties\LastEditedBy;
 use Notion\Pages\Properties\LastEditedTime;
 use Notion\Pages\Properties\PropertyInterface;
@@ -66,6 +67,7 @@ class Client
         $notUpdatableProps = [
             PropertyType::CreatedBy,
             PropertyType::CreatedTime,
+            PropertyType::Formula,
             PropertyType::LastEditedBy,
             PropertyType::LastEditedTime,
             PropertyType::Rollup,
