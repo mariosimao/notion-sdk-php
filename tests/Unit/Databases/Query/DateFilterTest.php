@@ -46,7 +46,7 @@ class DateFilterTest extends TestCase
 
         $expected = [
             "timestamp" => "created_time",
-            "date" => [ "equals" => "2022-02-13" ],
+            "created_time" => [ "equals" => "2022-02-13" ],
         ];
         $this->assertSame($expected, $filter->toArray());
     }
@@ -58,7 +58,7 @@ class DateFilterTest extends TestCase
 
         $expected = [
             "timestamp" => "created_time",
-            "date" => [ "before" => "2021-05-10T12:00:00" ],
+            "created_time" => [ "before" => "2021-05-10T12:00:00" ],
         ];
         $this->assertSame($expected, $filter->toArray());
     }
@@ -70,7 +70,7 @@ class DateFilterTest extends TestCase
 
         $expected = [
             "timestamp" => "created_time",
-            "date" => [ "after" => "2021-05-10T12:00:00" ],
+            "created_time" => [ "after" => "2021-05-10T12:00:00" ],
         ];
         $this->assertSame($expected, $filter->toArray());
     }

@@ -26,7 +26,7 @@ class CompoundFilterTest extends TestCase
                 ],
                 [
                     "timestamp" => "created_time",
-                    "date" => [ "past_week" => new stdClass() ],
+                    "created_time" => [ "past_week" => new stdClass() ],
                 ],
             ],
         ];
@@ -48,7 +48,7 @@ class CompoundFilterTest extends TestCase
                 ],
                 [
                     "timestamp" => "created_time",
-                    "date" => [ "past_week" => new stdClass() ],
+                    "created_time" => [ "past_week" => new stdClass() ],
                 ],
             ],
         ];
