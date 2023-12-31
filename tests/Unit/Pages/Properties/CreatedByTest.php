@@ -15,9 +15,9 @@ class CreatedByTest extends TestCase
             "id" => "abc",
             "type" => "created_by",
             "created_by" => [
+                "object"     => "user",
                 "id" => "62e1fd10-8b04-41eb-97c1-d2deddd160d4",
                 "name" => "Mario",
-                "avatar_url" => null,
                 "type" => "person",
                 "person" => [ "email" => "mario@domain.com" ],
             ],
