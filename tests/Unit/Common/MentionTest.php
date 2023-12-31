@@ -31,6 +31,7 @@ class MentionTest extends TestCase
     public function test_mention_user(): void
     {
         $user = User::fromArray([
+            "object"     => "user",
             "id"         => "b0688871-85db-4637-8fc9-043a240fcaec",
             "name"       => "Mario Simao",
             "avatar_url" => "http://example.com",
@@ -80,6 +81,7 @@ class MentionTest extends TestCase
         $array = [
             "type" => "user",
             "user" => [
+                "object"     => "user",
                 "id"         => "b0688871-85db-4637-8fc9-043a240fcaec",
                 "name"       => "Mario Simao",
                 "avatar_url" => "http://example.com",

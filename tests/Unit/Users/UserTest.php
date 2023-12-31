@@ -11,6 +11,7 @@ class UserTest extends TestCase
     public function test_person_from_array(): void
     {
         $array = [
+            "object"     => "user",
             "id"         => "b0688871-85db-4637-8fc9-043a240fcaec",
             "name"       => "Mario Simao",
             "avatar_url" => "http://example.com",
@@ -31,9 +32,9 @@ class UserTest extends TestCase
     public function test_bot_from_array(): void
     {
         $array = [
+            "object"     => "user",
             "id"         => "b0688871-85db-4637-8fc9-043a240fcaec",
             "name"       => "Notion Bot",
-            "avatar_url" => null,
             "type"       => "bot",
             "bot"        => [],
         ];
@@ -49,9 +50,9 @@ class UserTest extends TestCase
     public function test_invalid_type_from_array(): void
     {
         $array = [
+            "object"     => "user",
             "id"         => "b0688871-85db-4637-8fc9-043a240fcaec",
             "name"       => "Invalid user",
-            "avatar_url" => null,
             "type"       => "wrong-type",
         ];
 
