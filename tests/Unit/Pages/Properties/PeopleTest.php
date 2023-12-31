@@ -72,9 +72,9 @@ class PeopleTest extends TestCase
     private function user1(): User
     {
         return User::fromArray([
+            "object"     => "user",
             "id" => "f98bfb6a-08b3-4e65-861b-6f68fb0c7a48",
             "name" => "Mario",
-            "avatar_url" => null,
             "type" => "person",
             "person" => [ "email" => "mario@website.domain" ],
         ]);
@@ -83,9 +83,9 @@ class PeopleTest extends TestCase
     private function user2(): User
     {
         return User::fromArray([
+            "object"     => "user",
             "id" => "f98bfb6a-08b3-4e65-861b-6f68fb0c7a48",
             "name" => "Luigi",
-            "avatar_url" => null,
             "type" => "person",
             "person" => [ "email" => "luigi@website.domain" ],
         ]);

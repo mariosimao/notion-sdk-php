@@ -7,10 +7,11 @@ namespace Notion\Users;
  * @psalm-import-type BotJson from Bot
  *
  * @psalm-type UserJson = array{
+ *     object: "user",
  *     id: string,
- *     name: string|null,
- *     avatar_url: string|null,
- *     type: "person"|"bot",
+ *     name?: string,
+ *     avatar_url?: string,
+ *     type?: "person"|"bot",
  *     person?: PersonJson,
  *     bot?: BotJson,
  * }
@@ -53,11 +54,21 @@ class User
     public function toArray(): array
     {
         $array = [
-            "id"         => $this->id,
-            "name"       => $this->name,
-            "avatar_url" => $this->avatarUrl,
-            "type"       => $this->type->value,
+            "object" => "user",
+            "id"     => $this->id,
         ];
+
+        if ($this->type !== null) {
+            $array["type"] = $this->type->value;
+        }
+
+        if ($this->name !== null) {
+            $array["name"] = $this->name;
+        }
+
+        if ($this->avatarUrl !== null) {
+            $array["avatar_url"] = $this->avatarUrl;
+        }
 
         if ($this->isPerson()) {
             $array["person"] = $this->person->toArray();
