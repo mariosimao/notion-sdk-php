@@ -6,8 +6,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [v1.11.1] 2023-08-02
-## Fixed
+## [v1.12.0] 2023-12-31
+
+### Added
+- Add support to tables (#224)
+
+### Fixed
+- Allow DateFilter to filter created_time and last_edited_time
+- Add formula to pages notUpdatableProps (#320)
+- Use null fallback for missing array keys for optional user properties (#324)
+
+### Documentation
+- Fix page property example (#293)
+- Recommend static analysers (#304)
+
+### Build
+- Bump infection/infection from 0.27.2 to 0.27.8 (#309)
+- Bump phpunit/phpunit from 10.3.4 to 10.4.2 (#305)
+- Bump postcss from 8.4.24 to 8.4.31 in /docs (#294)
+- Bump phpunit/phpunit from 10.4.2 to 10.5.3 (#322)
+- Bump vimeo/psalm from 5.15.0 to 5.18.0 (#321)
+- Bump php-http/discovery from 1.19.1 to 1.19.2 (#316)
+- Bump guzzlehttp/guzzle from 7.8.0 to 7.8.1 (#315)
+- Bump brianium/paratest from 7.2.7 to 7.3.1 (#306)
+- Fix tests CI (#325)
+
+## [v1.11.1] 2023-09-25
+
+### Fixed
 - Error when Notion sends an empty response (#289)
 ### Build
 - Bump brianium/paratest from 7.2.3 to 7.2.4 (#274)
@@ -417,4 +443,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.10.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.10.0
 [1.11.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.11.0
 [1.11.1]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.11.1
-[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.11.1...HEAD
+[1.12.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.12.0
+[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.12.0...HEAD
