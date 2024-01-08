@@ -214,6 +214,7 @@ class DatabaseTest extends TestCase
                 "page_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
             ],
             "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+            "is_inline" => true,
         ];
         $database = Database::fromArray($array);
 
@@ -231,6 +232,7 @@ class DatabaseTest extends TestCase
             "2020-12-08T12:00:00.000000Z",
             $database->lastEditedTime->format(Date::FORMAT),
         );
+        $this->assertTrue($database->inline);
     }
 
     public function test_from_array_change_emoji_icon(): void
@@ -273,6 +275,7 @@ class DatabaseTest extends TestCase
                 "page_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
             ],
             "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+            "is_inline" => false,
         ];
         $database = Database::fromArray($array);
 
@@ -321,11 +324,25 @@ class DatabaseTest extends TestCase
                 "page_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
             ],
             "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+            "is_inline" => false,
         ];
         $database = Database::fromArray($array);
 
         if ($database->icon?->isFile()) {
             $this->assertEquals("https://my-site.com/image.png", $database->icon->file?->url);
         }
+    }
+
+    public function test_inline(): void
+    {
+        $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $database = Database::create($parent);
+        $this->assertFalse($database->inline);
+
+        $database = $database->enableInline();
+        $this->assertTrue($database->inline);
+
+        $database = $database->disableInline();
+        $this->assertFalse($database->inline);
     }
 }
