@@ -34,6 +34,7 @@ use Notion\Exceptions\DatabaseException;
  *      properties: array<string, PropertyMetadataJson>,
  *      parent: DatabaseParentJson,
  *      url: string,
+ *      is_inline: bool,
  * }
  *
  * @psalm-immutable
