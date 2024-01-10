@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.13.0] 2024-01-10
+
+### Added
+- Support to inline databases (#330)
+
+### Build
+- Bump infection/infection from 0.27.8 to 0.27.9 (#327)
+- Bump squizlabs/php_codesniffer from 3.7.2 to 3.8.0 (#328)
+- Bump phpunit/phpunit from 10.5.3 to 10.5.5 (#329)
+
 ## [v1.12.0] 2023-12-31
 
 ### Added
@@ -444,4 +454,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.11.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.11.0
 [1.11.1]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.11.1
 [1.12.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.12.0
-[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.12.0...HEAD
+[1.13.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.13.0
+[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.13.0...HEAD
