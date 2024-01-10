@@ -57,7 +57,7 @@ class Database
         public readonly array $properties,
         public readonly DatabaseParent $parent,
         public readonly string $url,
-        public readonly bool $inline,
+        public readonly bool $isInline,
     ) {
         if ($cover !== null && $cover->isInternal()) {
             throw DatabaseException::internalCover();
@@ -163,7 +163,7 @@ class Database
             "properties"       => $this->propertiesToArray(),
             "parent"           => $this->parent->toArray(),
             "url"              => $this->url,
-            "is_inline"        => $this->inline,
+            "is_inline"        => $this->isInline,
         ];
     }
 
@@ -188,7 +188,7 @@ class Database
             $this->properties,
             $this->parent,
             $this->url,
-            $this->inline,
+            $this->isInline,
         );
     }
 
@@ -205,7 +205,7 @@ class Database
             $this->properties,
             $this->parent,
             $this->url,
-            $this->inline,
+            $this->isInline,
         );
     }
 
@@ -230,7 +230,7 @@ class Database
             $this->properties,
             $this->parent,
             $this->url,
-            $this->inline,
+            $this->isInline,
         );
     }
 
@@ -247,7 +247,7 @@ class Database
             $this->properties,
             $this->parent,
             $this->url,
-            $this->inline,
+            $this->isInline,
         );
     }
 
@@ -264,7 +264,7 @@ class Database
             $this->properties,
             $this->parent,
             $this->url,
-            $this->inline,
+            $this->isInline,
         );
     }
 
@@ -281,7 +281,7 @@ class Database
             $this->properties,
             $this->parent,
             $this->url,
-            $this->inline,
+            $this->isInline,
         );
     }
 
@@ -303,7 +303,7 @@ class Database
             $this->properties()->add($property)->getAll(),
             $this->parent,
             $this->url,
-            $this->inline,
+            $this->isInline,
         );
     }
 
@@ -320,7 +320,7 @@ class Database
             $this->properties()->remove($propertyName)->getAll(),
             $this->parent,
             $this->url,
-            $this->inline,
+            $this->isInline,
         );
     }
 
@@ -337,7 +337,7 @@ class Database
             $this->properties()->change($property)->getAll(),
             $this->parent,
             $this->url,
-            $this->inline,
+            $this->isInline,
         );
     }
 
@@ -355,7 +355,7 @@ class Database
             PropertyCollection::create(...$properties)->getAll(),
             $this->parent,
             $this->url,
-            $this->inline,
+            $this->isInline,
         );
     }
 
@@ -372,7 +372,7 @@ class Database
             $this->properties,
             $parent,
             $this->url,
-            $this->inline,
+            $this->isInline,
         );
     }
 

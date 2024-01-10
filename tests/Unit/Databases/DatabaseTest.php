@@ -232,7 +232,7 @@ class DatabaseTest extends TestCase
             "2020-12-08T12:00:00.000000Z",
             $database->lastEditedTime->format(Date::FORMAT),
         );
-        $this->assertTrue($database->inline);
+        $this->assertTrue($database->isInline);
     }
 
     public function test_from_array_change_emoji_icon(): void
@@ -337,12 +337,12 @@ class DatabaseTest extends TestCase
     {
         $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
         $database = Database::create($parent);
-        $this->assertFalse($database->inline);
+        $this->assertFalse($database->isInline);
 
         $database = $database->enableInline();
-        $this->assertTrue($database->inline);
+        $this->assertTrue($database->isInline);
 
         $database = $database->disableInline();
-        $this->assertFalse($database->inline);
+        $this->assertFalse($database->isInline);
     }
 }

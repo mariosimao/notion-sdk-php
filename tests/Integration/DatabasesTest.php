@@ -62,7 +62,7 @@ class DatabasesTest extends TestCase
         $databaseFound = $client->databases()->find($database->id);
 
         $this->assertEquals("Inline database", $database->title[0]->plainText);
-        $this->assertTrue($databaseFound->inline);
+        $this->assertTrue($databaseFound->isInline);
 
         $client->databases()->delete($database);
     }
