@@ -49,6 +49,24 @@ class DatabasesTest extends TestCase
         $client->databases()->delete($database);
     }
 
+    public function test_create_inline_database(): void
+    {
+        $client = Helper::client();
+
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()))
+            ->changeTitle("Inline database")
+            ->enableInline();
+
+        $database = $client->databases()->create($database);
+
+        $databaseFound = $client->databases()->find($database->id);
+
+        $this->assertEquals("Inline database", $database->title[0]->plainText);
+        $this->assertTrue($databaseFound->isInline);
+
+        $client->databases()->delete($database);
+    }
+
     public function test_update_database(): void
     {
         $client = Helper::client();
