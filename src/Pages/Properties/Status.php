@@ -74,4 +74,9 @@ class Status implements PropertyInterface
     {
         return $this->metadata;
     }
+
+    public function changeOption(StatusOption $option): self
+    {
+        return new self($this->metadata, $option);
+    }
 }
