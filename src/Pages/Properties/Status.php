@@ -18,8 +18,15 @@ class Status implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,
-        public readonly StatusOption $option,
+        public readonly StatusOption|null $option,
     ) {
+    }
+
+    public static function createEmpty(string $id = null): self
+    {
+        $property = PropertyMetadata::create($id ?? "", PropertyType::Status);
+
+        return new self($property, null);
     }
 
     public static function fromId(string $id): self

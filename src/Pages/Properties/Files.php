@@ -39,6 +39,13 @@ class Files implements PropertyInterface
         return new self($property, $files);
     }
 
+    public static function createEmpty(string $id = null): self
+    {
+        $property = PropertyMetadata::create($id ?? "", PropertyType::Files);
+
+        return new self($property, []);
+    }
+
     public static function fromArray(array $array): self
     {
         /** @psalm-var FilesJson $array */
