@@ -39,9 +39,9 @@ class RichTextProperty implements PropertyInterface
         return new self($metadata, $texts);
     }
 
-    public static function createEmpty(): self
+    public static function createEmpty(string $id = null): self
     {
-        $metadata = PropertyMetadata::create("", PropertyType::RichText);
+        $metadata = PropertyMetadata::create($id ?? "", PropertyType::RichText);
 
         return new self($metadata, []);
     }
