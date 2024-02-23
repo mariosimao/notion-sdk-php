@@ -71,6 +71,11 @@ class Date implements PropertyInterface
         return $this->metadata;
     }
 
+    public function changeDate(CommonDate $date): self
+    {
+        return new self($this->metadata, $date);
+    }
+
     public function changeStart(DateTimeImmutable $start): self
     {
         return new self($this->metadata, $this->date?->changeStart($start));

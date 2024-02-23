@@ -64,4 +64,9 @@ class StatusOption
 
         return $option;
     }
+
+    public function changeName(string $name): self
+    {
+        return new self($this->id, $name, $this->color);
+    }
 }
