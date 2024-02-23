@@ -86,11 +86,8 @@ class MultiSelect implements PropertyInterface
         );
     }
 
-    public function changeOptions(array $options): self
+    public function changeOptions(SelectOption ...$options): self
     {
-        return new self(
-            $this->metadata,
-            array_filter($options, fn ($o) => $o instanceof SelectOption),
-        );
+        return new self($this->metadata, $options);
     }
 }
