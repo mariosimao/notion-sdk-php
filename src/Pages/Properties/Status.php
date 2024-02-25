@@ -18,7 +18,7 @@ class Status implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,
-        public readonly StatusOption|null $option,
+        public readonly StatusOption $option,
     ) {
     }
 
