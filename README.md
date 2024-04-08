@@ -68,7 +68,7 @@ $page = $notion->pages()->create($page, $content);
 
 ## 📄 Documentation
 
-Further documentation can be found at https://mario.engineering/notion-sdk-php.
+Further documentation can be found at https://mariosimao.github.io/notion-sdk-php.
 
 The Notion PHP SDK supports the usage of static analysers. We strongly recommend the usage of
 either [vimeo/psalm](https://github.com/vimeo/psalm) or [phpstan/phpstan](https://github.com/phpstan/phpstan) in combination with this library, to avoid simple mistakes.
