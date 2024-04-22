@@ -6,6 +6,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.14.0] 2024-04-22
+
+## Added
+- 'Change' methods to page properties (#342)
+- Description to property metadata (#365)
+
+### Docs
+Update documentation website URL (#364)
+
+### Build
+- Bump vite from 3.2.7 to 3.2.8 in /docs (#335)
+- Bump squizlabs/php_codesniffer from 3.8.0 to 3.8.1 (#334)
+- Bump phpunit/phpunit from 10.5.5 to 10.5.7 (#332)
+- Bump vimeo/psalm from 5.18.0 to 5.19.0 (#333)
+- Bump phpunit/phpunit from 10.5.7 to 10.5.10 (#344)
+- Bump squizlabs/php_codesniffer from 3.8.1 to 3.9.0 (#348)
+- Bump vite from 3.2.8 to 3.2.10 in /docs (#363)
+- Bump squizlabs/php_codesniffer from 3.9.0 to 3.9.1 (#361)
+- Bump phpunit/phpunit from 10.5.10 to 10.5.16 (#362)
+- Bump infection/infection from 0.27.9 to 0.27.11 (#359)
+
 ## [v1.13.0] 2024-01-10
 
 ### Added
@@ -455,4 +476,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.11.1]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.11.1
 [1.12.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.12.0
 [1.13.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.13.0
-[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.13.0...HEAD
+[1.14.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.14.0
+[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.14.0...HEAD
