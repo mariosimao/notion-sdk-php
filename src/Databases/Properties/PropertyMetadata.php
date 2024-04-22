@@ -3,7 +3,7 @@
 namespace Notion\Databases\Properties;
 
 /**
- * @psalm-type PropertyMetadataJson = array{ id: string, name: string, type: string, ... }
+ * @psalm-type PropertyMetadataJson = array{ id: string, name: string, type: string, description?: string, ... }
  *
  * @psalm-immutable
  */
@@ -14,12 +14,13 @@ class PropertyMetadata
         public readonly string $name,
         public readonly PropertyType $type,
         private readonly string|null $unknownType = null,
+        public readonly string|null $description = null,
     ) {
     }
 
-    public static function create(string $id, string $name, PropertyType $type): self
+    public static function create(string $id, string $name, PropertyType $type, ?string $description = null): self
     {
-        return new self($id, $name, $type);
+        return new self($id, $name, $type, description: $description);
     }
 
     /**
@@ -36,6 +37,7 @@ class PropertyMetadata
             $array["name"],
             $type,
             $type === PropertyType::Unknown ? $array["type"] : null,
+            $array["description"] ?? null,
         );
     }
 
@@ -47,6 +49,9 @@ class PropertyMetadata
             "id"   => $this->id,
             "name" => $this->name,
             "type" => $type,
+            ...($this->description !== null ? [
+                "description" => $this->description,
+            ] : []),
         ];
     }
 }

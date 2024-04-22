@@ -24,6 +24,7 @@ class CreatedByTest extends TestCase
             "name"  => "dummy",
             "type"  => "created_by",
             "created_by" => new \stdClass(),
+            "description" => "foo bar",
         ];
         $createdBy = CreatedBy::fromArray($array);
         $fromFactory = PropertyFactory::fromArray($array);
