@@ -8,6 +8,7 @@ namespace Notion\Databases\Properties;
  *      name: string,
  *      type: "last_edited_by",
  *      last_edited_by: array<empty, empty>,
+ *      description?: string,
  * }
  *
  * @psalm-immutable

@@ -14,6 +14,7 @@ namespace Notion\Databases\Properties;
  *          options: StatusOptionJson[],
  *          groups: StatusGroupJson[]
  *      },
+ *      description?: string,
  * }
  *
  * @psalm-immutable

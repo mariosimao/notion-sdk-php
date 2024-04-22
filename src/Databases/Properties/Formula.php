@@ -8,6 +8,7 @@ namespace Notion\Databases\Properties;
  *      name: string,
  *      type: "formula",
  *      formula: array{ expression: string },
+ *      description?: string,
  * }
  *
  * @psalm-immutable

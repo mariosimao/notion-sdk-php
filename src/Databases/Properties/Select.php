@@ -12,6 +12,7 @@ namespace Notion\Databases\Properties;
  *      select: array{
  *          options: list<SelectOptionJson>
  *      },
+ *      description?: string,
  * }
  *
  * @psalm-immutable
