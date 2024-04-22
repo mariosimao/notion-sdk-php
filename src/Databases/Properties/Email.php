@@ -8,6 +8,7 @@ namespace Notion\Databases\Properties;
  *      name: string,
  *      type: "email",
  *      email: array<empty, empty>,
+ *      description?: string,
  * }
  *
  * @psalm-immutable

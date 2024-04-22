@@ -8,6 +8,7 @@ namespace Notion\Databases\Properties;
  *      name: string,
  *      type: "phone_number",
  *      phone_number: array<empty, empty>,
+ *      description?: string,
  * }
  *
  * @psalm-immutable

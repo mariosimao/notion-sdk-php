@@ -8,6 +8,7 @@ namespace Notion\Databases\Properties;
  *      name: string,
  *      type: "uniqueId",
  *      unique_id: \stdClass,
+ *      description?: string,
  * }
  *
  * @psalm-immutable

@@ -8,6 +8,7 @@ namespace Notion\Databases\Properties;
  *      name: string,
  *      type: "url",
  *      url: array<empty, empty>,
+ *      description?: string,
  * }
  *
  * @psalm-immutable

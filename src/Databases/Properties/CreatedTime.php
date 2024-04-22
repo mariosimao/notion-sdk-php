@@ -8,6 +8,7 @@ namespace Notion\Databases\Properties;
  *      name: string,
  *      type: "created_time",
  *      created_time: array<empty, empty>,
+ *      description?: string,
  * }
  *
  * @psalm-immutable

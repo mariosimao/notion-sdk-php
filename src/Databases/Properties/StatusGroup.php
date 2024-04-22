@@ -9,7 +9,8 @@ use Notion\Common\Color;
  *      id?: string,
  *      name?: string,
  *      color: string,
- *      option_ids: string[]
+ *      option_ids: string[],
+ *      description?: string,
  * }
  *
  * @psalm-immutable

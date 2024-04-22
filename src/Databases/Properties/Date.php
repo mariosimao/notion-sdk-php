@@ -8,6 +8,7 @@ namespace Notion\Databases\Properties;
  *      name: string,
  *      type: "date",
  *      date: array<empty, empty>,
+ *      description?: string,
  * }
  *
  * @psalm-immutable

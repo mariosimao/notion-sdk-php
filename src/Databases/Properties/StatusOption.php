@@ -8,7 +8,8 @@ use Notion\Common\Color;
  * @psalm-type StatusOptionJson = array{
  *      id?: string,
  *      name?: string,
- *      color?: string
+ *      color?: string,
+ *      description?: string,
  * }
  *
  * @psalm-immutable

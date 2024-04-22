@@ -3,7 +3,7 @@
     "description": "A complete Notion SDK for PHP developers.",
     "type": "library",
     "license": "MIT",
-    "homepage": "https:/mariosimao.github.io/notion-sdk-php",
+    "homepage": "https://mariosimao.github.io/notion-sdk-php",
     "autoload": {
         "psr-4": {
             "Notion\\": "src/"

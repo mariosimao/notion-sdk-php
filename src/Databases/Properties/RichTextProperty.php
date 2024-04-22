@@ -8,6 +8,7 @@ namespace Notion\Databases\Properties;
  *      name: string,
  *      type: "rich_text",
  *      rich_text: array<empty, empty>,
+ *      description?: string,
  * }
  *
  * @psalm-immutable

@@ -17,7 +17,8 @@ use Notion\Exceptions\RelationException;
  *              synced_property_name: string,
  *              synced_property_id: string
  *          }
- *      }
+ *      },
+ *      description?: string,
  * }
  *
  * @psalm-immutable
