@@ -43,6 +43,30 @@ class Client
     }
 
     /** @return BlockInterface[] */
+    public function findChildrenWithCursor(string $blockId, string $nextCursor = ''): array
+    {
+        $url = "https://api.notion.com/v1/blocks/{$blockId}/children";
+        if ($nextCursor) {
+            $url .= "?start_cursor={$nextCursor}";
+        }
+        $request = Http::createRequest($url, $this->config);
+
+        /** @var array{ results: list<array{ type: string }> } $body */
+        $body = Http::sendRequest($request, $this->config);
+
+        $children =  array_map(
+            fn(array $blockArray) => BlockFactory::fromArray($blockArray),
+            $body["results"],
+        );
+
+        return [
+            'children' => $children,
+            'next_cursor' => $body['next_cursor'] ?? '',
+            'has_more' => $body['has_more'] ?? false
+        ];
+    }
+
+    /** @return BlockInterface[] */
     public function findChildrenRecursive(string $blockId): array
     {
         $children = $this->findChildren($blockId);
