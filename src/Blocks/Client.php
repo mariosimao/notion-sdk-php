@@ -64,17 +64,21 @@ class Client
      *
      * @return BlockInterface[] Newly created blocks
      */
-    public function append(string $blockId, array $blocks): array
+    public function append(string $blockId, array $blocks, string $after = ''): array
     {
-        $data = json_encode([
+        $data = [
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $blocks),
-        ]);
+        ];
+        if ($after) {
+            $data['after'] = $after;
+        }
+        $encodedData = json_encode($data);
 
         $url = "https://api.notion.com/v1/blocks/{$blockId}/children";
         $request = Http::createRequest($url, $this->config)
             ->withMethod("PATCH")
             ->withHeader("Content-Type", "application/json");
-        $request->getBody()->write($data);
+        $request->getBody()->write($encodedData);
 
         /** @var array{ results: list<array{ type: string }> } $body */
         $body = Http::sendRequest($request, $this->config);
