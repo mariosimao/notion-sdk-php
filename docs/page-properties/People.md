@@ -18,7 +18,7 @@ foreach ($users as $user) {
 }
 ```
 
-## Add people property to a apge
+## Add people property to a page
 
 ```php
 // Get users
