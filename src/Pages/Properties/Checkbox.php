@@ -33,6 +33,13 @@ class Checkbox implements PropertyInterface
         return new self($property, false);
     }
 
+    public static function createEmpty(string $id = null): self
+    {
+        $property = PropertyMetadata::create($id ?? "", PropertyType::Checkbox);
+
+        return new self($property, false);
+    }
+
     public static function fromArray(array $array): self
     {
         /** @psalm-var CheckboxJson $array */

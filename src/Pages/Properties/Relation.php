@@ -27,6 +27,13 @@ class Relation implements PropertyInterface
         return new self($property, $pageIds);
     }
 
+    public static function createEmpty(string $id = null): self
+    {
+        $property = PropertyMetadata::create($id ?? "", PropertyType::Relation);
+
+        return new self($property, []);
+    }
+
     public static function fromArray(array $array): self
     {
         /** @psalm-var RelationJson $array */

@@ -24,6 +24,13 @@ class MultiSelect implements PropertyInterface
     ) {
     }
 
+    public static function createEmpty(string $id = null): self
+    {
+        $property = PropertyMetadata::create($id ?? "", PropertyType::MultiSelect);
+
+        return new self($property, []);
+    }
+
     public static function fromIds(string ...$ids): self
     {
         $metadata = PropertyMetadata::create("", PropertyType::MultiSelect);
