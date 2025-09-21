@@ -5,6 +5,7 @@ namespace Notion;
 use Notion\Blocks\Client as BlocksClient;
 use Notion\Comments\Client as CommentsClient;
 use Notion\Databases\Client as DatabasesClient;
+use Notion\DataSources\Client as DataSourcesClient;
 use Notion\Pages\Client as PagesClient;
 use Notion\Search\Client as SearchClient;
 use Notion\Users\Client as UsersClient;
@@ -14,7 +15,7 @@ use Psr\Http\Message\RequestFactoryInterface;
 
 class Notion
 {
-    public const API_VERSION = "2022-06-28";
+    public const API_VERSION = "2025-09-03";
 
     private function __construct(
         private readonly Configuration $configuration,
@@ -60,6 +61,11 @@ class Notion
     public function databases(): DatabasesClient
     {
         return new DatabasesClient($this->configuration);
+    }
+
+    public function dataSources(): DataSourcesClient
+    {
+        return new DataSourcesClient($this->configuration);
     }
 
     public function blocks(): BlocksClient

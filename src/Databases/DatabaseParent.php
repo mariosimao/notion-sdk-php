@@ -8,6 +8,8 @@ namespace Notion\Databases;
  *      page_id?: string,
  *      workspace?: true,
  *      block_id?: string,
+ *      data_source_id?: string,
+ *      database_id?: string,
  * }
  *
  * @psalm-immutable
@@ -17,6 +19,7 @@ class DatabaseParent
     private function __construct(
         public readonly DatabaseParentType $type,
         public readonly string|null $id,
+        public readonly string|null $databaseId = null,
     ) {
     }
 
@@ -35,6 +38,11 @@ class DatabaseParent
         return new self(DatabaseParentType::Block, $blockId);
     }
 
+    public static function dataSource(string $dataSourceId, string|null $databaseId = null): self
+    {
+        return new self(DatabaseParentType::DataSource, $dataSourceId, $databaseId);
+    }
+
     /**
      * @param DatabaseParentJson $array
      *
@@ -44,14 +52,17 @@ class DatabaseParent
     {
         $type = DatabaseParentType::from($array["type"]);
 
-        $id = $array["page_id"] ?? $array["block_id"] ?? null;
+        $id = $array["page_id"] ?? $array["block_id"] ?? $array["data_source_id"] ?? null;
+        $databaseId = $array["database_id"] ?? null;
 
-        return new self($type, $id);
+        return new self($type, $id, $databaseId);
     }
 
     public function toArray(): array
     {
-        $array = [];
+        $array = [
+            "type" => $this->type->value,
+        ];
 
         if ($this->isPage()) {
             $array["page_id"] = $this->id;
@@ -61,6 +72,10 @@ class DatabaseParent
         }
         if ($this->isBlock()) {
             $array["block_id"] = $this->id;
+        }
+        if ($this->isDataSource()) {
+            $array["data_source_id"] = $this->id;
+            $array["database_id"] = $this->databaseId;
         }
 
         return $array;
@@ -79,5 +94,10 @@ class DatabaseParent
     public function isBlock(): bool
     {
         return $this->type === DatabaseParentType::Block;
+    }
+
+    public function isDataSource(): bool
+    {
+        return $this->type === DatabaseParentType::DataSource;
     }
 }

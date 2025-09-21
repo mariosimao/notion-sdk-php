@@ -2,7 +2,7 @@
 
 namespace Notion\Pages\Properties;
 
-use Notion\Databases\Properties\SelectOption;
+use Notion\DataSources\Properties\SelectOption;
 
 /**
  * @psalm-import-type SelectOptionJson from SelectOption
