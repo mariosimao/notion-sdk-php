@@ -4,8 +4,9 @@ namespace Notion\Pages;
 
 /**
  * @psalm-type PageParentJson = array{
- *      type: "page_id"|"database_id"|"workspace"|"block_id",
+ *      type: "page_id"|"data_source_id"|"workspace"|"block_id",
  *      page_id?: string,
+ *      data_source_id?: string,
  *      database_id?: string,
  *      workspace?: true,
  *      block_id?: string,
@@ -18,12 +19,13 @@ class PageParent
     private function __construct(
         public readonly PageParentType $type,
         public readonly string|null $id,
+        public readonly string|null $databaseId = null,
     ) {
     }
 
-    public static function database(string $databaseId): self
+    public static function dataSource(string $dataSourceId): self
     {
-        return new self(PageParentType::Database, $databaseId);
+        return new self(PageParentType::DataSource, $dataSourceId);
     }
 
     public static function page(string $pageId): self
@@ -50,17 +52,26 @@ class PageParent
     {
         $type = PageParentType::from($array["type"]);
 
-        $id = $array["page_id"] ?? $array["database_id"] ?? $array["block_id"] ?? null;
+        $id = $array["page_id"] ?? $array["data_source_id"] ?? $array["block_id"] ?? null;
 
-        return new self($type, $id);
+        $databaseId = null;
+        if (array_key_exists("database_id", $array)) {
+            $databaseId = $array["database_id"];
+        }
+
+        $parent = new self($type, $id, $databaseId);
+        return $parent;
     }
 
     public function toArray(): array
     {
-        $array = [];
+        $array = [
+            "type" => $this->type->value,
+        ];
 
-        if ($this->isDatabase()) {
-            $array["database_id"] = $this->id;
+        if ($this->isDataSource()) {
+            $array["data_source_id"] = $this->id;
+            $array["database_id"] = $this->databaseId;
         }
         if ($this->isPage()) {
             $array["page_id"] = $this->id;
@@ -75,9 +86,9 @@ class PageParent
         return $array;
     }
 
-    public function isDatabase(): bool
+    public function isDataSource(): bool
     {
-        return $this->type === PageParentType::Database;
+        return $this->type === PageParentType::DataSource;
     }
 
     public function isPage(): bool

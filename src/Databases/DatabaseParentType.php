@@ -7,4 +7,5 @@ enum DatabaseParentType: string
     case Page = "page_id";
     case Workspace = "workspace";
     case Block = "block_id";
+    case DataSource = "data_source_id";
 }
