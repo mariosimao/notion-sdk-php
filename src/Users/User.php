@@ -30,6 +30,18 @@ class User
     ) {
     }
 
+    public static function create(string $id): self
+    {
+        return new self(
+            id: $id,
+            name: null,
+            avatarUrl: null,
+            type: null,
+            person: null,
+            bot: null,
+        );
+    }
+
     /** @psalm-param UserJson $array */
     public static function fromArray(array $array): self
     {

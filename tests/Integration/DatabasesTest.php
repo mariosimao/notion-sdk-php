@@ -9,6 +9,7 @@ use Notion\Common\RichText;
 use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
 use Notion\Databases\Properties\Date;
+use Notion\Databases\Properties\People;
 use Notion\Databases\Properties\RichTextProperty;
 use Notion\Databases\Properties\Select;
 use Notion\Databases\Properties\SelectOption;
@@ -21,8 +22,10 @@ use Notion\Exceptions\ApiException;
 use Notion\Pages\Page;
 use Notion\Pages\PageParent;
 use Notion\Pages\Properties\Date as DateProp;
+use Notion\Pages\Properties\People as PeopleProp;
 use Notion\Pages\Properties\Select as SelectProp;
 use Notion\Search\Query as SearchQuery;
+use Notion\Users\User;
 use PHPUnit\Framework\TestCase;
 
 class DatabasesTest extends TestCase
@@ -204,13 +207,47 @@ class DatabasesTest extends TestCase
         $client->databases()->query($database, $query);
     }
 
+    public function test_rename_database_with_people_property(): void
+    {
+        $client = Helper::client();
+
+        $database = self::moviesDatabase();
+        $database = $database->changeTitle("New movies database");
+        $database = $client->databases()->update($database);
+
+        $client->databases()->delete($database);
+
+        $this->assertSame("New movies database", $database->title[0]->plainText);
+    }
+
+    public function test_rename_database_page_with_people_property(): void
+    {
+        $client = Helper::client();
+
+        $database = self::moviesDatabase();
+
+        $users = Helper::client()->users()->findAll();
+        $userId = $users[0]->id;
+
+        $newPage = self::moviePage($database->id, "Sample movie", "2023-01-01", "Action", $userId);
+        $newPage = $client->pages()->create($newPage);
+
+        $newPage = $newPage->changeTitle("Updated sample movie");
+        $client->pages()->update($newPage);
+
+        $client->databases()->delete($database);
+
+        $this->assertSame("Updated sample movie", $newPage->title()?->toString());
+    }
+
+
     private static function moviesDatabase(): Database
     {
         $databaseParent = DatabaseParent::page(Helper::testPageId());
 
         $categories = [
             SelectOption::fromName("Action")->changeColor(Color::Orange),
-            SelectOption::fromname("Comedy")->changeColor(Color::Yellow),
+            SelectOption::fromName("Comedy")->changeColor(Color::Yellow),
             SelectOption::fromName("Drama")->changeColor(Color::Red),
         ];
 
@@ -220,16 +257,20 @@ class DatabasesTest extends TestCase
                 "Movies" => Title::create("Movie"),
                 "Release date" => Date::create("Release date"),
                 "Category" => Select::create("Category", $categories),
+                "People" => People::create("People"),
             ]);
 
         $database = Helper::client()->databases()->create($database);
 
+        $users = Helper::client()->users()->findAll();
+        $userId = $users[0]->id;
+
         $pages = [
-            self::moviePage($database->id, "A Clockwork Orange", "1972-12-19", "Drama"),
-            self::moviePage($database->id, "Dead Poets Society", "1989-06-02", "Drama"),
-            self::moviePage($database->id, "Batman", "1989-10-26", "Action"),
-            self::moviePage($database->id, "The Mask", "1994-12-23", "Comedy"),
-            self::moviePage($database->id, "American Beauty", "1999-09-08", "Drama"),
+            self::moviePage($database->id, "A Clockwork Orange", "1972-12-19", "Drama", $userId),
+            self::moviePage($database->id, "Dead Poets Society", "1989-06-02", "Drama", $userId),
+            self::moviePage($database->id, "Batman", "1989-10-26", "Action", $userId),
+            self::moviePage($database->id, "The Mask", "1994-12-23", "Comedy", $userId),
+            self::moviePage($database->id, "American Beauty", "1999-09-08", "Drama", $userId),
         ];
 
         $client = Helper::client();
@@ -244,13 +285,15 @@ class DatabasesTest extends TestCase
         string $databaseId,
         string $title,
         string $releaseDate,
-        string $category
+        string $category,
+        string $userId
     ): Page {
         $date = new DateTimeImmutable($releaseDate);
         return Page::create(PageParent::database($databaseId))
             ->changeTitle($title)
             ->addProperty("Release date", DateProp::create($date))
-            ->addProperty("Category", SelectProp::fromname($category));
+            ->addProperty("Category", SelectProp::fromName($category))
+            ->addProperty("People", PeopleProp::create(User::create($userId)));
     }
 
     private static function bigDatabase(): Database

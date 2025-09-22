@@ -53,7 +53,7 @@ class People implements PropertyInterface
 
         $array["people"] = array_map(
             function (User $user): array {
-                return $user->toArray();
+                return [ "id" => $user->id ];
             },
             $this->users,
         );
