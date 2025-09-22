@@ -240,7 +240,6 @@ class DatabasesTest extends TestCase
         $this->assertSame("Updated sample movie", $newPage->title()?->toString());
     }
 
-
     private static function moviesDatabase(): Database
     {
         $databaseParent = DatabaseParent::page(Helper::testPageId());
