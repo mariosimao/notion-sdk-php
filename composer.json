@@ -28,10 +28,10 @@
         "php-http/discovery": "^1.15"
     },
     "require-dev": {
-        "brianium/paratest": "~7.3.1",
+        "brianium/paratest": "7.3.1",
         "guzzlehttp/guzzle": "^7.5",
         "infection/infection": "^0.26.19 || ^0.27.0",
-        "phpunit/phpunit": "~10.5.26",
+        "phpunit/phpunit": "10.5.26",
         "psalm/plugin-phpunit": "^0.18.4",
         "squizlabs/php_codesniffer": "^3.7",
         "vimeo/psalm": "^5.7"
