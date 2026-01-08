@@ -34,6 +34,12 @@ class Client
     {
         $data = $database->toArray();
         unset($data["id"]);
+        if ($database->icon === null) {
+            unset($data["icon"]);
+        }
+        if ($database->cover === null) {
+            unset($data["cover"]);
+        }
 
         $url = "https://api.notion.com/v1/databases";
         $request = Http::createRequest($url, $this->config)
@@ -53,6 +59,12 @@ class Client
         unset($data["parent"]);
         unset($data["created_time"]);
         unset($data["last_edited_time"]);
+        if ($database->icon === null) {
+            unset($data["icon"]);
+        }
+        if ($database->cover === null) {
+            unset($data["cover"]);
+        }
 
         $databaseId = $database->id;
         $url = "https://api.notion.com/v1/databases/{$databaseId}";
