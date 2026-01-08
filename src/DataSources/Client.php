@@ -37,6 +37,9 @@ class Client
     {
         $data = $dataSource->toArray();
         unset($data["id"]);
+        if ($dataSource->parent->isDatabase()) {
+            unset($data["description"]);
+        }
 
         $url = "https://api.notion.com/v1/data_sources";
         $request = Http::createRequest($url, $this->config)
@@ -56,6 +59,9 @@ class Client
         unset($data["parent"]);
         unset($data["created_time"]);
         unset($data["last_edited_time"]);
+        if ($dataSource->parent->isDatabase()) {
+            unset($data["description"]);
+        }
 
         $dataSourceId = $dataSource->id;
         $url = "https://api.notion.com/v1/data_sources/{$dataSourceId}";

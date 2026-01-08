@@ -185,7 +185,6 @@ class DataSourceTest extends TestCase
                 "database_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
             ],
             "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
-            "is_inline" => true,
         ];
         $dataSource = DataSource::fromArray($array);
 
@@ -200,7 +199,6 @@ class DataSourceTest extends TestCase
             "2020-12-08T12:00:00.000000Z",
             $dataSource->lastEditedTime->format(Date::FORMAT),
         );
-        $this->assertTrue($dataSource->isInline);
     }
 
     public function test_from_array_change_emoji_icon(): void
@@ -242,7 +240,6 @@ class DataSourceTest extends TestCase
                 "database_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
             ],
             "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
-            "is_inline" => false,
         ];
         $database = DataSource::fromArray($array);
 
@@ -290,25 +287,11 @@ class DataSourceTest extends TestCase
                 "database_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
             ],
             "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
-            "is_inline" => false,
         ];
         $database = DataSource::fromArray($array);
 
         if ($database->icon?->isFile()) {
             $this->assertEquals("https://my-site.com/image.png", $database->icon->file?->url);
         }
-    }
-
-    public function test_inline(): void
-    {
-        $parent = DataSourceParent::database("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
-        $database = DataSource::create($parent);
-        $this->assertFalse($database->isInline);
-
-        $database = $database->enableInline();
-        $this->assertTrue($database->isInline);
-
-        $database = $database->disableInline();
-        $this->assertFalse($database->isInline);
     }
 }

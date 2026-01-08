@@ -32,7 +32,6 @@ use Notion\DataSources\Properties\Title;
  *      properties: array<string, PropertyMetadataJson>,
  *      parent: DataSourceParentJson,
  *      url: string,
- *      is_inline: bool,
  * }
  *
  * @psalm-immutable
@@ -54,7 +53,6 @@ class DataSource
         public readonly array $properties,
         public readonly DataSourceParent $parent,
         public readonly string $url,
-        public readonly bool $isInline,
     ) {
     }
 
@@ -72,7 +70,6 @@ class DataSource
             [ "Title" => Title::create() ],
             $parent,
             "",
-            false,
         );
     }
 
@@ -131,7 +128,6 @@ class DataSource
             $properties,
             $parent,
             $array["url"],
-            $array["is_inline"],
         );
     }
 
@@ -148,7 +144,6 @@ class DataSource
             "properties"       => $this->propertiesToArray(),
             "parent"           => $this->parent->toArray(),
             "url"              => $this->url,
-            "is_inline"        => $this->isInline,
         ];
     }
 
@@ -172,7 +167,6 @@ class DataSource
             $this->properties,
             $this->parent,
             $this->url,
-            $this->isInline,
         );
     }
 
@@ -188,7 +182,6 @@ class DataSource
             $this->properties,
             $this->parent,
             $this->url,
-            $this->isInline,
         );
     }
 
@@ -212,7 +205,6 @@ class DataSource
             $this->properties,
             $this->parent,
             $this->url,
-            $this->isInline,
         );
     }
 
@@ -228,7 +220,6 @@ class DataSource
             $this->properties,
             $this->parent,
             $this->url,
-            $this->isInline,
         );
     }
 
@@ -249,7 +240,6 @@ class DataSource
             $this->properties()->add($property)->getAll(),
             $this->parent,
             $this->url,
-            $this->isInline,
         );
     }
 
@@ -265,7 +255,6 @@ class DataSource
             $this->properties()->remove($propertyName)->getAll(),
             $this->parent,
             $this->url,
-            $this->isInline,
         );
     }
 
@@ -281,7 +270,6 @@ class DataSource
             $this->properties()->change($property)->getAll(),
             $this->parent,
             $this->url,
-            $this->isInline,
         );
     }
 
@@ -298,7 +286,6 @@ class DataSource
             PropertyCollection::create(...$properties)->getAll(),
             $this->parent,
             $this->url,
-            $this->isInline,
         );
     }
 
@@ -314,39 +301,6 @@ class DataSource
             $this->properties,
             $parent,
             $this->url,
-            $this->isInline,
-        );
-    }
-
-    public function enableInline(): self
-    {
-        return new self(
-            $this->id,
-            $this->createdTime,
-            $this->lastEditedTime,
-            $this->title,
-            $this->description,
-            $this->icon,
-            $this->properties,
-            $this->parent,
-            $this->url,
-            true,
-        );
-    }
-
-    public function disableInline(): self
-    {
-        return new self(
-            $this->id,
-            $this->createdTime,
-            $this->lastEditedTime,
-            $this->title,
-            $this->description,
-            $this->icon,
-            $this->properties,
-            $this->parent,
-            $this->url,
-            false,
         );
     }
 
