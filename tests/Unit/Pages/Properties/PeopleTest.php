@@ -57,8 +57,8 @@ class PeopleTest extends TestCase
             "id" => "abc",
             "type" => "people",
             "people" => [
-                $this->user1()->toArray(),
-                $this->user2()->toArray(),
+                [ "id" => $this->user1()->id ],
+                [ "id" => $this->user2()->id ],
             ],
         ];
 

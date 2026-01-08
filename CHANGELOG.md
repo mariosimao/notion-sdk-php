@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Fixed
+- Error when updating pages with People properties.
+
+## Build
+- Fix failing CI actions due to outdated dependencies.
+
 ## [v1.14.0] 2024-04-22
 
 ## Added

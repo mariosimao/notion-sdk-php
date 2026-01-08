@@ -23,7 +23,7 @@ jobs:
           tools: none
 
       - name: Install composer dependencies
-        uses: ramsey/composer-install@1.3.0
+        uses: ramsey/composer-install@v3
         with:
           dependency-versions: locked
           composer-options: --no-ansi --no-interaction --no-progress
