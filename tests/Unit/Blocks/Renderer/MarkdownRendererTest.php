@@ -2,10 +2,12 @@
 
 namespace Notion\Test\Unit\Blocks\Renderer;
 
+use Notion\Blocks\BlockType;
 use Notion\Blocks\BulletedListItem;
 use Notion\Blocks\Heading1;
 use Notion\Blocks\Heading2;
 use Notion\Blocks\Paragraph;
+use Notion\Blocks\Renderer\Markdown\Heading1Renderer;
 use Notion\Blocks\Renderer\MarkdownRenderer;
 use PHPUnit\Framework\TestCase;
 
@@ -36,6 +38,35 @@ My shopping list
 - Potato
 ## Mall
 - Black T-Shirt
+
+MARKDOWN;
+
+        $this->assertSame($expected, $markdown);
+    }
+
+    public function test_render_with_overrides(): void
+    {
+        $blocks = [
+            Heading1::fromString("Post title"),
+            Paragraph::fromString("My dummy post content."),
+        ];
+
+        $overrides = [
+            BlockType::Heading1->value => new class implements \Notion\Blocks\Renderer\BlockRendererInterface {
+                public static function render(\Notion\Blocks\BlockInterface $block, int $depth = 0): string
+                {
+                    $original = Heading1Renderer::render($block, $depth);
+                    return "{$original} (OVERRIDE)";
+                }
+            },
+        ];
+
+        $markdown = MarkdownRenderer::renderWithOverrides($overrides, ...$blocks);
+
+        $expected = <<<MARKDOWN
+# Post title (OVERRIDE)
+My dummy post content.
+
 
 MARKDOWN;
 
