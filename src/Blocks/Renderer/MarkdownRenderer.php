@@ -50,8 +50,8 @@ class MarkdownRenderer implements RendererInterface
     public static function renderBlock(
         BlockInterface $block,
         int $depth = 0,
-        array $overrides = []): string
-    {
+        array $overrides = []
+    ): string {
         if (array_key_exists($block->metadata()->type->value, $overrides)) {
             $renderer = $overrides[$block->metadata()->type->value];
             return $renderer::render($block, $depth);
