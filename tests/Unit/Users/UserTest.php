@@ -36,7 +36,12 @@ class UserTest extends TestCase
             "id"         => "b0688871-85db-4637-8fc9-043a240fcaec",
             "name"       => "Notion Bot",
             "type"       => "bot",
-            "bot"        => [],
+            "bot"        => [
+                "object" => "bot",
+                "workspace_limits" => [
+                    "max_file_upload_size_in_bytes" => 104857600,
+                ],
+            ],
         ];
 
         $user = User::fromArray($array);
