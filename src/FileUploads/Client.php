@@ -15,6 +15,7 @@ class Client
 {
     const SINGLE_PART_MAX_SIZE = 20 * 1024 * 1024; // 20 MB
     const CHUNK_SIZE = 10 * 1024 * 1024; // 10 MB
+    const MAX_PAGE_SIZE = 100;
 
     /**
      * @internal Use `\Notion\Notion::pages()` instead
@@ -22,6 +23,76 @@ class Client
     public function __construct(
         private readonly Configuration $config,
     ) {
+    }
+
+    public function find(string $fileUploadId): FileUpload
+    {
+        $url = "https://api.notion.com/v1/file_uploads/{$fileUploadId}";
+        $request = Http::createRequest($url, $this->config)
+            ->withMethod("GET");
+
+        /** @psalm-var FileUploadJson $body */
+        $body = Http::sendRequest($request, $this->config);
+
+        return FileUpload::fromArray($body);
+    }
+
+    /**
+     * @return array{
+     *      results: FileUpload[],
+     *      nextCursor: string|null,
+     *      hasMore: bool,
+     * }
+     */
+    public function list(FileUploadStatus|null $status = null, string|null $cursor = null): array
+    {
+        $uriFactory = Psr17FactoryDiscovery::findUriFactory();
+        $uri = $uriFactory->createUri("https://api.notion.com/v1/file_uploads");
+
+        $queryParams = [ "page_size" => self::MAX_PAGE_SIZE ];
+        if ($status !== null) {
+            $queryParams["status"] = $status->value;
+        }
+        if ($cursor !== null) {
+            $queryParams["start_cursor"] = $cursor;
+        }
+        $uri->withQuery(http_build_query($queryParams));
+
+        $request = Http::createRequest((string) $uri, $this->config)
+            ->withMethod("GET");
+
+        /** @psalm-var array{results: FileUploadJson[], next_cursor: string|null, has_more: bool} $body */
+        $body = Http::sendRequest($request, $this->config);
+
+        $results = array_map(
+            fn (array $item): FileUpload => FileUpload::fromArray($item),
+            $body["results"]
+        );
+        return [
+            "results" => $results,
+            "nextCursor" => $body["next_cursor"],
+            "hasMore" => $body["has_more"],
+        ];
+    }
+
+    /**
+     * @return FileUpload[]
+     */
+    public function findAll(FileUploadStatus|null $status = null): array
+    {
+        $fileUploads = [];
+        $startCursor = null;
+        $hasMore = true;
+
+        while ($hasMore) {
+            $result = $this->list($status, $startCursor);
+
+            $fileUploads = array_merge($fileUploads, $result["results"]);
+            $hasMore = $result["hasMore"];
+            $startCursor = $result["nextCursor"];
+        }
+
+        return $fileUploads;
     }
 
     public function upload(string $filePath, string|null $filenameOnNotion = null): FileUpload
@@ -122,6 +193,22 @@ class Client
         return FileUpload::fromArray($body);
     }
 
+    private function create(array $requestBody): FileUpload
+    {
+        $data = json_encode($requestBody);
+
+        $url = "https://api.notion.com/v1/file_uploads";
+        $request = Http::createRequest($url, $this->config)
+            ->withMethod("POST")
+            ->withHeader("Content-Type", "application/json");
+        $request->getBody()->write($data);
+
+        /** @psalm-var FileUploadJson $responseBody */
+        $responseBody = Http::sendRequest($request, $this->config);
+
+        return FileUpload::fromArray($responseBody);
+    }
+
     private function send(
         string $fileUploadId,
         string $content,
@@ -150,22 +237,6 @@ class Client
         $body = Http::sendRequest($request, $this->config);
 
         return FileUpload::fromArray($body);
-    }
-
-    private function create(array $requestBody): FileUpload
-    {
-        $data = json_encode($requestBody);
-
-        $url = "https://api.notion.com/v1/file_uploads";
-        $request = Http::createRequest($url, $this->config)
-            ->withMethod("POST")
-            ->withHeader("Content-Type", "application/json");
-        $request->getBody()->write($data);
-
-        /** @psalm-var FileUploadJson $responseBody */
-        $responseBody = Http::sendRequest($request, $this->config);
-
-        return FileUpload::fromArray($responseBody);
     }
 
     /**
