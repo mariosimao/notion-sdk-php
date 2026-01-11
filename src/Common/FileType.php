@@ -6,4 +6,5 @@ enum FileType: string
 {
     case Internal = "file";
     case External = "external";
+    case FileUpload = "file_upload";
 }
