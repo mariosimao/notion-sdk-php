@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.16.0] 2026-01-11
+
+### Added
+- Possibility to use custom Markdown renderers.
+- Full support to file upload.
+
 ## [v1.15.0] 2025-09-22
 
 ### Fixed
