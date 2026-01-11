@@ -15,6 +15,10 @@ final class PdfRenderer implements BlockRendererInterface
             return "";
         }
 
+        if ($block->file->url === null) {
+            return "";
+        }
+
         return MarkdownRenderer::ident($block->file->url, $depth);
     }
 }

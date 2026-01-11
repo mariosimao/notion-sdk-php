@@ -13,9 +13,9 @@ use Notion\Infrastructure\Http;
  */
 class Client
 {
-    const SINGLE_PART_MAX_SIZE = 20 * 1024 * 1024; // 20 MB
-    const CHUNK_SIZE = 10 * 1024 * 1024; // 10 MB
-    const MAX_PAGE_SIZE = 100;
+    private const SINGLE_PART_MAX_SIZE = 20 * 1024 * 1024; // 20 MB
+    private const CHUNK_SIZE = 10 * 1024 * 1024; // 10 MB
+    private const MAX_PAGE_SIZE = 100;
 
     /**
      * @internal Use `\Notion\Notion::pages()` instead
@@ -176,7 +176,7 @@ class Client
         return $this->send($fileUploadId, $content, $filename, null);
     }
 
-    public function sendMultiPart(string $fileUploadId, string $content, string $filename, int $partNumber) : FileUpload
+    public function sendMultiPart(string $fileUploadId, string $content, string $filename, int $partNumber): FileUpload
     {
         return $this->send($fileUploadId, $content, $filename, $partNumber);
     }
