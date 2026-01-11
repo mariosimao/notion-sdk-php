@@ -3,14 +3,20 @@
 namespace Notion\Users;
 
 /**
- * @psalm-type BotJson = array<empty, empty>
+ * @psalm-import-type WorkspaceLimitsJson from WorkspaceLimits
+ *
+ * @psalm-type BotJson = array{
+ *    object: "bot",
+ *    workspace_limits: WorkspaceLimitsJson,
+ * }
  *
  * @psalm-immutable
  */
 class Bot
 {
-    private function __construct()
-    {
+    private function __construct(
+        public readonly WorkspaceLimits $workspaceLimits
+    ) {
     }
 
     /**
@@ -20,12 +26,17 @@ class Bot
      */
     public static function fromArray(array $array): self
     {
-        return new self();
+        $workspaceLimits = WorkspaceLimits::fromArray($array["workspace_limits"]);
+
+        return new self($workspaceLimits);
     }
 
     /** @return BotJson */
     public function toArray(): array
     {
-        return [];
+        return [
+            "object" => "bot",
+            "workspace_limits" => $this->workspaceLimits->toArray(),
+        ];
     }
 }

@@ -8,6 +8,7 @@ use Notion\Databases\Client as DatabasesClient;
 use Notion\Pages\Client as PagesClient;
 use Notion\Search\Client as SearchClient;
 use Notion\Users\Client as UsersClient;
+use Notion\FileUploads\Client as FileUploadsClient;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 
@@ -74,5 +75,10 @@ class Notion
     public function search(): SearchClient
     {
         return new SearchClient($this->configuration);
+    }
+
+    public function fileUploads(): FileUploadsClient
+    {
+        return new FileUploadsClient($this->configuration);
     }
 }
