@@ -12,14 +12,51 @@ class MarkdownRenderer implements RendererInterface
     {
         $markdown = "";
         foreach ($blocks as $block) {
-            $markdown = $markdown . self::renderBlock($block) . "\n";
+            $markdown = $markdown . self::renderBlock($block, 0) . "\n";
         }
 
         return $markdown;
     }
 
-    public static function renderBlock(BlockInterface $block, int $depth = 0): string
-    {
+    /**
+     * Render blocks with custom renderers.
+     *
+     * @param array<value-of<BlockType>, BlockRendererInterface> $overrides
+     * @param BlockInterface ...$blocks
+     *
+     * @return string
+     */
+    public static function renderWithOverrides(
+        array $overrides,
+        BlockInterface ...$blocks,
+    ): string {
+        $markdown = "";
+        foreach ($blocks as $block) {
+            $markdown = $markdown . self::renderBlock($block, 0, $overrides) . "\n";
+        }
+
+        return $markdown;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param BlockInterface $block
+     * @param int $depth
+     * @param array<value-of<BlockType>, BlockRendererInterface> $overrides
+     *
+     * @return string
+     */
+    public static function renderBlock(
+        BlockInterface $block,
+        int $depth = 0,
+        array $overrides = []
+    ): string {
+        if (array_key_exists($block->metadata()->type->value, $overrides)) {
+            $renderer = $overrides[$block->metadata()->type->value];
+            return $renderer::render($block, $depth);
+        }
+
         return match ($block->metadata()->type) {
             BlockType::Bookmark         => Markdown\BookmarkRenderer::render($block, $depth),
             BlockType::Breadcrumb       => Markdown\BreadcrumbRenderer::render($block, $depth),
