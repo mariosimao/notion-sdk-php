@@ -26,6 +26,13 @@ class Title implements PropertyInterface
     ) {
     }
 
+    public static function createEmpty(): self
+    {
+        $property = PropertyMetadata::create("title", PropertyType::Title);
+
+        return new self($property, []);
+    }
+
     /** @psalm-mutation-free */
     public static function fromText(RichText ...$title): self
     {

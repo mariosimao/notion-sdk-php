@@ -39,9 +39,9 @@ class Date implements PropertyInterface
         return new self($property, CommonDate::createRange($start, $end));
     }
 
-    public static function createEmpty(): self
+    public static function createEmpty(string $id = null): self
     {
-        $metadata = PropertyMetadata::create("", PropertyType::Date);
+        $metadata = PropertyMetadata::create($id ?? "", PropertyType::Date);
 
         return new self($metadata, null);
     }

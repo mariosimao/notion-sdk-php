@@ -26,9 +26,9 @@ class Url implements PropertyInterface
         return new self($metadata, $url);
     }
 
-    public static function createEmpty(): self
+    public static function createEmpty(string $id = null): self
     {
-        $metadata = PropertyMetadata::create("", PropertyType::Url);
+        $metadata = PropertyMetadata::create($id ?? "", PropertyType::Url);
 
         return new self($metadata, null);
     }

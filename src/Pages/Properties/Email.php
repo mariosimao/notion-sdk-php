@@ -26,9 +26,9 @@ class Email implements PropertyInterface
         return new self($property, $email);
     }
 
-    public static function createEmpty(): self
+    public static function createEmpty(string $id = null): self
     {
-        $property = PropertyMetadata::create("", PropertyType::Email);
+        $property = PropertyMetadata::create($id ?? "", PropertyType::Email);
 
         return new self($property, null);
     }
