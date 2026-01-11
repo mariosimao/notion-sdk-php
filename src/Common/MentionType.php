@@ -8,4 +8,5 @@ enum MentionType: string
     case Database = "database";
     case User = "user";
     case Date = "date";
+    case Link = "link_mention";
 }
