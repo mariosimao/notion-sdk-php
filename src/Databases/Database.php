@@ -8,30 +8,25 @@ use Notion\Common\Emoji;
 use Notion\Common\File;
 use Notion\Common\Icon;
 use Notion\Common\RichText;
-use Notion\Databases\Properties\PropertyCollection;
-use Notion\Databases\Properties\PropertyFactory;
-use Notion\Databases\Properties\PropertyInterface;
-use Notion\Databases\Properties\Status;
-use Notion\Databases\Properties\Title;
 use Notion\Exceptions\DatabaseException;
 
 /**
+ * @psalm-import-type ChildDataSourceJson from ChildDataSource
  * @psalm-import-type EmojiJson from \Notion\Common\Emoji
  * @psalm-import-type FileJson from \Notion\Common\File
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
- * @psalm-import-type PropertyMetadataJson from \Notion\Databases\Properties\PropertyMetadata
  * @psalm-import-type DatabaseParentJson from DatabaseParent
  *
  * @psalm-type DatabaseJson = array{
  *      object: "database",
  *      id: string,
+ *      data_sources: ChildDataSourceJson[],
  *      created_time: string,
  *      last_edited_time: string,
  *      title: RichTextJson[],
  *      description: RichTextJson[],
  *      icon: EmojiJson|FileJson|null,
  *      cover: FileJson|null,
- *      properties: array<string, PropertyMetadataJson>,
  *      parent: DatabaseParentJson,
  *      url: string,
  *      is_inline: bool,
@@ -42,29 +37,25 @@ use Notion\Exceptions\DatabaseException;
 class Database
 {
     /**
+     * @param ChildDataSource[] $dataSources
      * @param RichText[] $title
      * @param RichText[] $description
-     * @param array<string, PropertyInterface> $properties
      */
     private function __construct(
         public readonly string $id,
+        public readonly array $dataSources,
         public readonly DateTimeImmutable $createdTime,
         public readonly DateTimeImmutable $lastEditedTime,
         public readonly array $title,
         public readonly array $description,
         public readonly Icon|null $icon,
         public readonly File|null $cover,
-        public readonly array $properties,
         public readonly DatabaseParent $parent,
         public readonly string $url,
         public readonly bool $isInline,
     ) {
         if ($cover !== null && $cover->isInternal()) {
             throw DatabaseException::internalCover();
-        }
-
-        if (!$this->hasTitleProperty($properties)) {
-            throw DatabaseException::noTitleProperty();
         }
     }
 
@@ -74,13 +65,13 @@ class Database
 
         return new self(
             "",
+            [],
             $now,
             $now,
             [],
             [],
             null,
             null,
-            [ "Title" => Title::create() ],
             $parent,
             "",
             false,
@@ -94,6 +85,13 @@ class Database
      */
     public static function fromArray(array $array): self
     {
+        $dataSources = array_map(
+            function (array $dataSourceArray): ChildDataSource {
+                return ChildDataSource::fromArray($dataSourceArray);
+            },
+            $array["data_sources"] ?? [],
+        );
+
         $title = array_map(
             function (array $richTextArray): RichText {
                 return RichText::fromArray($richTextArray);
@@ -129,20 +127,15 @@ class Database
 
         $parent = DatabaseParent::fromArray($array["parent"]);
 
-        $properties = [];
-        foreach ($array["properties"] as $propertyName => $propertyArray) {
-            $properties[$propertyName] = PropertyFactory::fromArray($propertyArray);
-        }
-
         return new self(
             $array["id"],
+            $dataSources,
             new DateTimeImmutable($array["created_time"]),
             new DateTimeImmutable($array["last_edited_time"]),
             $title,
             $description,
             $icon,
             $cover,
-            $properties,
             $parent,
             $array["url"],
             $array["is_inline"],
@@ -154,13 +147,13 @@ class Database
         return [
             "object"           => "database",
             "id"               => $this->id,
+            "data_sources"     => array_map(fn(ChildDataSource $ds) => $ds->toArray(), $this->dataSources),
             "created_time"     => $this->createdTime->format(Date::FORMAT),
             "last_edited_time" => $this->lastEditedTime->format(Date::FORMAT),
             "title"            => array_map(fn(RichText $t) => $t->toArray(), $this->title),
             "description"      => array_map(fn(RichText $t) => $t->toArray(), $this->description),
             "icon"             => $this->icon?->toArray(),
             "cover"            => $this->cover?->toArray(),
-            "properties"       => $this->propertiesToArray(),
             "parent"           => $this->parent->toArray(),
             "url"              => $this->url,
             "is_inline"        => $this->isInline,
@@ -179,13 +172,13 @@ class Database
     {
         return new self(
             $this->id,
+            $this->dataSources,
             $this->createdTime,
             $this->lastEditedTime,
             [ RichText::fromString($title) ],
             $this->description,
             $this->icon,
             $this->cover,
-            $this->properties,
             $this->parent,
             $this->url,
             $this->isInline,
@@ -196,13 +189,13 @@ class Database
     {
         return new self(
             $this->id,
+            $this->dataSources,
             $this->createdTime,
             $this->lastEditedTime,
             $title,
             $this->description,
             $this->icon,
             $this->cover,
-            $this->properties,
             $this->parent,
             $this->url,
             $this->isInline,
@@ -221,13 +214,13 @@ class Database
 
         return new self(
             $this->id,
+            $this->dataSources,
             $this->createdTime,
             $this->lastEditedTime,
             $this->title,
             $this->description,
             $icon,
             $this->cover,
-            $this->properties,
             $this->parent,
             $this->url,
             $this->isInline,
@@ -238,13 +231,13 @@ class Database
     {
         return new self(
             $this->id,
+            $this->dataSources,
             $this->createdTime,
             $this->lastEditedTime,
             $this->title,
             $this->description,
             null,
             $this->cover,
-            $this->properties,
             $this->parent,
             $this->url,
             $this->isInline,
@@ -255,13 +248,13 @@ class Database
     {
         return new self(
             $this->id,
+            $this->dataSources,
             $this->createdTime,
             $this->lastEditedTime,
             $this->title,
             $this->description,
             $this->icon,
             $cover,
-            $this->properties,
             $this->parent,
             $this->url,
             $this->isInline,
@@ -272,87 +265,13 @@ class Database
     {
         return new self(
             $this->id,
+            $this->dataSources,
             $this->createdTime,
             $this->lastEditedTime,
             $this->title,
             $this->description,
             $this->icon,
             null,
-            $this->properties,
-            $this->parent,
-            $this->url,
-            $this->isInline,
-        );
-    }
-
-    public function properties(): PropertyCollection
-    {
-        return PropertyCollection::create(...$this->properties);
-    }
-
-    public function addProperty(PropertyInterface $property): self
-    {
-        return new self(
-            $this->id,
-            $this->createdTime,
-            $this->lastEditedTime,
-            $this->title,
-            $this->description,
-            $this->icon,
-            $this->cover,
-            $this->properties()->add($property)->getAll(),
-            $this->parent,
-            $this->url,
-            $this->isInline,
-        );
-    }
-
-    public function removePropertyByName(string $propertyName): self
-    {
-        return new self(
-            $this->id,
-            $this->createdTime,
-            $this->lastEditedTime,
-            $this->title,
-            $this->description,
-            $this->icon,
-            $this->cover,
-            $this->properties()->remove($propertyName)->getAll(),
-            $this->parent,
-            $this->url,
-            $this->isInline,
-        );
-    }
-
-    public function changeProperty(PropertyInterface $property): self
-    {
-        return new self(
-            $this->id,
-            $this->createdTime,
-            $this->lastEditedTime,
-            $this->title,
-            $this->description,
-            $this->icon,
-            $this->cover,
-            $this->properties()->change($property)->getAll(),
-            $this->parent,
-            $this->url,
-            $this->isInline,
-        );
-    }
-
-    /** @param array<string, PropertyInterface> $properties */
-    public function changeProperties(array $properties): self
-    {
-        return new self(
-            $this->id,
-            $this->createdTime,
-            $this->lastEditedTime,
-            $this->title,
-            $this->description,
-            $this->icon,
-            $this->cover,
-            PropertyCollection::create(...$properties)->getAll(),
             $this->parent,
             $this->url,
             $this->isInline,
@@ -363,13 +282,13 @@ class Database
     {
         return new self(
             $this->id,
+            $this->dataSources,
             $this->createdTime,
             $this->lastEditedTime,
             $this->title,
             $this->description,
             $this->icon,
             $this->cover,
-            $this->properties,
             $parent,
             $this->url,
             $this->isInline,
@@ -380,13 +299,13 @@ class Database
     {
         return new self(
             $this->id,
+            $this->dataSources,
             $this->createdTime,
             $this->lastEditedTime,
             $this->title,
             $this->description,
             $this->icon,
             $this->cover,
-            $this->properties,
             $this->parent,
             $this->url,
             true,
@@ -397,43 +316,16 @@ class Database
     {
         return new self(
             $this->id,
+            $this->dataSources,
             $this->createdTime,
             $this->lastEditedTime,
             $this->title,
             $this->description,
             $this->icon,
             $this->cover,
-            $this->properties,
             $this->parent,
             $this->url,
             false,
         );
-    }
-
-    /** @param array<string, PropertyInterface> $properties */
-    private function hasTitleProperty(array $properties): bool
-    {
-        foreach ($properties as $property) {
-            if ($property instanceof Title) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function propertiesToArray(): array
-    {
-        $array = [];
-
-        $properties = $this->properties;
-        foreach ($properties as $name => $property) {
-            if ($property instanceof Status) {
-                continue;
-            }
-            $array[$name] = $property->toArray();
-        }
-
-        return $array;
     }
 }

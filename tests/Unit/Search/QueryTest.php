@@ -36,9 +36,9 @@ class QueryTest extends TestCase
 
     public function test_filter_by_databases(): void
     {
-        $q = Query::title("Term")->filterByDatabases();
+        $q = Query::title("Term")->filterByDataSources();
 
-        $this->assertSame(FilterValue::Database, $q->filter?->value);
+        $this->assertSame(FilterValue::DataSource, $q->filter?->value);
     }
 
     public function test_sort_ascending(): void

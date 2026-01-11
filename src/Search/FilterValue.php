@@ -5,5 +5,5 @@ namespace Notion\Search;
 enum FilterValue: string
 {
     case Page = "page";
-    case Database = "database";
+    case DataSource = "data_source";
 }

@@ -3,14 +3,11 @@
 namespace Notion\Databases;
 
 use Notion\Configuration;
-use Notion\Databases\Query\Result;
-use Notion\Databases\Query\Sort;
+use Notion\DataSources\DataSource;
 use Notion\Infrastructure\Http;
-use Notion\Pages\Page;
 
 /**
  * @psalm-import-type DatabaseJson from Database
- * @psalm-import-type QueryResultJson from Result
  */
 class Client
 {
@@ -37,6 +34,12 @@ class Client
     {
         $data = $database->toArray();
         unset($data["id"]);
+        if ($database->icon === null) {
+            unset($data["icon"]);
+        }
+        if ($database->cover === null) {
+            unset($data["cover"]);
+        }
 
         $url = "https://api.notion.com/v1/databases";
         $request = Http::createRequest($url, $this->config)
@@ -56,6 +59,12 @@ class Client
         unset($data["parent"]);
         unset($data["created_time"]);
         unset($data["last_edited_time"]);
+        if ($database->icon === null) {
+            unset($data["icon"]);
+        }
+        if ($database->cover === null) {
+            unset($data["cover"]);
+        }
 
         $databaseId = $database->id;
         $url = "https://api.notion.com/v1/databases/{$databaseId}";
@@ -79,53 +88,5 @@ class Client
             ->withMethod("DELETE");
 
         Http::sendRequest($request, $this->config);
-    }
-
-    public function query(Database $database, Query $query): Result
-    {
-        $data = $query->toArray();
-
-        $databaseId = $database->id;
-        $url = "https://api.notion.com/v1/databases/{$databaseId}/query";
-        $request = Http::createRequest($url, $this->config)
-            ->withMethod("POST")
-            ->withHeader("Content-Type", "application/json");
-
-        $request->getBody()->write(json_encode($data));
-
-        /** @psalm-var QueryResultJson $body */
-        $body = Http::sendRequest($request, $this->config);
-
-        return Result::fromArray($body);
-    }
-
-    /**
-     * @param Sort[] $sorts
-     *
-     * @return Page[]
-     */
-    public function queryAllPages(Database $database, array $sorts = []): array
-    {
-        $query = Query::create()
-                    ->changeSorts(...$sorts)
-                    ->changePageSize(Query::MAX_PAGE_SIZE);
-
-        $pages = [];
-        $startCursor = null;
-        $hasMore = true;
-
-        while ($hasMore) {
-            if ($startCursor !== null) {
-                $query = $query->changeStartCursor($startCursor);
-            }
-
-            $result = $this->query($database, $query);
-
-            $pages = array_merge($pages, $result->pages);
-            $hasMore = $result->hasMore;
-            $startCursor = $result->nextCursor;
-        }
-
-        return $pages;
     }
 }
