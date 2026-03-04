@@ -26,7 +26,7 @@ class Bot
      */
     public static function fromArray(array $array): self
     {
-        $workspaceLimits = WorkspaceLimits::fromArray($array["workspace_limits"]);
+        $workspaceLimits = WorkspaceLimits::fromArray($array["workspace_limits"] ?? []);
 
         return new self($workspaceLimits);
     }
