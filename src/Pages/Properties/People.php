@@ -31,6 +31,13 @@ class People implements PropertyInterface
         return new self($property, $users);
     }
 
+    public static function createEmpty(string $id = null): self
+    {
+        $property = PropertyMetadata::create($id ?? "", PropertyType::People);
+
+        return new self($property, []);
+    }
+
     public static function fromArray(array $array): self
     {
         /** @psalm-var PeopleJson $array */
