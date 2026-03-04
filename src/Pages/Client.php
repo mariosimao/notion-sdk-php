@@ -41,14 +41,20 @@ class Client
     /** @param list<BlockInterface> $content */
     public function create(Page $page, array $content = []): Page
     {
-        $data = json_encode([
+        $data = [
             "archived" => $page->archived,
             "icon" => $page->icon?->toArray(),
             "cover" => $page->cover?->toArray(),
             "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $page->properties),
             "parent" => $page->parent->toArray(),
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $content),
-        ]);
+        ];
+
+        if ($page->parent->isDataSource()) {
+            unset($data["parent"]["database_id"]);
+        }
+
+        $data = json_encode($data);
 
         $url = "https://api.notion.com/v1/pages";
         $request = Http::createRequest($url, $this->config)

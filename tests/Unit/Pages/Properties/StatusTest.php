@@ -3,7 +3,7 @@
 namespace Notion\Test\Unit\Pages\Properties;
 
 use Notion\Common\Color;
-use Notion\Databases\Properties\StatusOption;
+use Notion\DataSources\Properties\StatusOption;
 use Notion\Pages\Properties\PropertyType;
 use Notion\Pages\Properties\Status;
 use PHPUnit\Framework\TestCase;

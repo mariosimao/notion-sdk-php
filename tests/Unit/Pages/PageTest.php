@@ -103,7 +103,7 @@ class PageTest extends TestCase
     public function test_move_page(): void
     {
         $oldParent = PageParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
-        $newParent = PageParent::database("08da99e5-f11d-4d26-827d-112a3a9bd07d");
+        $newParent = PageParent::dataSource("08da99e5-f11d-4d26-827d-112a3a9bd07d");
         $page = Page::create($oldParent)->changeParent($newParent);
 
         $this->assertSame($newParent, $page->parent);
@@ -125,7 +125,7 @@ class PageTest extends TestCase
         $page = $page->addProperty("Rating", RichTextProperty::fromString("⭐⭐⭐"));
 
         /** @psalm-suppress DeprecatedMethod */
-        $this->assertEquals(PropertyType::RichText, $page->getProprety("Rating")->metadata()->type);
+        $this->assertEquals(PropertyType::RichText, $page->getProperty("Rating")->metadata()->type);
     }
 
     public function test_replace_properties(): void
@@ -177,10 +177,7 @@ class PageTest extends TestCase
         ];
         $page = Page::fromArray($array);
 
-        $outArray = $array;
-        unset($outArray["parent"]["type"]);
-
-        $this->assertSame($outArray, $page->toArray());
+        $this->assertSame($array, $page->toArray());
         $this->assertSame("a7e80c0b-a766-43c3-a9e9-21ce94595e0e", $page->id);
         $this->assertSame("https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e", $page->url);
         $this->assertEquals(
