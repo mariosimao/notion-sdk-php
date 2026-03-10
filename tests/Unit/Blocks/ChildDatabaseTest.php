@@ -17,7 +17,7 @@ class ChildDatabaseTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000000Z",
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => false,
             "type"             => "child_database",
             "child_database"   => [ "title" => "Database title" ],
@@ -26,7 +26,7 @@ class ChildDatabaseTest extends TestCase
         $childDatabase = ChildDatabase::fromArray($array);
 
         $this->assertEquals("Database title", $childDatabase->title);
-        $this->assertFalse($childDatabase->metadata()->archived);
+        $this->assertFalse($childDatabase->metadata()->in_trash);
 
         $this->assertEquals($childDatabase, BlockFactory::fromArray($array));
         $this->assertEquals($array, $childDatabase->toArray());
@@ -40,7 +40,7 @@ class ChildDatabaseTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => false,
             "type"             => "wrong-type",
             "child_database"   => [ "title" => "Wrong array" ],
@@ -77,7 +77,7 @@ class ChildDatabaseTest extends TestCase
 
         $block = $block->archive();
 
-        $this->assertTrue($block->metadata()->archived);
+        $this->assertTrue($block->metadata()->in_trash);
     }
 
     private function mockArray(): array
@@ -87,7 +87,7 @@ class ChildDatabaseTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => false,
             "type"             => "child_database",
             "child_database"   => [ "title" => "Database title" ],

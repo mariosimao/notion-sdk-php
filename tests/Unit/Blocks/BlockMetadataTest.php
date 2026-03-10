@@ -16,7 +16,7 @@ class BlockMetadataTest extends TestCase
         $metadata = $metadata->archive();
         $metadata = $metadata->restore();
 
-        $this->assertFalse($metadata->archived);
+        $this->assertFalse($metadata->in_trash);
     }
 
     public function test_check_type(): void

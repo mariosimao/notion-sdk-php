@@ -15,7 +15,7 @@ $p = Paragraph::fromString("Simple paragraph.");
 $p->metadata()->id;                              // a9f03ee5...
 $p->metadata()->createdTime->format("Y-m-d");    // 2022-07-01
 $p->metadata()->lastEditedTime->format("Y-m-d"); // 2022-07-01
-$p->metadata()->archived;                        // false
+$p->metadata()->in_trash;                        // false
 $p->metadata()->hasChildren;                     // false
 ```
 

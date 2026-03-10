@@ -29,7 +29,7 @@ class ColumnListTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000000Z",
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => true,
             "type"             => "column_list",
             "column_list"      => [
@@ -39,7 +39,7 @@ class ColumnListTest extends TestCase
                         "id"               => "880f4b72-28b9-497a-b9c3-dd67d61b87ef",
                         "created_time"     => "2021-10-18T17:09:00.000000Z",
                         "last_edited_time" => "2021-10-18T17:09:00.000000Z",
-                        "archived"         => false,
+                        "in_trash"         => false,
                         "has_children"     => true,
                         "type"             => "column",
                         "column"           => [
@@ -48,7 +48,7 @@ class ColumnListTest extends TestCase
                                 "id"               => "64caffeb-c947-4acd-b6ee-b1856bb91844",
                                 "created_time"     => "2021-10-18T17:09:00.000000Z",
                                 "last_edited_time" => "2021-10-18T17:09:00.000000Z",
-                                "archived"         => false,
+                                "in_trash"         => false,
                                 "has_children"     => false,
                                 "type"             => "divider",
                                 "divider"          => new \stdClass(),
@@ -60,7 +60,7 @@ class ColumnListTest extends TestCase
                         "id"               => "c45d7fef-08ff-4638-843d-d984c7d3ef72",
                         "created_time"     => "2021-10-18T17:09:00.000000Z",
                         "last_edited_time" => "2021-10-18T17:09:00.000000Z",
-                        "archived"         => false,
+                        "in_trash"         => false,
                         "has_children"     => true,
                         "type"             => "column",
                         "column"           => [
@@ -69,7 +69,7 @@ class ColumnListTest extends TestCase
                                 "id"               => "e99edc10-621a-43cf-9a99-eca8d10ded44",
                                 "created_time"     => "2021-10-18T17:09:00.000000Z",
                                 "last_edited_time" => "2021-10-18T17:09:00.000000Z",
-                                "archived"         => false,
+                                "in_trash"         => false,
                                 "has_children"     => false,
                                 "type"             => "divider",
                                 "divider"          => new \stdClass(),
@@ -132,6 +132,6 @@ class ColumnListTest extends TestCase
 
         $block = $block->archive();
 
-        $this->assertTrue($block->metadata()->archived);
+        $this->assertTrue($block->metadata()->in_trash);
     }
 }
