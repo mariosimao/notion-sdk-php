@@ -34,7 +34,7 @@ class ToggleTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => false,
             "type"             => "toggle",
             "toggle"        => [
@@ -81,7 +81,7 @@ class ToggleTest extends TestCase
         $this->assertCount(2, $toggle->text);
         $this->assertEmpty($toggle->children);
         $this->assertEquals("Notion toggles rock!", $toggle->toString());
-        $this->assertFalse($toggle->metadata()->archived);
+        $this->assertFalse($toggle->metadata()->in_trash);
 
         $this->assertEquals($toggle, BlockFactory::fromArray($array));
     }
@@ -94,7 +94,7 @@ class ToggleTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => false,
             "type"             => "wrong-type",
             "toggle"        => [
@@ -113,7 +113,7 @@ class ToggleTest extends TestCase
             "object"           => "block",
             "created_time"     => $p->metadata()->createdTime->format(Date::FORMAT),
             "last_edited_time" => $p->metadata()->lastEditedTime->format(Date::FORMAT),
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"      => false,
             "type"             => "toggle",
             "toggle"        => [

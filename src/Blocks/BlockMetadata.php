@@ -12,7 +12,7 @@ use Notion\Common\Date;
  *      id: string,
  *      created_time: string,
  *      last_edited_time: string,
- *      archived: bool,
+ *      in_trash: bool,
  *      has_children: bool,
  * }
  *
@@ -24,7 +24,7 @@ class BlockMetadata
         public readonly string $id,
         public readonly DateTimeImmutable $createdTime,
         public readonly DateTimeImmutable $lastEditedTime,
-        public readonly bool $archived,
+        public readonly bool $in_trash,
         public readonly bool $hasChildren,
         public readonly BlockType $type,
         private readonly string|null $unknownType = null
@@ -52,7 +52,7 @@ class BlockMetadata
             $array["id"],
             new DateTimeImmutable($array["created_time"]),
             new DateTimeImmutable($array["last_edited_time"]),
-            $array["archived"],
+            $array["in_trash"],
             $array["has_children"],
             $type,
             $type === BlockType::Unknown ? $array["type"] : null,
@@ -68,7 +68,7 @@ class BlockMetadata
             "object"           => "block",
             "created_time"     => $this->createdTime->format(Date::FORMAT),
             "last_edited_time" => $this->lastEditedTime->format(Date::FORMAT),
-            "archived"         => $this->archived,
+            "in_trash"         => $this->in_trash,
             "has_children"     => $this->hasChildren,
             "type"             => $type,
         ];
@@ -113,7 +113,7 @@ class BlockMetadata
             $this->id,
             $this->createdTime,
             new DateTimeImmutable("now"),
-            $this->archived,
+            $this->in_trash,
             $hasChildren,
             $this->type,
         );
@@ -125,7 +125,7 @@ class BlockMetadata
             $this->id,
             $this->createdTime,
             new DateTimeImmutable("now"),
-            $this->archived,
+            $this->in_trash,
             $this->hasChildren,
             $this->type,
         );

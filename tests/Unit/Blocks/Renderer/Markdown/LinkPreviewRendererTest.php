@@ -15,7 +15,7 @@ class LinkPreviewRendererTest extends TestCase
             "id"                => "abc123",
             "created_time"      => "2023-01-01 00:00:00",
             "last_edited_time"  => "2023-01-01 00:00:00",
-            "archived"          => false,
+            "in_trash"          => false,
             "has_children"      => false,
             "type"              => "link_preview",
             "link_preview"    => [

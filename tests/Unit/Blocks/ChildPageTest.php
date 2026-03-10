@@ -17,7 +17,7 @@ class ChildPageTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000000Z",
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => false,
             "type"             => "child_page",
             "child_page"       => [ "title" => "Page title" ],
@@ -26,7 +26,7 @@ class ChildPageTest extends TestCase
         $childPage = ChildPage::fromArray($array);
 
         $this->assertEquals("Page title", $childPage->title);
-        $this->assertFalse($childPage->metadata()->archived);
+        $this->assertFalse($childPage->metadata()->in_trash);
 
         $this->assertEquals($childPage, BlockFactory::fromArray($array));
         $this->assertEquals($array, $childPage->toArray());
@@ -40,7 +40,7 @@ class ChildPageTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => false,
             "type"             => "wrong-type",
             "child_page"       => [ "title" => "Wrong array" ],
@@ -77,7 +77,7 @@ class ChildPageTest extends TestCase
 
         $block = $block->archive();
 
-        $this->assertTrue($block->metadata()->archived);
+        $this->assertTrue($block->metadata()->in_trash);
     }
 
     private function mockArray(): array
@@ -87,7 +87,7 @@ class ChildPageTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000000Z",
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => false,
             "type"             => "child_page",
             "child_page"       => [ "title" => "Page title" ],

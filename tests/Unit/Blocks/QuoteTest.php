@@ -34,7 +34,7 @@ class QuoteTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => false,
             "type"             => "quote",
             "quote"        => [
@@ -81,7 +81,7 @@ class QuoteTest extends TestCase
         $this->assertCount(2, $quote->text);
         $this->assertEmpty($quote->children);
         $this->assertEquals("Notion quotes rock!", $quote->toString());
-        $this->assertFalse($quote->metadata()->archived);
+        $this->assertFalse($quote->metadata()->in_trash);
 
         $this->assertEquals($quote, BlockFactory::fromArray($array));
     }
@@ -94,7 +94,7 @@ class QuoteTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => false,
             "type"             => "wrong-type",
             "quote"        => [
@@ -114,7 +114,7 @@ class QuoteTest extends TestCase
             "object"           => "block",
             "created_time"     => $q->metadata()->createdTime->format(Date::FORMAT),
             "last_edited_time" => $q->metadata()->lastEditedTime->format(Date::FORMAT),
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"      => false,
             "type"             => "quote",
             "quote"        => [
@@ -193,7 +193,7 @@ class QuoteTest extends TestCase
         $quote = Quote::fromString("Simple quote.");
         $quote = $quote->archive();
 
-        $this->assertTrue($quote->metadata()->archived);
+        $this->assertTrue($quote->metadata()->in_trash);
     }
 
     public function test_change_color(): void

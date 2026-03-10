@@ -88,7 +88,7 @@ final class HttpTest extends TestCase
                 "type": "page_id",
                 "page_id": "cf735738-35e3-44aa-b3d4-aca944c8f421"
             },
-            "archived": false,
+            "in_trash": false,
             "properties": {
                 "title": {
                     "id": "title",

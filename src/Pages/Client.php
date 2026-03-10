@@ -42,7 +42,7 @@ class Client
     public function create(Page $page, array $content = []): Page
     {
         $data = json_encode([
-            "archived" => $page->archived,
+            "in_trash" => $page->in_trash,
             "icon" => $page->icon?->toArray(),
             "cover" => $page->cover?->toArray(),
             "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $page->properties),
@@ -81,7 +81,7 @@ class Client
         );
 
         $data = json_encode([
-            "archived" => $page->archived,
+            "in_trash" => $page->in_trash,
             "icon" => $page->icon?->toArray(),
             "cover" => $page->cover?->toArray(),
             "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $updatableProps),
@@ -103,8 +103,8 @@ class Client
 
     public function delete(Page $page): Page
     {
-        $archivedPage = $page->archive();
+        $in_trashPage = $page->archive();
 
-        return $this->update($archivedPage);
+        return $this->update($in_trashPage);
     }
 }

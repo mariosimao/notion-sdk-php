@@ -36,7 +36,7 @@ class CalloutTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => false,
             "type"             => "callout",
             "callout"        => [
@@ -90,7 +90,7 @@ class CalloutTest extends TestCase
         if ($callout->icon->isEmoji()) {
             $this->assertEquals("☀️", $callout->icon->emoji->toString());
         }
-        $this->assertFalse($callout->metadata()->archived);
+        $this->assertFalse($callout->metadata()->in_trash);
 
         $this->assertEquals($callout, BlockFactory::fromArray($array));
     }
@@ -102,7 +102,7 @@ class CalloutTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => false,
             "type"             => "callout",
             "callout"        => [
@@ -156,7 +156,7 @@ class CalloutTest extends TestCase
         $this->assertCount(2, $callout->text);
         $this->assertEmpty($callout->children);
         $this->assertEquals("Notion callouts rock!", $callout->toString());
-        $this->assertFalse($callout->metadata()->archived);
+        $this->assertFalse($callout->metadata()->in_trash);
     }
 
     public function test_error_on_wrong_type(): void
@@ -167,7 +167,7 @@ class CalloutTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => false,
             "type"             => "wrong-type",
             "callout"        => [
@@ -191,7 +191,7 @@ class CalloutTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => false,
             "type"             => "callout",
             "callout"        => [
@@ -212,7 +212,7 @@ class CalloutTest extends TestCase
             "object"           => "block",
             "created_time"     => $c->metadata()->createdTime->format(Date::FORMAT),
             "last_edited_time" => $c->metadata()->lastEditedTime->format(Date::FORMAT),
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"      => false,
             "type"             => "callout",
             "callout"        => [
