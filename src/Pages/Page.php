@@ -179,6 +179,7 @@ class Page
 
     /**
      * @deprecated 1.17.0 Use `restore()` instead.
+     * @codeCoverageIgnore
      */
     public function unarchive(): self
     {
