@@ -147,7 +147,10 @@ class NumberedListItem implements BlockInterface
         );
     }
 
-    /** @deprecated 1.17.0 Use `delete()` instead. */
+    /**
+     * @deprecated 1.17.0 Use `delete()` instead.
+     * @codeCoverageIgnore
+     */
     public function archive(): BlockInterface
     {
         return $this->delete();

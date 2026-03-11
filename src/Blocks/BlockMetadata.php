@@ -35,6 +35,7 @@ class BlockMetadata
 
     /**
      * @deprecated 1.17.0 Use `$inTrash` instead.
+     * @codeCoverageIgnore
      */
     public readonly bool $archived;
 

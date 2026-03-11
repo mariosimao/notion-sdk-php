@@ -55,6 +55,7 @@ class Page
 
     /**
      * @deprecated 1.17.0 Use `$inTrash` instead.
+     * @codeCoverageIgnore
      */
     public readonly bool $archived;
 
@@ -154,6 +155,7 @@ class Page
 
     /**
      * @deprecated 1.17.0 Use `delete()` instead.
+     * @codeCoverageIgnore
      */
     public function archive(): self
     {

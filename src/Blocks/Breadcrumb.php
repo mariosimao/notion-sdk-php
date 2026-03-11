@@ -65,7 +65,10 @@ class Breadcrumb implements BlockInterface
         return new self($this->metadata->delete());
     }
 
-    /** @deprecated 1.17.0 Use `delete()` instead. */
+    /**
+     * @deprecated 1.17.0 Use `delete()` instead.
+     * @codeCoverageIgnore
+     */
     public function archive(): BlockInterface
     {
         return $this->delete();
