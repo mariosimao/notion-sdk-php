@@ -123,14 +123,14 @@ class ImageTest extends TestCase
         $block->addChild(Paragraph::create());
     }
 
-    public function test_archive(): void
+    public function test_delete(): void
     {
         $file = File::createExternal("https://my-site.com/image.png");
         $block = Image::fromFile($file);
 
-        $block = $block->archive();
+        $block = $block->delete();
 
-        $this->assertTrue($block->metadata()->in_trash);
+        $this->assertTrue($block->metadata()->inTrash);
     }
 
     public function test_change_caption(): void

@@ -81,7 +81,7 @@ class NumberedListItemTest extends TestCase
         $this->assertCount(2, $item->text);
         $this->assertEmpty($item->children);
         $this->assertEquals("Notion items rock!", $item->toString());
-        $this->assertFalse($item->metadata()->in_trash);
+        $this->assertFalse($item->metadata()->inTrash);
 
         $this->assertEquals($item, BlockFactory::fromArray($array));
     }

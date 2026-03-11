@@ -42,14 +42,22 @@ class Page
         public readonly string $id,
         public readonly DateTimeImmutable $createdTime,
         public readonly DateTimeImmutable $lastEditedTime,
-        public readonly bool $in_trash,
+        public readonly bool $inTrash,
         public readonly Icon|null $icon,
         public readonly File|null $cover,
         public readonly array $properties,
         public readonly PageParent $parent,
         public readonly string $url
     ) {
+        /** @psalm-suppress DeprecatedProperty */
+        $this->archived = $inTrash;
     }
+
+    /**
+     * @deprecated 1.17.0 Use `$inTrash` instead.
+     * @codeCoverageIgnore
+     */
+    public readonly bool $archived;
 
     public static function create(PageParent $parent): self
     {
@@ -113,7 +121,7 @@ class Page
             "id"               => $this->id,
             "created_time"     => $this->createdTime->format(Date::FORMAT),
             "last_edited_time" => $this->lastEditedTime->format(Date::FORMAT),
-            "in_trash"         => $this->in_trash,
+            "in_trash"         => $this->inTrash,
             "icon"             => $this->icon?->toArray(),
             "cover"            => $this->cover?->toArray(),
             "properties"       => array_map(fn($p) => $p->toArray(), $this->properties),
@@ -130,7 +138,7 @@ class Page
         return $this->icon !== null;
     }
 
-    public function archive(): self
+    public function delete(): self
     {
         return new self(
             $this->id,
@@ -145,7 +153,16 @@ class Page
         );
     }
 
-    public function unarchive(): self
+    /**
+     * @deprecated 1.17.0 Use `delete()` instead.
+     * @codeCoverageIgnore
+     */
+    public function archive(): self
+    {
+        return $this->delete();
+    }
+
+    public function restore(): self
     {
         return new self(
             $this->id,
@@ -158,6 +175,15 @@ class Page
             $this->parent,
             $this->url,
         );
+    }
+
+    /**
+     * @deprecated 1.17.0 Use `restore()` instead.
+     * @codeCoverageIgnore
+     */
+    public function unarchive(): self
+    {
+        return $this->restore();
     }
 
     public function changeIcon(Emoji|File|Icon $icon): self
@@ -174,7 +200,7 @@ class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->in_trash,
+            $this->inTrash,
             $icon,
             $this->cover,
             $this->properties,
@@ -189,7 +215,7 @@ class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->in_trash,
+            $this->inTrash,
             null,
             $this->cover,
             $this->properties,
@@ -204,7 +230,7 @@ class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->in_trash,
+            $this->inTrash,
             $this->icon,
             $cover,
             $this->properties,
@@ -219,7 +245,7 @@ class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->in_trash,
+            $this->inTrash,
             $this->icon,
             null,
             $this->properties,
@@ -250,7 +276,7 @@ class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->in_trash,
+            $this->inTrash,
             $this->icon,
             $this->cover,
             $this->properties()->add($name, $property)->getAll(),
@@ -266,7 +292,7 @@ class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->in_trash,
+            $this->inTrash,
             $this->icon,
             $this->cover,
             PropertyCollection::create($properties)->getAll(),
@@ -294,7 +320,7 @@ class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->in_trash,
+            $this->inTrash,
             $this->icon,
             $this->cover,
             $this->properties,

@@ -84,7 +84,7 @@ class ToDoTest extends TestCase
         $this->assertEmpty($toDo->children);
         $this->assertEquals("Notion to dos rock!", $toDo->toString());
         $this->assertTrue($toDo->checked);
-        $this->assertFalse($toDo->metadata()->in_trash);
+        $this->assertFalse($toDo->metadata()->inTrash);
 
         $this->assertEquals($toDo, BlockFactory::fromArray($array));
     }

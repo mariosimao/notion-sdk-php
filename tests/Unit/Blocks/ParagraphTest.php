@@ -82,7 +82,7 @@ class ParagraphTest extends TestCase
         $this->assertCount(2, $paragraph->text);
         $this->assertEmpty($paragraph->children);
         $this->assertEquals("Notion paragraphs rock!", $paragraph->toString());
-        $this->assertFalse($paragraph->metadata()->in_trash);
+        $this->assertFalse($paragraph->metadata()->inTrash);
 
         $this->assertEquals($paragraph, BlockFactory::fromArray($array));
     }

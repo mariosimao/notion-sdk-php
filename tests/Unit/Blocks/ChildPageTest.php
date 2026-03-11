@@ -26,7 +26,7 @@ class ChildPageTest extends TestCase
         $childPage = ChildPage::fromArray($array);
 
         $this->assertEquals("Page title", $childPage->title);
-        $this->assertFalse($childPage->metadata()->in_trash);
+        $this->assertFalse($childPage->metadata()->inTrash);
 
         $this->assertEquals($childPage, BlockFactory::fromArray($array));
         $this->assertEquals($array, $childPage->toArray());
@@ -71,13 +71,13 @@ class ChildPageTest extends TestCase
         );
     }
 
-    public function test_archive(): void
+    public function test_delete(): void
     {
         $block = ChildPage::fromArray($this->mockArray());
 
-        $block = $block->archive();
+        $block = $block->delete();
 
-        $this->assertTrue($block->metadata()->in_trash);
+        $this->assertTrue($block->metadata()->inTrash);
     }
 
     private function mockArray(): array

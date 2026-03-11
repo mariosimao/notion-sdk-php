@@ -81,7 +81,7 @@ class QuoteTest extends TestCase
         $this->assertCount(2, $quote->text);
         $this->assertEmpty($quote->children);
         $this->assertEquals("Notion quotes rock!", $quote->toString());
-        $this->assertFalse($quote->metadata()->in_trash);
+        $this->assertFalse($quote->metadata()->inTrash);
 
         $this->assertEquals($quote, BlockFactory::fromArray($array));
     }
@@ -188,12 +188,12 @@ class QuoteTest extends TestCase
         $this->assertEquals($nested, $quote->children[0]);
     }
 
-    public function test_archive(): void
+    public function test_delete(): void
     {
         $quote = Quote::fromString("Simple quote.");
-        $quote = $quote->archive();
+        $quote = $quote->delete();
 
-        $this->assertTrue($quote->metadata()->in_trash);
+        $this->assertTrue($quote->metadata()->inTrash);
     }
 
     public function test_change_color(): void

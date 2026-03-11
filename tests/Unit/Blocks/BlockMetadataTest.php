@@ -13,10 +13,10 @@ class BlockMetadataTest extends TestCase
     {
         $metadata = BlockMetadata::create(BlockType::Paragraph);
 
-        $metadata = $metadata->archive();
+        $metadata = $metadata->delete();
         $metadata = $metadata->restore();
 
-        $this->assertFalse($metadata->in_trash);
+        $this->assertFalse($metadata->inTrash);
     }
 
     public function test_check_type(): void

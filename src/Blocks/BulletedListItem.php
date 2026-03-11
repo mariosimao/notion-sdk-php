@@ -149,13 +149,22 @@ class BulletedListItem implements BlockInterface
         );
     }
 
-    public function archive(): BlockInterface
+    public function delete(): BlockInterface
     {
         return new self(
-            $this->metadata->archive(),
+            $this->metadata->delete(),
             $this->text,
             $this->color,
             $this->children,
         );
+    }
+
+    /**
+     * @deprecated 1.17.0 Use `delete()` instead.
+     * @codeCoverageIgnore
+     */
+    public function archive(): BlockInterface
+    {
+        return $this->delete();
     }
 }

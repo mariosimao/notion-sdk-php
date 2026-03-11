@@ -81,7 +81,7 @@ class ToggleTest extends TestCase
         $this->assertCount(2, $toggle->text);
         $this->assertEmpty($toggle->children);
         $this->assertEquals("Notion toggles rock!", $toggle->toString());
-        $this->assertFalse($toggle->metadata()->in_trash);
+        $this->assertFalse($toggle->metadata()->inTrash);
 
         $this->assertEquals($toggle, BlockFactory::fromArray($array));
     }

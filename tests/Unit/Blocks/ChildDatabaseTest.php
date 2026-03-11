@@ -26,7 +26,7 @@ class ChildDatabaseTest extends TestCase
         $childDatabase = ChildDatabase::fromArray($array);
 
         $this->assertEquals("Database title", $childDatabase->title);
-        $this->assertFalse($childDatabase->metadata()->in_trash);
+        $this->assertFalse($childDatabase->metadata()->inTrash);
 
         $this->assertEquals($childDatabase, BlockFactory::fromArray($array));
         $this->assertEquals($array, $childDatabase->toArray());
@@ -71,13 +71,13 @@ class ChildDatabaseTest extends TestCase
         );
     }
 
-    public function test_archive(): void
+    public function test_delete(): void
     {
         $block = ChildDatabase::fromArray($this->mockArray());
 
-        $block = $block->archive();
+        $block = $block->delete();
 
-        $this->assertTrue($block->metadata()->in_trash);
+        $this->assertTrue($block->metadata()->inTrash);
     }
 
     private function mockArray(): array

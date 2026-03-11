@@ -126,12 +126,12 @@ class ColumnListTest extends TestCase
         ColumnList::create()->addChild($child);
     }
 
-    public function test_archive(): void
+    public function test_delete(): void
     {
         $block = ColumnList::create();
 
-        $block = $block->archive();
+        $block = $block->delete();
 
-        $this->assertTrue($block->metadata()->in_trash);
+        $this->assertTrue($block->metadata()->inTrash);
     }
 }

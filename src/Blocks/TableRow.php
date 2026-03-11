@@ -85,11 +85,20 @@ class TableRow implements BlockInterface
         throw BlockException::noChindrenSupport();
     }
 
-    public function archive(): BlockInterface
+    public function delete(): BlockInterface
     {
         return new self(
-            $this->metadata->archive(),
+            $this->metadata->delete(),
             $this->cells,
         );
+    }
+
+    /**
+     * @deprecated 1.17.0 Use `delete()` instead.
+     * @codeCoverageIgnore
+     */
+    public function archive(): BlockInterface
+    {
+        return $this->delete();
     }
 }

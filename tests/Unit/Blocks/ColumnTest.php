@@ -74,12 +74,12 @@ class ColumnTest extends TestCase
         $this->assertEquals($array, $column->toArray());
     }
 
-    public function test_archive(): void
+    public function test_delete(): void
     {
         $block = Column::create();
 
-        $block = $block->archive();
+        $block = $block->delete();
 
-        $this->assertTrue($block->metadata()->in_trash);
+        $this->assertTrue($block->metadata()->inTrash);
     }
 }

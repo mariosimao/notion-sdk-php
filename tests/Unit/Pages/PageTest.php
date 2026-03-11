@@ -84,20 +84,20 @@ class PageTest extends TestCase
         $this->assertNull($page->cover);
     }
 
-    public function test_archive(): void
+    public function test_delete(): void
     {
         $parent = PageParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
-        $page = Page::create($parent)->archive();
+        $page = Page::create($parent)->delete();
 
-        $this->assertTrue($page->in_trash);
+        $this->assertTrue($page->inTrash);
     }
 
-    public function test_unarchive(): void
+    public function test_restore(): void
     {
         $parent = PageParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
-        $page = Page::create($parent)->archive()->unarchive();
+        $page = Page::create($parent)->delete()->restore();
 
-        $this->assertFalse($page->in_trash);
+        $this->assertFalse($page->inTrash);
     }
 
     public function test_move_page(): void

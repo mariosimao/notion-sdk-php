@@ -50,9 +50,9 @@ class Unknown implements BlockInterface
         );
     }
 
-    public function archive(): self
+    public function delete(): self
     {
-        $metadata = $this->metadata()->archive();
+        $metadata = $this->metadata()->delete();
 
         $data = array_merge($this->data, $metadata->toArray());
 
@@ -70,5 +70,14 @@ class Unknown implements BlockInterface
     public function toArray(): array
     {
         return $this->data;
+    }
+
+    /**
+     * @deprecated 1.17.0 Use `delete()` instead.
+     * @codeCoverageIgnore
+     */
+    public function archive(): BlockInterface
+    {
+        return $this->delete();
     }
 }

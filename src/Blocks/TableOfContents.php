@@ -77,11 +77,20 @@ class TableOfContents implements BlockInterface
         );
     }
 
-    public function archive(): BlockInterface
+    public function delete(): BlockInterface
     {
         return new self(
-            $this->metadata->archive(),
+            $this->metadata->delete(),
             $this->color,
         );
+    }
+
+    /**
+     * @deprecated 1.17.0 Use `delete()` instead.
+     * @codeCoverageIgnore
+     */
+    public function archive(): BlockInterface
+    {
+        return $this->delete();
     }
 }

@@ -84,7 +84,7 @@ class Heading3Test extends TestCase
         $this->assertCount(2, $heading->text);
         $this->assertEquals("Notion headings rock!", $heading->toString());
         $this->assertFalse($heading->isToggleable);
-        $this->assertFalse($heading->metadata()->in_trash);
+        $this->assertFalse($heading->metadata()->inTrash);
 
         $this->assertEquals($heading, BlockFactory::fromArray($array));
     }

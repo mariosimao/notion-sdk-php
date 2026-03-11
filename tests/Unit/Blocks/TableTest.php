@@ -94,6 +94,29 @@ class TableTest extends TestCase
         $this->assertEmpty($table->rows);
     }
 
+    public function test_delete(): void
+    {
+        $table = Table::create();
+
+        $deleted = $table->delete();
+
+        $this->assertTrue($deleted->metadata()->inTrash);
+    }
+
+    public function test_delete_row(): void
+    {
+        $row = $this->createRow("A1", "B1");
+
+        $table = Table::create()
+                      ->changeWidth(2)
+                      ->addRow($row);
+
+        $deletedRow = $table->rows[0]->delete();
+
+        $this->assertTrue($deletedRow->metadata()->inTrash);
+    }
+
+
     private function createRow(string $col1, string $col2): TableRow
     {
         return TableRow::create()

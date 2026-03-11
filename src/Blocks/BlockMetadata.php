@@ -24,12 +24,20 @@ class BlockMetadata
         public readonly string $id,
         public readonly DateTimeImmutable $createdTime,
         public readonly DateTimeImmutable $lastEditedTime,
-        public readonly bool $in_trash,
+        public readonly bool $inTrash,
         public readonly bool $hasChildren,
         public readonly BlockType $type,
         private readonly string|null $unknownType = null
     ) {
+        /** @psalm-suppress DeprecatedProperty */
+        $this->archived = $inTrash;
     }
+
+    /**
+     * @deprecated 1.17.0 Use `$inTrash` instead.
+     * @codeCoverageIgnore
+     */
+    public readonly bool $archived;
 
     /** @internal */
     public static function create(BlockType $type): self
@@ -68,7 +76,7 @@ class BlockMetadata
             "object"           => "block",
             "created_time"     => $this->createdTime->format(Date::FORMAT),
             "last_edited_time" => $this->lastEditedTime->format(Date::FORMAT),
-            "in_trash"         => $this->in_trash,
+            "in_trash"         => $this->inTrash,
             "has_children"     => $this->hasChildren,
             "type"             => $type,
         ];
@@ -81,7 +89,7 @@ class BlockMetadata
     }
 
     /** @internal */
-    public function archive(): self
+    public function delete(): self
     {
         return new self(
             $this->id,
@@ -113,7 +121,7 @@ class BlockMetadata
             $this->id,
             $this->createdTime,
             new DateTimeImmutable("now"),
-            $this->in_trash,
+            $this->inTrash,
             $hasChildren,
             $this->type,
         );
@@ -125,7 +133,7 @@ class BlockMetadata
             $this->id,
             $this->createdTime,
             new DateTimeImmutable("now"),
-            $this->in_trash,
+            $this->inTrash,
             $this->hasChildren,
             $this->type,
         );

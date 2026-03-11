@@ -31,11 +31,11 @@ class UnknownTest extends TestCase
         $this->assertEquals($this->rawBlock, $block->toArray());
     }
 
-    public function test_archive(): void
+    public function test_delete(): void
     {
-        $block = Unknown::fromArray($this->rawBlock)->archive();
+        $block = Unknown::fromArray($this->rawBlock)->delete();
 
-        $this->assertTrue($block->metadata()->in_trash);
+        $this->assertTrue($block->metadata()->inTrash);
     }
 
     public function test_add_child(): void

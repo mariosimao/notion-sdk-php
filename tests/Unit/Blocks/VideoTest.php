@@ -122,13 +122,13 @@ class VideoTest extends TestCase
         $block->addChild(Paragraph::create());
     }
 
-    public function test_archive(): void
+    public function test_delete(): void
     {
         $file = File::createExternal("https://my-site.com/video.mp4");
         $block = Video::fromFile($file);
 
-        $block = $block->archive();
+        $block = $block->delete();
 
-        $this->assertTrue($block->metadata()->in_trash);
+        $this->assertTrue($block->metadata()->inTrash);
     }
 }

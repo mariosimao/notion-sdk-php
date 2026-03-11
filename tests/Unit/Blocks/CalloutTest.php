@@ -90,7 +90,7 @@ class CalloutTest extends TestCase
         if ($callout->icon->isEmoji()) {
             $this->assertEquals("☀️", $callout->icon->emoji->toString());
         }
-        $this->assertFalse($callout->metadata()->in_trash);
+        $this->assertFalse($callout->metadata()->inTrash);
 
         $this->assertEquals($callout, BlockFactory::fromArray($array));
     }
@@ -156,7 +156,7 @@ class CalloutTest extends TestCase
         $this->assertCount(2, $callout->text);
         $this->assertEmpty($callout->children);
         $this->assertEquals("Notion callouts rock!", $callout->toString());
-        $this->assertFalse($callout->metadata()->in_trash);
+        $this->assertFalse($callout->metadata()->inTrash);
     }
 
     public function test_error_on_wrong_type(): void
