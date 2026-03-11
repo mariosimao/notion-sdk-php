@@ -84,20 +84,20 @@ class PageTest extends TestCase
         $this->assertNull($page->cover);
     }
 
-    public function test_archive(): void
+    public function test_delete(): void
     {
         $parent = PageParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
-        $page = Page::create($parent)->archive();
+        $page = Page::create($parent)->delete();
 
-        $this->assertTrue($page->archived);
+        $this->assertTrue($page->inTrash);
     }
 
-    public function test_unarchive(): void
+    public function test_restore(): void
     {
         $parent = PageParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
-        $page = Page::create($parent)->archive()->unarchive();
+        $page = Page::create($parent)->delete()->restore();
 
-        $this->assertFalse($page->archived);
+        $this->assertFalse($page->inTrash);
     }
 
     public function test_move_page(): void
@@ -146,7 +146,7 @@ class PageTest extends TestCase
             "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
             "created_time" => "2020-12-08T12:00:00.000000Z",
             "last_edited_time" => "2020-12-08T12:00:00.000000Z",
-            "archived" => false,
+            "in_trash" => false,
             "icon" => null,
             "cover" => null,
             "properties" => [
@@ -200,7 +200,7 @@ class PageTest extends TestCase
             "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
             "created_time" => "2020-12-08T12:00:00.000000Z",
             "last_edited_time" => "2020-12-08T12:00:00.000000Z",
-            "archived" => false,
+            "in_trash" => false,
             "icon" => [
                 "type" => "emoji",
                 "emoji" => "⭐",
@@ -228,7 +228,7 @@ class PageTest extends TestCase
             "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
             "created_time" => "2020-12-08T12:00:00.000000Z",
             "last_edited_time" => "2020-12-08T12:00:00.000000Z",
-            "archived" => false,
+            "in_trash" => false,
             "icon" => [
                 "type" => "external",
                 "external" => [ "url" => "https://my-site.com/image.png" ],

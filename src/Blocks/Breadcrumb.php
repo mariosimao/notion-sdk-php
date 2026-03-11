@@ -60,8 +60,14 @@ class Breadcrumb implements BlockInterface
         throw BlockException::noChindrenSupport();
     }
 
+    public function delete(): BlockInterface
+    {
+        return new self($this->metadata->delete());
+    }
+
+    /** @deprecated 1.17.0 Use `delete()` instead. */
     public function archive(): BlockInterface
     {
-        return new self($this->metadata->archive());
+        return $this->delete();
     }
 }

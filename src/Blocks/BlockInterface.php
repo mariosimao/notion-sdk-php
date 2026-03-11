@@ -8,6 +8,8 @@ interface BlockInterface
     public function metadata(): BlockMetadata;
     public function addChild(BlockInterface $child): self;
     public function changeChildren(BlockInterface ...$children): self;
+    public function delete(): self;
+    /** @deprecated 1.17.0 Use `delete()` instead. */
     public function archive(): self;
 
     /** @internal */

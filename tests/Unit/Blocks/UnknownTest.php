@@ -16,7 +16,7 @@ class UnknownTest extends TestCase
         "id"               => "04a13895-f072-4814-8af7-cd11af127040",
         "created_time"     => "2021-10-18T17:09:00.000Z",
         "last_edited_time" => "2021-10-18T17:09:00.000Z",
-        "archived"         => false,
+        "in_trash"         => false,
         "has_children"     => false,
         "type"             => "blabla",
         "blabla"           => [],
@@ -31,11 +31,11 @@ class UnknownTest extends TestCase
         $this->assertEquals($this->rawBlock, $block->toArray());
     }
 
-    public function test_archive(): void
+    public function test_delete(): void
     {
-        $block = Unknown::fromArray($this->rawBlock)->archive();
+        $block = Unknown::fromArray($this->rawBlock)->delete();
 
-        $this->assertTrue($block->metadata()->archived);
+        $this->assertTrue($block->metadata()->inTrash);
     }
 
     public function test_add_child(): void

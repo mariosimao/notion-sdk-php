@@ -60,7 +60,7 @@ class PagesTest extends TestCase
         $client->pages()->create($page);
     }
 
-    public function test_update_archived_page(): void
+    public function test_update_deleted_page(): void
     {
         $client = Helper::client();
 

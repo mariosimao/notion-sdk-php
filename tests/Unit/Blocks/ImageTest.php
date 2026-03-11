@@ -28,7 +28,7 @@ class ImageTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => false,
             "type"             => "image",
             "image"            => [
@@ -54,7 +54,7 @@ class ImageTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => false,
             "type"             => "wrong-type",
             "image"            => [
@@ -77,7 +77,7 @@ class ImageTest extends TestCase
             "object"           => "block",
             "created_time"     => $image->metadata()->createdTime->format(Date::FORMAT),
             "last_edited_time" => $image->metadata()->createdTime->format(Date::FORMAT),
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => false,
             "type"             => "image",
             "image"            => [
@@ -123,14 +123,14 @@ class ImageTest extends TestCase
         $block->addChild(Paragraph::create());
     }
 
-    public function test_archive(): void
+    public function test_delete(): void
     {
         $file = File::createExternal("https://my-site.com/image.png");
         $block = Image::fromFile($file);
 
-        $block = $block->archive();
+        $block = $block->delete();
 
-        $this->assertTrue($block->metadata()->archived);
+        $this->assertTrue($block->metadata()->inTrash);
     }
 
     public function test_change_caption(): void

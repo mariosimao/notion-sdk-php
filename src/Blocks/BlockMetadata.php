@@ -12,7 +12,7 @@ use Notion\Common\Date;
  *      id: string,
  *      created_time: string,
  *      last_edited_time: string,
- *      archived: bool,
+ *      in_trash: bool,
  *      has_children: bool,
  * }
  *
@@ -24,12 +24,19 @@ class BlockMetadata
         public readonly string $id,
         public readonly DateTimeImmutable $createdTime,
         public readonly DateTimeImmutable $lastEditedTime,
-        public readonly bool $archived,
+        public readonly bool $inTrash,
         public readonly bool $hasChildren,
         public readonly BlockType $type,
         private readonly string|null $unknownType = null
     ) {
+        /** @psalm-suppress DeprecatedProperty */
+        $this->archived = $inTrash;
     }
+
+    /**
+     * @deprecated 1.17.0 Use `$inTrash` instead.
+     */
+    public readonly bool $archived;
 
     /** @internal */
     public static function create(BlockType $type): self
@@ -52,7 +59,7 @@ class BlockMetadata
             $array["id"],
             new DateTimeImmutable($array["created_time"]),
             new DateTimeImmutable($array["last_edited_time"]),
-            $array["archived"],
+            $array["in_trash"],
             $array["has_children"],
             $type,
             $type === BlockType::Unknown ? $array["type"] : null,
@@ -68,7 +75,7 @@ class BlockMetadata
             "object"           => "block",
             "created_time"     => $this->createdTime->format(Date::FORMAT),
             "last_edited_time" => $this->lastEditedTime->format(Date::FORMAT),
-            "archived"         => $this->archived,
+            "in_trash"         => $this->inTrash,
             "has_children"     => $this->hasChildren,
             "type"             => $type,
         ];
@@ -81,7 +88,7 @@ class BlockMetadata
     }
 
     /** @internal */
-    public function archive(): self
+    public function delete(): self
     {
         return new self(
             $this->id,
@@ -113,7 +120,7 @@ class BlockMetadata
             $this->id,
             $this->createdTime,
             new DateTimeImmutable("now"),
-            $this->archived,
+            $this->inTrash,
             $hasChildren,
             $this->type,
         );
@@ -125,7 +132,7 @@ class BlockMetadata
             $this->id,
             $this->createdTime,
             new DateTimeImmutable("now"),
-            $this->archived,
+            $this->inTrash,
             $this->hasChildren,
             $this->type,
         );

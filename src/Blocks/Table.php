@@ -178,14 +178,20 @@ class Table implements BlockInterface
         return $this->addRow($child);
     }
 
-    public function archive(): BlockInterface
+    public function delete(): BlockInterface
     {
         return new self(
-            $this->metadata->archive(),
+            $this->metadata->delete(),
             $this->tableWidth,
             $this->hasColumnHeader,
             $this->hasRowHeader,
             $this->rows,
         );
+    }
+
+    /** @deprecated 1.17.0 Use `delete()` instead. */
+    public function archive(): BlockInterface
+    {
+        return $this->delete();
     }
 }

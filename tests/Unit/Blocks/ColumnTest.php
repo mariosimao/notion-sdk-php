@@ -52,7 +52,7 @@ class ColumnTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000000Z",
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => true,
             "type"             => "column",
             "column"           => [
@@ -61,7 +61,7 @@ class ColumnTest extends TestCase
                     "id"               => "64caffeb-c947-4acd-b6ee-b1856bb91844",
                     "created_time"     => "2021-10-18T17:09:00.000000Z",
                     "last_edited_time" => "2021-10-18T17:09:00.000000Z",
-                    "archived"         => false,
+                    "in_trash"         => false,
                     "has_children"     => false,
                     "type"             => "divider",
                     "divider"          => new \stdClass(),
@@ -74,12 +74,12 @@ class ColumnTest extends TestCase
         $this->assertEquals($array, $column->toArray());
     }
 
-    public function test_archive(): void
+    public function test_delete(): void
     {
         $block = Column::create();
 
-        $block = $block->archive();
+        $block = $block->delete();
 
-        $this->assertTrue($block->metadata()->archived);
+        $this->assertTrue($block->metadata()->inTrash);
     }
 }

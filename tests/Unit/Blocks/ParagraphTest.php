@@ -34,7 +34,7 @@ class ParagraphTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => false,
             "type"             => "paragraph",
             "paragraph"        => [
@@ -82,7 +82,7 @@ class ParagraphTest extends TestCase
         $this->assertCount(2, $paragraph->text);
         $this->assertEmpty($paragraph->children);
         $this->assertEquals("Notion paragraphs rock!", $paragraph->toString());
-        $this->assertFalse($paragraph->metadata()->archived);
+        $this->assertFalse($paragraph->metadata()->inTrash);
 
         $this->assertEquals($paragraph, BlockFactory::fromArray($array));
     }
@@ -95,7 +95,7 @@ class ParagraphTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"     => false,
             "type"             => "wrong-type",
             "paragraph"        => [
@@ -114,7 +114,7 @@ class ParagraphTest extends TestCase
             "object"           => "block",
             "created_time"     => $p->metadata()->createdTime->format(Date::FORMAT),
             "last_edited_time" => $p->metadata()->lastEditedTime->format(Date::FORMAT),
-            "archived"         => false,
+            "in_trash"         => false,
             "has_children"      => false,
             "type"             => "paragraph",
             "paragraph"        => [

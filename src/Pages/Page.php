@@ -23,7 +23,7 @@ use Notion\Pages\Properties\Title;
  *      id: string,
  *      created_time: string,
  *      last_edited_time: string,
- *      archived: bool,
+ *      in_trash: bool,
  *      icon: EmojiJson|FileJson|null,
  *      cover: FileJson|null,
  *      properties: array<string, PropertyMetadataJson>,
@@ -42,14 +42,21 @@ class Page
         public readonly string $id,
         public readonly DateTimeImmutable $createdTime,
         public readonly DateTimeImmutable $lastEditedTime,
-        public readonly bool $archived,
+        public readonly bool $inTrash,
         public readonly Icon|null $icon,
         public readonly File|null $cover,
         public readonly array $properties,
         public readonly PageParent $parent,
         public readonly string $url
     ) {
+        /** @psalm-suppress DeprecatedProperty */
+        $this->archived = $inTrash;
     }
+
+    /**
+     * @deprecated 1.17.0 Use `$inTrash` instead.
+     */
+    public readonly bool $archived;
 
     public static function create(PageParent $parent): self
     {
@@ -97,7 +104,7 @@ class Page
             $array["id"],
             new DateTimeImmutable($array["created_time"]),
             new DateTimeImmutable($array["last_edited_time"]),
-            $array["archived"],
+            $array["in_trash"],
             $icon,
             $cover,
             $properties,
@@ -113,7 +120,7 @@ class Page
             "id"               => $this->id,
             "created_time"     => $this->createdTime->format(Date::FORMAT),
             "last_edited_time" => $this->lastEditedTime->format(Date::FORMAT),
-            "archived"         => $this->archived,
+            "in_trash"         => $this->inTrash,
             "icon"             => $this->icon?->toArray(),
             "cover"            => $this->cover?->toArray(),
             "properties"       => array_map(fn($p) => $p->toArray(), $this->properties),
@@ -130,7 +137,7 @@ class Page
         return $this->icon !== null;
     }
 
-    public function archive(): self
+    public function delete(): self
     {
         return new self(
             $this->id,
@@ -145,7 +152,15 @@ class Page
         );
     }
 
-    public function unarchive(): self
+    /**
+     * @deprecated 1.17.0 Use `delete()` instead.
+     */
+    public function archive(): self
+    {
+        return $this->delete();
+    }
+
+    public function restore(): self
     {
         return new self(
             $this->id,
@@ -158,6 +173,14 @@ class Page
             $this->parent,
             $this->url,
         );
+    }
+
+    /**
+     * @deprecated 1.17.0 Use `restore()` instead.
+     */
+    public function unarchive(): self
+    {
+        return $this->restore();
     }
 
     public function changeIcon(Emoji|File|Icon $icon): self
@@ -174,7 +197,7 @@ class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->archived,
+            $this->inTrash,
             $icon,
             $this->cover,
             $this->properties,
@@ -189,7 +212,7 @@ class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->archived,
+            $this->inTrash,
             null,
             $this->cover,
             $this->properties,
@@ -204,7 +227,7 @@ class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->archived,
+            $this->inTrash,
             $this->icon,
             $cover,
             $this->properties,
@@ -219,7 +242,7 @@ class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->archived,
+            $this->inTrash,
             $this->icon,
             null,
             $this->properties,
@@ -250,7 +273,7 @@ class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->archived,
+            $this->inTrash,
             $this->icon,
             $this->cover,
             $this->properties()->add($name, $property)->getAll(),
@@ -266,7 +289,7 @@ class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->archived,
+            $this->inTrash,
             $this->icon,
             $this->cover,
             PropertyCollection::create($properties)->getAll(),
@@ -294,7 +317,7 @@ class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->archived,
+            $this->inTrash,
             $this->icon,
             $this->cover,
             $this->properties,

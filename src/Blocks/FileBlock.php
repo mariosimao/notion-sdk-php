@@ -74,11 +74,17 @@ class FileBlock implements BlockInterface
         throw BlockException::noChindrenSupport();
     }
 
-    public function archive(): BlockInterface
+    public function delete(): BlockInterface
     {
         return new self(
-            $this->metadata->archive(),
+            $this->metadata->delete(),
             $this->file,
         );
+    }
+
+    /** @deprecated 1.17.0 Use `delete()` instead. */
+    public function archive(): BlockInterface
+    {
+        return $this->delete();
     }
 }

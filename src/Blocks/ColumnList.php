@@ -83,11 +83,17 @@ class ColumnList implements BlockInterface
         return new self($this->metadata(), $children);
     }
 
-    public function archive(): BlockInterface
+    public function delete(): BlockInterface
     {
         return new self(
-            $this->metadata->archive(),
+            $this->metadata->delete(),
             $this->columns,
         );
+    }
+
+    /** @deprecated 1.17.0 Use `delete()` instead. */
+    public function archive(): BlockInterface
+    {
+        return $this->delete();
     }
 }
