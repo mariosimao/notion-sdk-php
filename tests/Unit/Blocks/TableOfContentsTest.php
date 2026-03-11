@@ -26,7 +26,7 @@ class TableOfContentsTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "in_trash"         => false,
+            "archived"         => false,
             "has_children"     => false,
             "type"             => "table_of_contents",
             "table_of_contents" => [
@@ -47,7 +47,7 @@ class TableOfContentsTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "in_trash"         => false,
+            "archived"         => false,
             "has_children"     => false,
             "type"             => "wrong-type",
             "table_of_contents" => []
@@ -64,7 +64,7 @@ class TableOfContentsTest extends TestCase
             "object"           => "block",
             "created_time"     => $tableOfContents->metadata()->createdTime->format(Date::FORMAT),
             "last_edited_time" => $tableOfContents->metadata()->createdTime->format(Date::FORMAT),
-            "in_trash"         => false,
+            "archived"         => false,
             "has_children"     => false,
             "type"             => "table_of_contents",
             "table_of_contents" => new \stdClass(),

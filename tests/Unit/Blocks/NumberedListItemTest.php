@@ -34,7 +34,7 @@ class NumberedListItemTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "in_trash"         => false,
+            "archived"         => false,
             "has_children"     => false,
             "type"             => "numbered_list_item",
             "numbered_list_item"        => [
@@ -81,7 +81,7 @@ class NumberedListItemTest extends TestCase
         $this->assertCount(2, $item->text);
         $this->assertEmpty($item->children);
         $this->assertEquals("Notion items rock!", $item->toString());
-        $this->assertFalse($item->metadata()->in_trash);
+        $this->assertFalse($item->metadata()->archived);
 
         $this->assertEquals($item, BlockFactory::fromArray($array));
     }
@@ -94,7 +94,7 @@ class NumberedListItemTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "in_trash"         => false,
+            "archived"         => false,
             "has_children"     => false,
             "type"             => "wrong-type",
             "numbered_list_item"        => [
@@ -114,7 +114,7 @@ class NumberedListItemTest extends TestCase
             "object"           => "block",
             "created_time"     => $i->metadata()->createdTime->format(Date::FORMAT),
             "last_edited_time" => $i->metadata()->lastEditedTime->format(Date::FORMAT),
-            "in_trash"         => false,
+            "archived"         => false,
             "has_children"     => false,
             "type"             => "numbered_list_item",
             "numbered_list_item" => [

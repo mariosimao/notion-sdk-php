@@ -129,7 +129,7 @@ class BlocksTest extends TestCase
 
         $childrenAfterDelete = $client->blocks()->findChildren($newPage->id);
 
-        $this->assertTrue($deletedBlock->metadata()->in_trash);
+        $this->assertTrue($deletedBlock->metadata()->archived);
         $this->assertEmpty($childrenAfterDelete);
 
         $client->pages()->delete($newPage);
@@ -205,8 +205,8 @@ class BlocksTest extends TestCase
 
         foreach ($blocks as $block) {
             $block = $client->blocks()->update($block->archive());
-            $in_trashBlock = $client->blocks()->find($block->metadata()->id);
-            $this->assertTrue($in_trashBlock->metadata()->in_trash);
+            $archivedBlock = $client->blocks()->find($block->metadata()->id);
+            $this->assertTrue($archivedBlock->metadata()->archived);
         }
     }
 

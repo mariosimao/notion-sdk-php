@@ -1,6 +1,6 @@
 # Delete a page
 
-Deleted pages are in_trash. It is possible to recover in_trash pages.
+Deleted pages are archived. It is possible to recover archived pages.
 
 ```php
 <?php
@@ -14,5 +14,5 @@ $pageId = "c986d7b0-7051-4f18-b165-cc0b9503ffc2";
 $page = $notion->pages()->find($pageId);
 $page = $notion->pages()->delete($page);
 
-$page->in_trash; // true
+$page->archived; // true
 ```

@@ -15,7 +15,7 @@ class ChildPageRendererTest extends TestCase
             "id"                => "abc123",
             "created_time"      => "2023-01-01 00:00:00",
             "last_edited_time"  => "2023-01-01 00:00:00",
-            "in_trash"          => false,
+            "archived"          => false,
             "has_children"      => false,
             "type"              => "child_page",
             "child_page"    => [

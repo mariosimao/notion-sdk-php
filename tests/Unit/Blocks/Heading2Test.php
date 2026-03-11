@@ -35,7 +35,7 @@ class Heading2Test extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "in_trash"         => false,
+            "archived"         => false,
             "has_children"     => false,
             "type"             => "heading_2",
             "heading_2"        => [
@@ -84,7 +84,7 @@ class Heading2Test extends TestCase
         $this->assertCount(2, $heading->text);
         $this->assertEquals("Notion headings rock!", $heading->toString());
         $this->assertFalse($heading->isToggleable);
-        $this->assertFalse($heading->metadata()->in_trash);
+        $this->assertFalse($heading->metadata()->archived);
 
         $this->assertEquals($heading, BlockFactory::fromArray($array));
     }
@@ -97,7 +97,7 @@ class Heading2Test extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "in_trash"         => false,
+            "archived"         => false,
             "has_children"     => false,
             "type"             => "wrong-type",
             "heading_2"        => [
@@ -117,7 +117,7 @@ class Heading2Test extends TestCase
             "object"           => "block",
             "created_time"     => $h->metadata()->createdTime->format(Date::FORMAT),
             "last_edited_time" => $h->metadata()->lastEditedTime->format(Date::FORMAT),
-            "in_trash"         => false,
+            "archived"         => false,
             "has_children"      => false,
             "type"             => "heading_2",
             "heading_2"        => [
@@ -231,7 +231,7 @@ class Heading2Test extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000000Z",
-            "in_trash"         => false,
+            "archived"         => false,
             "has_children"     => false,
             "type"             => "heading_2",
             "heading_2"        => [
@@ -276,7 +276,7 @@ class Heading2Test extends TestCase
                         "id"               => "a5dc4448-6c0a-48ab-9b43-0ea838bb6070",
                         "created_time"     => "2021-10-18T17:09:00.000000Z",
                         "last_edited_time" => "2021-10-18T17:09:00.000000Z",
-                        "in_trash"         => false,
+                        "archived"         => false,
                         "has_children"     => false,
                         "type"             => "divider",
                         "divider"          => new \stdClass(),

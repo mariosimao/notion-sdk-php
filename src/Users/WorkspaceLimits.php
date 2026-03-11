@@ -4,7 +4,7 @@ namespace Notion\Users;
 
 /**
  * @psalm-type WorkspaceLimitsJson = array{
- *     max_file_upload_size_in_bytes?: int,
+ *     max_file_upload_size_in_bytes: int,
  * }
  *
  * @psalm-immutable

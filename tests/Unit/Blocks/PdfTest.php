@@ -27,7 +27,7 @@ class PdfTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "in_trash"         => false,
+            "archived"         => false,
             "has_children"     => false,
             "type"             => "pdf",
             "pdf"            => [
@@ -53,7 +53,7 @@ class PdfTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "in_trash"         => false,
+            "archived"         => false,
             "has_children"     => false,
             "type"             => "wrong-type",
             "pdf"            => [
@@ -76,7 +76,7 @@ class PdfTest extends TestCase
             "object"           => "block",
             "created_time"     => $pdf->metadata()->createdTime->format(Date::FORMAT),
             "last_edited_time" => $pdf->metadata()->createdTime->format(Date::FORMAT),
-            "in_trash"         => false,
+            "archived"         => false,
             "has_children"     => false,
             "type"             => "pdf",
             "pdf"            => [
@@ -129,6 +129,6 @@ class PdfTest extends TestCase
 
         $block = $block->archive();
 
-        $this->assertTrue($block->metadata()->in_trash);
+        $this->assertTrue($block->metadata()->archived);
     }
 }

@@ -52,7 +52,7 @@ class ColumnTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000000Z",
-            "in_trash"         => false,
+            "archived"         => false,
             "has_children"     => true,
             "type"             => "column",
             "column"           => [
@@ -61,7 +61,7 @@ class ColumnTest extends TestCase
                     "id"               => "64caffeb-c947-4acd-b6ee-b1856bb91844",
                     "created_time"     => "2021-10-18T17:09:00.000000Z",
                     "last_edited_time" => "2021-10-18T17:09:00.000000Z",
-                    "in_trash"         => false,
+                    "archived"         => false,
                     "has_children"     => false,
                     "type"             => "divider",
                     "divider"          => new \stdClass(),
@@ -80,6 +80,6 @@ class ColumnTest extends TestCase
 
         $block = $block->archive();
 
-        $this->assertTrue($block->metadata()->in_trash);
+        $this->assertTrue($block->metadata()->archived);
     }
 }

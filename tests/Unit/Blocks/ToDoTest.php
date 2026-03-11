@@ -35,7 +35,7 @@ class ToDoTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "in_trash"         => false,
+            "archived"         => false,
             "has_children"     => false,
             "type"             => "to_do",
             "to_do"        => [
@@ -84,7 +84,7 @@ class ToDoTest extends TestCase
         $this->assertEmpty($toDo->children);
         $this->assertEquals("Notion to dos rock!", $toDo->toString());
         $this->assertTrue($toDo->checked);
-        $this->assertFalse($toDo->metadata()->in_trash);
+        $this->assertFalse($toDo->metadata()->archived);
 
         $this->assertEquals($toDo, BlockFactory::fromArray($array));
     }
@@ -97,7 +97,7 @@ class ToDoTest extends TestCase
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
             "created_time"     => "2021-10-18T17:09:00.000Z",
             "last_edited_time" => "2021-10-18T17:09:00.000Z",
-            "in_trash"         => false,
+            "archived"         => false,
             "has_children"     => false,
             "type"             => "wrong-type",
             "to_do"        => [
@@ -118,7 +118,7 @@ class ToDoTest extends TestCase
             "object"           => "block",
             "created_time"     => $p->metadata()->createdTime->format(Date::FORMAT),
             "last_edited_time" => $p->metadata()->lastEditedTime->format(Date::FORMAT),
-            "in_trash"         => false,
+            "archived"         => false,
             "has_children"     => false,
             "type"             => "to_do",
             "to_do"            => [
