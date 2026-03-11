@@ -33,17 +33,32 @@ class Client
     public function findAll(): array
     {
         $url = "https://api.notion.com/v1/users";
-        $request = Http::createRequest($url, $this->config);
+        $allUsers = [];
+        $startCursor = null;
 
-        /** @var array{ results: UserJson[] } $body */
-        $body = Http::sendRequest($request, $this->config);
+        do {
+            $queryParams = $startCursor ? ['start_cursor' => $startCursor] : [];
+            $requestUrl = $url . ($startCursor ? '?' . http_build_query($queryParams) : '');
 
-        return array_map(
-            function (array $userData): User {
-                return User::fromArray($userData);
-            },
-            $body["results"],
-        );
+            $request = Http::createRequest($requestUrl, $this->config);
+
+            /** @var array{ results: UserJson[], has_more: bool, next_cursor: ?string } $body */
+            $body = Http::sendRequest($request, $this->config);
+
+            $allUsers = array_merge(
+                $allUsers,
+                array_map(
+                    function (array $userData): User {
+                        return User::fromArray($userData);
+                    },
+                    $body["results"]
+                )
+            );
+
+            $startCursor = $body['next_cursor'] ?? null;
+        } while (!empty($body['has_more']));
+
+        return $allUsers;
     }
 
     public function me(): User
