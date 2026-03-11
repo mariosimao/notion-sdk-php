@@ -10,9 +10,6 @@ use Notion\Common\Icon;
 use Notion\Common\RichText;
 use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
-use Notion\Databases\Properties\Number;
-use Notion\Databases\Properties\NumberFormat;
-use Notion\Databases\Properties\Title;
 use PHPUnit\Framework\TestCase;
 
 class DatabaseTest extends TestCase
@@ -23,7 +20,6 @@ class DatabaseTest extends TestCase
         $database = Database::create($parent);
 
         $this->assertEquals("1ce62b6f-b7f3-4201-afd0-08acb02e61c6", $database->parent->id);
-        $this->assertCount(1, $database->properties); // Title property
     }
 
     public function test_add_title(): void
@@ -115,60 +111,15 @@ class DatabaseTest extends TestCase
         Database::create($parent)->changeCover($cover);
     }
 
-    public function test_replace_properties(): void
-    {
-        $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
-        $properties = [
-            "Dummy prop name" => Title::create("Dummy prop name")
-        ];
-        $database = Database::create($parent)->changeProperties($properties);
-
-        $this->assertCount(1, $database->properties);
-    }
-
-    public function test_add_property(): void
-    {
-        $prop = Number::create("Price");
-
-        $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
-        $database = Database::create($parent)
-            ->addProperty($prop);
-
-        $this->assertSame($prop, $database->properties()->get("Price"));
-    }
-
-    public function test_change_property(): void
-    {
-        $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
-        $database = Database::create($parent)->addProperty(Number::create("Price"));
-
-        $prop = $database->properties()->getNumber("Price")->changeFormat(NumberFormat::Dollar);
-
-        $database = $database->changeProperty($prop);
-
-        $this->assertSame(
-            NumberFormat::Dollar,
-            $database->properties()->getNumber("Price")->format
-        );
-    }
-
-    public function test_remove_property(): void
-    {
-        $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
-        $database = Database::create($parent)->addProperty(Number::create("Price"));
-
-        $database = $database->removePropertyByName("Price");
-
-        $this->expectException(Exception::class);
-        /** @psalm-suppress UnusedMethodCall */
-        $database->properties()->get("Price");
-    }
-
     public function test_array_conversion(): void
     {
         $array = [
             "object" => "database",
             "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
+            "data_sources" => [[
+                "id" => "058d158b-09de-4d69-be07-901c20a7ca5c",
+                "name" => "Data Source Name",
+            ]],
             "created_time" => "2020-12-08T12:00:00.000000Z",
             "last_edited_time" => "2020-12-08T12:00:00.000000Z",
             "title" => [[
@@ -201,14 +152,6 @@ class DatabaseTest extends TestCase
             ]],
             "icon" => null,
             "cover" => null,
-            "properties" => [
-                "title" => [
-                    "id"    => "title",
-                    "name"  => "Dummy prop name",
-                    "type"  => "title",
-                    "title" => new \stdClass(),
-                ],
-            ],
             "parent" => [
                 "type" => "page_id",
                 "page_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
@@ -218,10 +161,7 @@ class DatabaseTest extends TestCase
         ];
         $database = Database::fromArray($array);
 
-        $outArray = $array;
-        unset($outArray["parent"]["type"]);
-
-        $this->assertEquals($outArray, $database->toArray());
+        $this->assertEquals($array, $database->toArray());
         $this->assertSame("a7e80c0b-a766-43c3-a9e9-21ce94595e0e", $database->id);
         $this->assertSame("https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e", $database->url);
         $this->assertEquals(
@@ -240,6 +180,10 @@ class DatabaseTest extends TestCase
         $array = [
             "object" => "database",
             "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
+            "data_sources" => [[
+                "id" => "058d158b-09de-4d69-be07-901c20a7ca5c",
+                "name" => "Data Source Name",
+            ]],
             "created_time" => "2020-12-08T12:00:00.000000Z",
             "last_edited_time" => "2020-12-08T12:00:00.000000Z",
             "title" => [[
@@ -262,14 +206,6 @@ class DatabaseTest extends TestCase
                 "emoji" => "⭐",
             ],
             "cover" => null,
-            "properties" => [
-                "Title" => [
-                    "id"    => "title",
-                    "name"  => "Title",
-                    "type"  => "title",
-                    "title" => new \stdClass(),
-                ],
-            ],
             "parent" => [
                 "type" => "page_id",
                 "page_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
@@ -289,6 +225,10 @@ class DatabaseTest extends TestCase
         $array = [
             "object" => "database",
             "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
+            "data_sources" => [[
+                "id" => "058d158b-09de-4d69-be07-901c20a7ca5c",
+                "name" => "Data Source Name",
+            ]],
             "created_time" => "2020-12-08T12:00:00.000000Z",
             "last_edited_time" => "2020-12-08T12:00:00.000000Z",
             "title" => [[
@@ -311,14 +251,6 @@ class DatabaseTest extends TestCase
                 "external" => [ "url" => "https://my-site.com/image.png" ],
             ],
             "cover" => null,
-            "properties" => [
-                "Title" => [
-                    "id"    => "title",
-                    "name"  => "Title",
-                    "type"  => "title",
-                    "title" => new \stdClass(),
-                ],
-            ],
             "parent" => [
                 "type" => "page_id",
                 "page_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",

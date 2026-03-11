@@ -3,7 +3,7 @@
 namespace Notion\Pages\Properties;
 
 use Notion\Common\Color;
-use Notion\Databases\Properties\StatusOption;
+use Notion\DataSources\Properties\StatusOption;
 
 /**
  * @psalm-type StatusJson = array{

@@ -2,25 +2,25 @@
 
 namespace Notion\Search;
 
-use Notion\Databases\Database;
+use Notion\DataSources\DataSource;
 use Notion\Pages\Page;
 
 /**
  * @psalm-immutable
  *
  * @psalm-import-type PageJson from \Notion\Pages\Page
- * @psalm-import-type DatabaseJson from \Notion\Databases\Database
+ * @psalm-import-type DataSourceJson from \Notion\DataSources\DataSource
  *
  * @psalm-type ResultJson = array{
  *      object: string,
- *      results: array<int, PageJson|DatabaseJson>,
+ *      results: array<int, PageJson|DataSourceJson>,
  *      next_cursor: string|null,
  *      has_more: bool
  * }
  */
 class Result
 {
-    /** @psalm-param array<int, Page|Database> $results */
+    /** @psalm-param array<int, Page|DataSource> $results */
     private function __construct(
         public readonly array $results,
         public readonly string|null $nextCursor,
@@ -40,13 +40,13 @@ class Result
                 $results[] = Page::fromArray($result);
             }
 
-            if ($result["object"] === "database") {
-                /** @psalm-var DatabaseJson $result */
-                $results[] = Database::fromArray($result);
+            if ($result["object"] === "data_source") {
+                /** @psalm-var DataSourceJson $result */
+                $results[] = DataSource::fromArray($result);
             }
         }
 
-        /** @psalm-var array<int, Page|Database> $results */
+        /** @psalm-var array<int, Page|DataSource> $results */
         return new self(
             $results,
             $array["next_cursor"],
