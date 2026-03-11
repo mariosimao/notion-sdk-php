@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.17.0] 2026-03-11
+
+### Fixed
+- Broken API requests after breaking change on archived property (#419)
+
 ## [v1.16.0] 2026-01-11
 
 ### Added
@@ -491,4 +496,7 @@ Update documentation website URL (#364)
 [1.12.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.12.0
 [1.13.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.13.0
 [1.14.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.14.0
-[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.14.0...HEAD
+[1.15.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.15.0
+[1.16.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.16.0
+[1.17.0]: https://github.com/mariosimao/notion-sdk-php/releases/tag/v1.17.0
+[Unreleased]: https://github.com/mariosimao/notion-sdk-php/compare/v1.17.0...HEAD
