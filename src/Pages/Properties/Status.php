@@ -22,6 +22,13 @@ class Status implements PropertyInterface
     ) {
     }
 
+    public static function createEmpty(string $id = null): self
+    {
+        $property = PropertyMetadata::create($id ?? "", PropertyType::Status);
+
+        return new self($property, null);
+    }
+
     public static function fromId(string $id): self
     {
         $metadata = PropertyMetadata::create("", PropertyType::Status);
