@@ -86,13 +86,19 @@ class Client
             }
         );
 
-        $data = json_encode([
+        $data = [
             "in_trash" => $page->inTrash,
             "icon" => $page->icon?->toArray(),
             "cover" => $page->cover?->toArray(),
             "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $updatableProps),
             "parent" => $page->parent->toArray(),
-        ]);
+        ];
+
+        if ($page->parent->isDataSource()) {
+            unset($data["parent"]["database_id"]);
+        }
+
+        $data = json_encode($data);
 
         $pageId = $page->id;
         $url = "https://api.notion.com/v1/pages/{$pageId}";
