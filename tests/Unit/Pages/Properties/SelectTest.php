@@ -3,7 +3,7 @@
 namespace Notion\Test\Unit\Pages\Properties;
 
 use Notion\Common\Color;
-use Notion\Databases\Properties\SelectOption;
+use Notion\DataSources\Properties\SelectOption;
 use Notion\Pages\Properties\PropertyFactory;
 use Notion\Pages\Properties\PropertyType;
 use Notion\Pages\Properties\Select;

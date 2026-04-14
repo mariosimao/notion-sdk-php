@@ -10,9 +10,9 @@ class PageParentTest extends TestCase
 {
     public function test_create_parent_database(): void
     {
-        $parent = PageParent::database("058d158b-09de-4d69-be07-901c20a7ca5c");
+        $parent = PageParent::dataSource("058d158b-09de-4d69-be07-901c20a7ca5c");
 
-        $this->assertTrue($parent->isDatabase());
+        $this->assertTrue($parent->isDataSource());
         $this->assertEquals("058d158b-09de-4d69-be07-901c20a7ca5c", $parent->id);
     }
 
@@ -51,14 +51,16 @@ class PageParentTest extends TestCase
         $this->assertEquals($array["page_id"], $parent->toArray()["page_id"]);
     }
 
-    public function test_database_array_conversion(): void
+    public function test_data_source_array_conversion(): void
     {
         $array = [
-            "type" => "database_id",
+            "type" => "data_source_id",
+            "data_source_id" => "0181c3aa-1112-489f-b34a-515b4e3583ed",
             "database_id" => "7a774b5d-ca74-4679-9f18-689b5a98f138",
         ];
         $parent = PageParent::fromArray($array);
 
+        $this->assertEquals($array["data_source_id"], $parent->toArray()["data_source_id"]);
         $this->assertEquals($array["database_id"], $parent->toArray()["database_id"]);
     }
 

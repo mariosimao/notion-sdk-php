@@ -37,12 +37,4 @@ class ApiException extends NotionException
             default          => new static($body["message"], $body["code"], $response),
         };
     }
-
-    /**
-     * @deprecated 1.3.0 This method will be removed in future versions. Use 'notionCode' property.
-     */
-    final public function getNotionCode(): string
-    {
-        return $this->notionCode;
-    }
 }
