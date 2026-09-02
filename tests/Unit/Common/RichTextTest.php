@@ -135,6 +135,35 @@ class RichTextTest extends TestCase
         $this->assertNotNull($richText->mention);
     }
 
+    public function test_custom_emoji_mention_array_conversion(): void
+    {
+        $array = [
+            "plain_text" => ":custom_estate_home_1:",
+            "href" => null,
+            "annotations" => [
+                "bold"          => false,
+                "italic"        => false,
+                "strikethrough" => false,
+                "underline"     => false,
+                "code"          => false,
+                "color"         => "default",
+            ],
+            "type" => "mention",
+            "mention" => [
+                "type" => "custom_emoji",
+                "custom_emoji" => [
+                    "id"   => "3219c080-1a17-8064-8f64-007a13443768",
+                    "name" => "custom_estate_home_1",
+                    "url"  => "https://example.com/custom-emoji.png",
+                ],
+            ],
+        ];
+        $richText = RichText::fromArray($array);
+
+        $this->assertEquals($array, $richText->toArray());
+        $this->assertTrue($richText->mention?->isCustomEmoji());
+    }
+
     public function test_equation_array_conversion(): void
     {
         $array = [
