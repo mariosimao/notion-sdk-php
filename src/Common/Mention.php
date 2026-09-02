@@ -7,13 +7,15 @@ use Notion\Users\User;
 /**
  * @psalm-import-type UserJson from \Notion\Users\User
  * @psalm-import-type DateJson from Date
+ * @psalm-import-type CustomEmojiJson from CustomEmoji
  *
  * @psalm-type MentionJson = array{
- *      type: "page"|"database"|"user"|"date",
+ *      type: "page"|"database"|"user"|"date"|"custom_emoji",
  *      page?: array{ id: string },
  *      database?: array{ id: string },
  *      user?: UserJson,
  *      date?: DateJson,
+ *      custom_emoji?: CustomEmojiJson,
  * }
  *
  * @psalm-immutable
@@ -26,27 +28,33 @@ class Mention
         public readonly string|null $databaseId,
         public readonly User|null $user,
         public readonly Date|null $date,
+        public readonly CustomEmoji|null $customEmoji,
     ) {
     }
 
     public static function page(string $pageId): self
     {
-        return new self(MentionType::Page, $pageId, null, null, null);
+        return new self(MentionType::Page, $pageId, null, null, null, null);
     }
 
     public static function database(string $databaseId): self
     {
-        return new self(MentionType::Database, null, $databaseId, null, null);
+        return new self(MentionType::Database, null, $databaseId, null, null, null);
     }
 
     public static function user(User $user): self
     {
-        return new self(MentionType::User, null, null, $user, null);
+        return new self(MentionType::User, null, null, $user, null, null);
     }
 
     public static function date(Date $date): self
     {
-        return new self(MentionType::Date, null, null, null, $date);
+        return new self(MentionType::Date, null, null, null, $date, null);
+    }
+
+    public static function customEmoji(CustomEmoji $customEmoji): self
+    {
+        return new self(MentionType::CustomEmoji, null, null, null, null, $customEmoji);
     }
 
     /**
@@ -62,8 +70,11 @@ class Mention
         $databaseId = array_key_exists("database", $array) ? $array["database"]["id"] : null;
         $user = array_key_exists("user", $array) ? User::fromArray($array["user"]) : null;
         $date = array_key_exists("date", $array) ? Date::fromArray($array["date"]) : null;
+        $customEmoji = array_key_exists("custom_emoji", $array)
+            ? CustomEmoji::fromArray($array["custom_emoji"])
+            : null;
 
-        return new self($type, $pageId, $databaseId, $user, $date);
+        return new self($type, $pageId, $databaseId, $user, $date, $customEmoji);
     }
 
     public function toArray(): array
@@ -81,6 +92,9 @@ class Mention
         }
         if ($this->isDate()) {
             $array["date"] = $this->date->toArray();
+        }
+        if ($this->isCustomEmoji()) {
+            $array["custom_emoji"] = $this->customEmoji->toArray();
         }
 
         return $array;
@@ -116,5 +130,13 @@ class Mention
     public function isDate(): bool
     {
         return $this->type === MentionType::Date;
+    }
+
+    /**
+     * @psalm-assert-if-true CustomEmoji $this->customEmoji
+     */
+    public function isCustomEmoji(): bool
+    {
+        return $this->type === MentionType::CustomEmoji;
     }
 }

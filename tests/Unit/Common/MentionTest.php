@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Common;
 
 use DateTimeImmutable;
+use Notion\Common\CustomEmoji;
 use Notion\Common\Date;
 use Notion\Common\Mention;
 use Notion\Common\MentionType;
@@ -54,6 +55,21 @@ class MentionTest extends TestCase
         $this->assertEquals($date, $mention->date);
     }
 
+    public function test_mention_custom_emoji(): void
+    {
+        $customEmoji = CustomEmoji::fromArray([
+            "id"   => "3219c080-1a17-8064-8f64-007a13443768",
+            "name" => "custom_estate_home_1",
+            "url"  => "https://example.com/custom-emoji.png",
+        ]);
+
+        $mention = Mention::customEmoji($customEmoji);
+
+        $this->assertTrue($mention->isCustomEmoji());
+        $this->assertEquals(MentionType::CustomEmoji, $mention->type);
+        $this->assertEquals($customEmoji, $mention->customEmoji);
+    }
+
     public function test_page_array_conversion(): void
     {
         $array = [
@@ -99,6 +115,21 @@ class MentionTest extends TestCase
         $array = [
             "type" => "date",
             "date" => [ "start" => "2021-01-01T00:00:00.000000Z", "end" => null ],
+        ];
+        $mention = Mention::fromArray($array);
+
+        $this->assertEquals($array, $mention->toArray());
+    }
+
+    public function test_custom_emoji_array_conversion(): void
+    {
+        $array = [
+            "type" => "custom_emoji",
+            "custom_emoji" => [
+                "id"   => "3219c080-1a17-8064-8f64-007a13443768",
+                "name" => "custom_estate_home_1",
+                "url"  => "https://example.com/custom-emoji.png",
+            ],
         ];
         $mention = Mention::fromArray($array);
 
