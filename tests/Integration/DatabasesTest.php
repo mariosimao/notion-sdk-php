@@ -6,6 +6,7 @@ use Notion\Common\Emoji;
 use Notion\Common\RichText;
 use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
+use Notion\DataSources\Properties\RichTextProperty;
 use Notion\Exceptions\ApiException;
 use PHPUnit\Framework\TestCase;
 
@@ -39,12 +40,17 @@ class DatabasesTest extends TestCase
             ->changeTitle("Inline database")
             ->enableInline();
 
-        $database = $client->databases()->create($database);
+        $database = $client->databases()->create($database, [
+            "Description" => RichTextProperty::create("Description")
+        ]);
 
         $databaseFound = $client->databases()->find($database->id);
 
         $this->assertEquals("Inline database", $database->title[0]->plainText);
         $this->assertTrue($databaseFound->isInline);
+
+        $dataSource = $client->dataSources()->find($databaseFound->dataSources[0]->id);
+        $this->assertEquals("Description", $dataSource->properties()->getRichText("Description")->metadata()->name);
 
         $client->databases()->delete($database);
     }
