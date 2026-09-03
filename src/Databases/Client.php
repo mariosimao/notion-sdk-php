@@ -2,8 +2,9 @@
 
 namespace Notion\Databases;
 
+use Notion\Common\RichText;
 use Notion\Configuration;
-use Notion\DataSources\DataSource;
+use Notion\DataSources\Properties\PropertyInterface;
 use Notion\Infrastructure\Http;
 
 /**
@@ -30,7 +31,10 @@ class Client
         return Database::fromArray($body);
     }
 
-    public function create(Database $database): Database
+    /**
+     * @param PropertyInterface[] $initialProperties
+     */
+    public function create(Database $database, array $initialProperties = []): Database
     {
         $data = $database->toArray();
         unset($data["id"]);
@@ -39,6 +43,13 @@ class Client
         }
         if ($database->cover === null) {
             unset($data["cover"]);
+        }
+
+        $propertiesData = array_map(fn(PropertyInterface $property) => $property->toArray(), $initialProperties);
+        if (!empty($propertiesData)) {
+            $data["initial_data_source"] = [
+                "properties" => $propertiesData,
+            ];
         }
 
         $url = "https://api.notion.com/v1/databases";
