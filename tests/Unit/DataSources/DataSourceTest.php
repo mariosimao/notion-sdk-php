@@ -185,6 +185,7 @@ class DataSourceTest extends TestCase
                 "type" => "database_id",
                 "database_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
             ],
+            "database_parent" => null,
             "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
         ];
         $dataSource = DataSource::fromArray($array);
@@ -329,34 +330,11 @@ class DataSourceTest extends TestCase
         $this->assertTrue($deleted->inTrash);
     }
 
-    public function test_from_array_in_trash(): void
+    public function test_create_has_null_database_parent(): void
     {
-        $array = [
-            "object" => "data_source",
-            "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
-            "created_time" => "2020-12-08T12:00:00.000000Z",
-            "last_edited_time" => "2020-12-08T12:00:00.000000Z",
-            "in_trash" => true,
-            "title" => [],
-            "description" => [],
-            "icon" => null,
-            "properties" => [
-                "Title" => [
-                    "id"    => "title",
-                    "name"  => "Title",
-                    "type"  => "title",
-                    "title" => new \stdClass(),
-                ],
-            ],
-            "parent" => [
-                "type" => "database_id",
-                "database_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
-            ],
-            "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
-        ];
-        $dataSource = DataSource::fromArray($array);
+        $parent = DataSourceParent::database("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $dataSource = DataSource::create($parent);
 
-        $this->assertTrue($dataSource->inTrash);
-        $this->assertEquals($array, $dataSource->toArray());
+        $this->assertNull($dataSource->databaseParent);
     }
 }

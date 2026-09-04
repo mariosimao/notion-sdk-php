@@ -8,6 +8,7 @@ use Notion\Common\Emoji;
 use Notion\Common\File;
 use Notion\Common\Icon;
 use Notion\Common\RichText;
+use Notion\Databases\DatabaseParent;
 use Notion\DataSources\Properties\PropertyCollection;
 use Notion\DataSources\Properties\PropertyFactory;
 use Notion\DataSources\Properties\PropertyInterface;
@@ -20,6 +21,7 @@ use Notion\DataSources\Properties\Title;
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
  * @psalm-import-type PropertyMetadataJson from \Notion\DataSources\Properties\PropertyMetadata
  * @psalm-import-type DataSourceParentJson from DataSourceParent
+ * @psalm-import-type DatabaseParentJson from \Notion\Databases\DatabaseParent
  *
  * @psalm-type DataSourceJson = array{
  *      object: "data_source",
@@ -32,6 +34,7 @@ use Notion\DataSources\Properties\Title;
  *      icon: EmojiJson|FileJson|null,
  *      properties: array<string, PropertyMetadataJson>,
  *      parent: DataSourceParentJson,
+ *      database_parent?: DatabaseParentJson|null,
  *      url: string,
  * }
  *
@@ -55,6 +58,7 @@ class DataSource
         public readonly array $properties,
         public readonly DataSourceParent $parent,
         public readonly string $url,
+        public readonly DatabaseParent|null $databaseParent = null,
     ) {
     }
 
@@ -73,6 +77,7 @@ class DataSource
             [ "Title" => Title::create() ],
             $parent,
             "",
+            null,
         );
     }
 
@@ -116,6 +121,10 @@ class DataSource
 
         $parent = DataSourceParent::fromArray($array["parent"]);
 
+        $databaseParent = isset($array["database_parent"])
+            ? DatabaseParent::fromArray($array["database_parent"])
+            : null;
+
         $properties = [];
         foreach ($array["properties"] as $propertyName => $propertyArray) {
             $properties[$propertyName] = PropertyFactory::fromArray($propertyArray);
@@ -132,6 +141,7 @@ class DataSource
             $properties,
             $parent,
             $array["url"],
+            $databaseParent,
         );
     }
 
@@ -148,6 +158,7 @@ class DataSource
             "icon"             => $this->icon?->toArray(),
             "properties"       => $this->propertiesToArray(),
             "parent"           => $this->parent->toArray(),
+            "database_parent"  => $this->databaseParent?->toArray(),
             "url"              => $this->url,
         ];
     }
@@ -210,6 +221,7 @@ class DataSource
             $this->properties,
             $this->parent,
             $this->url,
+            $this->databaseParent,
         );
     }
 
@@ -226,6 +238,7 @@ class DataSource
             $this->properties,
             $this->parent,
             $this->url,
+            $this->databaseParent,
         );
     }
 
@@ -250,6 +263,7 @@ class DataSource
             $this->properties,
             $this->parent,
             $this->url,
+            $this->databaseParent,
         );
     }
 
@@ -266,6 +280,7 @@ class DataSource
             $this->properties,
             $this->parent,
             $this->url,
+            $this->databaseParent,
         );
     }
 
@@ -287,6 +302,7 @@ class DataSource
             $this->properties()->add($property)->getAll(),
             $this->parent,
             $this->url,
+            $this->databaseParent,
         );
     }
 
@@ -303,6 +319,7 @@ class DataSource
             $this->properties()->remove($propertyName)->getAll(),
             $this->parent,
             $this->url,
+            $this->databaseParent,
         );
     }
 
@@ -319,6 +336,7 @@ class DataSource
             $this->properties()->change($property)->getAll(),
             $this->parent,
             $this->url,
+            $this->databaseParent,
         );
     }
 
@@ -336,6 +354,7 @@ class DataSource
             PropertyCollection::create(...$properties)->getAll(),
             $this->parent,
             $this->url,
+            $this->databaseParent,
         );
     }
 
@@ -352,6 +371,7 @@ class DataSource
             $this->properties,
             $parent,
             $this->url,
+            $this->databaseParent,
         );
     }
 

@@ -40,18 +40,38 @@ class DatabasesTest extends TestCase
             ->changeTitle("Inline database")
             ->enableInline();
 
-        $database = $client->databases()->create($database, [
-            "Description" => RichTextProperty::create("Description")
-        ]);
+        $database = $client->databases()->create($database);
 
         $databaseFound = $client->databases()->find($database->id);
 
         $this->assertEquals("Inline database", $database->title[0]->plainText);
         $this->assertTrue($databaseFound->isInline);
 
+        $client->databases()->delete($database);
+    }
+
+    public function test_create_database_with_initial_properties(): void
+    {
+        // Arrange
+        $client = Helper::client();
+
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()))
+            ->changeTitle("Database with initial properties");
+
+        // Act
+        $database = $client->databases()->create($database, [
+            "Description" => RichTextProperty::create("Description")
+        ]);
+
+        $databaseFound = $client->databases()->find($database->id);
         $dataSource = $client->dataSources()->find($databaseFound->dataSources[0]->id);
+
+
+        // Assert
+        $this->assertEquals("Database with initial properties", $databaseFound->title[0]->plainText);
         $this->assertEquals("Description", $dataSource->properties()->getRichText("Description")->metadata()->name);
 
+        // Clean up
         $client->databases()->delete($database);
     }
 
