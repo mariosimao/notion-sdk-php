@@ -80,9 +80,14 @@ class Client
     public function delete(DataSource $dataSource): void
     {
         $dataSourceId = $dataSource->id;
-        $url = "https://api.notion.com/v1/blocks/{$dataSourceId}";
+        $url = "https://api.notion.com/v1/data_sources/{$dataSourceId}";
         $request = Http::createRequest($url, $this->config)
-            ->withMethod("DELETE");
+            ->withMethod("PATCH")
+            ->withHeader("Content-Type", "application/json");
+
+        $request->getBody()->write(json_encode([
+            "in_trash" => true,
+        ]));
 
         Http::sendRequest($request, $this->config);
     }

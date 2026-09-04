@@ -143,6 +143,7 @@ class DataSourceTest extends TestCase
             "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
             "created_time" => "2020-12-08T12:00:00.000000Z",
             "last_edited_time" => "2020-12-08T12:00:00.000000Z",
+            "in_trash" => false,
             "title" => [[
                 "plain_text" => "DataSource title",
                 "href" => null,
@@ -208,6 +209,7 @@ class DataSourceTest extends TestCase
             "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
             "created_time" => "2020-12-08T12:00:00.000000Z",
             "last_edited_time" => "2020-12-08T12:00:00.000000Z",
+            "in_trash" => false,
             "title" => [[
                 "plain_text" => "Page title",
                 "href" => null,
@@ -255,6 +257,7 @@ class DataSourceTest extends TestCase
             "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
             "created_time" => "2020-12-08T12:00:00.000000Z",
             "last_edited_time" => "2020-12-08T12:00:00.000000Z",
+            "in_trash" => false,
             "title" => [[
                 "plain_text" => "Page title",
                 "href" => null,
@@ -293,5 +296,67 @@ class DataSourceTest extends TestCase
         if ($database->icon?->isFile()) {
             $this->assertEquals("https://my-site.com/image.png", $database->icon->file?->url);
         }
+    }
+
+    public function test_archive(): void
+    {
+        $parent = DataSourceParent::database("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $dataSource = DataSource::create($parent);
+
+        $this->assertFalse($dataSource->inTrash);
+
+        $archived = $dataSource->archive();
+        $this->assertTrue($archived->inTrash);
+    }
+
+    public function test_restore(): void
+    {
+        $parent = DataSourceParent::database("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $dataSource = DataSource::create($parent)->archive();
+
+        $this->assertTrue($dataSource->inTrash);
+
+        $restored = $dataSource->restore();
+        $this->assertFalse($restored->inTrash);
+    }
+
+    public function test_delete(): void
+    {
+        $parent = DataSourceParent::database("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $dataSource = DataSource::create($parent);
+
+        $deleted = $dataSource->delete();
+        $this->assertTrue($deleted->inTrash);
+    }
+
+    public function test_from_array_in_trash(): void
+    {
+        $array = [
+            "object" => "data_source",
+            "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
+            "created_time" => "2020-12-08T12:00:00.000000Z",
+            "last_edited_time" => "2020-12-08T12:00:00.000000Z",
+            "in_trash" => true,
+            "title" => [],
+            "description" => [],
+            "icon" => null,
+            "properties" => [
+                "Title" => [
+                    "id"    => "title",
+                    "name"  => "Title",
+                    "type"  => "title",
+                    "title" => new \stdClass(),
+                ],
+            ],
+            "parent" => [
+                "type" => "database_id",
+                "database_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
+            ],
+            "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+        ];
+        $dataSource = DataSource::fromArray($array);
+
+        $this->assertTrue($dataSource->inTrash);
+        $this->assertEquals($array, $dataSource->toArray());
     }
 }

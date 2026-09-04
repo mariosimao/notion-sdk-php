@@ -26,6 +26,7 @@ use Notion\DataSources\Properties\Title;
  *      id: string,
  *      created_time: string,
  *      last_edited_time: string,
+ *      in_trash?: bool,
  *      title: RichTextJson[],
  *      description: RichTextJson[],
  *      icon: EmojiJson|FileJson|null,
@@ -47,6 +48,7 @@ class DataSource
         public readonly string $id,
         public readonly DateTimeImmutable $createdTime,
         public readonly DateTimeImmutable $lastEditedTime,
+        public readonly bool $inTrash,
         public readonly array $title,
         public readonly array $description,
         public readonly Icon|null $icon,
@@ -64,6 +66,7 @@ class DataSource
             "",
             $now,
             $now,
+            false,
             [],
             [],
             null,
@@ -122,6 +125,7 @@ class DataSource
             $array["id"],
             new DateTimeImmutable($array["created_time"]),
             new DateTimeImmutable($array["last_edited_time"]),
+            $array["in_trash"] ?? false,
             $title,
             $description,
             $icon,
@@ -138,6 +142,7 @@ class DataSource
             "id"               => $this->id,
             "created_time"     => $this->createdTime->format(Date::FORMAT),
             "last_edited_time" => $this->lastEditedTime->format(Date::FORMAT),
+            "in_trash"         => $this->inTrash,
             "title"            => array_map(fn(RichText $t) => $t->toArray(), $this->title),
             "description"      => array_map(fn(RichText $t) => $t->toArray(), $this->description),
             "icon"             => $this->icon?->toArray(),
@@ -155,12 +160,50 @@ class DataSource
         return $this->icon !== null;
     }
 
+    public function archive(): self
+    {
+        return new self(
+            $this->id,
+            $this->createdTime,
+            $this->lastEditedTime,
+            true,
+            $this->title,
+            $this->description,
+            $this->icon,
+            $this->properties,
+            $this->parent,
+            $this->url,
+        );
+    }
+
+    public function restore(): self
+    {
+        return new self(
+            $this->id,
+            $this->createdTime,
+            $this->lastEditedTime,
+            false,
+            $this->title,
+            $this->description,
+            $this->icon,
+            $this->properties,
+            $this->parent,
+            $this->url,
+        );
+    }
+
+    public function delete(): self
+    {
+        return $this->archive();
+    }
+
     public function changeTitle(string $title): self
     {
         return new self(
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->inTrash,
             [ RichText::fromString($title) ],
             $this->description,
             $this->icon,
@@ -176,6 +219,7 @@ class DataSource
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->inTrash,
             $title,
             $this->description,
             $this->icon,
@@ -199,6 +243,7 @@ class DataSource
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->inTrash,
             $this->title,
             $this->description,
             $icon,
@@ -214,6 +259,7 @@ class DataSource
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->inTrash,
             $this->title,
             $this->description,
             null,
@@ -234,6 +280,7 @@ class DataSource
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->inTrash,
             $this->title,
             $this->description,
             $this->icon,
@@ -249,6 +296,7 @@ class DataSource
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->inTrash,
             $this->title,
             $this->description,
             $this->icon,
@@ -264,6 +312,7 @@ class DataSource
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->inTrash,
             $this->title,
             $this->description,
             $this->icon,
@@ -280,6 +329,7 @@ class DataSource
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->inTrash,
             $this->title,
             $this->description,
             $this->icon,
@@ -295,6 +345,7 @@ class DataSource
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->inTrash,
             $this->title,
             $this->description,
             $this->icon,
