@@ -4,7 +4,7 @@ namespace Notion\Pages;
 
 /**
  * @psalm-type PageParentJson = array{
- *      type: "page_id"|"data_source_id"|"workspace"|"block_id",
+ *      type: "page_id"|"data_source_id"|"database_id"|"workspace"|"block_id",
  *      page_id?: string,
  *      data_source_id?: string,
  *      database_id?: string,
@@ -23,9 +23,14 @@ class PageParent
     ) {
     }
 
-    public static function dataSource(string $dataSourceId): self
+    public static function dataSource(string $dataSourceId, string|null $databaseId = null): self
     {
-        return new self(PageParentType::DataSource, $dataSourceId);
+        return new self(PageParentType::DataSource, $dataSourceId, $databaseId);
+    }
+
+    public static function database(string $databaseId): self
+    {
+        return self::dataSource($databaseId);
     }
 
     public static function page(string $pageId): self
@@ -52,7 +57,7 @@ class PageParent
     {
         $type = PageParentType::from($array["type"]);
 
-        $id = $array["page_id"] ?? $array["data_source_id"] ?? $array["block_id"] ?? null;
+        $id = $array["page_id"] ?? $array["data_source_id"] ?? $array["block_id"] ?? $array["database_id"] ?? null;
 
         $databaseId = null;
         if (array_key_exists("database_id", $array)) {
@@ -73,6 +78,9 @@ class PageParent
             $array["data_source_id"] = $this->id;
             $array["database_id"] = $this->databaseId;
         }
+        if ($this->isDatabase()) {
+            $array["database_id"] = $this->id;
+        }
         if ($this->isPage()) {
             $array["page_id"] = $this->id;
         }
@@ -89,6 +97,11 @@ class PageParent
     public function isDataSource(): bool
     {
         return $this->type === PageParentType::DataSource;
+    }
+
+    public function isDatabase(): bool
+    {
+        return $this->type === PageParentType::Database;
     }
 
     public function isPage(): bool
