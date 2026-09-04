@@ -37,6 +37,7 @@ class Client
     {
         $data = $dataSource->toArray();
         unset($data["id"]);
+        unset($data["database_parent"]);
         if ($dataSource->parent->isDatabase()) {
             unset($data["description"]);
         }
@@ -59,6 +60,7 @@ class Client
         unset($data["parent"]);
         unset($data["created_time"]);
         unset($data["last_edited_time"]);
+        unset($data["database_parent"]);
         if ($dataSource->parent->isDatabase()) {
             unset($data["description"]);
         }

@@ -195,7 +195,10 @@ class DataSourceTest extends TestCase
                 "text" => [ "content" => "DataSource title" ],
             ]],
             "icon" => null,
-            "cover" => null,
+            "cover" => [
+                "type" => "external",
+                "external" => [ "url" => "https://my-site.com/cover.png" ],
+            ],
             "properties" => [
                 "title" => [
                     "id"    => "title",
@@ -207,6 +210,10 @@ class DataSourceTest extends TestCase
             "parent" => [
                 "type" => "database_id",
                 "database_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
+            ],
+            "database_parent" => [
+                "type" => "page_id",
+                "page_id" => "cf735738-35e3-44aa-b3d4-aca944c8f421",
             ],
             "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
         ];
@@ -319,37 +326,11 @@ class DataSourceTest extends TestCase
         }
     }
 
-    public function test_from_array_with_cover(): void
+    public function test_create_has_null_database_parent(): void
     {
-        $array = [
-            "object" => "data_source",
-            "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
-            "created_time" => "2020-12-08T12:00:00.000000Z",
-            "last_edited_time" => "2020-12-08T12:00:00.000000Z",
-            "title" => [],
-            "description" => [],
-            "icon" => null,
-            "cover" => [
-                "type" => "external",
-                "external" => [ "url" => "https://my-site.com/cover.png" ],
-            ],
-            "properties" => [
-                "Title" => [
-                    "id"    => "title",
-                    "name"  => "Title",
-                    "type"  => "title",
-                    "title" => new \stdClass(),
-                ],
-            ],
-            "parent" => [
-                "type" => "database_id",
-                "database_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
-            ],
-            "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
-        ];
-        $dataSource = DataSource::fromArray($array);
+        $parent = DataSourceParent::database("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $dataSource = DataSource::create($parent);
 
-        $this->assertTrue($dataSource->hasCover());
-        $this->assertEquals("https://my-site.com/cover.png", $dataSource->cover?->url);
+        $this->assertNull($dataSource->databaseParent);
     }
 }
