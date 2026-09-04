@@ -158,10 +158,12 @@ class DatabaseTest extends TestCase
             ],
             "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
             "is_inline" => true,
+            "in_trash" => false,
         ];
         $database = Database::fromArray($array);
 
         $this->assertEquals($array, $database->toArray());
+        $this->assertFalse($database->inTrash);
         $this->assertSame("a7e80c0b-a766-43c3-a9e9-21ce94595e0e", $database->id);
         $this->assertSame("https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e", $database->url);
         $this->assertEquals(
@@ -276,5 +278,27 @@ class DatabaseTest extends TestCase
 
         $database = $database->disableInline();
         $this->assertFalse($database->isInline);
+    }
+
+    public function test_archive(): void
+    {
+        $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $database = Database::create($parent);
+
+        $this->assertFalse($database->inTrash);
+
+        $archived = $database->archive();
+        $this->assertTrue($archived->inTrash);
+    }
+
+    public function test_restore(): void
+    {
+        $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $database = Database::create($parent)->archive();
+
+        $this->assertTrue($database->inTrash);
+
+        $restored = $database->restore();
+        $this->assertFalse($restored->inTrash);
     }
 }

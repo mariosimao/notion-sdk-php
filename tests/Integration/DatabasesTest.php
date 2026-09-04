@@ -124,7 +124,8 @@ class DatabasesTest extends TestCase
 
         $database = $client->databases()->create($database);
 
-        $client->databases()->delete($database);
+        $database = $client->databases()->delete($database);
+        $database = $database->changeIcon(Emoji::fromString("🍀"));
 
         $this->expectException(ApiException::class);
         $client->databases()->update($database);
@@ -138,5 +139,59 @@ class DatabasesTest extends TestCase
 
         $this->expectException(ApiException::class);
         $client->databases()->delete($database);
+    }
+
+    public function test_move_database(): void
+    {
+        $client = Helper::client();
+
+        $newPage = $client->pages()->create(Helper::newPage()->changeTitle("New parent page"));
+
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()))
+            ->changeTitle("Database to be moved");
+        $database = $client->databases()->create($database);
+
+        $database = $database->changeParent(DatabaseParent::page($newPage->id));
+        $database = $client->databases()->update($database);
+
+        $databaseFound = $client->databases()->find($database->id);
+
+        $this->assertEquals($newPage->id, $databaseFound->parent->id);
+
+        $client->databases()->delete($database);
+        $client->pages()->delete($newPage);
+    }
+
+    public function test_archive_and_restore_database(): void
+    {
+        $client = Helper::client();
+
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()))
+            ->changeTitle("Database to be archived");
+        $database = $client->databases()->create($database);
+
+        $database = $database->archive();
+        $database = $client->databases()->update($database);
+        $this->assertTrue($database->inTrash);
+
+        $database = $database->restore();
+        $database = $client->databases()->update($database);
+        $this->assertFalse($database->inTrash);
+
+        $client->databases()->delete($database);
+    }
+
+    public function test_delete_database(): void
+    {
+        $client = Helper::client();
+
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()))
+            ->changeTitle("Database to be deleted");
+        $database = $client->databases()->create($database);
+
+        $client->databases()->delete($database);
+
+        $databaseFound = $client->databases()->find($database->id);
+        $this->assertTrue($databaseFound->inTrash);
     }
 }
