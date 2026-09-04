@@ -2,36 +2,16 @@
 
 namespace Notion\Test\Integration;
 
-use DateTimeImmutable;
-use Notion\Common\Color;
 use Notion\Common\Emoji;
 use Notion\Common\RichText;
 use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
-use Notion\Databases\Properties\Date;
-use Notion\Databases\Properties\People;
-use Notion\Databases\Properties\RichTextProperty;
-use Notion\Databases\Properties\Select;
-use Notion\Databases\Properties\SelectOption;
-use Notion\Databases\Properties\Title;
-use Notion\Databases\Query;
-use Notion\Databases\Query\CompoundFilter;
-use Notion\Databases\Query\DateFilter;
-use Notion\Databases\Query\SelectFilter;
+use Notion\DataSources\Properties\RichTextProperty;
 use Notion\Exceptions\ApiException;
-use Notion\Pages\Page;
-use Notion\Pages\PageParent;
-use Notion\Pages\Properties\Date as DateProp;
-use Notion\Pages\Properties\People as PeopleProp;
-use Notion\Pages\Properties\Select as SelectProp;
-use Notion\Search\Query as SearchQuery;
-use Notion\Users\User;
 use PHPUnit\Framework\TestCase;
 
 class DatabasesTest extends TestCase
 {
-    private static int $bigDatabaseSize = 110;
-
     public function test_create_empty_database(): void
     {
         $client = Helper::client();
@@ -70,21 +50,47 @@ class DatabasesTest extends TestCase
         $client->databases()->delete($database);
     }
 
+    public function test_create_database_with_initial_properties(): void
+    {
+        // Arrange
+        $client = Helper::client();
+
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()))
+            ->changeTitle("Database with initial properties");
+
+        // Act
+        $database = $client->databases()->create($database, [
+            "Description" => RichTextProperty::create("Description")
+        ]);
+
+        $databaseFound = $client->databases()->find($database->id);
+        $dataSource = $client->dataSources()->find($databaseFound->dataSources[0]->id);
+
+
+        // Assert
+        $this->assertEquals("Database with initial properties", $databaseFound->title[0]->plainText);
+        $this->assertEquals("Description", $dataSource->properties()->getRichText("Description")->metadata()->name);
+
+        // Clean up
+        $client->databases()->delete($database);
+    }
+
     public function test_update_database(): void
     {
         $client = Helper::client();
 
         $database = Database::create(DatabaseParent::page(Helper::testPageId()))
             ->changeTitle("Test database");
+
         $database = $client->databases()->create($database);
 
-        $database = $database->addProperty(RichTextProperty::create("Test prop"));
+        $database = $database
+            ->changeTitle("New test database title")
+            ->changeIcon(Emoji::fromString("🍀"));
         $database = $client->databases()->update($database);
 
-        $this->assertEquals(
-            "Test prop",
-            $database->properties()->get("Test prop")->metadata()->name
-        );
+        $this->assertEquals("New test database title", $database->title[0]->plainText);
+        $this->assertEquals("🍀", $database->icon?->emoji?->emoji);
 
         $client->databases()->delete($database);
     }
@@ -118,7 +124,8 @@ class DatabasesTest extends TestCase
 
         $database = $client->databases()->create($database);
 
-        $client->databases()->delete($database);
+        $database = $client->databases()->delete($database);
+        $database = $database->changeIcon(Emoji::fromString("🍀"));
 
         $this->expectException(ApiException::class);
         $client->databases()->update($database);
@@ -134,182 +141,57 @@ class DatabasesTest extends TestCase
         $client->databases()->delete($database);
     }
 
-    public function test_query_all_pages_from_database(): void
-    {
-        $database = self::moviesDatabase();
-
-        $client = Helper::client();
-        $pages = $client->databases()->queryAllPages($database);
-
-        $client->databases()->delete($database);
-
-        $this->assertCount(5, $pages);
-    }
-
-    /** @group bigdb */
-    public function test_query_big_database(): void
-    {
-        $client = Helper::client();
-        $result = $client->search()->search(SearchQuery::title("Big dataset")->filterByDatabases());
-
-        if (
-            count($result->results) > 0 &&
-            $result->results[0]::class === Database::class
-        ) {
-            /** @var Database */
-            $bigDatabase = $result->results[0];
-        } else {
-            $bigDatabase = self::bigDatabase();
-        }
-
-        $pages = $client->databases()->queryAllPages($bigDatabase);
-
-        $this->assertCount(self::$bigDatabaseSize, $pages);
-    }
-
-    public function test_query_database(): void
+    public function test_move_database(): void
     {
         $client = Helper::client();
 
-        $database = self::moviesDatabase();
+        $newPage = $client->pages()->create(Helper::newPage()->changeTitle("New parent page"));
 
-        /**
-         * 90s drama movies
-         *
-         * Category == Drama AND
-         * Release >= 1990-01-01 AND
-         * Release <= 1999-12-31
-         *
-         */
-        $query = Query::create()->changeFilter(
-            CompoundFilter::and(
-                SelectFilter::property("Category")->equals("Drama"),
-                DateFilter::property("Release date")->onOrAfter("1990-01-01"),
-                DateFilter::property("Release date")->onOrBefore("1999-12-31"),
-            ),
-        );
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()))
+            ->changeTitle("Database to be moved");
+        $database = $client->databases()->create($database);
 
-        $result = $client->databases()->query($database, $query);
-
-        $client->databases()->delete($database);
-
-        $this->assertCount(1, $result->pages);
-    }
-
-    public function test_query_inexistent_database(): void
-    {
-        $client = Helper::client();
-
-        $database = Database::create(DatabaseParent::page("a-page-id"));
-        $query = Query::create();
-
-        $this->expectException(ApiException::class);
-        $client->databases()->query($database, $query);
-    }
-
-    public function test_rename_database_with_people_property(): void
-    {
-        $client = Helper::client();
-
-        $database = self::moviesDatabase();
-        $database = $database->changeTitle("New movies database");
+        $database = $database->changeParent(DatabaseParent::page($newPage->id));
         $database = $client->databases()->update($database);
 
-        $client->databases()->delete($database);
+        $databaseFound = $client->databases()->find($database->id);
 
-        $this->assertSame("New movies database", $database->title[0]->plainText);
-    }
-
-    public function test_rename_database_page_with_people_property(): void
-    {
-        $client = Helper::client();
-
-        $database = self::moviesDatabase();
-
-        $users = Helper::client()->users()->findAll();
-        $userId = $users[0]->id;
-
-        $newPage = self::moviePage($database->id, "Sample movie", "2023-01-01", "Action", $userId);
-        $newPage = $client->pages()->create($newPage);
-
-        $newPage = $newPage->changeTitle("Updated sample movie");
-        $client->pages()->update($newPage);
+        $this->assertEquals($newPage->id, $databaseFound->parent->id);
 
         $client->databases()->delete($database);
-
-        $this->assertSame("Updated sample movie", $newPage->title()?->toString());
+        $client->pages()->delete($newPage);
     }
 
-    private static function moviesDatabase(): Database
-    {
-        $databaseParent = DatabaseParent::page(Helper::testPageId());
-
-        $categories = [
-            SelectOption::fromName("Action")->changeColor(Color::Orange),
-            SelectOption::fromName("Comedy")->changeColor(Color::Yellow),
-            SelectOption::fromName("Drama")->changeColor(Color::Red),
-        ];
-
-        $database = Database::create($databaseParent)
-            ->changeTitle("Movies")
-            ->changeProperties([
-                "Movies" => Title::create("Movie"),
-                "Release date" => Date::create("Release date"),
-                "Category" => Select::create("Category", $categories),
-                "People" => People::create("People"),
-            ]);
-
-        $database = Helper::client()->databases()->create($database);
-
-        $users = Helper::client()->users()->findAll();
-        $userId = $users[0]->id;
-
-        $pages = [
-            self::moviePage($database->id, "A Clockwork Orange", "1972-12-19", "Drama", $userId),
-            self::moviePage($database->id, "Dead Poets Society", "1989-06-02", "Drama", $userId),
-            self::moviePage($database->id, "Batman", "1989-10-26", "Action", $userId),
-            self::moviePage($database->id, "The Mask", "1994-12-23", "Comedy", $userId),
-            self::moviePage($database->id, "American Beauty", "1999-09-08", "Drama", $userId),
-        ];
-
-        $client = Helper::client();
-        foreach ($pages as $page) {
-            $client->pages()->create($page);
-        }
-
-        return $database;
-    }
-
-    private static function moviePage(
-        string $databaseId,
-        string $title,
-        string $releaseDate,
-        string $category,
-        string $userId
-    ): Page {
-        $date = new DateTimeImmutable($releaseDate);
-        return Page::create(PageParent::database($databaseId))
-            ->changeTitle($title)
-            ->addProperty("Release date", DateProp::create($date))
-            ->addProperty("Category", SelectProp::fromName($category))
-            ->addProperty("People", PeopleProp::create(User::create($userId)));
-    }
-
-    private static function bigDatabase(): Database
+    public function test_archive_and_restore_database(): void
     {
         $client = Helper::client();
 
         $database = Database::create(DatabaseParent::page(Helper::testPageId()))
-            ->changeTitle("Big dataset");
-
+            ->changeTitle("Database to be archived");
         $database = $client->databases()->create($database);
 
-        $parent = PageParent::database($database->id);
-        for ($i = 0; $i < self::$bigDatabaseSize; $i++) {
-            $page = Page::create($parent)->changeTitle("Page #{$i}");
-            $client->pages()->create($page);
-        }
+        $database = $database->archive();
+        $database = $client->databases()->update($database);
+        $this->assertTrue($database->inTrash);
 
-        return $database;
+        $database = $database->restore();
+        $database = $client->databases()->update($database);
+        $this->assertFalse($database->inTrash);
+
+        $client->databases()->delete($database);
+    }
+
+    public function test_delete_database(): void
+    {
+        $client = Helper::client();
+
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()))
+            ->changeTitle("Database to be deleted");
+        $database = $client->databases()->create($database);
+
+        $client->databases()->delete($database);
+
+        $databaseFound = $client->databases()->find($database->id);
+        $this->assertTrue($databaseFound->inTrash);
     }
 }

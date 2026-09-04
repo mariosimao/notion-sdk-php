@@ -35,11 +35,11 @@ class Query
         );
     }
 
-    public function filterByDatabases(): self
+    public function filterByDataSources(): self
     {
         return new self(
             $this->query,
-            Filter::byDatabases(),
+            Filter::byDataSources(),
             $this->sort,
             $this->startCursor,
             $this->pageSize,

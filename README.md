@@ -15,7 +15,7 @@
         <image src="https://shepherd.dev/github/mariosimao/notion-sdk/coverage.svg">
     </a>
     <a href="https://developers.notion.com/reference/versioning">
-        <image src="https://img.shields.io/badge/API%20Version-2022--06--28-%23212121">
+        <image src="https://img.shields.io/badge/API%20Version-2025--09--03-%23212121">
     </a>
     <a href="https://packagist.org/packages/mariosimao/notion-sdk-php">
         <image src="https://img.shields.io/packagist/php-v/mariosimao/notion-sdk-php?color=%23787CB5">
@@ -88,6 +88,6 @@ This policy may change in the future and exceptions may be made on a case-by-cas
 
 ## ❤️ Sponsors
 
-An special thanks to all sponsors who activelly support the SDK!
+An special thanks to all sponsors who actively support the SDK!
 
 <!-- sponsors --><!-- sponsors -->
