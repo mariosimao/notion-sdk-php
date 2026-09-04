@@ -51,6 +51,9 @@ class DatabasesTest extends TestCase
 
         $dataSource = $client->dataSources()->find($databaseFound->dataSources[0]->id);
         $this->assertEquals("Description", $dataSource->properties()->getRichText("Description")->metadata()->name);
+        $this->assertNotNull($dataSource->databaseParent);
+        $this->assertTrue($dataSource->databaseParent->isPage());
+        $this->assertEquals(Helper::testPageId(), $dataSource->databaseParent->id);
 
         $client->databases()->delete($database);
     }

@@ -37,6 +37,10 @@ class DataSourcesTest extends TestCase
         $dataSource = $this->newDataSource($database->id);
         $client = Helper::client();
 
+        $this->assertNotNull($dataSource->databaseParent);
+        $this->assertTrue($dataSource->databaseParent->isPage());
+        $this->assertEquals(Helper::testPageId(), $dataSource->databaseParent->id);
+
         $dataSource = $dataSource->addProperty(RichTextProperty::create("Test prop"));
         $dataSource = $client->dataSources()->update($dataSource);
 
@@ -44,6 +48,9 @@ class DataSourcesTest extends TestCase
             "Test prop",
             $dataSource->properties()->get("Test prop")->metadata()->name
         );
+        $this->assertNotNull($dataSource->databaseParent);
+        $this->assertTrue($dataSource->databaseParent->isPage());
+        $this->assertEquals(Helper::testPageId(), $dataSource->databaseParent->id);
 
         $client->databases()->delete($database);
     }
