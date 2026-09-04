@@ -26,9 +26,9 @@ class PhoneNumber implements PropertyInterface
         return new self($property, $phone);
     }
 
-    public static function createEmpty(): self
+    public static function createEmpty(string $id = null): self
     {
-        $property = PropertyMetadata::create("", PropertyType::PhoneNumber);
+        $property = PropertyMetadata::create($id ?? "", PropertyType::PhoneNumber);
 
         return new self($property, null);
     }

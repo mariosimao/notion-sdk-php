@@ -44,9 +44,9 @@ class Select implements PropertyInterface
         return new self($metadata, $option);
     }
 
-    public static function createEmpty(): self
+    public static function createEmpty(string $id = null): self
     {
-        $metadata = PropertyMetadata::create("", PropertyType::Select);
+        $metadata = PropertyMetadata::create($id ?? "", PropertyType::Select);
 
         return new self($metadata, null);
     }
