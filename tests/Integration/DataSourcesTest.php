@@ -8,6 +8,7 @@ use Notion\Common\Emoji;
 use Notion\Common\RichText;
 use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
+use Notion\Databases\DatabaseParentType;
 use Notion\DataSources\Properties\Date;
 use Notion\DataSources\Properties\RichTextProperty;
 use Notion\DataSources\Properties\Select;
@@ -31,15 +32,31 @@ class DataSourcesTest extends TestCase
 {
     private static int $bigDataSourceSize = 110;
 
-    public function test_update_database(): void
+    public function test_create_data_source(): void
+    {
+        // Arrange
+        $database = $this->newDatabase();
+        $dataSource = DataSource::create(DataSourceParent::database($database->id))
+            ->changeTitle($name ?? "Test data source")
+            ->changeIcon(Emoji::fromString("🚀"));
+
+        // Act
+        $dataSource = Helper::client()->dataSources()->create($dataSource);
+
+        // Assert
+        $this->assertEquals("Test data source", $dataSource->title[0]->plainText);
+        $this->assertEquals(Helper::testPageId(), $dataSource->databaseParent->id);
+        $this->assertEquals(DatabaseParentType::Page, $dataSource->databaseParent->type);
+
+        // Clean up
+        Helper::client()->databases()->delete($database);
+    }
+
+    public function test_update_data_source(): void
     {
         $database = $this->newDatabase();
         $dataSource = $this->newDataSource($database->id);
         $client = Helper::client();
-
-        $this->assertNotNull($dataSource->databaseParent);
-        $this->assertTrue($dataSource->databaseParent->isPage());
-        $this->assertEquals(Helper::testPageId(), $dataSource->databaseParent->id);
 
         $dataSource = $dataSource->addProperty(RichTextProperty::create("Test prop"));
         $dataSource = $client->dataSources()->update($dataSource);
@@ -48,9 +65,6 @@ class DataSourcesTest extends TestCase
             "Test prop",
             $dataSource->properties()->get("Test prop")->metadata()->name
         );
-        $this->assertNotNull($dataSource->databaseParent);
-        $this->assertTrue($dataSource->databaseParent->isPage());
-        $this->assertEquals(Helper::testPageId(), $dataSource->databaseParent->id);
 
         $client->databases()->delete($database);
     }
@@ -69,7 +83,7 @@ class DataSourcesTest extends TestCase
     }
 
     /** @group bigdb */
-    public function test_query_big_database(): void
+    public function test_query_big_data_source(): void
     {
         $client = Helper::client();
         $result = $client->search()->search(SearchQuery::title("Big dataset")->filterByDataSources());
@@ -90,7 +104,7 @@ class DataSourcesTest extends TestCase
         $this->assertCount(self::$bigDataSourceSize, $pages);
     }
 
-    public function test_query_database(): void
+    public function test_query_data_source(): void
     {
         $client = Helper::client();
 
