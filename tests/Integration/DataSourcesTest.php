@@ -37,7 +37,7 @@ class DataSourcesTest extends TestCase
         // Arrange
         $database = $this->newDatabase();
         $dataSource = DataSource::create(DataSourceParent::database($database->id))
-            ->changeTitle($name ?? "Test data source")
+            ->changeTitle("Test data source")
             ->changeIcon(Emoji::fromString("🚀"));
 
         // Act
@@ -45,8 +45,8 @@ class DataSourcesTest extends TestCase
 
         // Assert
         $this->assertEquals("Test data source", $dataSource->title[0]->plainText);
-        $this->assertEquals(Helper::testPageId(), $dataSource->databaseParent->id);
-        $this->assertEquals(DatabaseParentType::Page, $dataSource->databaseParent->type);
+        $this->assertEquals(Helper::testPageId(), $dataSource->databaseParent?->id);
+        $this->assertEquals(DatabaseParentType::Page, $dataSource->databaseParent?->type);
 
         // Clean up
         Helper::client()->databases()->delete($database);
