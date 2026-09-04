@@ -94,10 +94,6 @@ class Client
             "parent" => $page->parent->toArray(),
         ];
 
-        if ($page->parent->isDataSource()) {
-            unset($data["parent"]["database_id"]);
-        }
-
         $data = json_encode($data);
 
         $pageId = $page->id;

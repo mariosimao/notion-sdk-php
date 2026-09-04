@@ -8,12 +8,34 @@ use PHPUnit\Framework\TestCase;
 
 class PageParentTest extends TestCase
 {
-    public function test_create_parent_database(): void
+    public function test_create_parent_data_source(): void
     {
         $parent = PageParent::dataSource("058d158b-09de-4d69-be07-901c20a7ca5c");
 
         $this->assertTrue($parent->isDataSource());
-        $this->assertEquals("058d158b-09de-4d69-be07-901c20a7ca5c", $parent->id);
+        $this->assertSame("058d158b-09de-4d69-be07-901c20a7ca5c", $parent->id);
+        $this->assertNull($parent->databaseId);
+    }
+
+    public function test_create_parent_data_source_with_database(): void
+    {
+        $parentWithDb = PageParent::dataSource(
+            "058d158b-09de-4d69-be07-901c20a7ca5c",
+            "7a774b5d-ca74-4679-9f18-689b5a98f138",
+        );
+
+        $this->assertTrue($parentWithDb->isDataSource());
+        $this->assertSame("058d158b-09de-4d69-be07-901c20a7ca5c", $parentWithDb->id);
+        $this->assertSame("7a774b5d-ca74-4679-9f18-689b5a98f138", $parentWithDb->databaseId);
+    }
+
+    public function test_create_parent_database(): void
+    {
+        $parent = PageParent::database("058d158b-09de-4d69-be07-901c20a7ca5c");
+
+        $this->assertTrue($parent->isDataSource());
+        $this->assertSame("058d158b-09de-4d69-be07-901c20a7ca5c", $parent->id);
+        $this->assertNull($parent->databaseId);
     }
 
     public function test_create_parent_page(): void
@@ -62,6 +84,7 @@ class PageParentTest extends TestCase
 
         $this->assertEquals($array["data_source_id"], $parent->toArray()["data_source_id"]);
         $this->assertEquals($array["database_id"], $parent->toArray()["database_id"]);
+        $this->asesrtEquals($array, $parent->toArray());
     }
 
     public function test_workspace_array_conversion(): void
@@ -84,6 +107,20 @@ class PageParentTest extends TestCase
         $parent = PageParent::fromArray($array);
 
         $this->assertEquals($array["block_id"], $parent->toArray()["block_id"]);
+    }
+
+    public function test_database_array_conversion(): void
+    {
+        $array = [
+            "type" => "database_id",
+            "database_id" => "7a774b5d-ca74-4679-9f18-689b5a98f138",
+        ];
+        $parent = PageParent::fromArray($array);
+
+        $this->assertTrue($parent->isDatabase());
+        $this->assertSame("7a774b5d-ca74-4679-9f18-689b5a98f138", $parent->id);
+        $this->assertSame("7a774b5d-ca74-4679-9f18-689b5a98f138", $parent->databaseId);
+        $this->assertSame($array, $parent->toArray());
     }
 
     public function test_invalid_type_array(): void
