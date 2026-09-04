@@ -67,9 +67,12 @@ class Client
     public function update(Database $database): Database
     {
         $data = $database->toArray();
-        unset($data["parent"]);
+        unset($data["id"]);
+        unset($data["object"]);
         unset($data["created_time"]);
         unset($data["last_edited_time"]);
+        unset($data["url"]);
+        unset($data["data_sources"]);
         if ($database->icon === null) {
             unset($data["icon"]);
         }
@@ -94,9 +97,14 @@ class Client
     public function delete(Database $database): void
     {
         $databaseId = $database->id;
-        $url = "https://api.notion.com/v1/blocks/{$databaseId}";
+        $url = "https://api.notion.com/v1/databases/{$databaseId}";
         $request = Http::createRequest($url, $this->config)
-            ->withMethod("DELETE");
+            ->withMethod("PATCH")
+            ->withHeader("Content-Type", "application/json");
+
+        $request->getBody()->write(json_encode([
+            "in_trash" => true,
+        ]));
 
         Http::sendRequest($request, $this->config);
     }
