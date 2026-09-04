@@ -94,7 +94,7 @@ class Client
         return Database::fromArray($body);
     }
 
-    public function delete(Database $database): void
+    public function delete(Database $database): Database
     {
         $databaseId = $database->id;
         $url = "https://api.notion.com/v1/databases/{$databaseId}";
@@ -106,6 +106,9 @@ class Client
             "in_trash" => true,
         ]));
 
-        Http::sendRequest($request, $this->config);
+        /** @psalm-var DatabaseJson $body */
+        $body = Http::sendRequest($request, $this->config);
+
+        return Database::fromArray($body);
     }
 }

@@ -124,7 +124,8 @@ class DatabasesTest extends TestCase
 
         $database = $client->databases()->create($database);
 
-        $client->databases()->delete($database);
+        $database = $client->databases()->delete($database);
+        $database = $database->changeIcon(Emoji::fromString("🍀"));
 
         $this->expectException(ApiException::class);
         $client->databases()->update($database);
