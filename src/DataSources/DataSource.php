@@ -29,6 +29,7 @@ use Notion\DataSources\Properties\Title;
  *      title: RichTextJson[],
  *      description: RichTextJson[],
  *      icon: EmojiJson|FileJson|null,
+ *      cover?: FileJson|null,
  *      properties: array<string, PropertyMetadataJson>,
  *      parent: DataSourceParentJson,
  *      url: string,
@@ -50,6 +51,7 @@ class DataSource
         public readonly array $title,
         public readonly array $description,
         public readonly Icon|null $icon,
+        public readonly File|null $cover,
         public readonly array $properties,
         public readonly DataSourceParent $parent,
         public readonly string $url,
@@ -66,6 +68,7 @@ class DataSource
             $now,
             [],
             [],
+            null,
             null,
             [ "Title" => Title::create() ],
             $parent,
@@ -111,6 +114,8 @@ class DataSource
             }
         }
 
+        $cover = isset($array["cover"]) ? File::fromArray($array["cover"]) : null;
+
         $parent = DataSourceParent::fromArray($array["parent"]);
 
         $properties = [];
@@ -125,6 +130,7 @@ class DataSource
             $title,
             $description,
             $icon,
+            $cover,
             $properties,
             $parent,
             $array["url"],
@@ -141,6 +147,7 @@ class DataSource
             "title"            => array_map(fn(RichText $t) => $t->toArray(), $this->title),
             "description"      => array_map(fn(RichText $t) => $t->toArray(), $this->description),
             "icon"             => $this->icon?->toArray(),
+            "cover"            => $this->cover?->toArray(),
             "properties"       => $this->propertiesToArray(),
             "parent"           => $this->parent->toArray(),
             "url"              => $this->url,
@@ -155,6 +162,15 @@ class DataSource
         return $this->icon !== null;
     }
 
+    /**
+     * @psalm-assert-if-true File $this->cover
+     * @psalm-assert-if-false null $this->cover
+     */
+    public function hasCover(): bool
+    {
+        return $this->cover !== null;
+    }
+
     public function changeTitle(string $title): self
     {
         return new self(
@@ -164,6 +180,7 @@ class DataSource
             [ RichText::fromString($title) ],
             $this->description,
             $this->icon,
+            $this->cover,
             $this->properties,
             $this->parent,
             $this->url,
@@ -179,6 +196,7 @@ class DataSource
             $title,
             $this->description,
             $this->icon,
+            $this->cover,
             $this->properties,
             $this->parent,
             $this->url,
@@ -202,6 +220,7 @@ class DataSource
             $this->title,
             $this->description,
             $icon,
+            $this->cover,
             $this->properties,
             $this->parent,
             $this->url,
@@ -216,6 +235,39 @@ class DataSource
             $this->lastEditedTime,
             $this->title,
             $this->description,
+            null,
+            $this->cover,
+            $this->properties,
+            $this->parent,
+            $this->url,
+        );
+    }
+
+    public function changeCover(File $cover): self
+    {
+        return new self(
+            $this->id,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $this->title,
+            $this->description,
+            $this->icon,
+            $cover,
+            $this->properties,
+            $this->parent,
+            $this->url,
+        );
+    }
+
+    public function removeCover(): self
+    {
+        return new self(
+            $this->id,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $this->title,
+            $this->description,
+            $this->icon,
             null,
             $this->properties,
             $this->parent,
@@ -237,6 +289,7 @@ class DataSource
             $this->title,
             $this->description,
             $this->icon,
+            $this->cover,
             $this->properties()->add($property)->getAll(),
             $this->parent,
             $this->url,
@@ -252,6 +305,7 @@ class DataSource
             $this->title,
             $this->description,
             $this->icon,
+            $this->cover,
             $this->properties()->remove($propertyName)->getAll(),
             $this->parent,
             $this->url,
@@ -267,6 +321,7 @@ class DataSource
             $this->title,
             $this->description,
             $this->icon,
+            $this->cover,
             $this->properties()->change($property)->getAll(),
             $this->parent,
             $this->url,
@@ -283,6 +338,7 @@ class DataSource
             $this->title,
             $this->description,
             $this->icon,
+            $this->cover,
             PropertyCollection::create(...$properties)->getAll(),
             $this->parent,
             $this->url,
@@ -298,6 +354,7 @@ class DataSource
             $this->title,
             $this->description,
             $this->icon,
+            $this->cover,
             $this->properties,
             $parent,
             $this->url,

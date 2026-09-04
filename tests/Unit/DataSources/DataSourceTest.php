@@ -78,6 +78,29 @@ class DataSourceTest extends TestCase
         $this->assertFalse($database->hasIcon());
     }
 
+    public function test_add_cover(): void
+    {
+        $parent = DataSourceParent::database("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $cover = File::createExternal("https://example.com/cover.png");
+        $database = DataSource::create($parent)->changeCover($cover);
+
+        $this->assertSame($cover, $database->cover);
+        $this->assertTrue($database->hasCover());
+        $this->assertEquals("https://example.com/cover.png", $database->cover->url);
+    }
+
+    public function test_remove_cover(): void
+    {
+        $parent = DataSourceParent::database("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $cover = File::createExternal("https://example.com/cover.png");
+        $database = DataSource::create($parent)
+            ->changeCover($cover)
+            ->removeCover();
+
+        $this->assertNull($database->cover);
+        $this->assertFalse($database->hasCover());
+    }
+
     public function test_move_page(): void
     {
         $oldParent = DataSourceParent::database("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
@@ -172,6 +195,7 @@ class DataSourceTest extends TestCase
                 "text" => [ "content" => "DataSource title" ],
             ]],
             "icon" => null,
+            "cover" => null,
             "properties" => [
                 "title" => [
                     "id"    => "title",
@@ -293,5 +317,39 @@ class DataSourceTest extends TestCase
         if ($database->icon?->isFile()) {
             $this->assertEquals("https://my-site.com/image.png", $database->icon->file?->url);
         }
+    }
+
+    public function test_from_array_with_cover(): void
+    {
+        $array = [
+            "object" => "data_source",
+            "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
+            "created_time" => "2020-12-08T12:00:00.000000Z",
+            "last_edited_time" => "2020-12-08T12:00:00.000000Z",
+            "title" => [],
+            "description" => [],
+            "icon" => null,
+            "cover" => [
+                "type" => "external",
+                "external" => [ "url" => "https://my-site.com/cover.png" ],
+            ],
+            "properties" => [
+                "Title" => [
+                    "id"    => "title",
+                    "name"  => "Title",
+                    "type"  => "title",
+                    "title" => new \stdClass(),
+                ],
+            ],
+            "parent" => [
+                "type" => "database_id",
+                "database_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
+            ],
+            "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+        ];
+        $dataSource = DataSource::fromArray($array);
+
+        $this->assertTrue($dataSource->hasCover());
+        $this->assertEquals("https://my-site.com/cover.png", $dataSource->cover?->url);
     }
 }
