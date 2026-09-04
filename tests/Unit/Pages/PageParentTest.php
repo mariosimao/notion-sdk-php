@@ -84,7 +84,7 @@ class PageParentTest extends TestCase
 
         $this->assertEquals($array["data_source_id"], $parent->toArray()["data_source_id"]);
         $this->assertEquals($array["database_id"], $parent->toArray()["database_id"]);
-        $this->asesrtEquals($array, $parent->toArray());
+        $this->assertEquals($array, $parent->toArray());
     }
 
     public function test_workspace_array_conversion(): void
