@@ -481,7 +481,7 @@ class PropertyCollectionTest extends TestCase
             "name"  => "dummy",
             "type"  => "relation",
             "relation" => [
-                "database_id" => "84660ad0-9cb9-45d0-aae0-91e2c2526e12",
+                "data_source_id" => "84660ad0-9cb9-45d0-aae0-91e2c2526e12",
                 "type" => "single_property",
                 "single_property" => new \stdClass(),
             ],

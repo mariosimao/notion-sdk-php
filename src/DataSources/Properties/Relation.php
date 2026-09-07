@@ -10,8 +10,7 @@ use Notion\Exceptions\RelationException;
  *      name: string,
  *      type: "relation",
  *      relation: array{
- *          data_source_id?: string,
- *          database_id?: string,
+ *          data_source_id: string,
  *          type: string,
  *          single_property?: array<empty, empty>,
  *          dual_property?: array{
