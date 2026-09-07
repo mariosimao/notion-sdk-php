@@ -10,7 +10,8 @@ use Notion\Exceptions\RelationException;
  *      name: string,
  *      type: "relation",
  *      relation: array{
- *          database_id: string,
+ *          data_source_id?: string,
+ *          database_id?: string,
  *          type: string,
  *          single_property?: array<empty, empty>,
  *          dual_property?: array{
@@ -27,7 +28,7 @@ class Relation implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,
-        public readonly string $databaseId,
+        public readonly string $dataSourceId,
         public readonly RelationType $type,
         public readonly string|null $syncedPropertyName,
         public readonly string|null $syncedPropertyId,
@@ -41,31 +42,31 @@ class Relation implements PropertyInterface
         }
     }
 
-    public static function createUnidirectional(string $propertyName, string $databaseId): self
+    public static function createUnidirectional(string $propertyName, string $dataSourceId): self
     {
         $metadata = PropertyMetadata::create("", $propertyName, PropertyType::Relation);
         $type = RelationType::SingleProperty;
 
-        return new self($metadata, $databaseId, $type, null, null);
+        return new self($metadata, $dataSourceId, $type, null, null);
     }
 
     public static function createBidirectional(
         string $propertyName,
-        string $databaseId,
+        string $dataSourceId,
         string $syncedPropertyName,
         string $syncedPropertyId,
     ): self {
         $metadata = PropertyMetadata::create("", $propertyName, PropertyType::Relation);
         $type = RelationType::DualProperty;
 
-        return new self($metadata, $databaseId, $type, $syncedPropertyName, $syncedPropertyId);
+        return new self($metadata, $dataSourceId, $type, $syncedPropertyName, $syncedPropertyId);
     }
 
     public function changeToUnidirectional(): self
     {
         $newType = RelationType::SingleProperty;
 
-        return new self($this->metadata(), $this->databaseId, $newType, null, null);
+        return new self($this->metadata(), $this->dataSourceId, $newType, null, null);
     }
 
     public function changeToBidirectional(string $syncedPropertyName, string $syncedPropertyId): self
@@ -74,7 +75,7 @@ class Relation implements PropertyInterface
 
         return new self(
             $this->metadata(),
-            $this->databaseId,
+            $this->dataSourceId,
             $newType,
             $syncedPropertyName,
             $syncedPropertyId
@@ -91,7 +92,7 @@ class Relation implements PropertyInterface
         /** @psalm-var RelationJson $array */
         $metadata = PropertyMetadata::fromArray($array);
 
-        $databaseId = $array["relation"]["database_id"];
+        $dataSourceId = $array["relation"]["data_source_id"];
         $type = RelationType::from($array["relation"]["type"]);
 
         $syncedPropertyName = null;
@@ -101,22 +102,22 @@ class Relation implements PropertyInterface
             $syncedPropertyId = $array["relation"]["dual_property"]["synced_property_id"] ?? null;
         }
 
-        return new self($metadata, $databaseId, $type, $syncedPropertyName, $syncedPropertyId);
+        return new self($metadata, $dataSourceId, $type, $syncedPropertyName, $syncedPropertyId);
     }
 
     public function toArray(): array
     {
         $array = $this->metadata->toArray();
         $relation = [
-            "database_id" => $this->databaseId,
+            "data_source_id" => $this->dataSourceId,
             "type" => $this->type->value,
         ];
 
-        if ($this->isUniderectional()) {
+        if ($this->isUnidirectional()) {
             $relation["single_property"] = new \stdClass();
         }
 
-        if ($this->isBiderectional()) {
+        if ($this->isBidirectional()) {
             $relation["dual_property"] = [
                 "synced_property_name" => $this->syncedPropertyName,
                 "synced_property_id"   => $this->syncedPropertyId,
@@ -128,12 +129,12 @@ class Relation implements PropertyInterface
         return $array;
     }
 
-    public function isUniderectional(): bool
+    public function isUnidirectional(): bool
     {
         return $this->type === RelationType::SingleProperty;
     }
 
-    public function isBiderectional(): bool
+    public function isBidirectional(): bool
     {
         return $this->type === RelationType::DualProperty;
     }
