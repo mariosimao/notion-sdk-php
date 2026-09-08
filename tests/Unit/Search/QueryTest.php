@@ -34,7 +34,7 @@ class QueryTest extends TestCase
         $this->assertSame(FilterValue::Page, $q->filter?->value);
     }
 
-    public function test_filter_by_databases(): void
+    public function test_filter_by_data_sources(): void
     {
         $q = Query::title("Term")->filterByDataSources();
 
