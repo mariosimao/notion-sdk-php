@@ -17,7 +17,7 @@ class FilterTest extends TestCase
         $this->assertSame(FilterProperty::Object, $f->property);
     }
 
-    public function test_by_databases(): void
+    public function test_by_data_sources(): void
     {
         $f = Filter::byDataSources();
 
