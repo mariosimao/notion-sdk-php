@@ -15,12 +15,12 @@ use Notion\Exceptions\ColumnException;
  *
  * @psalm-immutable
  */
-final class Column implements BlockInterface
+final readonly class Column implements BlockInterface
 {
     /** @param BlockInterface[] $children */
     private function __construct(
-        private readonly BlockMetadata $block,
-        public readonly array $children,
+        private BlockMetadata $block,
+        public array $children,
     ) {
         foreach ($children as $child) {
             if ($child->metadata()->type === BlockType::Column) {

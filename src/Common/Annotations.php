@@ -13,15 +13,15 @@ namespace Notion\Common;
  *
  * @psalm-immutable
  */
-final class Annotations
+final readonly class Annotations
 {
     private function __construct(
-        public readonly bool $isBold,
-        public readonly bool $isItalic,
-        public readonly bool $isStrikeThrough,
-        public readonly bool $isUnderline,
-        public readonly bool $isCode,
-        public readonly Color $color,
+        public bool $isBold,
+        public bool $isItalic,
+        public bool $isStrikeThrough,
+        public bool $isUnderline,
+        public bool $isCode,
+        public Color $color,
     ) {
     }
 

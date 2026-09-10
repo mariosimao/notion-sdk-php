@@ -23,14 +23,14 @@ use Notion\Exceptions\RelationException;
  *
  * @psalm-immutable
  */
-final class Relation implements PropertyInterface
+final readonly class Relation implements PropertyInterface
 {
     private function __construct(
-        private readonly PropertyMetadata $metadata,
-        public readonly string $dataSourceId,
-        public readonly RelationType $type,
-        public readonly string|null $syncedPropertyName,
-        public readonly string|null $syncedPropertyId,
+        private PropertyMetadata $metadata,
+        public string $dataSourceId,
+        public RelationType $type,
+        public string|null $syncedPropertyName,
+        public string|null $syncedPropertyId,
     ) {
         if ($type === RelationType::DualProperty && $syncedPropertyName === null) {
             throw RelationException::emptySyncedPropertyName();

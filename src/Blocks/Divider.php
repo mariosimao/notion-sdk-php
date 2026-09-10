@@ -12,10 +12,10 @@ use Notion\Exceptions\BlockException;
  * }
  * @psalm-immutable
  */
-final class Divider implements BlockInterface
+final readonly class Divider implements BlockInterface
 {
     private function __construct(
-        private readonly BlockMetadata $metadata,
+        private BlockMetadata $metadata,
     ) {
         $metadata->checkType(BlockType::Divider);
     }

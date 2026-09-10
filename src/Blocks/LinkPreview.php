@@ -17,11 +17,11 @@ use Notion\Exceptions\BlockException;
  *
  * @psalm-immutable
  */
-final class LinkPreview implements BlockInterface
+final readonly class LinkPreview implements BlockInterface
 {
     private function __construct(
-        private readonly BlockMetadata $metadata,
-        public readonly string $url
+        private BlockMetadata $metadata,
+        public string $url
     ) {
         $metadata->checkType(BlockType::LinkPreview);
     }

@@ -7,7 +7,7 @@ use Notion\Blocks\Heading3;
 use Notion\Blocks\Renderer\BlockRendererInterface;
 use Notion\Blocks\Renderer\MarkdownRenderer;
 
-final class Heading3Renderer implements BlockRendererInterface
+final readonly class Heading3Renderer implements BlockRendererInterface
 {
     public static function render(BlockInterface $block, int $depth = 0): string
     {

@@ -18,15 +18,15 @@ namespace Notion\Users;
  *
  * @psalm-immutable
  */
-final class User
+final readonly class User
 {
     private function __construct(
-        public readonly string $id,
-        public readonly string|null $name,
-        public readonly string|null $avatarUrl,
-        public readonly UserType|null $type,
-        public readonly Person|null $person,
-        public readonly Bot|null $bot,
+        public string $id,
+        public string|null $name,
+        public string|null $avatarUrl,
+        public UserType|null $type,
+        public Person|null $person,
+        public Bot|null $bot,
     ) {
     }
 

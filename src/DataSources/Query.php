@@ -7,16 +7,16 @@ use Notion\DataSources\Query\Filter;
 use Notion\DataSources\Query\Sort;
 
 /** @psalm-immutable */
-final class Query
+final readonly class Query
 {
     public const MAX_PAGE_SIZE = 100;
 
     /** @param Sort[] $sorts */
     private function __construct(
-        public readonly Filter|null $filter,
-        public readonly array $sorts,
-        public readonly string|null $startCursor,
-        public readonly int $pageSize,
+        public Filter|null $filter,
+        public array $sorts,
+        public string|null $startCursor,
+        public int $pageSize,
     ) {
     }
 

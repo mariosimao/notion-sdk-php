@@ -15,12 +15,12 @@ use Notion\Exceptions\ColumnListException;
  *
  * @psalm-immutable
  */
-final class ColumnList implements BlockInterface
+final readonly class ColumnList implements BlockInterface
 {
     /** @param Column[] $columns */
     private function __construct(
-        private readonly BlockMetadata $metadata,
-        public readonly array $columns,
+        private BlockMetadata $metadata,
+        public array $columns,
     ) {
         $metadata->checkType(BlockType::ColumnList);
     }

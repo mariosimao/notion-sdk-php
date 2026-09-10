@@ -8,7 +8,7 @@ use Notion\Exceptions\ConflictException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-final class Http
+final readonly class Http
 {
     public static function parseBody(ResponseInterface $response): array
     {

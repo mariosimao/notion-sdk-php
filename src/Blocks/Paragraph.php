@@ -19,17 +19,17 @@ use Notion\Common\RichText;
  *
  * @psalm-immutable
  */
-final class Paragraph implements BlockInterface
+final readonly class Paragraph implements BlockInterface
 {
     /**
      * @param RichText[] $text
      * @param BlockInterface[] $children
      */
     private function __construct(
-        private readonly BlockMetadata $metadata,
-        public readonly array $text,
-        public readonly array $children,
-        public readonly Color $color,
+        private BlockMetadata $metadata,
+        public array $text,
+        public array $children,
+        public Color $color,
     ) {
         $metadata->checkType(BlockType::Paragraph);
     }

@@ -35,7 +35,7 @@ use Notion\Exceptions\DatabaseException;
  *
  * @psalm-immutable
  */
-final class Database
+final readonly class Database
 {
     /**
      * @param ChildDataSource[] $dataSources
@@ -43,18 +43,18 @@ final class Database
      * @param RichText[] $description
      */
     private function __construct(
-        public readonly string $id,
-        public readonly array $dataSources,
-        public readonly DateTimeImmutable $createdTime,
-        public readonly DateTimeImmutable $lastEditedTime,
-        public readonly bool $inTrash,
-        public readonly array $title,
-        public readonly array $description,
-        public readonly Icon|null $icon,
-        public readonly File|null $cover,
-        public readonly DatabaseParent $parent,
-        public readonly string $url,
-        public readonly bool $isInline,
+        public string $id,
+        public array $dataSources,
+        public DateTimeImmutable $createdTime,
+        public DateTimeImmutable $lastEditedTime,
+        public bool $inTrash,
+        public array $title,
+        public array $description,
+        public Icon|null $icon,
+        public File|null $cover,
+        public DatabaseParent $parent,
+        public string $url,
+        public bool $isInline,
     ) {
         if ($cover !== null && $cover->isInternal()) {
             throw DatabaseException::internalCover();

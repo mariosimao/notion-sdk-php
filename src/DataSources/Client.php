@@ -12,13 +12,13 @@ use Notion\Pages\Page;
  * @psalm-import-type DataSourceJson from DataSource
  * @psalm-import-type QueryResultJson from Result
  */
-final class Client
+final readonly class Client
 {
     /**
      * @internal Use `\Notion\Notion::dataSources()` instead
      */
     public function __construct(
-        private readonly Configuration $config,
+        private Configuration $config,
     ) {
     }
 

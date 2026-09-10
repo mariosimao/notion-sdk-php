@@ -11,12 +11,12 @@ namespace Notion\Pages\Properties;
  *
  * @psalm-immutable
  */
-final class Relation implements PropertyInterface
+final readonly class Relation implements PropertyInterface
 {
     /** @param string[] $pageIds */
     private function __construct(
-        private readonly PropertyMetadata $metadata,
-        public readonly array $pageIds
+        private PropertyMetadata $metadata,
+        public array $pageIds
     ) {
     }
 

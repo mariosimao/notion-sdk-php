@@ -7,7 +7,7 @@ use Notion\Blocks\Callout;
 use Notion\Blocks\Renderer\BlockRendererInterface;
 use Notion\Blocks\Renderer\MarkdownRenderer;
 
-final class CalloutRenderer implements BlockRendererInterface
+final readonly class CalloutRenderer implements BlockRendererInterface
 {
     public static function render(BlockInterface $block, int $depth = 0): string
     {

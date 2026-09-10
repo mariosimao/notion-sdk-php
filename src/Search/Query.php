@@ -3,14 +3,14 @@
 namespace Notion\Search;
 
 /** @psalm-immutable */
-final class Query
+final readonly class Query
 {
     private function __construct(
-        public readonly string|null $query = null,
-        public readonly Filter|null $filter = null,
-        public readonly Sort|null $sort = null,
-        public readonly string|null $startCursor = null,
-        public readonly int|null $pageSize = null,
+        public string|null $query = null,
+        public Filter|null $filter = null,
+        public Sort|null $sort = null,
+        public string|null $startCursor = null,
+        public int|null $pageSize = null,
     ) {
     }
 

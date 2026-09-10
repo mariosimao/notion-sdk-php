@@ -17,13 +17,13 @@ use Notion\Pages\Properties\UniqueId;
 /**
  * @psalm-import-type PageJson from Page
  */
-final class Client
+final readonly class Client
 {
     /**
      * @internal Use `\Notion\Notion::pages()` instead
      */
     public function __construct(
-        private readonly Configuration $config,
+        private Configuration $config,
     ) {
     }
 

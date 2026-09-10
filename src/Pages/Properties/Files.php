@@ -15,12 +15,12 @@ use Notion\Common\File;
  *
  * @psalm-immutable
  */
-final class Files implements PropertyInterface
+final readonly class Files implements PropertyInterface
 {
     /** @param File[] $files */
     private function __construct(
-        private readonly PropertyMetadata $metadata,
-        public readonly array $files,
+        private PropertyMetadata $metadata,
+        public array $files,
     ) {
     }
 

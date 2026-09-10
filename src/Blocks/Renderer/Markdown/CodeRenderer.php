@@ -7,7 +7,7 @@ use Notion\Blocks\Code;
 use Notion\Blocks\Renderer\BlockRendererInterface;
 use Notion\Blocks\Renderer\MarkdownRenderer;
 
-final class CodeRenderer implements BlockRendererInterface
+final readonly class CodeRenderer implements BlockRendererInterface
 {
     public static function render(BlockInterface $block, int $depth = 0): string
     {

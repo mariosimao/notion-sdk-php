@@ -7,10 +7,10 @@ namespace Notion\Common;
  *
  * @psalm-immutable
  */
-final class Emoji
+final readonly class Emoji
 {
     private function __construct(
-        public readonly string $emoji,
+        public string $emoji,
     ) {
     }
 

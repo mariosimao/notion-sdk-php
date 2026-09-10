@@ -15,13 +15,13 @@ use Notion\Common\Color;
  *
  * @psalm-immutable
  */
-final class StatusGroup
+final readonly class StatusGroup
 {
     /** @param string[] $optionIds */
     private function __construct(
-        public readonly string $id,
-        public readonly string $name,
-        public readonly Color $color,
+        public string $id,
+        public string $name,
+        public Color $color,
         public array $optionIds,
     ) {
     }

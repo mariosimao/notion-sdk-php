@@ -14,11 +14,11 @@ use Notion\DataSources\Properties\StatusOption;
  *
  * @psalm-immutable
  */
-final class Status implements PropertyInterface
+final readonly class Status implements PropertyInterface
 {
     private function __construct(
-        private readonly PropertyMetadata $metadata,
-        public readonly StatusOption $option,
+        private PropertyMetadata $metadata,
+        public StatusOption $option,
     ) {
     }
 

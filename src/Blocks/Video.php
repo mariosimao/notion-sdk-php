@@ -13,11 +13,11 @@ use Notion\Common\File;
  *
  * @psalm-immutable
  */
-final class Video implements BlockInterface
+final readonly class Video implements BlockInterface
 {
     private function __construct(
-        private readonly BlockMetadata $metadata,
-        public readonly File $file,
+        private BlockMetadata $metadata,
+        public File $file,
     ) {
         $metadata->checkType(BlockType::Video);
     }

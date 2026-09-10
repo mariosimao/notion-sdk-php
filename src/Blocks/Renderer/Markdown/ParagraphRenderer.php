@@ -7,7 +7,7 @@ use Notion\Blocks\Paragraph;
 use Notion\Blocks\Renderer\BlockRendererInterface;
 use Notion\Blocks\Renderer\MarkdownRenderer;
 
-final class ParagraphRenderer implements BlockRendererInterface
+final readonly class ParagraphRenderer implements BlockRendererInterface
 {
     public static function render(BlockInterface $block, int $depth = 0): string
     {

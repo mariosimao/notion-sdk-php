@@ -6,13 +6,13 @@ use Notion\Blocks\BlockInterface;
 use Notion\Configuration;
 use Notion\Infrastructure\Http;
 
-final class Client
+final readonly class Client
 {
     /**
      * @internal Use `\Notion\Notion::blocks()` instead
      */
     public function __construct(
-        private readonly Configuration $config,
+        private Configuration $config,
     ) {
     }
 

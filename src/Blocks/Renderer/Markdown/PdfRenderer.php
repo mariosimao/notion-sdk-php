@@ -7,7 +7,7 @@ use Notion\Blocks\Pdf;
 use Notion\Blocks\Renderer\BlockRendererInterface;
 use Notion\Blocks\Renderer\MarkdownRenderer;
 
-final class PdfRenderer implements BlockRendererInterface
+final readonly class PdfRenderer implements BlockRendererInterface
 {
     public static function render(BlockInterface $block, int $depth = 0): string
     {

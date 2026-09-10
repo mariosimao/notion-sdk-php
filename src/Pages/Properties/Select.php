@@ -13,11 +13,11 @@ use Notion\DataSources\Properties\SelectOption;
  *
  * @psalm-immutable
  */
-final class Select implements PropertyInterface
+final readonly class Select implements PropertyInterface
 {
     private function __construct(
-        private readonly PropertyMetadata $metadata,
-        public readonly SelectOption|null $option
+        private PropertyMetadata $metadata,
+        public SelectOption|null $option
     ) {
     }
 

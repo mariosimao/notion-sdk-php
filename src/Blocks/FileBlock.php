@@ -13,11 +13,11 @@ use Notion\Common\File;
  *
  * @psalm-immutable
  */
-final class FileBlock implements BlockInterface
+final readonly class FileBlock implements BlockInterface
 {
     private function __construct(
-        private readonly BlockMetadata $metadata,
-        private readonly File $file,
+        private BlockMetadata $metadata,
+        private File $file,
     ) {
         $metadata->checkType(BlockType::File);
     }

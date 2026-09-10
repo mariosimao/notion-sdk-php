@@ -19,15 +19,15 @@ use Notion\Exceptions\BlockException;
  *
  * @psalm-immutable
  */
-final class Table implements BlockInterface
+final readonly class Table implements BlockInterface
 {
     /** @param TableRow[] $rows */
     private function __construct(
-        private readonly BlockMetadata $metadata,
-        public readonly int $tableWidth,
-        public readonly bool $hasColumnHeader,
-        public readonly bool $hasRowHeader,
-        public readonly array $rows,
+        private BlockMetadata $metadata,
+        public int $tableWidth,
+        public bool $hasColumnHeader,
+        public bool $hasRowHeader,
+        public array $rows,
     ) {
         $metadata->checkType(BlockType::Table);
     }

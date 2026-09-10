@@ -13,10 +13,10 @@ namespace Notion\DataSources\Properties;
  *
  * @psalm-immutable
  */
-final class LastEditedBy implements PropertyInterface
+final readonly class LastEditedBy implements PropertyInterface
 {
     private function __construct(
-        private readonly PropertyMetadata $metadata,
+        private PropertyMetadata $metadata,
     ) {
     }
 

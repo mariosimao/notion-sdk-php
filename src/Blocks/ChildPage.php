@@ -13,11 +13,11 @@ use Notion\Exceptions\BlockException;
  *
  * @psalm-immutable
  */
-final class ChildPage implements BlockInterface
+final readonly class ChildPage implements BlockInterface
 {
     private function __construct(
-        private readonly BlockMetadata $metadata,
-        public readonly string $title,
+        private BlockMetadata $metadata,
+        public string $title,
     ) {
         $metadata->checkType(BlockType::ChildPage);
     }

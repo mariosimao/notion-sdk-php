@@ -22,15 +22,15 @@ use Psr\Http\Message\RequestFactoryInterface;
  *
  * @psalm-immutable
  */
-final class Configuration
+final readonly class Configuration
 {
     private function __construct(
-        public readonly string $token,
-        public readonly string $version,
-        public readonly ClientInterface $httpClient,
-        public readonly RequestFactoryInterface $requestFactory,
-        public readonly bool $retryOnConflict,
-        public readonly int $retryOnConflictAttempts,
+        public string $token,
+        public string $version,
+        public ClientInterface $httpClient,
+        public RequestFactoryInterface $requestFactory,
+        public bool $retryOnConflict,
+        public int $retryOnConflictAttempts,
     ) {
     }
 

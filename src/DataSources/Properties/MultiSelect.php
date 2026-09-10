@@ -17,12 +17,12 @@ namespace Notion\DataSources\Properties;
  *
  * @psalm-immutable
  */
-final class MultiSelect implements PropertyInterface
+final readonly class MultiSelect implements PropertyInterface
 {
     /** @param SelectOption[] $options */
     private function __construct(
-        private readonly PropertyMetadata $metadata,
-        public readonly array $options,
+        private PropertyMetadata $metadata,
+        public array $options,
     ) {
     }
 

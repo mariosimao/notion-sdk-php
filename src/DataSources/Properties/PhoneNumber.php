@@ -13,10 +13,10 @@ namespace Notion\DataSources\Properties;
  *
  * @psalm-immutable
  */
-final class PhoneNumber implements PropertyInterface
+final readonly class PhoneNumber implements PropertyInterface
 {
     private function __construct(
-        private readonly PropertyMetadata $metadata,
+        private PropertyMetadata $metadata,
     ) {
     }
 

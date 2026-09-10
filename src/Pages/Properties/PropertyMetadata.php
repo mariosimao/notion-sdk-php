@@ -7,12 +7,12 @@ namespace Notion\Pages\Properties;
  *
  * @psalm-immutable
  */
-final class PropertyMetadata
+final readonly class PropertyMetadata
 {
     private function __construct(
-        public readonly string $id,
-        public readonly PropertyType $type,
-        private readonly string|null $unknownType = null,
+        public string $id,
+        public PropertyType $type,
+        private string|null $unknownType = null,
     ) {
     }
 

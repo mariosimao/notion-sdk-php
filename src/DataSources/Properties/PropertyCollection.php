@@ -3,11 +3,11 @@
 namespace Notion\DataSources\Properties;
 
 /** @psalm-immutable */
-final class PropertyCollection
+final readonly class PropertyCollection
 {
     /** @param array<string, PropertyInterface> $properties */
     private function __construct(
-        private readonly array $properties
+        private array $properties
     ) {
     }
 

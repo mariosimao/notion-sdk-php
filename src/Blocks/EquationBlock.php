@@ -15,11 +15,11 @@ use Notion\Common\Equation;
  *
  * @psalm-immutable
  */
-final class EquationBlock implements BlockInterface
+final readonly class EquationBlock implements BlockInterface
 {
     private function __construct(
-        private readonly BlockMetadata $metadata,
-        public readonly Equation $equation
+        private BlockMetadata $metadata,
+        public Equation $equation
     ) {
         $metadata->checkType(BlockType::Equation);
     }

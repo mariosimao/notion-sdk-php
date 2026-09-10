@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **[BREAKING]** Turn SDK classes `readonly` (#180).
+  - All non-exception classes across the SDK are now declared `readonly`.
+  - Properties can no longer be modified after initialization, dynamic properties cannot be created on instances, and non-readonly classes cannot extend them.
+  - Redundant `readonly` modifiers on individual properties have been removed in favor of class-level immutability.
+  - **Migration instructions:**
+    - Ensure your application does not attempt to assign dynamic properties to SDK objects.
+    - If you are extending any classes (already restricted by `final` in #176), use composition instead.
 - **[BREAKING]** Require PHP >= 8.3 and < 9.0 (#507).
   - Support for PHP 8.1 and PHP 8.2 has been dropped.
   - **Migration instructions:**

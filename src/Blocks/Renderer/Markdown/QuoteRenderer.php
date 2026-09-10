@@ -7,7 +7,7 @@ use Notion\Blocks\Quote;
 use Notion\Blocks\Renderer\BlockRendererInterface;
 use Notion\Blocks\Renderer\MarkdownRenderer;
 
-final class QuoteRenderer implements BlockRendererInterface
+final readonly class QuoteRenderer implements BlockRendererInterface
 {
     public static function render(BlockInterface $block, int $depth = 0): string
     {

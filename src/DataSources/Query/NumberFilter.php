@@ -3,9 +3,9 @@
 namespace Notion\DataSources\Query;
 
 /** @psalm-immutable */
-final class NumberFilter implements Filter, Condition
+final readonly class NumberFilter implements Filter, Condition
 {
-    private static array $validOperators = [
+    private const VALID_OPERATORS = [
         Operator::Equals,
         Operator::DoesNotEqual,
         Operator::GreaterThan,
@@ -18,11 +18,11 @@ final class NumberFilter implements Filter, Condition
 
 
     private function __construct(
-        private readonly string $propertyName,
-        private readonly Operator $operator,
-        private readonly int|float|bool $value,
+        private string $propertyName,
+        private Operator $operator,
+        private int|float|bool $value,
     ) {
-        if (!in_array($operator, self::$validOperators)) {
+        if (!in_array($operator, self::VALID_OPERATORS)) {
             throw new \Exception("Invalid operator");
         }
     }

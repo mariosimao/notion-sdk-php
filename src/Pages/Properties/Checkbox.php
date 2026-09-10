@@ -11,11 +11,11 @@ namespace Notion\Pages\Properties;
  *
  * @psalm-immutable
  */
-final class Checkbox implements PropertyInterface
+final readonly class Checkbox implements PropertyInterface
 {
     private function __construct(
-        private readonly PropertyMetadata $metadata,
-        public readonly bool $checked,
+        private PropertyMetadata $metadata,
+        public bool $checked,
     ) {
     }
 

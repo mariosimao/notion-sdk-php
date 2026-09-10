@@ -5,12 +5,12 @@ namespace Notion\DataSources\Query;
 use stdClass;
 
 /** @psalm-immutable */
-final class DateFilter implements Filter, Condition
+final readonly class DateFilter implements Filter, Condition
 {
     private const TYPE_PROPERTY = "property";
     private const TYPE_TIMESTAMP = "timestamp";
 
-    private static array $validOperators = [
+    private const VALID_OPERATORS = [
         Operator::Equals,
         Operator::Before,
         Operator::After,
@@ -31,12 +31,12 @@ final class DateFilter implements Filter, Condition
      * @psalm-param self::TYPE_* $propertyType
      */
     private function __construct(
-        private readonly string $propertyType,
-        private readonly string $propertyName,
-        private readonly Operator $operator,
-        private readonly string|bool|array|stdClass $value,
+        private string $propertyType,
+        private string $propertyName,
+        private Operator $operator,
+        private string|bool|array|stdClass $value,
     ) {
-        if (!in_array($operator, self::$validOperators)) {
+        if (!in_array($operator, self::VALID_OPERATORS)) {
             throw new \Exception("Invalid operator");
         }
     }

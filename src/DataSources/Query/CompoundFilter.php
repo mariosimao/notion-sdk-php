@@ -3,7 +3,7 @@
 namespace Notion\DataSources\Query;
 
 /** @psalm-immutable */
-final class CompoundFilter implements Filter
+final readonly class CompoundFilter implements Filter
 {
     private const TYPE_AND = "and";
     private const TYPE_OR  = "or";

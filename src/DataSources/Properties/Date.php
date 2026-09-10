@@ -13,10 +13,10 @@ namespace Notion\DataSources\Properties;
  *
  * @psalm-immutable
  */
-final class Date implements PropertyInterface
+final readonly class Date implements PropertyInterface
 {
     private function __construct(
-        private readonly PropertyMetadata $metadata,
+        private PropertyMetadata $metadata,
     ) {
     }
 

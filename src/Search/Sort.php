@@ -3,11 +3,11 @@
 namespace Notion\Search;
 
 /** @psalm-immutable */
-final class Sort
+final readonly class Sort
 {
     private function __construct(
-        public readonly SortDirection $direction,
-        public readonly SortTimestamp $timestamp,
+        public SortDirection $direction,
+        public SortTimestamp $timestamp,
     ) {
     }
 

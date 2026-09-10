@@ -19,17 +19,17 @@ use Notion\Common\RichText;
  *
  * @psalm-immutable
  */
-final class NumberedListItem implements BlockInterface
+final readonly class NumberedListItem implements BlockInterface
 {
     /**
      * @param RichText[] $text
      * @param \Notion\Blocks\BlockInterface[] $children
      */
     private function __construct(
-        private readonly BlockMetadata $metadata,
-        public readonly array $text,
-        public readonly Color $color,
-        public readonly array $children,
+        private BlockMetadata $metadata,
+        public array $text,
+        public Color $color,
+        public array $children,
     ) {
         $metadata->checkType(BlockType::NumberedListItem);
     }

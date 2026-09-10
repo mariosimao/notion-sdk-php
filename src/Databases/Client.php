@@ -10,13 +10,13 @@ use Notion\Infrastructure\Http;
 /**
  * @psalm-import-type DatabaseJson from Database
  */
-final class Client
+final readonly class Client
 {
     /**
      * @internal Use `\Notion\Notion::databases()` instead
      */
     public function __construct(
-        private readonly Configuration $config,
+        private Configuration $config,
     ) {
     }
 

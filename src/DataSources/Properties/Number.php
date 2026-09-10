@@ -13,11 +13,11 @@ namespace Notion\DataSources\Properties;
  *
  * @psalm-immutable
  */
-final class Number implements PropertyInterface
+final readonly class Number implements PropertyInterface
 {
     private function __construct(
-        private readonly PropertyMetadata $metadata,
-        public readonly NumberFormat $format,
+        private PropertyMetadata $metadata,
+        public NumberFormat $format,
     ) {
     }
 

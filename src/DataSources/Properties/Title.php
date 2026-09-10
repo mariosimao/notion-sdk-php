@@ -13,10 +13,10 @@ namespace Notion\DataSources\Properties;
  *
  * @psalm-immutable
  */
-final class Title implements PropertyInterface
+final readonly class Title implements PropertyInterface
 {
     private function __construct(
-        private readonly PropertyMetadata $metadata,
+        private PropertyMetadata $metadata,
     ) {
     }
 

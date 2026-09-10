@@ -18,16 +18,16 @@ use DateTimeImmutable;
  *
  * @psalm-immutable
  */
-final class File
+final readonly class File
 {
     /** @param RichText[] $caption */
     private function __construct(
-        public readonly FileType $type,
-        public readonly string|null $url,
-        public readonly string|null $fileId,
-        public readonly DateTimeImmutable|null $expiryTime,
-        public readonly string|null $name,
-        public readonly array $caption,
+        public FileType $type,
+        public string|null $url,
+        public string|null $fileId,
+        public DateTimeImmutable|null $expiryTime,
+        public string|null $name,
+        public array $caption,
     ) {
     }
 

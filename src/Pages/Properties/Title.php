@@ -17,12 +17,12 @@ use function PHPUnit\Framework\isEmpty;
  *
  * @psalm-immutable
  */
-final class Title implements PropertyInterface
+final readonly class Title implements PropertyInterface
 {
     /** @param RichText[] $title */
     private function __construct(
-        private readonly PropertyMetadata $metadata,
-        public readonly array $title
+        private PropertyMetadata $metadata,
+        public array $title
     ) {
     }
 

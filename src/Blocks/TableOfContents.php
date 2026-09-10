@@ -16,11 +16,11 @@ use Notion\Exceptions\BlockException;
  *
  * @psalm-immutable
  */
-final class TableOfContents implements BlockInterface
+final readonly class TableOfContents implements BlockInterface
 {
     private function __construct(
-        private readonly BlockMetadata $metadata,
-        public readonly Color $color,
+        private BlockMetadata $metadata,
+        public Color $color,
     ) {
         $metadata->checkType(BlockType::TableOfContents);
     }

@@ -7,7 +7,7 @@ use Notion\Blocks\Bookmark;
 use Notion\Blocks\Renderer\BlockRendererInterface;
 use Notion\Blocks\Renderer\MarkdownRenderer;
 
-final class BookmarkRenderer implements BlockRendererInterface
+final readonly class BookmarkRenderer implements BlockRendererInterface
 {
     public static function render(BlockInterface $block, int $depth = 0): string
     {
