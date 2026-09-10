@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **[BREAKING]** Move block-specific exceptions to `Notion\Exceptions\BlockException` namespace (#181).
+  - `HeadingException`, `ColumnException`, and `ColumnListException` were moved from `src/Exceptions/` to `src/Exceptions/BlockException/`.
+  - Their namespaces have changed from `Notion\Exceptions` to `Notion\Exceptions\BlockException`.
+  - The base exception class `BlockException` remains at `Notion\Exceptions\BlockException`.
+  - **Migration instructions:**
+    - Update `use` statements:
+      - Change `use Notion\Exceptions\HeadingException;` to `use Notion\Exceptions\BlockException\HeadingException;`
+      - Change `use Notion\Exceptions\ColumnException;` to `use Notion\Exceptions\BlockException\ColumnException;`
+      - Change `use Notion\Exceptions\ColumnListException;` to `use Notion\Exceptions\BlockException\ColumnListException;`
+    - Catching the base exception `Notion\Exceptions\BlockException` or `Notion\Exceptions\NotionException` continues to work without changes.
 - **[BREAKING]** Turn SDK classes `readonly` (#180).
   - All non-exception classes across the SDK are now declared `readonly`.
   - Properties can no longer be modified after initialization, dynamic properties cannot be created on instances, and non-readonly classes cannot extend them.

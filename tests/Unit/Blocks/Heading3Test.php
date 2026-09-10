@@ -9,7 +9,7 @@ use Notion\Blocks\Paragraph;
 use Notion\Common\Color;
 use Notion\Common\Date;
 use Notion\Common\RichText;
-use Notion\Exceptions\HeadingException;
+use Notion\Exceptions\BlockException\HeadingException;
 use PHPUnit\Framework\TestCase;
 
 class Heading3Test extends TestCase

@@ -3,8 +3,8 @@
 namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\Column;
-use Notion\Exceptions\BlockException;
 use Notion\Blocks\Paragraph;
+use Notion\Exceptions\BlockException\ColumnException;
 use PHPUnit\Framework\TestCase;
 
 class ColumnTest extends TestCase
@@ -21,7 +21,7 @@ class ColumnTest extends TestCase
     {
         $childColumn = Column::create(Paragraph::fromString("A paragraph"));
 
-        $this->expectException(BlockException::class);
+        $this->expectException(ColumnException::class);
         Column::create($childColumn);
     }
 

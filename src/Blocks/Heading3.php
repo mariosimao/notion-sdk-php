@@ -5,7 +5,7 @@ namespace Notion\Blocks;
 use Notion\Common\Color;
 use Notion\Exceptions\BlockException;
 use Notion\Common\RichText;
-use Notion\Exceptions\HeadingException;
+use Notion\Exceptions\BlockException\HeadingException;
 
 /**
  * @psalm-import-type BlockMetadataJson from BlockMetadata
