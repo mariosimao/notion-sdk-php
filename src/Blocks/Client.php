@@ -6,7 +6,7 @@ use Notion\Blocks\BlockInterface;
 use Notion\Configuration;
 use Notion\Infrastructure\Http;
 
-class Client
+final class Client
 {
     /**
      * @internal Use `\Notion\Notion::blocks()` instead

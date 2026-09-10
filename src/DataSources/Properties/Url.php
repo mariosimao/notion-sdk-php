@@ -13,7 +13,7 @@ namespace Notion\DataSources\Properties;
  *
  * @psalm-immutable
  */
-class Url implements PropertyInterface
+final class Url implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,

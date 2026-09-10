@@ -18,7 +18,7 @@ use Notion\Common\Date;
  *
  * @psalm-immutable
  */
-class BlockMetadata
+final class BlockMetadata
 {
     private function __construct(
         public readonly string $id,

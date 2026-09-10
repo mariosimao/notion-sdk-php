@@ -9,7 +9,7 @@ namespace Notion\Users;
  *
  * @psalm-immutable
  */
-class WorkspaceLimits
+final class WorkspaceLimits
 {
     private function __construct(
         public readonly int $maxFileUploadSizeInBytes

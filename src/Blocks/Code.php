@@ -19,7 +19,7 @@ use Notion\Common\RichText;
  *
  * @psalm-immutable
  */
-class Code implements BlockInterface
+final class Code implements BlockInterface
 {
     /**
      * @param RichText[] $text

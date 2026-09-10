@@ -3,7 +3,7 @@
 namespace Notion\DataSources\Query;
 
 /** @psalm-immutable */
-class PeopleFilter implements Filter, Condition
+final class PeopleFilter implements Filter, Condition
 {
     private static array $validOperators = [
         Operator::Contains,

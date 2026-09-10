@@ -2,7 +2,7 @@
 
 namespace Notion\Exceptions;
 
-class FileUploadException extends NotionException
+final class FileUploadException extends NotionException
 {
     public static function fileDoesNotExist(string $filePath): self
     {

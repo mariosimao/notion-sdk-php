@@ -14,7 +14,7 @@ use Notion\DataSources\Properties\StatusOption;
  *
  * @psalm-immutable
  */
-class Status implements PropertyInterface
+final class Status implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,

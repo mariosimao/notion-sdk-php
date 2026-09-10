@@ -3,7 +3,7 @@
 namespace Notion\Search;
 
 /** @psalm-immutable */
-class Filter
+final class Filter
 {
     private function __construct(
         public readonly FilterValue $value,

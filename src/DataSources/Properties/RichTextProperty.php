@@ -13,7 +13,7 @@ namespace Notion\DataSources\Properties;
  *
  * @psalm-immutable
  */
-class RichTextProperty implements PropertyInterface
+final class RichTextProperty implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,

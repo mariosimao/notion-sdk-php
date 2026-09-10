@@ -5,7 +5,7 @@ namespace Notion\DataSources\Query;
 use stdClass;
 
 /** @psalm-immutable */
-class DateFilter implements Filter, Condition
+final class DateFilter implements Filter, Condition
 {
     private const TYPE_PROPERTY = "property";
     private const TYPE_TIMESTAMP = "timestamp";

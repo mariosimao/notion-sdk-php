@@ -17,7 +17,7 @@ use function PHPUnit\Framework\isEmpty;
  *
  * @psalm-immutable
  */
-class Title implements PropertyInterface
+final class Title implements PropertyInterface
 {
     /** @param RichText[] $title */
     private function __construct(

@@ -11,7 +11,7 @@ use Notion\Infrastructure\Http;
 /**
  * @psalm-import-type FileUploadJson from FileUpload
  */
-class Client
+final class Client
 {
     private const SINGLE_PART_MAX_SIZE = 20 * 1024 * 1024; // 20 MB
     private const CHUNK_SIZE = 10 * 1024 * 1024; // 10 MB

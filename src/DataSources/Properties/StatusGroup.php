@@ -15,7 +15,7 @@ use Notion\Common\Color;
  *
  * @psalm-immutable
  */
-class StatusGroup
+final class StatusGroup
 {
     /** @param string[] $optionIds */
     private function __construct(

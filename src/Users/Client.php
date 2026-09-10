@@ -6,7 +6,7 @@ use Notion\Configuration;
 use Notion\Infrastructure\Http;
 
 /** @psalm-import-type UserJson from User */
-class Client
+final class Client
 {
     /**
      * @internal Use `\Notion\Notion::pages()` instead

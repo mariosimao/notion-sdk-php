@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **[BREAKING]** Most classes across the SDK are now declared `final` (#176).
+  - Classes can no longer be extended via inheritance. Only the base exception classes (`NotionException`, `ApiException`, and `BlockException`) remain open for extension.
+  - **Migration instructions:**
+    - If you extended concrete SDK classes (e.g., `Page`, `Block`, `Client`, `RichText`, etc.) to override or add behavior, refactor your code to use **composition** instead of inheritance (e.g., wrap the SDK instance in your own service or decorator class).
+    - If you mocked concrete SDK classes in unit tests, refactor test suites to mock interfaces (such as PSR-18 `ClientInterface`, PSR-17 factories, `BlockInterface`, `PropertyInterface`) or use real instances with HTTP mock handlers (`MockHandler`) or integration tests.
+
 ## [v1.16.0] 2026-01-11
 
 ### Added

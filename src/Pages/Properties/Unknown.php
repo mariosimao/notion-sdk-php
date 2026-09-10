@@ -10,7 +10,7 @@ namespace Notion\Pages\Properties;
  *
  * @psalm-immutable
  */
-class Unknown implements PropertyInterface
+final class Unknown implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,

@@ -22,7 +22,7 @@ use Notion\Exceptions\HeadingException;
  *
  * @psalm-immutable
  */
-class Heading3 implements BlockInterface
+final class Heading3 implements BlockInterface
 {
     /**
      * @param RichText[] $text

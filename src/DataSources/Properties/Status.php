@@ -19,7 +19,7 @@ namespace Notion\DataSources\Properties;
  *
  * @psalm-immutable
  */
-class Status implements PropertyInterface
+final class Status implements PropertyInterface
 {
     /**
      * @param StatusOption[] $options

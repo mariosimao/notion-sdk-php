@@ -17,7 +17,7 @@ use Notion\Exceptions\BlockException;
  *
  * @psalm-immutable
  */
-class LinkPreview implements BlockInterface
+final class LinkPreview implements BlockInterface
 {
     private function __construct(
         private readonly BlockMetadata $metadata,

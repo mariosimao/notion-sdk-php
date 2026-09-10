@@ -11,7 +11,7 @@ namespace Notion\Pages\Properties;
  *
  * @psalm-immutable
  */
-class Number implements PropertyInterface
+final class Number implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,

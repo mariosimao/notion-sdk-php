@@ -10,7 +10,7 @@ use Notion\Infrastructure\Http;
 /**
  * @psalm-import-type DatabaseJson from Database
  */
-class Client
+final class Client
 {
     /**
      * @internal Use `\Notion\Notion::databases()` instead

@@ -13,7 +13,7 @@ use Notion\Common\File;
  *
  * @psalm-immutable
  */
-class Pdf implements BlockInterface
+final class Pdf implements BlockInterface
 {
     private function __construct(
         private readonly BlockMetadata $metadata,

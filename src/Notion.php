@@ -13,7 +13,7 @@ use Notion\FileUploads\Client as FileUploadsClient;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 
-class Notion
+final class Notion
 {
     public const API_VERSION = "2025-09-03";
 

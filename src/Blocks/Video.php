@@ -13,7 +13,7 @@ use Notion\Common\File;
  *
  * @psalm-immutable
  */
-class Video implements BlockInterface
+final class Video implements BlockInterface
 {
     private function __construct(
         private readonly BlockMetadata $metadata,

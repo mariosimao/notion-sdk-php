@@ -24,7 +24,7 @@ use Notion\Common\RichText;
  *      rich_text: RichTextJson[]
  * }
  */
-class Comment
+final class Comment
 {
     /** @param RichText[] $text */
     private function __construct(

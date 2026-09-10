@@ -13,7 +13,7 @@ use Notion\Exceptions\BlockException;
  *
  * @psalm-immutable
  */
-class ChildDatabase implements BlockInterface
+final class ChildDatabase implements BlockInterface
 {
     private function __construct(
         private readonly BlockMetadata $metadata,

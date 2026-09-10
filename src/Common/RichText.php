@@ -20,7 +20,7 @@ namespace Notion\Common;
  *
  * @psalm-immutable
  */
-class RichText
+final class RichText
 {
     private function __construct(
         public readonly string $plainText,

@@ -16,7 +16,7 @@ use Notion\Exceptions\BlockException;
  *
  * @psalm-immutable
  */
-class TableOfContents implements BlockInterface
+final class TableOfContents implements BlockInterface
 {
     private function __construct(
         private readonly BlockMetadata $metadata,

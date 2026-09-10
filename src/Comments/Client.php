@@ -8,7 +8,7 @@ use Notion\Infrastructure\Http;
 /**
  * @psalm-import-type CommentJson from \Notion\Comments\Comment
  */
-class Client
+final class Client
 {
     /**
      * @internal Use `\Notion\Notion::comments()` instead

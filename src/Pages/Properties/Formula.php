@@ -23,7 +23,7 @@ use Notion\Common\Date;
  *
  * @psalm-immutable
  */
-class Formula implements PropertyInterface
+final class Formula implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,

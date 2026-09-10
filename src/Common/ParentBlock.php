@@ -11,7 +11,7 @@ namespace Notion\Common;
  *      workspace?: true
  * }
  */
-class ParentBlock
+final class ParentBlock
 {
     private function __construct(
         public readonly ParentType $type,

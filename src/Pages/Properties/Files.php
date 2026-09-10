@@ -15,7 +15,7 @@ use Notion\Common\File;
  *
  * @psalm-immutable
  */
-class Files implements PropertyInterface
+final class Files implements PropertyInterface
 {
     /** @param File[] $files */
     private function __construct(

@@ -2,6 +2,6 @@
 
 namespace Notion\Exceptions;
 
-class ConflictException extends ApiException
+final class ConflictException extends ApiException
 {
 }

@@ -14,7 +14,7 @@ namespace Notion\Pages;
  *
  * @psalm-immutable
  */
-class PageParent
+final class PageParent
 {
     private function __construct(
         public readonly PageParentType $type,

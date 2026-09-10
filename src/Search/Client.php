@@ -7,7 +7,7 @@ use Notion\Infrastructure\Http;
 use stdClass;
 
 /** @psalm-import-type ResultJson from \Notion\Search\Result */
-class Client
+final class Client
 {
     /**
      * @internal Use `\Notion\Notion::search()` instead

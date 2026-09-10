@@ -15,7 +15,7 @@ use Notion\Exceptions\ColumnException;
  *
  * @psalm-immutable
  */
-class Column implements BlockInterface
+final class Column implements BlockInterface
 {
     /** @param BlockInterface[] $children */
     private function __construct(

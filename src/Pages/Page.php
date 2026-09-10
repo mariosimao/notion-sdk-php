@@ -33,7 +33,7 @@ use Notion\Pages\Properties\Title;
  *
  * @psalm-immutable
  */
-class Page
+final class Page
 {
     /**
      * @param array<string, PropertyInterface> $properties

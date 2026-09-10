@@ -19,7 +19,7 @@ use Notion\Exceptions\BlockException;
  *
  * @psalm-immutable
  */
-class Table implements BlockInterface
+final class Table implements BlockInterface
 {
     /** @param TableRow[] $rows */
     private function __construct(

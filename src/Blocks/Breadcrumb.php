@@ -13,7 +13,7 @@ use Notion\Exceptions\BlockException;
  *
  * @psalm-immutable
  */
-class Breadcrumb implements BlockInterface
+final class Breadcrumb implements BlockInterface
 {
     private function __construct(
         private readonly BlockMetadata $metadata

@@ -9,7 +9,7 @@ use DateTimeImmutable;
  *
  * @psalm-immutable
  */
-class Date
+final class Date
 {
     public const FORMAT = "Y-m-d\TH:i:s.up";
 

@@ -25,7 +25,7 @@ use Notion\Common\RichText;
  *
  * @psalm-immutable
  */
-class Callout implements BlockInterface
+final class Callout implements BlockInterface
 {
     /**
      * @param RichText[] $text
