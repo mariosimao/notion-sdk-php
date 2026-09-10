@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **[BREAKING]** Require PHP >= 8.3 and < 9.0 (#507).
+  - Support for PHP 8.1 and PHP 8.2 has been dropped.
+  - **Migration instructions:**
+    - Upgrade your PHP runtime to PHP 8.3, 8.4 or 8.5 before installing or updating to this version of the SDK.
 - **[BREAKING]** Most classes across the SDK are now declared `final` (#176).
   - Classes can no longer be extended via inheritance. Only the base exception classes (`NotionException`, `ApiException`, and `BlockException`) remain open for extension.
   - **Migration instructions:**

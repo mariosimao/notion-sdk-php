@@ -28,7 +28,7 @@
 
 ## 📦 Installation
 
-This project requires PHP 8.1 or higher. To install it with Composer run:
+This project requires PHP 8.3 or higher. To install it with Composer run:
 
 ```bash
 $ composer require mariosimao/notion-sdk-php

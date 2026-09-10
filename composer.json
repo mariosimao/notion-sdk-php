@@ -21,7 +21,7 @@
         }
     ],
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.3 <9",
         "php-http/discovery": "^1.15",
         "php-http/multipart-stream-builder": "^1.4",
         "psr/http-client-implementation": "^1.0",
