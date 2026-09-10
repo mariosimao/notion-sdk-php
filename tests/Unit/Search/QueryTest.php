@@ -34,11 +34,11 @@ class QueryTest extends TestCase
         $this->assertSame(FilterValue::Page, $q->filter?->value);
     }
 
-    public function test_filter_by_databases(): void
+    public function test_filter_by_data_sources(): void
     {
-        $q = Query::title("Term")->filterByDatabases();
+        $q = Query::title("Term")->filterByDataSources();
 
-        $this->assertSame(FilterValue::Database, $q->filter?->value);
+        $this->assertSame(FilterValue::DataSource, $q->filter?->value);
     }
 
     public function test_sort_ascending(): void

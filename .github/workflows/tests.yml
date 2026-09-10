@@ -73,36 +73,37 @@ jobs:
   #         TEST_PAGE_ID: ${{ secrets.TEST_PAGE_ID }}
   #       run: composer ci:integration
 
-  mutation-tests:
-    name: "Mutation tests (Infection)"
+  # Disable temporaly mutation tests to avoid rate limit errors
+  # mutation-tests:
+  #   name: "Mutation tests (Infection)"
 
-    # if: ${{ always() }}
-    # needs: [coverage]
+  #   # if: ${{ always() }}
+  #   # needs: [coverage]
 
-    runs-on: ubuntu-latest
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
 
-      - name: Install PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: "8.1"
-          coverage: "pcov"
-          tools: none
+  #     - name: Install PHP
+  #       uses: shivammathur/setup-php@v2
+  #       with:
+  #         php-version: "8.1"
+  #         coverage: "pcov"
+  #         tools: none
 
-      - name: Install composer dependencies
-        uses: ramsey/composer-install@v3
-        with:
-          dependency-versions: locked
-          composer-options: --no-ansi --no-interaction --no-progress
+  #     - name: Install composer dependencies
+  #       uses: ramsey/composer-install@v3
+  #       with:
+  #         dependency-versions: locked
+  #         composer-options: --no-ansi --no-interaction --no-progress
 
-      - name: Run mutation tests with Infection
-        env:
-          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-          TEST_PAGE_ID: ${{ secrets.TEST_PAGE_ID }}
-        run: composer ci:mutation
+  #     - name: Run mutation tests with Infection
+  #       env:
+  #         NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+  #         TEST_PAGE_ID: ${{ secrets.TEST_PAGE_ID }}
+  #       run: composer ci:mutation
 
   coverage:
     name: Test coverage (PHPUnit)

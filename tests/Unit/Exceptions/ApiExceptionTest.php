@@ -24,8 +24,6 @@ class ApiExceptionTest extends TestCase
         $e = ApiException::fromResponse($response);
 
         $this->assertSame($bodyArray["message"], $e->getMessage());
-        /** @psalm-suppress DeprecatedMethod */
-        $this->assertSame($bodyArray["code"], $e->getNotionCode());
         $this->assertSame($bodyArray["code"], $e->notionCode);
         $this->assertInstanceOf(ResponseInterface::class, $e->response);
     }

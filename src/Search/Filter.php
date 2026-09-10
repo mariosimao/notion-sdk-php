@@ -18,15 +18,15 @@ class Filter
     }
 
     /** @psalm-mutation-free */
-    public static function byDatabases(): self
+    public static function byDataSources(): self
     {
-        return new self(FilterValue::Database, FilterProperty::Object);
+        return new self(FilterValue::DataSource, FilterProperty::Object);
     }
 
     /**
      * @internal
      *
-     * @return array{ value: "page"|"database", property: "object" }
+     * @return array{ value: "page"|"data_source", property: "object" }
      */
     public function toArray(): array
     {

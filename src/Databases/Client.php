@@ -2,15 +2,13 @@
 
 namespace Notion\Databases;
 
+use Notion\Common\RichText;
 use Notion\Configuration;
-use Notion\Databases\Query\Result;
-use Notion\Databases\Query\Sort;
+use Notion\DataSources\Properties\PropertyInterface;
 use Notion\Infrastructure\Http;
-use Notion\Pages\Page;
 
 /**
  * @psalm-import-type DatabaseJson from Database
- * @psalm-import-type QueryResultJson from Result
  */
 class Client
 {
@@ -33,10 +31,26 @@ class Client
         return Database::fromArray($body);
     }
 
-    public function create(Database $database): Database
+    /**
+     * @param PropertyInterface[] $initialProperties
+     */
+    public function create(Database $database, array $initialProperties = []): Database
     {
         $data = $database->toArray();
         unset($data["id"]);
+        if ($database->icon === null) {
+            unset($data["icon"]);
+        }
+        if ($database->cover === null) {
+            unset($data["cover"]);
+        }
+
+        $propertiesData = array_map(fn(PropertyInterface $property) => $property->toArray(), $initialProperties);
+        if (!empty($propertiesData)) {
+            $data["initial_data_source"] = [
+                "properties" => $propertiesData,
+            ];
+        }
 
         $url = "https://api.notion.com/v1/databases";
         $request = Http::createRequest($url, $this->config)
@@ -53,9 +67,18 @@ class Client
     public function update(Database $database): Database
     {
         $data = $database->toArray();
-        unset($data["parent"]);
+        unset($data["id"]);
+        unset($data["object"]);
         unset($data["created_time"]);
         unset($data["last_edited_time"]);
+        unset($data["url"]);
+        unset($data["data_sources"]);
+        if ($database->icon === null) {
+            unset($data["icon"]);
+        }
+        if ($database->cover === null) {
+            unset($data["cover"]);
+        }
 
         $databaseId = $database->id;
         $url = "https://api.notion.com/v1/databases/{$databaseId}";
@@ -71,61 +94,21 @@ class Client
         return Database::fromArray($body);
     }
 
-    public function delete(Database $database): void
+    public function delete(Database $database): Database
     {
         $databaseId = $database->id;
-        $url = "https://api.notion.com/v1/blocks/{$databaseId}";
+        $url = "https://api.notion.com/v1/databases/{$databaseId}";
         $request = Http::createRequest($url, $this->config)
-            ->withMethod("DELETE");
-
-        Http::sendRequest($request, $this->config);
-    }
-
-    public function query(Database $database, Query $query): Result
-    {
-        $data = $query->toArray();
-
-        $databaseId = $database->id;
-        $url = "https://api.notion.com/v1/databases/{$databaseId}/query";
-        $request = Http::createRequest($url, $this->config)
-            ->withMethod("POST")
+            ->withMethod("PATCH")
             ->withHeader("Content-Type", "application/json");
 
-        $request->getBody()->write(json_encode($data));
+        $request->getBody()->write(json_encode([
+            "in_trash" => true,
+        ]));
 
-        /** @psalm-var QueryResultJson $body */
+        /** @psalm-var DatabaseJson $body */
         $body = Http::sendRequest($request, $this->config);
 
-        return Result::fromArray($body);
-    }
-
-    /**
-     * @param Sort[] $sorts
-     *
-     * @return Page[]
-     */
-    public function queryAllPages(Database $database, array $sorts = []): array
-    {
-        $query = Query::create()
-                    ->changeSorts(...$sorts)
-                    ->changePageSize(Query::MAX_PAGE_SIZE);
-
-        $pages = [];
-        $startCursor = null;
-        $hasMore = true;
-
-        while ($hasMore) {
-            if ($startCursor !== null) {
-                $query = $query->changeStartCursor($startCursor);
-            }
-
-            $result = $this->query($database, $query);
-
-            $pages = array_merge($pages, $result->pages);
-            $hasMore = $result->hasMore;
-            $startCursor = $result->nextCursor;
-        }
-
-        return $pages;
+        return Database::fromArray($body);
     }
 }
