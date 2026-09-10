@@ -17,7 +17,7 @@ namespace Notion\DataSources\Properties;
  *
  * @psalm-immutable
  */
-class Select implements PropertyInterface
+final class Select implements PropertyInterface
 {
     /** @param SelectOption[] $options */
     private function __construct(

@@ -21,7 +21,7 @@ use Notion\Common\RichText;
  *
  * @psalm-immutable
  */
-class BulletedListItem implements BlockInterface
+final class BulletedListItem implements BlockInterface
 {
     /**
      * @param RichText[] $text

@@ -3,7 +3,7 @@
 namespace Notion\Search;
 
 /** @psalm-immutable */
-class Sort
+final class Sort
 {
     private function __construct(
         public readonly SortDirection $direction,

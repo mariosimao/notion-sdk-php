@@ -15,7 +15,7 @@ use Notion\Users\User;
  *
  * @psalm-immutable
  */
-class People implements PropertyInterface
+final class People implements PropertyInterface
 {
     /** @param User[] $users */
     private function __construct(

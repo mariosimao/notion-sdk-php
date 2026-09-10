@@ -5,7 +5,7 @@ namespace Notion\DataSources\Query;
 /**
  * @psalm-immutable
  */
-class Sort
+final class Sort
 {
     private const TYPE_PROPERTY = "property";
     private const TYPE_TIMESTAMP = "timestamp";

@@ -19,7 +19,7 @@ use Notion\Common\RichText;
  *
  * @psalm-immutable
  */
-class Toggle implements BlockInterface
+final class Toggle implements BlockInterface
 {
     /**
      * @param RichText[] $text

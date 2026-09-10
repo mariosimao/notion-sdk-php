@@ -18,7 +18,7 @@ use Notion\Users\User;
  *
  * @psalm-immutable
  */
-class Mention
+final class Mention
 {
     private function __construct(
         public readonly MentionType $type,

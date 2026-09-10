@@ -7,7 +7,7 @@ namespace Notion\Users;
  *
  * @psalm-immutable
  */
-class Person
+final class Person
 {
     private function __construct(
         public readonly string $email,

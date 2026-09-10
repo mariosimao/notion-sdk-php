@@ -23,7 +23,7 @@ use Notion\Exceptions\RelationException;
  *
  * @psalm-immutable
  */
-class Relation implements PropertyInterface
+final class Relation implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,

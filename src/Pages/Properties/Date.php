@@ -17,7 +17,7 @@ use Notion\Common\Date as CommonDate;
  *
  * @psalm-immutable
  */
-class Date implements PropertyInterface
+final class Date implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,

@@ -9,7 +9,7 @@ namespace Notion\Blocks;
  *
  * @psalm-immutable
  */
-class Unknown implements BlockInterface
+final class Unknown implements BlockInterface
 {
     private function __construct(
         private readonly BlockMetadata $metadata,

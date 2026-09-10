@@ -3,7 +3,7 @@
 namespace Notion\Search;
 
 /** @psalm-immutable */
-class Query
+final class Query
 {
     private function __construct(
         public readonly string|null $query = null,

@@ -13,7 +13,7 @@ namespace Notion\DataSources\Properties;
  *
  * @psalm-immutable
  */
-class UniqueId implements PropertyInterface
+final class UniqueId implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,

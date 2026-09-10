@@ -15,7 +15,7 @@ use Notion\Common\Equation;
  *
  * @psalm-immutable
  */
-class EquationBlock implements BlockInterface
+final class EquationBlock implements BlockInterface
 {
     private function __construct(
         private readonly BlockMetadata $metadata,

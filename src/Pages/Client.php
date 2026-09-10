@@ -17,7 +17,7 @@ use Notion\Pages\Properties\UniqueId;
 /**
  * @psalm-import-type PageJson from Page
  */
-class Client
+final class Client
 {
     /**
      * @internal Use `\Notion\Notion::pages()` instead

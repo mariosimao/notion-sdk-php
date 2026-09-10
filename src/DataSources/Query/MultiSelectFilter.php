@@ -3,7 +3,7 @@
 namespace Notion\DataSources\Query;
 
 /** @psalm-immutable */
-class MultiSelectFilter implements Filter, Condition
+final class MultiSelectFilter implements Filter, Condition
 {
     private static array $validOperators = [
         Operator::Contains,

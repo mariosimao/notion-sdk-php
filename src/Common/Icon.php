@@ -4,7 +4,7 @@ namespace Notion\Common;
 
 use Notion\Exceptions\IconException;
 
-class Icon
+final class Icon
 {
     private function __construct(
         public readonly Emoji|null $emoji,

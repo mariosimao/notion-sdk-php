@@ -35,7 +35,7 @@ use Notion\Exceptions\DatabaseException;
  *
  * @psalm-immutable
  */
-class Database
+final class Database
 {
     /**
      * @param ChildDataSource[] $dataSources

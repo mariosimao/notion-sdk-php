@@ -21,7 +21,7 @@ use Notion\Common\RichText;
  *
  * @psalm-immutable
  */
-class ToDo implements BlockInterface
+final class ToDo implements BlockInterface
 {
     /**
      * @param RichText[] $text

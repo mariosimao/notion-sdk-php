@@ -13,7 +13,7 @@ namespace Notion\Common;
  *
  * @psalm-immutable
  */
-class Annotations
+final class Annotations
 {
     private function __construct(
         public readonly bool $isBold,

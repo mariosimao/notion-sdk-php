@@ -12,7 +12,7 @@ use Notion\Pages\Page;
  * @psalm-import-type DataSourceJson from DataSource
  * @psalm-import-type QueryResultJson from Result
  */
-class Client
+final class Client
 {
     /**
      * @internal Use `\Notion\Notion::dataSources()` instead

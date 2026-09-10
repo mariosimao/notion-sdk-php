@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Make most classes final (#176)
+
 ## [v1.16.0] 2026-01-11
 
 ### Added

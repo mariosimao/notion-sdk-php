@@ -14,7 +14,7 @@ namespace Notion\Databases;
  *
  * @psalm-immutable
  */
-class DatabaseParent
+final class DatabaseParent
 {
     private function __construct(
         public readonly DatabaseParentType $type,

@@ -7,7 +7,7 @@ use Notion\DataSources\Query\Filter;
 use Notion\DataSources\Query\Sort;
 
 /** @psalm-immutable */
-class Query
+final class Query
 {
     public const MAX_PAGE_SIZE = 100;
 

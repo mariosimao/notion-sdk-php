@@ -15,7 +15,7 @@ use Notion\Users\User;
  *
  * @psalm-immutable
  */
-class LastEditedBy implements PropertyInterface
+final class LastEditedBy implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,

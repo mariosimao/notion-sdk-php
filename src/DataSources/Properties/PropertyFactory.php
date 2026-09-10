@@ -2,7 +2,7 @@
 
 namespace Notion\DataSources\Properties;
 
-class PropertyFactory
+final class PropertyFactory
 {
     /**
      * @param array{ type: string, ... } $array

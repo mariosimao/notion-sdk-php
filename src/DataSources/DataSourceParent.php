@@ -11,7 +11,7 @@ namespace Notion\DataSources;
  *
  * @psalm-immutable
  */
-class DataSourceParent
+final class DataSourceParent
 {
     private function __construct(
         public readonly DataSourceParentType $type,

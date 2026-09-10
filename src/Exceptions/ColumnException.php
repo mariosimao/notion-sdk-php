@@ -2,7 +2,7 @@
 
 namespace Notion\Exceptions;
 
-class ColumnException extends BlockException
+final class ColumnException extends BlockException
 {
     public static function columnInsideColumn(): self
     {

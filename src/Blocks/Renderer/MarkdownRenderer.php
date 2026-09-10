@@ -6,7 +6,7 @@ use Notion\Blocks\BlockInterface;
 use Notion\Blocks\BlockType;
 use Notion\Blocks\Renderer\Markdown;
 
-class MarkdownRenderer implements RendererInterface
+final class MarkdownRenderer implements RendererInterface
 {
     public static function render(BlockInterface ...$blocks): string
     {

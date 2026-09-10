@@ -2,7 +2,7 @@
 
 namespace Notion\Exceptions;
 
-class HeadingException extends BlockException
+final class HeadingException extends BlockException
 {
     public static function untogglifyWithChildren(): self
     {

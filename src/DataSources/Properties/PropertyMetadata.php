@@ -7,7 +7,7 @@ namespace Notion\DataSources\Properties;
  *
  * @psalm-immutable
  */
-class PropertyMetadata
+final class PropertyMetadata
 {
     private function __construct(
         public readonly string $id,

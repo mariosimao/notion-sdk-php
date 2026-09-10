@@ -2,7 +2,7 @@
 
 namespace Notion\Exceptions;
 
-class DatabaseException extends NotionException
+final class DatabaseException extends NotionException
 {
     public static function internalCover(): self
     {

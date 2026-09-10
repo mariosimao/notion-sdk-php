@@ -2,7 +2,7 @@
 
 namespace Notion\Exceptions;
 
-class ColumnListException extends BlockException
+final class ColumnListException extends BlockException
 {
     public static function childNotColumn(): self
     {

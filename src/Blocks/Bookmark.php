@@ -20,7 +20,7 @@ use Notion\Common\RichText;
  *
  * @psalm-immutable
  */
-class Bookmark implements BlockInterface
+final class Bookmark implements BlockInterface
 {
     /** @param RichText[] $caption */
     private function __construct(

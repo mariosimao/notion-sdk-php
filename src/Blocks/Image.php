@@ -14,7 +14,7 @@ use Notion\Common\RichText;
  *
  * @psalm-immutable
  */
-class Image implements BlockInterface
+final class Image implements BlockInterface
 {
     private function __construct(
         private readonly BlockMetadata $metadata,

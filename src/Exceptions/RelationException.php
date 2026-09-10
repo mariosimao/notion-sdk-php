@@ -2,7 +2,7 @@
 
 namespace Notion\Exceptions;
 
-class RelationException extends NotionException
+final class RelationException extends NotionException
 {
     public static function emptySyncedPropertyName(): self
     {

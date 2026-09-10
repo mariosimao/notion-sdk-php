@@ -2,7 +2,7 @@
 
 namespace Notion\Exceptions;
 
-class IconException extends NotionException
+final class IconException extends NotionException
 {
     public static function bothNull(): self
     {

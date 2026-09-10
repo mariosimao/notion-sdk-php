@@ -20,7 +20,7 @@ use DateTimeImmutable;
  *     file_import_result?: string,
  * }
  */
-class FileUpload
+final class FileUpload
 {
     private function __construct(
         public readonly string $id,

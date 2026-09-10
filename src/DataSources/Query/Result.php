@@ -16,7 +16,7 @@ use Notion\Pages\Page;
  * @psalm-import-type PageJson from \Notion\Pages\Page
  * @psalm-immutable
  */
-class Result
+final class Result
 {
     /** @param Page[] $pages */
     private function __construct(

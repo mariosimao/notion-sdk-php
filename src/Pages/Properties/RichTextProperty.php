@@ -15,7 +15,7 @@ use Notion\Common\RichText;
  *
  * @psalm-immutable
  */
-class RichTextProperty implements PropertyInterface
+final class RichTextProperty implements PropertyInterface
 {
     /** @param RichText[] $text */
     private function __construct(

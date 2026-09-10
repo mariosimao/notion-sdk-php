@@ -14,7 +14,7 @@ use Notion\Common\Color;
  *
  * @psalm-immutable
  */
-class StatusOption
+final class StatusOption
 {
     private function __construct(
         public readonly string|null $id,

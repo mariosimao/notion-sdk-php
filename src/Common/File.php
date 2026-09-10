@@ -18,7 +18,7 @@ use DateTimeImmutable;
  *
  * @psalm-immutable
  */
-class File
+final class File
 {
     /** @param RichText[] $caption */
     private function __construct(

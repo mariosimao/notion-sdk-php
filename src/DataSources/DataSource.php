@@ -40,7 +40,7 @@ use Notion\DataSources\Properties\Title;
  *
  * @psalm-immutable
  */
-class DataSource
+final class DataSource
 {
     /**
      * @param RichText[] $title

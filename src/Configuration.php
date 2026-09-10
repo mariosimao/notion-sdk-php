@@ -22,7 +22,7 @@ use Psr\Http\Message\RequestFactoryInterface;
  *
  * @psalm-immutable
  */
-class Configuration
+final class Configuration
 {
     private function __construct(
         public readonly string $token,

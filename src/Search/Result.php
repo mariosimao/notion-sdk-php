@@ -18,7 +18,7 @@ use Notion\Pages\Page;
  *      has_more: bool
  * }
  */
-class Result
+final class Result
 {
     /** @psalm-param array<int, Page|DataSource> $results */
     private function __construct(

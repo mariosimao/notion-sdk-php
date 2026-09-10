@@ -11,7 +11,7 @@ namespace Notion\Pages\Properties;
  *
  * @psalm-immutable
  */
-class Relation implements PropertyInterface
+final class Relation implements PropertyInterface
 {
     /** @param string[] $pageIds */
     private function __construct(

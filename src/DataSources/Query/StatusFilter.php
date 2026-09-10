@@ -3,7 +3,7 @@
 namespace Notion\DataSources\Query;
 
 /** @psalm-immutable */
-class StatusFilter implements Filter, Condition
+final class StatusFilter implements Filter, Condition
 {
     private static array $validOperators = [
         Operator::Equals,

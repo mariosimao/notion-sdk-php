@@ -14,7 +14,7 @@ use Notion\Common\Date;
  *
  * @psalm-immutable
  */
-class CreatedTime implements PropertyInterface
+final class CreatedTime implements PropertyInterface
 {
     private function __construct(
         private readonly PropertyMetadata $metadata,
