@@ -27,5 +27,5 @@ features:
     details: Stop guessing method names! Enjoy IDE autocompletes on a 100% typed API.
   - icon: ⛔
     title: No dependencies
-    details: Goodbye dependency hell! You only need PHP 8.1 and your favorite implementation of PSR-18.
+    details: Goodbye dependency hell! You only need PHP 8.3 and your favorite implementation of PSR-18.
 ---
