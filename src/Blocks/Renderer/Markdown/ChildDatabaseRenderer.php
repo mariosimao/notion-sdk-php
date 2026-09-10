@@ -7,7 +7,7 @@ use Notion\Blocks\ChildDatabase;
 use Notion\Blocks\Renderer\BlockRendererInterface;
 use Notion\Blocks\Renderer\MarkdownRenderer;
 
-final class ChildDatabaseRenderer implements BlockRendererInterface
+final readonly class ChildDatabaseRenderer implements BlockRendererInterface
 {
     public static function render(BlockInterface $block, int $depth = 0): string
     {

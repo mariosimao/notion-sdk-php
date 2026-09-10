@@ -15,12 +15,12 @@ use Notion\Common\RichText;
  *
  * @psalm-immutable
  */
-final class RichTextProperty implements PropertyInterface
+final readonly class RichTextProperty implements PropertyInterface
 {
     /** @param RichText[] $text */
     private function __construct(
-        private readonly PropertyMetadata $metadata,
-        public readonly array $text
+        private PropertyMetadata $metadata,
+        public array $text
     ) {
     }
 

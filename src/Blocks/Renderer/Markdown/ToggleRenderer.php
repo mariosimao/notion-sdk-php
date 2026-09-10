@@ -8,7 +8,7 @@ use Notion\Blocks\Renderer\BlockRendererInterface;
 use Notion\Blocks\Renderer\MarkdownRenderer;
 use Notion\Common\RichText;
 
-final class ToggleRenderer implements BlockRendererInterface
+final readonly class ToggleRenderer implements BlockRendererInterface
 {
     public static function render(BlockInterface $block, int $depth = 0): string
     {

@@ -22,18 +22,18 @@ use Notion\Exceptions\HeadingException;
  *
  * @psalm-immutable
  */
-final class Heading3 implements BlockInterface
+final readonly class Heading3 implements BlockInterface
 {
     /**
      * @param RichText[] $text
      * @param BlockInterface[]|null $children
      */
     private function __construct(
-        private readonly BlockMetadata $metadata,
-        public readonly array $text,
-        public readonly bool $isToggleable,
-        public readonly Color $color,
-        public readonly array|null $children,
+        private BlockMetadata $metadata,
+        public array $text,
+        public bool $isToggleable,
+        public Color $color,
+        public array|null $children,
     ) {
         $metadata->checkType(BlockType::Heading3);
     }

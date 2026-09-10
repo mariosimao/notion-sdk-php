@@ -7,7 +7,7 @@ use Notion\Blocks\Video;
 use Notion\Blocks\Renderer\BlockRendererInterface;
 use Notion\Blocks\Renderer\MarkdownRenderer;
 
-final class VideoRenderer implements BlockRendererInterface
+final readonly class VideoRenderer implements BlockRendererInterface
 {
     public static function render(BlockInterface $block, int $depth = 0): string
     {

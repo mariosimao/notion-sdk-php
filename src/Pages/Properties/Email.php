@@ -11,11 +11,11 @@ namespace Notion\Pages\Properties;
  *
  * @psalm-immutable
  */
-final class Email implements PropertyInterface
+final readonly class Email implements PropertyInterface
 {
     private function __construct(
-        private readonly PropertyMetadata $metadata,
-        public readonly string|null $email,
+        private PropertyMetadata $metadata,
+        public string|null $email,
     ) {
     }
 

@@ -5,7 +5,7 @@ namespace Notion\DataSources\Query;
 /**
  * @psalm-immutable
  */
-final class Sort
+final readonly class Sort
 {
     private const TYPE_PROPERTY = "property";
     private const TYPE_TIMESTAMP = "timestamp";
@@ -18,9 +18,9 @@ final class Sort
      * @psalm-param self::ORDER_* $direction
      */
     private function __construct(
-        private readonly string $type,
-        private readonly string $propertyName,
-        private readonly string $direction,
+        private string $type,
+        private string $propertyName,
+        private string $direction,
     ) {
     }
 

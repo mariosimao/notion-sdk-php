@@ -25,18 +25,18 @@ use Notion\Common\RichText;
  *
  * @psalm-immutable
  */
-final class Callout implements BlockInterface
+final readonly class Callout implements BlockInterface
 {
     /**
      * @param RichText[] $text
      * @param BlockInterface[] $children
      */
     private function __construct(
-        private readonly BlockMetadata $metadata,
-        public readonly array $text,
-        public readonly Icon $icon,
-        public readonly Color $color,
-        public readonly array $children,
+        private BlockMetadata $metadata,
+        public array $text,
+        public Icon $icon,
+        public Color $color,
+        public array $children,
     ) {
         $metadata->checkType(BlockType::Callout);
     }

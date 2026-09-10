@@ -2,7 +2,7 @@
 
 namespace Notion\Blocks;
 
-final class BlockFactory
+final readonly class BlockFactory
 {
     /**
      * @param array{ type: string, ... } $array

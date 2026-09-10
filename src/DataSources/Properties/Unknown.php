@@ -12,11 +12,11 @@ namespace Notion\DataSources\Properties;
  *
  * @psalm-immutable
  */
-final class Unknown implements PropertyInterface
+final readonly class Unknown implements PropertyInterface
 {
     private function __construct(
-        private readonly PropertyMetadata $metadata,
-        private readonly array $data,
+        private PropertyMetadata $metadata,
+        private array $data,
     ) {
     }
 

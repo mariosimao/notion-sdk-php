@@ -7,7 +7,7 @@ use Notion\Blocks\Column;
 use Notion\Blocks\Renderer\BlockRendererInterface;
 use Notion\Blocks\Renderer\MarkdownRenderer;
 
-final class ColumnRenderer implements BlockRendererInterface
+final readonly class ColumnRenderer implements BlockRendererInterface
 {
     public static function render(BlockInterface $block, int $depth = 0): string
     {

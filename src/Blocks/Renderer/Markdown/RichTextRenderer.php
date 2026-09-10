@@ -4,7 +4,7 @@ namespace Notion\Blocks\Renderer\Markdown;
 
 use Notion\Common\RichText;
 
-final class RichTextRenderer
+final readonly class RichTextRenderer
 {
     public static function render(RichText ...$text): string
     {

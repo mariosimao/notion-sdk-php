@@ -9,13 +9,13 @@ use DateTimeImmutable;
  *
  * @psalm-immutable
  */
-final class Date
+final readonly class Date
 {
     public const FORMAT = "Y-m-d\TH:i:s.up";
 
     private function __construct(
-        public readonly DateTimeImmutable $start,
-        public readonly DateTimeImmutable|null $end,
+        public DateTimeImmutable $start,
+        public DateTimeImmutable|null $end,
     ) {
     }
 

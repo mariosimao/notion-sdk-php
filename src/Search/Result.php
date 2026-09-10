@@ -18,13 +18,13 @@ use Notion\Pages\Page;
  *      has_more: bool
  * }
  */
-final class Result
+final readonly class Result
 {
     /** @psalm-param array<int, Page|DataSource> $results */
     private function __construct(
-        public readonly array $results,
-        public readonly string|null $nextCursor,
-        public readonly bool $hasMore,
+        public array $results,
+        public string|null $nextCursor,
+        public bool $hasMore,
     ) {
     }
 

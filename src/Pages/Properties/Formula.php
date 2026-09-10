@@ -23,15 +23,15 @@ use Notion\Common\Date;
  *
  * @psalm-immutable
  */
-final class Formula implements PropertyInterface
+final readonly class Formula implements PropertyInterface
 {
     private function __construct(
-        private readonly PropertyMetadata $metadata,
-        public readonly FormulaType $type,
-        public readonly string|null $string,
-        public readonly int|float|null $number,
-        public readonly bool|null $boolean,
-        public readonly Date|null $date,
+        private PropertyMetadata $metadata,
+        public FormulaType $type,
+        public string|null $string,
+        public int|float|null $number,
+        public bool|null $boolean,
+        public Date|null $date,
     ) {
     }
 

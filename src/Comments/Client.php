@@ -8,13 +8,13 @@ use Notion\Infrastructure\Http;
 /**
  * @psalm-import-type CommentJson from \Notion\Comments\Comment
  */
-final class Client
+final readonly class Client
 {
     /**
      * @internal Use `\Notion\Notion::comments()` instead
      */
     public function __construct(
-        private readonly Configuration $config,
+        private Configuration $config,
     ) {
     }
 

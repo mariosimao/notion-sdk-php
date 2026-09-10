@@ -7,13 +7,13 @@ use Notion\Infrastructure\Http;
 use stdClass;
 
 /** @psalm-import-type ResultJson from \Notion\Search\Result */
-final class Client
+final readonly class Client
 {
     /**
      * @internal Use `\Notion\Notion::search()` instead
      */
     public function __construct(
-        private readonly Configuration $config,
+        private Configuration $config,
     ) {
     }
 

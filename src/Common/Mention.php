@@ -18,14 +18,14 @@ use Notion\Users\User;
  *
  * @psalm-immutable
  */
-final class Mention
+final readonly class Mention
 {
     private function __construct(
-        public readonly MentionType $type,
-        public readonly string|null $pageId,
-        public readonly string|null $databaseId,
-        public readonly User|null $user,
-        public readonly Date|null $date,
+        public MentionType $type,
+        public string|null $pageId,
+        public string|null $databaseId,
+        public User|null $user,
+        public Date|null $date,
     ) {
     }
 

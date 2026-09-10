@@ -3,11 +3,11 @@
 namespace Notion\Search;
 
 /** @psalm-immutable */
-final class Filter
+final readonly class Filter
 {
     private function __construct(
-        public readonly FilterValue $value,
-        public readonly FilterProperty $property,
+        public FilterValue $value,
+        public FilterProperty $property,
     ) {
     }
 

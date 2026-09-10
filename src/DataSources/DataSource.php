@@ -40,7 +40,7 @@ use Notion\DataSources\Properties\Title;
  *
  * @psalm-immutable
  */
-final class DataSource
+final readonly class DataSource
 {
     /**
      * @param RichText[] $title
@@ -48,17 +48,17 @@ final class DataSource
      * @param array<string, PropertyInterface> $properties
      */
     private function __construct(
-        public readonly string $id,
-        public readonly DateTimeImmutable $createdTime,
-        public readonly DateTimeImmutable $lastEditedTime,
-        public readonly bool $inTrash,
-        public readonly array $title,
-        public readonly array $description,
-        public readonly Icon|null $icon,
-        public readonly array $properties,
-        public readonly DataSourceParent $parent,
-        public readonly string $url,
-        public readonly DatabaseParent|null $databaseParent = null,
+        public string $id,
+        public DateTimeImmutable $createdTime,
+        public DateTimeImmutable $lastEditedTime,
+        public bool $inTrash,
+        public array $title,
+        public array $description,
+        public Icon|null $icon,
+        public array $properties,
+        public DataSourceParent $parent,
+        public string $url,
+        public DatabaseParent|null $databaseParent = null,
     ) {
     }
 

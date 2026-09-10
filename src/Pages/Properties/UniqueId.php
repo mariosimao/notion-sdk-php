@@ -14,12 +14,12 @@ namespace Notion\Pages\Properties;
  *
  * @psalm-immutable
  */
-final class UniqueId implements PropertyInterface
+final readonly class UniqueId implements PropertyInterface
 {
     private function __construct(
-        private readonly PropertyMetadata $metadata,
-        public readonly int $number,
-        public readonly string|null $prefix,
+        private PropertyMetadata $metadata,
+        public int $number,
+        public string|null $prefix,
     ) {
     }
 

@@ -14,12 +14,12 @@ use Notion\Common\Color;
  *
  * @psalm-immutable
  */
-final class SelectOption
+final readonly class SelectOption
 {
     private function __construct(
-        public readonly string|null $id,
-        public readonly string|null $name,
-        public readonly Color|null $color,
+        public string|null $id,
+        public string|null $name,
+        public Color|null $color,
     ) {
     }
 

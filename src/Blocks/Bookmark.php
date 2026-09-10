@@ -20,13 +20,13 @@ use Notion\Common\RichText;
  *
  * @psalm-immutable
  */
-final class Bookmark implements BlockInterface
+final readonly class Bookmark implements BlockInterface
 {
     /** @param RichText[] $caption */
     private function __construct(
-        private readonly BlockMetadata $metadata,
-        public readonly string $url,
-        public readonly array $caption
+        private BlockMetadata $metadata,
+        public string $url,
+        public array $caption
     ) {
         $metadata->checkType(BlockType::Bookmark);
     }

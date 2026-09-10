@@ -17,12 +17,12 @@ use Notion\Exceptions\BlockException;
  *
  * @psalm-immutable
  */
-final class TableRow implements BlockInterface
+final readonly class TableRow implements BlockInterface
 {
     /** @param RichText[][] $cells */
     private function __construct(
-        private readonly BlockMetadata $metadata,
-        public readonly array $cells,
+        private BlockMetadata $metadata,
+        public array $cells,
     ) {
         $metadata->checkType(BlockType::TableRow);
     }

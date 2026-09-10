@@ -15,12 +15,12 @@ use Notion\Users\User;
  *
  * @psalm-immutable
  */
-final class People implements PropertyInterface
+final readonly class People implements PropertyInterface
 {
     /** @param User[] $users */
     private function __construct(
-        private readonly PropertyMetadata $metadata,
-        public readonly array $users
+        private PropertyMetadata $metadata,
+        public array $users
     ) {
     }
 

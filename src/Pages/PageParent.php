@@ -14,12 +14,12 @@ namespace Notion\Pages;
  *
  * @psalm-immutable
  */
-final class PageParent
+final readonly class PageParent
 {
     private function __construct(
-        public readonly PageParentType $type,
-        public readonly string|null $id,
-        public readonly string|null $databaseId = null,
+        public PageParentType $type,
+        public string|null $id,
+        public string|null $databaseId = null,
     ) {
     }
 

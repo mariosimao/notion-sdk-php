@@ -16,13 +16,13 @@ use Notion\Pages\Page;
  * @psalm-import-type PageJson from \Notion\Pages\Page
  * @psalm-immutable
  */
-final class Result
+final readonly class Result
 {
     /** @param Page[] $pages */
     private function __construct(
-        public readonly array $pages,
-        public readonly bool $hasMore,
-        public readonly string|null $nextCursor
+        public array $pages,
+        public bool $hasMore,
+        public string|null $nextCursor
     ) {
     }
 

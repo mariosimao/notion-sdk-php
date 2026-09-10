@@ -13,11 +13,11 @@ use Notion\Exceptions\BlockException;
  *
  * @psalm-immutable
  */
-final class Embed implements BlockInterface
+final readonly class Embed implements BlockInterface
 {
     private function __construct(
-        private readonly BlockMetadata $metadata,
-        public readonly string $url,
+        private BlockMetadata $metadata,
+        public string $url,
     ) {
         $metadata->checkType(BlockType::Embed);
     }

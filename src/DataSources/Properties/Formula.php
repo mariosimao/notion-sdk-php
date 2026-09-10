@@ -13,11 +13,11 @@ namespace Notion\DataSources\Properties;
  *
  * @psalm-immutable
  */
-final class Formula implements PropertyInterface
+final readonly class Formula implements PropertyInterface
 {
     private function __construct(
-        private readonly PropertyMetadata $metadata,
-        public readonly string $expression
+        private PropertyMetadata $metadata,
+        public string $expression
     ) {
     }
 

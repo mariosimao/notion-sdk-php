@@ -6,13 +6,13 @@ use Notion\Configuration;
 use Notion\Infrastructure\Http;
 
 /** @psalm-import-type UserJson from User */
-final class Client
+final readonly class Client
 {
     /**
      * @internal Use `\Notion\Notion::pages()` instead
      */
     public function __construct(
-        private readonly Configuration $config,
+        private Configuration $config,
     ) {
     }
 

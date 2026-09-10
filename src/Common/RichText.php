@@ -20,16 +20,16 @@ namespace Notion\Common;
  *
  * @psalm-immutable
  */
-final class RichText
+final readonly class RichText
 {
     private function __construct(
-        public readonly string $plainText,
-        public readonly string|null $href,
-        public readonly Annotations $annotations,
-        public readonly RichTextType $type,
-        public readonly Text|null $text,
-        public readonly Mention|null $mention,
-        public readonly Equation|null $equation,
+        public string $plainText,
+        public string|null $href,
+        public Annotations $annotations,
+        public RichTextType $type,
+        public Text|null $text,
+        public Mention|null $mention,
+        public Equation|null $equation,
     ) {
     }
 

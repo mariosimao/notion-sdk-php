@@ -7,11 +7,11 @@ namespace Notion\Common;
  *
  * @psalm-immutable
  */
-final class Text
+final readonly class Text
 {
     private function __construct(
-        public readonly string $content,
-        public readonly string|null $url,
+        public string $content,
+        public string|null $url,
     ) {
     }
 

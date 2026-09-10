@@ -15,11 +15,11 @@ use Notion\Users\User;
  *
  * @psalm-immutable
  */
-final class LastEditedBy implements PropertyInterface
+final readonly class LastEditedBy implements PropertyInterface
 {
     private function __construct(
-        private readonly PropertyMetadata $metadata,
-        public readonly User $user
+        private PropertyMetadata $metadata,
+        public User $user
     ) {
     }
 

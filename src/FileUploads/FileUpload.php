@@ -20,20 +20,20 @@ use DateTimeImmutable;
  *     file_import_result?: string,
  * }
  */
-final class FileUpload
+final readonly class FileUpload
 {
     private function __construct(
-        public readonly string $id,
-        public readonly DateTimeImmutable $createdTime,
-        public readonly DateTimeImmutable $lastEditedTime,
-        public readonly DateTimeImmutable|null $expiryTime,
-        public readonly FileUploadStatus $status,
-        public readonly string|null $filename,
-        public readonly string|null $contentType,
-        public readonly int|null $contentLength,
-        public readonly string|null $uploadUrl,
-        public readonly string|null $completeUrl,
-        public readonly string|null $fileImportResult,
+        public string $id,
+        public DateTimeImmutable $createdTime,
+        public DateTimeImmutable $lastEditedTime,
+        public DateTimeImmutable|null $expiryTime,
+        public FileUploadStatus $status,
+        public string|null $filename,
+        public string|null $contentType,
+        public int|null $contentLength,
+        public string|null $uploadUrl,
+        public string|null $completeUrl,
+        public string|null $fileImportResult,
     ) {
     }
 

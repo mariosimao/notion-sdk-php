@@ -10,11 +10,11 @@ namespace Notion\Databases;
  *
  * @psalm-immutable
  */
-final class ChildDataSource
+final readonly class ChildDataSource
 {
     private function __construct(
-        public readonly string $id,
-        public readonly string $name,
+        public string $id,
+        public string $name,
     ) {
     }
 

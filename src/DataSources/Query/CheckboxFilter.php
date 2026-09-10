@@ -3,19 +3,19 @@
 namespace Notion\DataSources\Query;
 
 /** @psalm-immutable */
-final class CheckboxFilter implements Filter, Condition
+final readonly class CheckboxFilter implements Filter, Condition
 {
-    private static array $validOperators = [
+    private const VALID_OPERATORS = [
         Operator::Equals,
         Operator::DoesNotEqual,
     ];
 
     private function __construct(
-        private readonly string $propertyName,
-        private readonly Operator $operator,
-        private readonly bool $value,
+        private string $propertyName,
+        private Operator $operator,
+        private bool $value,
     ) {
-        if (!in_array($operator, self::$validOperators)) {
+        if (!in_array($operator, self::VALID_OPERATORS)) {
             throw new \Exception("Invalid operator");
         }
     }

@@ -33,21 +33,21 @@ use Notion\Pages\Properties\Title;
  *
  * @psalm-immutable
  */
-final class Page
+final readonly class Page
 {
     /**
      * @param array<string, PropertyInterface> $properties
      */
     private function __construct(
-        public readonly string $id,
-        public readonly DateTimeImmutable $createdTime,
-        public readonly DateTimeImmutable $lastEditedTime,
-        public readonly bool $inTrash,
-        public readonly Icon|null $icon,
-        public readonly File|null $cover,
-        public readonly array $properties,
-        public readonly PageParent $parent,
-        public readonly string $url
+        public string $id,
+        public DateTimeImmutable $createdTime,
+        public DateTimeImmutable $lastEditedTime,
+        public bool $inTrash,
+        public Icon|null $icon,
+        public File|null $cover,
+        public array $properties,
+        public PageParent $parent,
+        public string $url
     ) {
         /** @psalm-suppress DeprecatedProperty */
         $this->archived = $inTrash;
@@ -57,7 +57,7 @@ final class Page
      * @deprecated 1.17.0 Use `$inTrash` instead.
      * @codeCoverageIgnore
      */
-    public readonly bool $archived;
+    public bool $archived;
 
     public static function create(PageParent $parent): self
     {

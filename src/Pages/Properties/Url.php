@@ -11,11 +11,11 @@ namespace Notion\Pages\Properties;
  *
  * @psalm-immutable
  */
-final class Url implements PropertyInterface
+final readonly class Url implements PropertyInterface
 {
     private function __construct(
-        private readonly PropertyMetadata $metadata,
-        public readonly string|null $url
+        private PropertyMetadata $metadata,
+        public string|null $url
     ) {
     }
 

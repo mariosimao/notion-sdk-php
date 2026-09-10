@@ -7,10 +7,10 @@ namespace Notion\Common;
  *
  * @psalm-immutable
  */
-final class Equation
+final readonly class Equation
 {
     private function __construct(
-        public readonly string $expression
+        public string $expression
     ) {
     }
 

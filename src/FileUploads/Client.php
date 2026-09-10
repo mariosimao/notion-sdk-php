@@ -11,7 +11,7 @@ use Notion\Infrastructure\Http;
 /**
  * @psalm-import-type FileUploadJson from FileUpload
  */
-final class Client
+final readonly class Client
 {
     private const SINGLE_PART_MAX_SIZE = 20 * 1024 * 1024; // 20 MB
     private const CHUNK_SIZE = 10 * 1024 * 1024; // 10 MB
@@ -21,7 +21,7 @@ final class Client
      * @internal Use `\Notion\Notion::pages()` instead
      */
     public function __construct(
-        private readonly Configuration $config,
+        private Configuration $config,
     ) {
     }
 

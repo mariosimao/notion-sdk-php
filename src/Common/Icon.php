@@ -4,11 +4,11 @@ namespace Notion\Common;
 
 use Notion\Exceptions\IconException;
 
-final class Icon
+final readonly class Icon
 {
     private function __construct(
-        public readonly Emoji|null $emoji,
-        public readonly File|null $file,
+        public Emoji|null $emoji,
+        public File|null $file,
     ) {
         if ($emoji === null && $file === null) {
             throw IconException::bothNull();

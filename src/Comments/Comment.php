@@ -24,17 +24,17 @@ use Notion\Common\RichText;
  *      rich_text: RichTextJson[]
  * }
  */
-final class Comment
+final readonly class Comment
 {
     /** @param RichText[] $text */
     private function __construct(
-        public readonly string $id,
-        public readonly ParentBlock|null $parent,
-        public readonly string|null $discussionId,
-        public readonly DateTimeImmutable $createdTime,
-        public readonly DateTimeImmutable $lastEditedTime,
-        public readonly string $userId,
-        public readonly array $text,
+        public string $id,
+        public ParentBlock|null $parent,
+        public string|null $discussionId,
+        public DateTimeImmutable $createdTime,
+        public DateTimeImmutable $lastEditedTime,
+        public string $userId,
+        public array $text,
     ) {
     }
 

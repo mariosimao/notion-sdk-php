@@ -12,10 +12,10 @@ namespace Notion\Users;
  *
  * @psalm-immutable
  */
-final class Bot
+final readonly class Bot
 {
     private function __construct(
-        public readonly WorkspaceLimits $workspaceLimits
+        public WorkspaceLimits $workspaceLimits
     ) {
     }
 

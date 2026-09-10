@@ -3,9 +3,9 @@
 namespace Notion\DataSources\Query;
 
 /** @psalm-immutable */
-final class RelationFilter implements Filter, Condition
+final readonly class RelationFilter implements Filter, Condition
 {
-    private static array $validOperators = [
+    private const VALID_OPERATORS = [
         Operator::Contains,
         Operator::DoesNotContain,
         Operator::IsEmpty,
@@ -14,11 +14,11 @@ final class RelationFilter implements Filter, Condition
 
 
     private function __construct(
-        private readonly string $propertyName,
-        private readonly Operator $operator,
-        private readonly string|bool $value,
+        private string $propertyName,
+        private Operator $operator,
+        private string|bool $value,
     ) {
-        if (!in_array($operator, self::$validOperators)) {
+        if (!in_array($operator, self::VALID_OPERATORS)) {
             throw new \Exception("Invalid operator");
         }
     }

@@ -19,16 +19,16 @@ namespace Notion\DataSources\Properties;
  *
  * @psalm-immutable
  */
-final class Status implements PropertyInterface
+final readonly class Status implements PropertyInterface
 {
     /**
      * @param StatusOption[] $options
      * @param StatusGroup[] $groups
      */
     private function __construct(
-        private readonly PropertyMetadata $metadata,
-        public readonly array $options,
-        public readonly array $groups
+        private PropertyMetadata $metadata,
+        public array $options,
+        public array $groups
     ) {
     }
 

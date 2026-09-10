@@ -14,11 +14,11 @@ use Notion\Common\RichText;
  *
  * @psalm-immutable
  */
-final class Image implements BlockInterface
+final readonly class Image implements BlockInterface
 {
     private function __construct(
-        private readonly BlockMetadata $metadata,
-        public readonly File $file,
+        private BlockMetadata $metadata,
+        public File $file,
     ) {
         $metadata->checkType(BlockType::Image);
     }

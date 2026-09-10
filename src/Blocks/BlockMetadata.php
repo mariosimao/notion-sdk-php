@@ -18,16 +18,16 @@ use Notion\Common\Date;
  *
  * @psalm-immutable
  */
-final class BlockMetadata
+final readonly class BlockMetadata
 {
     private function __construct(
-        public readonly string $id,
-        public readonly DateTimeImmutable $createdTime,
-        public readonly DateTimeImmutable $lastEditedTime,
-        public readonly bool $inTrash,
-        public readonly bool $hasChildren,
-        public readonly BlockType $type,
-        private readonly string|null $unknownType = null
+        public string $id,
+        public DateTimeImmutable $createdTime,
+        public DateTimeImmutable $lastEditedTime,
+        public bool $inTrash,
+        public bool $hasChildren,
+        public BlockType $type,
+        private string|null $unknownType = null
     ) {
         /** @psalm-suppress DeprecatedProperty */
         $this->archived = $inTrash;
@@ -37,7 +37,7 @@ final class BlockMetadata
      * @deprecated 1.17.0 Use `$inTrash` instead.
      * @codeCoverageIgnore
      */
-    public readonly bool $archived;
+    public bool $archived;
 
     /** @internal */
     public static function create(BlockType $type): self

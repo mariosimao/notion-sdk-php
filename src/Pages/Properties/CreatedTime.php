@@ -14,11 +14,11 @@ use Notion\Common\Date;
  *
  * @psalm-immutable
  */
-final class CreatedTime implements PropertyInterface
+final readonly class CreatedTime implements PropertyInterface
 {
     private function __construct(
-        private readonly PropertyMetadata $metadata,
-        public readonly DateTimeImmutable $time,
+        private PropertyMetadata $metadata,
+        public DateTimeImmutable $time,
     ) {
     }
 
