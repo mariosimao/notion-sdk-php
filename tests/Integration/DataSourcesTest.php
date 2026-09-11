@@ -10,7 +10,10 @@ use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
 use Notion\Databases\DatabaseParentType;
 use Notion\DataSources\Properties\Date;
+use Notion\DataSources\Properties\Relation;
 use Notion\DataSources\Properties\RichTextProperty;
+use Notion\DataSources\Properties\Rollup;
+use Notion\DataSources\Properties\RollupFunction;
 use Notion\DataSources\Properties\Select;
 use Notion\DataSources\Properties\SelectOption;
 use Notion\DataSources\Properties\Title;
@@ -65,6 +68,36 @@ class DataSourcesTest extends TestCase
             "Test prop",
             $dataSource->properties()->get("Test prop")->metadata()->name
         );
+
+        $client->databases()->delete($database);
+    }
+
+    public function test_create_and_update_rollup_property(): void
+    {
+        $database = $this->newDatabase();
+        $tasksDataSource = $this->newDataSource($database->id, "Tasks");
+        $client = Helper::client();
+
+        $relation = Relation::createUnidirectional("Tasks", $tasksDataSource->id);
+        $projectsDataSource = DataSource::create(DataSourceParent::database($database->id))
+            ->changeTitle("Projects")
+            ->addProperty($relation);
+        $projectsDataSource = $client->dataSources()->create($projectsDataSource);
+
+        $rollup = Rollup::create(
+            "Total tasks",
+            "Tasks",
+            "Title",
+            RollupFunction::Count,
+        );
+        $projectsDataSource = $projectsDataSource->addProperty($rollup);
+        $projectsDataSource = $client->dataSources()->update($projectsDataSource);
+
+        $retrievedRollup = $projectsDataSource->properties()->getRollup("Total tasks");
+
+        $this->assertEquals("Total tasks", $retrievedRollup->metadata()->name);
+        $this->assertSame(RollupFunction::Count, $retrievedRollup->function);
+        $this->assertEquals("Tasks", $retrievedRollup->relationPropertyName);
 
         $client->databases()->delete($database);
     }

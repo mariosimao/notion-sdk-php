@@ -27,6 +27,7 @@ final readonly class PropertyFactory
             PropertyType::PhoneNumber    => PhoneNumber::fromArray($array),
             PropertyType::Relation       => Relation::fromArray($array),
             PropertyType::RichText       => RichTextProperty::fromArray($array),
+            PropertyType::Rollup         => Rollup::fromArray($array),
             PropertyType::Select         => Select::fromArray($array),
             PropertyType::Status         => Status::fromArray($array),
             PropertyType::Title          => Title::fromArray($array),

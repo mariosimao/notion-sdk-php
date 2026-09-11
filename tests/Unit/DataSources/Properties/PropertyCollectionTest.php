@@ -229,6 +229,15 @@ class PropertyCollectionTest extends TestCase
         $this->assertSame($p, $c->getRichText("Name"));
     }
 
+    public function test_get_rollup(): void
+    {
+        $p = Properties\Rollup::create("Name", "Tasks", "Title");
+
+        $c = PropertyCollection::create($p);
+
+        $this->assertSame($p, $c->getRollup("Name"));
+    }
+
     public function test_get_select(): void
     {
         $p = Properties\Select::create("Name");
@@ -504,6 +513,24 @@ class PropertyCollectionTest extends TestCase
         $c = PropertyCollection::create($p);
 
         $this->assertSame($p, $c->getRichTextById("abc"));
+    }
+
+    public function test_get_rollup_by_id(): void
+    {
+        $p = Properties\Rollup::fromArray([
+            "id"    => "abc",
+            "name"  => "dummy",
+            "type"  => "rollup",
+            "rollup" => [
+                "function"               => "count",
+                "relation_property_name" => "Tasks",
+                "rollup_property_name"   => "Title",
+            ],
+        ]);
+
+        $c = PropertyCollection::create($p);
+
+        $this->assertSame($p, $c->getRollupById("abc"));
     }
 
     public function test_get_select_by_id(): void
