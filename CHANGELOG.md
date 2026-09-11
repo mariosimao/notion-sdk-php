@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Add typed `Authentication` client and models for public OAuth integrations (#443).
 - Add `Notion\DataSources\Query\RelativeDate` enum for relative date filter conditions (#199).
   - Supported relative dates: `Today`, `Tomorrow`, `Yesterday`, `OneWeekAgo`, `OneWeekFromNow`, `OneMonthAgo`, and `OneMonthFromNow`.
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` accept `RelativeDate` instances in addition to `DateTimeImmutable`.

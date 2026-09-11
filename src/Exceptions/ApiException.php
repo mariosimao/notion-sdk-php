@@ -32,9 +32,12 @@ class ApiException extends NotionException
             return new static("", "", $response);
         }
 
-        return match ($body["code"]) {
-            "conflict_error" => new ConflictException($body["message"], $body["code"], $response),
-            default          => new static($body["message"], $body["code"], $response),
+        $code = $body["code"] ?? "";
+        $message = $body["message"] ?? "";
+
+        return match ($code) {
+            "conflict_error" => new ConflictException($message, $code, $response),
+            default          => new static($message, $code, $response),
         };
     }
 }

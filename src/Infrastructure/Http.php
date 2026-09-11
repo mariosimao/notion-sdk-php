@@ -30,6 +30,18 @@ final readonly class Http
             ->withHeader("Notion-Version", $config->version);
     }
 
+    public static function createAuthRequest(
+        string $uri,
+        Configuration $config,
+        string $clientId,
+        string $clientSecret,
+    ): RequestInterface {
+        return $config->requestFactory
+            ->createRequest("GET", $uri)
+            ->withHeader("Authorization", "Basic " . base64_encode("{$clientId}:{$clientSecret}"))
+            ->withHeader("Notion-Version", $config->version);
+    }
+
     public static function sendRequest(
         RequestInterface $request,
         Configuration $config,

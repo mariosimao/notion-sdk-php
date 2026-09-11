@@ -23,4 +23,17 @@ class NotionTest extends TestCase
 
         $this->assertInstanceOf(Notion::class, $notion);
     }
+
+    public function test_authentication(): void
+    {
+        $notion = Notion::create("secret_token");
+        $authClient = $notion->authentication("client_id", "client_secret");
+
+        $this->assertInstanceOf(
+            \Notion\Authentication\Client::class,
+            $authClient,
+        );
+        $this->assertSame("client_id", $authClient->clientId);
+        $this->assertSame("client_secret", $authClient->clientSecret);
+    }
 }
