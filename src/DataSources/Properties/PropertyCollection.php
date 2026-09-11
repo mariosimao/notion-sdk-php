@@ -221,6 +221,16 @@ final readonly class PropertyCollection
         return $this->getTypedById($propertyId, RichTextProperty::class);
     }
 
+    public function getRollup(string $propertyName): Rollup
+    {
+        return $this->getTyped($propertyName, Rollup::class);
+    }
+
+    public function getRollupById(string $propertyId): Rollup
+    {
+        return $this->getTypedById($propertyId, Rollup::class);
+    }
+
     public function getSelect(string $propertyName): Select
     {
         return $this->getTyped($propertyName, Select::class);
