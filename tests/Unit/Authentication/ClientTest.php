@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Proper integration tests are hard for the happy paths of the authentication client
  * due to the need for real auth codes got from browser redirect.
- * 
+ *
  * The following tests cover the API Request format and response parsing.
  */
 class ClientTest extends TestCase
