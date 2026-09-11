@@ -36,32 +36,6 @@ final readonly class TokenResponse
     ) {
     }
 
-    public static function create(
-        string $accessToken,
-        string $botId,
-        string $workspaceId,
-        Owner $owner,
-        string $tokenType = "bearer",
-        string|null $workspaceName = null,
-        string|null $workspaceIcon = null,
-        string|null $duplicatedTemplateId = null,
-        string|null $refreshToken = null,
-        string|null $requestId = null,
-    ): self {
-        return new self(
-            $accessToken,
-            $tokenType,
-            $botId,
-            $workspaceId,
-            $workspaceName,
-            $workspaceIcon,
-            $owner,
-            $duplicatedTemplateId,
-            $refreshToken,
-            $requestId,
-        );
-    }
-
     /**
      * @psalm-param TokenResponseJson $array
      */

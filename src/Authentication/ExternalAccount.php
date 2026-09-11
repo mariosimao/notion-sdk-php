@@ -24,17 +24,6 @@ final readonly class ExternalAccount
     }
 
     /**
-     * @psalm-param ExternalAccountJson $array
-     */
-    public static function fromArray(array $array): self
-    {
-        return new self(
-            key: $array["key"],
-            name: $array["name"],
-        );
-    }
-
-    /**
      * @psalm-return ExternalAccountJson
      */
     public function toArray(): array

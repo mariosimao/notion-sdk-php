@@ -22,15 +22,6 @@ final readonly class TokenIntrospection
     ) {
     }
 
-    public static function create(
-        bool $active,
-        string|null $scope = null,
-        int|null $iat = null,
-        string|null $requestId = null,
-    ): self {
-        return new self($active, $scope, $iat, $requestId);
-    }
-
     /**
      * @psalm-param TokenIntrospectionJson $array
      */
@@ -42,10 +33,5 @@ final readonly class TokenIntrospection
             iat: $array["iat"] ?? null,
             requestId: $array["request_id"] ?? null,
         );
-    }
-
-    public function isActive(): bool
-    {
-        return $this->active;
     }
 }

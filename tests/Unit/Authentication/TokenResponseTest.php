@@ -70,46 +70,31 @@ class TokenResponseTest extends TestCase
         $this->assertNull($tokenResponse->requestId);
     }
 
-    public function test_create(): void
-    {
-        $user = User::create("user_123");
-        $owner = Owner::user($user);
-
-        $tokenResponse = TokenResponse::create(
-            accessToken: "secret_custom",
-            botId: "bot_123",
-            workspaceId: "ws_123",
-            owner: $owner,
-            tokenType: "bearer",
-            workspaceName: "My Workspace",
-        );
-
-        $this->assertSame("secret_custom", $tokenResponse->accessToken);
-        $this->assertSame("bot_123", $tokenResponse->botId);
-        $this->assertSame("ws_123", $tokenResponse->workspaceId);
-        $this->assertSame("My Workspace", $tokenResponse->workspaceName);
-        $this->assertTrue($tokenResponse->owner->isUser());
-    }
-
     public function test_multiple_installations_in_same_workspace(): void
     {
         $user1 = User::create("user_1");
         $user2 = User::create("user_2");
         $workspaceId = "shared-workspace-id";
 
-        $installation1 = TokenResponse::create(
-            accessToken: "token_user_1",
-            botId: "bot_user_1",
-            workspaceId: $workspaceId,
-            owner: Owner::user($user1),
-        );
+        $installation1 = TokenResponse::fromArray([
+            "access_token" => "token_user_1",
+            "bot_id" => "bot_user_1",
+            "workspace_id" => $workspaceId,
+            "owner" => [
+                "type" => "user",
+                "user" => $user1->toArray(),
+            ],
+        ]);
 
-        $installation2 = TokenResponse::create(
-            accessToken: "token_user_2",
-            botId: "bot_user_2",
-            workspaceId: $workspaceId,
-            owner: Owner::user($user2),
-        );
+        $installation2 = TokenResponse::fromArray([
+            "access_token" => "token_user_2",
+            "bot_id" => "bot_user_2",
+            "workspace_id" => $workspaceId,
+            "owner" => [
+                "type" => "user",
+                "user" => $user2->toArray(),
+            ],
+        ]);
 
         $this->assertSame($installation1->workspaceId, $installation2->workspaceId);
         $this->assertNotSame($installation1->botId, $installation2->botId);

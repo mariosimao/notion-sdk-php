@@ -8,11 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Add typed `Authentication` client and models for public OAuth integrations (#443).
-  - Add `Notion\Authentication\Client` accessible via `$notion->authentication($clientId, $clientSecret)` with `createToken()`, `refreshToken()`, `introspectToken()`, and `revokeToken()` methods.
-  - Add `Notion\Authentication\TokenResponse` representing token responses from code exchange and token refresh, modeling `bot_id` as the unique installation identifier to support multiple installations per workspace.
-  - Add `Notion\Authentication\Owner` and `Notion\Authentication\OwnerType` representing user-level or workspace-level ownership.
-  - Add `Notion\Authentication\ExternalAccount` for specifying external account metadata when creating tokens.
-  - Add `Notion\Authentication\TokenIntrospection` representing token introspection status.
 - Add `Notion\DataSources\Query\RelativeDate` enum for relative date filter conditions (#199).
   - Supported relative dates: `Today`, `Tomorrow`, `Yesterday`, `OneWeekAgo`, `OneWeekFromNow`, `OneMonthAgo`, and `OneMonthFromNow`.
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` accept `RelativeDate` instances in addition to `DateTimeImmutable`.

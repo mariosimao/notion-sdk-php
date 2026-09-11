@@ -185,7 +185,7 @@ class ClientTest extends TestCase
         $payload = json_decode((string) $request->getBody(), true);
         $this->assertSame(["token" => "token_to_check"], $payload);
 
-        $this->assertTrue($introspection->isActive());
+        $this->assertTrue($introspection->active);
         $this->assertSame("read:users", $introspection->scope);
         $this->assertSame(1710000000, $introspection->iat);
         $this->assertSame("req_introspect", $introspection->requestId);

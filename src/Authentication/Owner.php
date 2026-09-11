@@ -23,16 +23,6 @@ final readonly class Owner
     ) {
     }
 
-    public static function user(User $user): self
-    {
-        return new self(OwnerType::User, $user);
-    }
-
-    public static function workspace(): self
-    {
-        return new self(OwnerType::Workspace, null);
-    }
-
     /**
      * @psalm-param OwnerJson $array
      */

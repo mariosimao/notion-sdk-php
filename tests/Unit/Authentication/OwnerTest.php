@@ -9,27 +9,6 @@ use PHPUnit\Framework\TestCase;
 
 class OwnerTest extends TestCase
 {
-    public function test_user_owner(): void
-    {
-        $user = User::create("e2586e30-b3e6-42d7-a50e-e374526d56d7");
-        $owner = Owner::user($user);
-
-        $this->assertTrue($owner->isUser());
-        $this->assertFalse($owner->isWorkspace());
-        $this->assertSame(OwnerType::User, $owner->type);
-        $this->assertSame($user, $owner->user);
-    }
-
-    public function test_workspace_owner(): void
-    {
-        $owner = Owner::workspace();
-
-        $this->assertTrue($owner->isWorkspace());
-        $this->assertFalse($owner->isUser());
-        $this->assertSame(OwnerType::Workspace, $owner->type);
-        $this->assertNull($owner->user);
-    }
-
     public function test_from_array_user(): void
     {
         $array = [
