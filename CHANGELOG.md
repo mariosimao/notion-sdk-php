@@ -8,10 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Support rollup data source properties (#445).
-  - Add `Notion\DataSources\Properties\Rollup` to represent rollup schema properties.
-  - Add `Notion\DataSources\Properties\RollupFunction` enum with all 22 rollup aggregation functions supported by Notion.
-  - Add `PropertyCollection::getRollup()` and `PropertyCollection::getRollupById()` methods.
-  - Map `rollup` property definitions to `Notion\DataSources\Properties\Rollup` in `PropertyFactory` instead of `Unknown`.
 - Support audio blocks (#444).
 - Add typed `Authentication` client and models for public OAuth integrations (#443).
 - Add `Notion\DataSources\Query\RelativeDate` enum for relative date filter conditions (#199).
