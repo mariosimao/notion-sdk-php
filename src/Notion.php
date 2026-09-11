@@ -89,8 +89,8 @@ final readonly class Notion
         return new FileUploadsClient($this->configuration);
     }
 
-    public function authentication(): AuthenticationClient
+    public function authentication(string $clientId, string $clientSecret): AuthenticationClient
     {
-        return new AuthenticationClient($this->configuration);
+        return new AuthenticationClient($this->configuration, $clientId, $clientSecret);
     }
 }

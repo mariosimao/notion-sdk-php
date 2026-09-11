@@ -17,6 +17,8 @@ final readonly class Client
      */
     public function __construct(
         private Configuration $config,
+        public string $clientId,
+        public string $clientSecret,
     ) {
     }
 
@@ -95,13 +97,8 @@ final readonly class Client
      */
     private function sendBasicAuthRequest(string $url, array $body): array
     {
-        $token = $this->config->token;
-        if (str_starts_with($token, "Basic ")) {
-            $auth = $token;
-        } else {
-            $credentials = str_contains($token, ":") ? base64_encode($token) : $token;
-            $auth = "Basic {$credentials}";
-        }
+        $encoded = base64_encode("{$this->clientId}:{$this->clientSecret}");
+        $auth = "Basic {$encoded}";
 
         $request = $this->config->requestFactory
             ->createRequest("POST", $url)

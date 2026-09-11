@@ -39,10 +39,10 @@ class ClientTest extends TestCase
         $mock = new MockHandler([
             new Response(200, [], (string) json_encode($responseBody)),
         ]);
-        $client = $this->createNotionClient($mock, "my_client_id:my_client_secret");
+        $client = $this->createNotionClient($mock);
 
         $externalAccount = ExternalAccount::create("ext_key", "Ext Name");
-        $token = $client->authentication()->createToken(
+        $token = $client->authentication("my_client_id", "my_client_secret")->createToken(
             code: "auth_code_123",
             redirectUri: "https://example.com/callback",
             externalAccount: $externalAccount,
@@ -75,7 +75,7 @@ class ClientTest extends TestCase
         $this->assertSame("req_abc123", $token->requestId);
     }
 
-    public function test_create_token_with_basic_prefix_and_no_optional_args(): void
+    public function test_create_token_minimal(): void
     {
         $responseBody = [
             "access_token" => "secret_token",
@@ -91,13 +91,15 @@ class ClientTest extends TestCase
         $mock = new MockHandler([
             new Response(200, [], (string) json_encode($responseBody)),
         ]);
-        $client = $this->createNotionClient($mock, "Basic custom_auth_string");
+        $client = $this->createNotionClient($mock);
 
-        $token = $client->authentication()->createToken("code_only");
+        $token = $client->authentication("client_id_val", "client_secret_val")
+            ->createToken("code_only");
 
         $request = $mock->getLastRequest();
         $this->assertNotNull($request);
-        $this->assertSame("Basic custom_auth_string", $request->getHeaderLine("Authorization"));
+        $expectedAuth = "Basic " . base64_encode("client_id_val:client_secret_val");
+        $this->assertSame($expectedAuth, $request->getHeaderLine("Authorization"));
 
         /** @var array<string, mixed> $payload */
         $payload = json_decode((string) $request->getBody(), true);
@@ -127,14 +129,17 @@ class ClientTest extends TestCase
         $mock = new MockHandler([
             new Response(200, [], (string) json_encode($responseBody)),
         ]);
-        $client = $this->createNotionClient($mock, "client_id:client_secret");
+        $client = $this->createNotionClient($mock);
 
-        $token = $client->authentication()->refreshToken("old_refresh_token");
+        $token = $client->authentication("my_client_id", "my_client_secret")
+            ->refreshToken("old_refresh_token");
 
         $request = $mock->getLastRequest();
         $this->assertNotNull($request);
         $this->assertSame("POST", $request->getMethod());
         $this->assertSame("https://api.notion.com/v1/oauth/token", (string) $request->getUri());
+        $expectedAuth = "Basic " . base64_encode("my_client_id:my_client_secret");
+        $this->assertSame($expectedAuth, $request->getHeaderLine("Authorization"));
 
         /** @var array<string, mixed> $payload */
         $payload = json_decode((string) $request->getBody(), true);
@@ -157,14 +162,17 @@ class ClientTest extends TestCase
         $mock = new MockHandler([
             new Response(200, [], (string) json_encode($responseBody)),
         ]);
-        $client = $this->createNotionClient($mock, "client_id:client_secret");
+        $client = $this->createNotionClient($mock);
 
-        $introspection = $client->authentication()->introspectToken("token_to_check");
+        $introspection = $client->authentication("my_client_id", "my_client_secret")
+            ->introspectToken("token_to_check");
 
         $request = $mock->getLastRequest();
         $this->assertNotNull($request);
         $this->assertSame("POST", $request->getMethod());
         $this->assertSame("https://api.notion.com/v1/oauth/introspect", (string) $request->getUri());
+        $expectedAuth = "Basic " . base64_encode("my_client_id:my_client_secret");
+        $this->assertSame($expectedAuth, $request->getHeaderLine("Authorization"));
 
         /** @var array<string, mixed> $payload */
         $payload = json_decode((string) $request->getBody(), true);
@@ -181,21 +189,24 @@ class ClientTest extends TestCase
         $mock = new MockHandler([
             new Response(200, [], "{}"),
         ]);
-        $client = $this->createNotionClient($mock, "client_id:client_secret");
+        $client = $this->createNotionClient($mock);
 
-        $client->authentication()->revokeToken("token_to_revoke");
+        $client->authentication("my_client_id", "my_client_secret")
+            ->revokeToken("token_to_revoke");
 
         $request = $mock->getLastRequest();
         $this->assertNotNull($request);
         $this->assertSame("POST", $request->getMethod());
         $this->assertSame("https://api.notion.com/v1/oauth/revoke", (string) $request->getUri());
+        $expectedAuth = "Basic " . base64_encode("my_client_id:my_client_secret");
+        $this->assertSame($expectedAuth, $request->getHeaderLine("Authorization"));
 
         /** @var array<string, mixed> $payload */
         $payload = json_decode((string) $request->getBody(), true);
         $this->assertSame(["token" => "token_to_revoke"], $payload);
     }
 
-    private function createNotionClient(MockHandler $mock, string $token): Notion
+    private function createNotionClient(MockHandler $mock, string $token = "test_token"): Notion
     {
         $guzzle = new GuzzleClient(["handler" => HandlerStack::create($mock)]);
         $factory = new HttpFactory();
