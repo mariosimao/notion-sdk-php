@@ -20,6 +20,7 @@ enum BlockType: string
     case Embed = "embed";
     case Image = "image";
     case Video = "video";
+    case Audio = "audio";
     case File = "file";
     case Pdf = "pdf";
     case Bookmark = "bookmark";
