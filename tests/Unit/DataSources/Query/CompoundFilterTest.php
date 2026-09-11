@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Unit\DataSources\Query;
 
+use DateTimeImmutable;
 use Notion\DataSources\Query\CompoundFilter;
 use Notion\DataSources\Query\DateFilter;
 use Notion\DataSources\Query\SelectFilter;
@@ -60,12 +61,12 @@ class CompoundFilterTest extends TestCase
         // Drama movies from the 70s or 90s
         $filter = CompoundFilter::or(
             CompoundFilter::and(
-                DateFilter::property("Release date")->onOrAfter("1990-01-01"),
-                DateFilter::property("Release date")->onOrBefore("1999-12-31"),
+                DateFilter::property("Release date")->onOrAfter(new DateTimeImmutable("1990-01-01T00:00:00.000000Z")),
+                DateFilter::property("Release date")->onOrBefore(new DateTimeImmutable("1999-12-31T00:00:00.000000Z")),
             ),
             CompoundFilter::and(
-                DateFilter::property("Release date")->onOrAfter("1970-01-01"),
-                DateFilter::property("Release date")->onOrBefore("1979-12-31"),
+                DateFilter::property("Release date")->onOrAfter(new DateTimeImmutable("1970-01-01T00:00:00.000000Z")),
+                DateFilter::property("Release date")->onOrBefore(new DateTimeImmutable("1979-12-31T00:00:00.000000Z")),
             ),
         );
 
@@ -75,11 +76,11 @@ class CompoundFilterTest extends TestCase
                     "and" => [
                         [
                             "property" => "Release date",
-                            "date" => [ "on_or_after" => "1990-01-01" ],
+                            "date" => [ "on_or_after" => "1990-01-01T00:00:00.000000Z" ],
                         ],
                         [
                             "property" => "Release date",
-                            "date" => [ "on_or_before" => "1999-12-31" ],
+                            "date" => [ "on_or_before" => "1999-12-31T00:00:00.000000Z" ],
                         ],
                     ],
                 ],
@@ -87,11 +88,11 @@ class CompoundFilterTest extends TestCase
                     "and" => [
                         [
                             "property" => "Release date",
-                            "date" => [ "on_or_after" => "1970-01-01" ],
+                            "date" => [ "on_or_after" => "1970-01-01T00:00:00.000000Z" ],
                         ],
                         [
                             "property" => "Release date",
-                            "date" => [ "on_or_before" => "1979-12-31" ],
+                            "date" => [ "on_or_before" => "1979-12-31T00:00:00.000000Z" ],
                         ],
                     ],
                 ],
