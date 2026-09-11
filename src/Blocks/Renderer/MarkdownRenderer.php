@@ -58,6 +58,7 @@ final readonly class MarkdownRenderer implements RendererInterface
         }
 
         return match ($block->metadata()->type) {
+            BlockType::Audio            => Markdown\AudioRenderer::render($block, $depth),
             BlockType::Bookmark         => Markdown\BookmarkRenderer::render($block, $depth),
             BlockType::Breadcrumb       => Markdown\BreadcrumbRenderer::render($block, $depth),
             BlockType::BulletedListItem => Markdown\BulletedListItemRenderer::render($block, $depth),

@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Integration;
 
+use Notion\Blocks\Audio;
 use Notion\Blocks\BlockType;
 use Notion\Blocks\Bookmark;
 use Notion\Blocks\Breadcrumb;
@@ -57,6 +58,7 @@ class BlocksTest extends TestCase
             ToDo::fromString("To do item"),
             Toggle::fromString("Toggle"),
             // TODO: Video
+            // TODO: Audio
             ColumnList::create(
                 Column::create(Paragraph::fromString("Paragraph")),
                 Column::create(Paragraph::fromString("Paragraph")),
@@ -156,6 +158,21 @@ class BlocksTest extends TestCase
         }
 
         $this->assertSame(BlockType::Paragraph, $blocks[0]->metadata()->type);
+    }
+
+    public function test_add_audio_block(): void
+    {
+        $client = Helper::client();
+
+        $blocks = $client->blocks()->append(Helper::testPageId(), [
+            Audio::fromUrl("https://example.com/audio.mp3"),
+        ]);
+
+        foreach ($blocks as $block) {
+            $client->blocks()->delete($block->metadata()->id);
+        }
+
+        $this->assertSame(BlockType::Audio, $blocks[0]->metadata()->type);
     }
 
     public function test_add_to_inexistent_block(): void

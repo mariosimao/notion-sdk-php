@@ -12,6 +12,7 @@ final readonly class BlockFactory
         $type = $array["type"];
 
         return match ($type) {
+            BlockType::Audio->value            => Audio::fromArray($array),
             BlockType::Bookmark->value         => Bookmark::fromArray($array),
             BlockType::Breadcrumb->value       => Breadcrumb::fromArray($array),
             BlockType::BulletedListItem->value => BulletedListItem::fromArray($array),

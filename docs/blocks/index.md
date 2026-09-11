@@ -45,6 +45,7 @@ $p = $p->changeChildren();
 
 | Block                                  | Support children |
 |----------------------------------------|:----------------:|
+| [Audio](./Audio.md)                     | ❌              |
 | [Bookmark](./Bookmark)                 | ❌              |
 | [Breadcrumb](./Breadcrumb)             | ❌              |
 | [BulletedListItem](./BulletedListItem) | ✔               |

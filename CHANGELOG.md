@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support audio blocks (#444).
+  - Add `Notion\Blocks\Audio` block class for creating, parsing, serializing, and updating audio blocks and captions.
+  - Add `BlockType::Audio` to `Notion\Blocks\BlockType` enum.
+  - Add audio block deserialization support to `Notion\Blocks\BlockFactory`.
+  - Add `Notion\Blocks\Renderer\Markdown\AudioRenderer` to render audio blocks to Markdown.
 - Add typed `Authentication` client and models for public OAuth integrations (#443).
 - Add `Notion\DataSources\Query\RelativeDate` enum for relative date filter conditions (#199).
   - Supported relative dates: `Today`, `Tomorrow`, `Yesterday`, `OneWeekAgo`, `OneWeekFromNow`, `OneMonthAgo`, and `OneMonthFromNow`.
