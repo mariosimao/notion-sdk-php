@@ -36,7 +36,7 @@ final readonly class DateFilter implements Filter, Condition
         private string $propertyType,
         private string $propertyName,
         private Operator $operator,
-        private DateTimeImmutable|bool|stdClass $value,
+        private DateTimeImmutable|RelativeDate|bool|stdClass $value,
     ) {
         if (!in_array($operator, self::VALID_OPERATORS)) {
             throw new \Exception("Invalid operator");
@@ -88,7 +88,7 @@ final readonly class DateFilter implements Filter, Condition
         return $this->operator;
     }
 
-    public function value(): DateTimeImmutable|bool|stdClass
+    public function value(): DateTimeImmutable|RelativeDate|bool|stdClass
     {
         return $this->value;
     }
@@ -96,9 +96,11 @@ final readonly class DateFilter implements Filter, Condition
     public function toArray(): array
     {
         $type = $this->propertyType === self::TYPE_PROPERTY ? "date" : $this->propertyName;
-        $value = $this->value instanceof DateTimeImmutable
-            ? $this->value->format(Date::FORMAT)
-            : $this->value;
+        $value = match (true) {
+            $this->value instanceof DateTimeImmutable => $this->value->format(Date::FORMAT),
+            $this->value instanceof RelativeDate => $this->value->value,
+            default => $this->value,
+        };
 
         return [
             $this->propertyType() => $this->propertyName,
@@ -108,22 +110,22 @@ final readonly class DateFilter implements Filter, Condition
         ];
     }
 
-    public function equals(DateTimeImmutable $value): self
+    public function equals(DateTimeImmutable|RelativeDate $value): self
     {
         return new self($this->propertyType, $this->propertyName, Operator::Equals, $value);
     }
 
-    public function before(DateTimeImmutable $value): self
+    public function before(DateTimeImmutable|RelativeDate $value): self
     {
         return new self($this->propertyType, $this->propertyName, Operator::Before, $value);
     }
 
-    public function after(DateTimeImmutable $value): self
+    public function after(DateTimeImmutable|RelativeDate $value): self
     {
         return new self($this->propertyType, $this->propertyName, Operator::After, $value);
     }
 
-    public function onOrBefore(DateTimeImmutable $value): self
+    public function onOrBefore(DateTimeImmutable|RelativeDate $value): self
     {
         return new self($this->propertyType, $this->propertyName, Operator::OnOrBefore, $value);
     }
@@ -138,7 +140,7 @@ final readonly class DateFilter implements Filter, Condition
         return new self($this->propertyType, $this->propertyName, Operator::IsNotEmpty, true);
     }
 
-    public function onOrAfter(DateTimeImmutable $value): self
+    public function onOrAfter(DateTimeImmutable|RelativeDate $value): self
     {
         return new self($this->propertyType, $this->propertyName, Operator::OnOrAfter, $value);
     }
