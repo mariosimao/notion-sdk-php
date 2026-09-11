@@ -9,6 +9,7 @@ use GuzzleHttp\Psr7\HttpFactory;
 use GuzzleHttp\Psr7\Response;
 use Notion\Authentication\ExternalAccount;
 use Notion\Configuration;
+use Notion\Exceptions\ApiException;
 use Notion\Notion;
 use PHPUnit\Framework\TestCase;
 
@@ -204,6 +205,26 @@ class ClientTest extends TestCase
         /** @var array<string, mixed> $payload */
         $payload = json_decode((string) $request->getBody(), true);
         $this->assertSame(["token" => "token_to_revoke"], $payload);
+    }
+
+    public function test_api_exception_thrown_on_error(): void
+    {
+        $errorResponse = [
+            "object" => "error",
+            "status" => 400,
+            "code" => "invalid_grant",
+            "message" => "The provided authorization code is invalid.",
+        ];
+
+        $mock = new MockHandler([
+            new Response(400, [], (string) json_encode($errorResponse)),
+        ]);
+        $client = $this->createNotionClient($mock);
+
+        $this->expectException(ApiException::class);
+        $this->expectExceptionMessage("The provided authorization code is invalid.");
+
+        $client->authentication("client_id", "client_secret")->createToken("invalid_code");
     }
 
     private function createNotionClient(MockHandler $mock, string $token = "test_token"): Notion

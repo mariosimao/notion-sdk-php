@@ -9,6 +9,7 @@ use GuzzleHttp\Psr7\HttpFactory;
 use GuzzleHttp\Psr7\Response;
 use Notion\Configuration;
 use Notion\Exceptions\ConflictException;
+use Notion\Infrastructure\Http;
 use Notion\Notion;
 use Notion\Pages\Page;
 use Notion\Pages\PageParent;
@@ -16,6 +17,40 @@ use PHPUnit\Framework\TestCase;
 
 final class HttpTest extends TestCase
 {
+    public function test_create_request(): void
+    {
+        $client = new Client();
+        $factory = new HttpFactory();
+        $config = Configuration::createFromPsrImplementations("secret_123", $client, $factory);
+
+        $request = Http::createRequest("https://api.notion.com/v1/users", $config);
+
+        $this->assertSame("GET", $request->getMethod());
+        $this->assertSame("https://api.notion.com/v1/users", (string) $request->getUri());
+        $this->assertSame("Bearer secret_123", $request->getHeaderLine("Authorization"));
+        $this->assertSame($config->version, $request->getHeaderLine("Notion-Version"));
+    }
+
+    public function test_create_auth_request(): void
+    {
+        $client = new Client();
+        $factory = new HttpFactory();
+        $config = Configuration::createFromPsrImplementations("secret_123", $client, $factory);
+
+        $request = Http::createAuthRequest(
+            "https://api.notion.com/v1/oauth/token",
+            $config,
+            "client_id_123",
+            "client_secret_456",
+        );
+
+        $this->assertSame("GET", $request->getMethod());
+        $this->assertSame("https://api.notion.com/v1/oauth/token", (string) $request->getUri());
+        $expectedAuth = "Basic " . base64_encode("client_id_123:client_secret_456");
+        $this->assertSame($expectedAuth, $request->getHeaderLine("Authorization"));
+        $this->assertSame($config->version, $request->getHeaderLine("Notion-Version"));
+    }
+
     public function test_retry_sending_request_after_conflict_errors(): void
     {
         $mock = new MockHandler([

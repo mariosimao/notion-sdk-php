@@ -3,7 +3,6 @@
 namespace Notion\Authentication;
 
 use Notion\Configuration;
-use Notion\Exceptions\ApiException;
 use Notion\Infrastructure\Http;
 
 /**
@@ -40,11 +39,14 @@ final readonly class Client
             $body["external_account"] = $externalAccount->toArray();
         }
 
+        $url = "https://api.notion.com/v1/oauth/token";
+        $request = Http::createAuthRequest($url, $this->config, $this->clientId, $this->clientSecret)
+            ->withMethod("POST")
+            ->withHeader("Content-Type", "application/json");
+        $request->getBody()->write((string) json_encode($body));
+
         /** @psalm-var TokenResponseJson $responseBody */
-        $responseBody = $this->sendBasicAuthRequest(
-            "https://api.notion.com/v1/oauth/token",
-            $body,
-        );
+        $responseBody = Http::sendRequest($request, $this->config);
 
         return TokenResponse::fromArray($responseBody);
     }
@@ -56,11 +58,14 @@ final readonly class Client
             "refresh_token" => $refreshToken,
         ];
 
+        $url = "https://api.notion.com/v1/oauth/token";
+        $request = Http::createAuthRequest($url, $this->config, $this->clientId, $this->clientSecret)
+            ->withMethod("POST")
+            ->withHeader("Content-Type", "application/json");
+        $request->getBody()->write((string) json_encode($body));
+
         /** @psalm-var TokenResponseJson $responseBody */
-        $responseBody = $this->sendBasicAuthRequest(
-            "https://api.notion.com/v1/oauth/token",
-            $body,
-        );
+        $responseBody = Http::sendRequest($request, $this->config);
 
         return TokenResponse::fromArray($responseBody);
     }
@@ -71,11 +76,14 @@ final readonly class Client
             "token" => $token,
         ];
 
+        $url = "https://api.notion.com/v1/oauth/introspect";
+        $request = Http::createAuthRequest($url, $this->config, $this->clientId, $this->clientSecret)
+            ->withMethod("POST")
+            ->withHeader("Content-Type", "application/json");
+        $request->getBody()->write((string) json_encode($body));
+
         /** @psalm-var TokenIntrospectionJson $responseBody */
-        $responseBody = $this->sendBasicAuthRequest(
-            "https://api.notion.com/v1/oauth/introspect",
-            $body,
-        );
+        $responseBody = Http::sendRequest($request, $this->config);
 
         return TokenIntrospection::fromArray($responseBody);
     }
@@ -86,48 +94,12 @@ final readonly class Client
             "token" => $token,
         ];
 
-        $this->sendBasicAuthRequest(
-            "https://api.notion.com/v1/oauth/revoke",
-            $body,
-        );
-    }
-
-    /**
-     * @param array<string, mixed> $body
-     */
-    private function sendBasicAuthRequest(string $url, array $body): array
-    {
-        $encoded = base64_encode("{$this->clientId}:{$this->clientSecret}");
-        $auth = "Basic {$encoded}";
-
-        $request = $this->config->requestFactory
-            ->createRequest("POST", $url)
-            ->withHeader("Authorization", $auth)
-            ->withHeader("Notion-Version", $this->config->version)
+        $url = "https://api.notion.com/v1/oauth/revoke";
+        $request = Http::createAuthRequest($url, $this->config, $this->clientId, $this->clientSecret)
+            ->withMethod("POST")
             ->withHeader("Content-Type", "application/json");
-
         $request->getBody()->write((string) json_encode($body));
 
-        $response = $this->config->httpClient->sendRequest($request);
-
-        /** @var array */
-        $responseBody = json_decode((string) $response->getBody(), true);
-
-        if ($response->getStatusCode() >= 400) {
-            /** @var mixed $rawMessage */
-            $rawMessage = $responseBody["message"]
-                ?? $responseBody["error_description"]
-                ?? $responseBody["error"]
-                ?? "";
-            /** @var mixed $rawCode */
-            $rawCode = $responseBody["code"] ?? $responseBody["error"] ?? "";
-
-            $message = is_string($rawMessage) ? $rawMessage : "";
-            $code = is_string($rawCode) ? $rawCode : "";
-
-            throw new ApiException($message, $code, $response);
-        }
-
-        return $responseBody;
+        Http::sendRequest($request, $this->config);
     }
 }
