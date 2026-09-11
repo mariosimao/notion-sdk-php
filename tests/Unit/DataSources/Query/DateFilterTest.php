@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Unit\DataSources\Query;
 
+use DateTimeImmutable;
 use Notion\DataSources\Query\DateFilter;
 use Notion\DataSources\Query\Operator;
 use PHPUnit\Framework\TestCase;
@@ -41,50 +42,58 @@ class DateFilterTest extends TestCase
 
     public function test_equals(): void
     {
+        $date = new DateTimeImmutable("2022-02-13T00:00:00.000000Z");
         $filter = DateFilter::createdTime()
-            ->equals("2022-02-13");
+            ->equals($date);
 
         $expected = [
             "timestamp" => "created_time",
-            "created_time" => [ "equals" => "2022-02-13" ],
+            "created_time" => [ "equals" => "2022-02-13T00:00:00.000000Z" ],
         ];
         $this->assertSame($expected, $filter->toArray());
+        $this->assertSame($date, $filter->value());
     }
 
     public function test_before(): void
     {
+        $date = new DateTimeImmutable("2021-05-10T12:00:00.000000Z");
         $filter = DateFilter::createdTime()
-            ->before("2021-05-10T12:00:00");
+            ->before($date);
 
         $expected = [
             "timestamp" => "created_time",
-            "created_time" => [ "before" => "2021-05-10T12:00:00" ],
+            "created_time" => [ "before" => "2021-05-10T12:00:00.000000Z" ],
         ];
         $this->assertSame($expected, $filter->toArray());
+        $this->assertSame($date, $filter->value());
     }
 
     public function test_after(): void
     {
+        $date = new DateTimeImmutable("2021-05-10T12:00:00.000000Z");
         $filter = DateFilter::createdTime()
-            ->after("2021-05-10T12:00:00");
+            ->after($date);
 
         $expected = [
             "timestamp" => "created_time",
-            "created_time" => [ "after" => "2021-05-10T12:00:00" ],
+            "created_time" => [ "after" => "2021-05-10T12:00:00.000000Z" ],
         ];
         $this->assertSame($expected, $filter->toArray());
+        $this->assertSame($date, $filter->value());
     }
 
     public function test_on_or_before(): void
     {
+        $date = new DateTimeImmutable("1997-12-27T00:00:00.000000Z");
         $filter = DateFilter::property("Release date")
-            ->onOrBefore("1997-12-27");
+            ->onOrBefore($date);
 
         $expected = [
             "property" => "Release date",
-            "date" => [ "on_or_before" => "1997-12-27" ],
+            "date" => [ "on_or_before" => "1997-12-27T00:00:00.000000Z" ],
         ];
         $this->assertSame($expected, $filter->toArray());
+        $this->assertSame($date, $filter->value());
     }
 
     public function test_is_empty(): void
@@ -113,14 +122,16 @@ class DateFilterTest extends TestCase
 
     public function test_on_or_after(): void
     {
+        $date = new DateTimeImmutable("1997-12-27T00:00:00.000000Z");
         $filter = DateFilter::property("Release date")
-            ->onOrAfter("1997-12-27");
+            ->onOrAfter($date);
 
         $expected = [
             "property" => "Release date",
-            "date" => [ "on_or_after" => "1997-12-27" ],
+            "date" => [ "on_or_after" => "1997-12-27T00:00:00.000000Z" ],
         ];
         $this->assertSame($expected, $filter->toArray());
+        $this->assertSame($date, $filter->value());
     }
 
     public function test_past_week(): void

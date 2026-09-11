@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **[BREAKING]** Change `DateFilter` value from `string` to `DateTimeImmutable` and remove `array` type (#199).
+  - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` now accept a `DateTimeImmutable` instance instead of a `string`.
+  - Removed `array` from the allowed types of the internal `$value` property and `value()` return type hint, which is now `DateTimeImmutable|bool|stdClass`.
+  - Date values are formatted as ISO 8601 strings when converting queries with `toArray()`.
+  - **Migration instructions:**
+    - Pass `DateTimeImmutable` instances to `DateFilter` filter methods instead of string representations:
+      - Change `DateFilter::property("Due date")->before("2024-01-01")` to `DateFilter::property("Due date")->before(new DateTimeImmutable("2024-01-01"))`
+      - Change `DateFilter::property("Release date")->onOrAfter("1990-01-01")` to `DateFilter::property("Release date")->onOrAfter(new DateTimeImmutable("1990-01-01"))`
 - **[BREAKING]** Move block-specific exceptions to `Notion\Exceptions\BlockException` namespace (#181).
   - `HeadingException`, `ColumnException`, and `ColumnListException` were moved from `src/Exceptions/` to `src/Exceptions/BlockException/`.
   - Their namespaces have changed from `Notion\Exceptions` to `Notion\Exceptions\BlockException`.

@@ -122,8 +122,8 @@ class DataSourcesTest extends TestCase
         $query = Query::create()->changeFilter(
             CompoundFilter::and(
                 SelectFilter::property("Category")->equals("Drama"),
-                DateFilter::property("Release date")->onOrAfter("1990-01-01"),
-                DateFilter::property("Release date")->onOrBefore("1999-12-31"),
+                DateFilter::property("Release date")->onOrAfter(new DateTimeImmutable("1990-01-01")),
+                DateFilter::property("Release date")->onOrBefore(new DateTimeImmutable("1999-12-31")),
             ),
         );
 
