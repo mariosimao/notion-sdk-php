@@ -6,6 +6,9 @@ use DateTimeImmutable;
 use Notion\Common\Date;
 use Notion\Common\Mention;
 use Notion\Common\MentionType;
+use Notion\Common\TemplateMention;
+use Notion\Common\TemplateMentionDateType;
+use Notion\Common\TemplateMentionUserType;
 use Notion\Users\User;
 use PHPUnit\Framework\TestCase;
 
@@ -99,6 +102,104 @@ class MentionTest extends TestCase
         $array = [
             "type" => "date",
             "date" => [ "start" => "2021-01-01T00:00:00.000000Z", "end" => null ],
+        ];
+        $mention = Mention::fromArray($array);
+
+        $this->assertEquals($array, $mention->toArray());
+    }
+
+    public function test_mention_link_preview(): void
+    {
+        $mention = Mention::linkPreview("https://notion.so");
+
+        $this->assertTrue($mention->isLinkPreview());
+        $this->assertEquals(MentionType::LinkPreview, $mention->type);
+        $this->assertEquals("https://notion.so", $mention->linkPreviewUrl);
+    }
+
+    public function test_mention_template_mention(): void
+    {
+        $template = TemplateMention::today();
+        $mention = Mention::templateMention($template);
+
+        $this->assertTrue($mention->isTemplateMention());
+        $this->assertEquals(MentionType::TemplateMention, $mention->type);
+        $this->assertEquals($template, $mention->templateMention);
+    }
+
+    public function test_mention_template_date(): void
+    {
+        $mention = Mention::templateDate(TemplateMentionDateType::Today);
+
+        $this->assertTrue($mention->isTemplateMention());
+        $this->assertEquals(TemplateMentionDateType::Today, $mention->templateMention?->templateMentionDate);
+    }
+
+    public function test_mention_template_user(): void
+    {
+        $mention = Mention::templateUser(TemplateMentionUserType::Me);
+
+        $this->assertTrue($mention->isTemplateMention());
+        $this->assertEquals(TemplateMentionUserType::Me, $mention->templateMention?->templateMentionUser);
+    }
+
+    public function test_mention_today(): void
+    {
+        $mention = Mention::today();
+
+        $this->assertTrue($mention->isTemplateMention());
+        $this->assertEquals(TemplateMentionDateType::Today, $mention->templateMention?->templateMentionDate);
+    }
+
+    public function test_mention_now(): void
+    {
+        $mention = Mention::now();
+
+        $this->assertTrue($mention->isTemplateMention());
+        $this->assertEquals(TemplateMentionDateType::Now, $mention->templateMention?->templateMentionDate);
+    }
+
+    public function test_mention_me(): void
+    {
+        $mention = Mention::me();
+
+        $this->assertTrue($mention->isTemplateMention());
+        $this->assertEquals(TemplateMentionUserType::Me, $mention->templateMention?->templateMentionUser);
+    }
+
+    public function test_link_preview_array_conversion(): void
+    {
+        $array = [
+            "type" => "link_preview",
+            "link_preview" => [ "url" => "https://notion.so" ],
+        ];
+        $mention = Mention::fromArray($array);
+
+        $this->assertEquals($array, $mention->toArray());
+    }
+
+    public function test_template_mention_date_array_conversion(): void
+    {
+        $array = [
+            "type" => "template_mention",
+            "template_mention" => [
+                "type" => "template_mention_date",
+                "template_mention_date" => "today",
+            ],
+        ];
+        $mention = Mention::fromArray($array);
+
+        $this->assertEquals($array, $mention->toArray());
+    }
+
+    public function test_template_mention_user_array_conversion(): void
+    {
+        $array = [
+            "type" => "template_mention",
+            "template_mention" => [
+                "type" => "template_mention_user",
+                "template_mention_user" => "me",
+            ],
         ];
         $mention = Mention::fromArray($array);
 
