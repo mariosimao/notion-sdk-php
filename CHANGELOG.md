@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support synced blocks (#449).
 - Support link to page blocks (#448).
 - Support link preview and template mentions in rich text (#447).
 - Support retrieving individual page properties (#446).
