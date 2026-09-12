@@ -64,6 +64,7 @@ $p = $p->changeChildren();
 | [Heading3](./Heading)                  | ✔               |
 | [Image](./Image)                       | ❌              |
 | [LinkPreview](./LinkPreview)           | ❌              |
+| [LinkToPage](./LinkToPage.md)           | ❌              |
 | [NumberedListItem](./NumberedListItem) | ✔               |
 | [Paragraph](./Paragraph)               | ✔               |
 | [PDF](./Pdf.md)                        | ❌              |

@@ -33,5 +33,6 @@ enum BlockType: string
     case Column = "column";
     case ColumnList = "column_list";
     case LinkPreview = "link_preview";
+    case LinkToPage = "link_to_page";
     case Unknown = "unknown";
 }

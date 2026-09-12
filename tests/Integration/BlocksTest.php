@@ -17,6 +17,7 @@ use Notion\Blocks\EquationBlock;
 use Notion\Blocks\Heading1;
 use Notion\Blocks\Heading2;
 use Notion\Blocks\Heading3;
+use Notion\Blocks\LinkToPage;
 use Notion\Blocks\NumberedListItem;
 use Notion\Blocks\Paragraph;
 use Notion\Blocks\TableOfContents;
@@ -57,6 +58,7 @@ class BlocksTest extends TestCase
             TableOfContents::create(),
             ToDo::fromString("To do item"),
             Toggle::fromString("Toggle"),
+            LinkToPage::page(Helper::testPageId()),
             // TODO: Video
             // TODO: Audio
             ColumnList::create(
@@ -175,6 +177,24 @@ class BlocksTest extends TestCase
         $this->assertSame(BlockType::Audio, $blocks[0]->metadata()->type);
     }
 
+    public function test_add_link_to_page_block(): void
+    {
+        $client = Helper::client();
+
+        $blocks = $client->blocks()->append(Helper::testPageId(), [
+            LinkToPage::page(Helper::testPageId()),
+        ]);
+
+        foreach ($blocks as $block) {
+            $client->blocks()->delete($block->metadata()->id);
+        }
+
+        $this->assertSame(BlockType::LinkToPage, $blocks[0]->metadata()->type);
+        $this->assertInstanceOf(LinkToPage::class, $blocks[0]);
+        $this->assertTrue($blocks[0]->isPage());
+        $this->assertSame(Helper::testPageId(), $blocks[0]->pageId);
+    }
+
     public function test_add_to_inexistent_block(): void
     {
         $client = Helper::client();
@@ -215,6 +235,7 @@ class BlocksTest extends TestCase
                 TableOfContents::create(),
                 ToDo::fromString("To do item"),
                 Toggle::fromString("Toggle"),
+                LinkToPage::page(Helper::testPageId()),
                 // TODO: Video
                 // TODO: ColumnList
             ]
