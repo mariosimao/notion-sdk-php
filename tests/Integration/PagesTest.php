@@ -6,6 +6,8 @@ use Notion\Common\Emoji;
 use Notion\Exceptions\ApiException;
 use Notion\Pages\Page;
 use Notion\Pages\PageParent;
+use Notion\Pages\PropertyItems\PropertyItemList;
+use Notion\Pages\PropertyItems\TitlePropertyItem;
 use PHPUnit\Framework\TestCase;
 
 class PagesTest extends TestCase
@@ -74,5 +76,41 @@ class PagesTest extends TestCase
 
         $this->expectException(ApiException::class);
         $client->pages()->update($page);
+    }
+
+    public function test_find_property_item_list(): void
+    {
+        $client = Helper::client();
+
+        $page = Helper::newPage()
+            ->changeTitle("Page with title to retrieve");
+
+        $page = $client->pages()->create($page);
+
+        $property = $client->pages()->findProperty($page->id, "title");
+
+        $this->assertInstanceOf(PropertyItemList::class, $property);
+        $this->assertTrue($property->isTitle());
+        $this->assertNotEmpty($property->results);
+        $firstItem = $property->results[0];
+        $this->assertInstanceOf(TitlePropertyItem::class, $firstItem);
+        $this->assertSame("Page with title to retrieve", $firstItem->title->plainText);
+
+        $client->pages()->delete($page);
+    }
+
+    public function test_find_inexistent_property(): void
+    {
+        $client = Helper::client();
+
+        $page = Helper::newPage();
+        $page = $client->pages()->create($page);
+
+        $this->expectException(ApiException::class);
+        try {
+            $client->pages()->findProperty($page->id, "inexistent-property-id");
+        } finally {
+            $client->pages()->delete($page);
+        }
     }
 }
