@@ -20,6 +20,7 @@ use Notion\Blocks\Heading3;
 use Notion\Blocks\LinkToPage;
 use Notion\Blocks\NumberedListItem;
 use Notion\Blocks\Paragraph;
+use Notion\Blocks\SyncedBlock;
 use Notion\Blocks\TableOfContents;
 use Notion\Blocks\ToDo;
 use Notion\Blocks\Toggle;
@@ -59,6 +60,7 @@ class BlocksTest extends TestCase
             ToDo::fromString("To do item"),
             Toggle::fromString("Toggle"),
             LinkToPage::page(Helper::testPageId()),
+            SyncedBlock::createOriginal(Paragraph::fromString("Synced block content")),
             // TODO: Video
             // TODO: Audio
             ColumnList::create(
@@ -195,6 +197,35 @@ class BlocksTest extends TestCase
         $this->assertSame(Helper::testPageId(), $blocks[0]->pageId);
     }
 
+    public function test_add_synced_block(): void
+    {
+        $client = Helper::client();
+
+        $original = SyncedBlock::createOriginal(
+            Paragraph::fromString("Original synced content"),
+        );
+
+        $blocks = $client->blocks()->append(Helper::testPageId(), [$original]);
+        $originalBlock = $blocks[0];
+
+        $reference = SyncedBlock::createReference($originalBlock);
+        $refBlocks = $client->blocks()->append(Helper::testPageId(), [$reference]);
+        $referenceBlock = $refBlocks[0];
+
+        foreach (array_merge($blocks, $refBlocks) as $block) {
+            $client->blocks()->delete($block->metadata()->id);
+        }
+
+        $this->assertSame(BlockType::SyncedBlock, $originalBlock->metadata()->type);
+        $this->assertInstanceOf(SyncedBlock::class, $originalBlock);
+        $this->assertTrue($originalBlock->isOriginal());
+
+        $this->assertSame(BlockType::SyncedBlock, $referenceBlock->metadata()->type);
+        $this->assertInstanceOf(SyncedBlock::class, $referenceBlock);
+        $this->assertTrue($referenceBlock->isReference());
+        $this->assertSame($originalBlock->metadata()->id, $referenceBlock->originalBlockId());
+    }
+
     public function test_add_to_inexistent_block(): void
     {
         $client = Helper::client();
@@ -236,6 +267,7 @@ class BlocksTest extends TestCase
                 ToDo::fromString("To do item"),
                 Toggle::fromString("Toggle"),
                 LinkToPage::page(Helper::testPageId()),
+                // TODO: SyncedBlock
                 // TODO: Video
                 // TODO: ColumnList
             ]
