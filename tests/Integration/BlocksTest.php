@@ -22,6 +22,7 @@ use Notion\Blocks\NumberedListItem;
 use Notion\Blocks\Paragraph;
 use Notion\Blocks\SyncedBlock;
 use Notion\Blocks\TableOfContents;
+use Notion\Blocks\Template;
 use Notion\Blocks\ToDo;
 use Notion\Blocks\Toggle;
 use Notion\Common\RichText;
@@ -61,6 +62,8 @@ class BlocksTest extends TestCase
             Toggle::fromString("Toggle"),
             LinkToPage::page(Helper::testPageId()),
             SyncedBlock::createOriginal(Paragraph::fromString("Synced block content")),
+            Template::create(RichText::fromString("Template block"))
+                ->addChild(Paragraph::fromString("Child block")),
             // TODO: Video
             // TODO: Audio
             ColumnList::create(
@@ -224,6 +227,25 @@ class BlocksTest extends TestCase
         $this->assertInstanceOf(SyncedBlock::class, $referenceBlock);
         $this->assertTrue($referenceBlock->isReference());
         $this->assertSame($originalBlock->metadata()->id, $referenceBlock->originalBlockId());
+    }
+
+    public function test_add_template_block(): void
+    {
+        $client = Helper::client();
+
+        $template = Template::create(RichText::fromString("Template block"))
+            ->addChild(Paragraph::fromString("Child block"));
+
+        $blocks = $client->blocks()->append(Helper::testPageId(), [$template]);
+        $templateBlock = $blocks[0];
+
+        foreach ($blocks as $block) {
+            $client->blocks()->delete($block->metadata()->id);
+        }
+
+        $this->assertSame(BlockType::Template, $templateBlock->metadata()->type);
+        $this->assertInstanceOf(Template::class, $templateBlock);
+        $this->assertSame("Template block", $templateBlock->toString());
     }
 
     public function test_add_to_inexistent_block(): void
