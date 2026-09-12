@@ -8,4 +8,5 @@ enum FormulaType: string
     case Number = "number";
     case Boolean = "boolean";
     case Date = "date";
+    case Unsupported = "unsupported";
 }

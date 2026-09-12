@@ -13,6 +13,9 @@ use Notion\Pages\Properties\LastEditedTime;
 use Notion\Pages\Properties\PropertyInterface;
 use Notion\Pages\Properties\PropertyType;
 use Notion\Pages\Properties\UniqueId;
+use Notion\Pages\PropertyItems\PropertyItemFactory;
+use Notion\Pages\PropertyItems\PropertyItemInterface;
+use Notion\Pages\PropertyItems\PropertyItemList;
 
 /**
  * @psalm-import-type PageJson from Page
@@ -36,6 +39,31 @@ final readonly class Client
         $body = Http::sendRequest($request, $this->config);
 
         return Page::fromArray($body);
+    }
+
+    public function findProperty(
+        string $pageId,
+        string $propertyId,
+        string|null $startCursor = null,
+        int|null $pageSize = null,
+    ): PropertyItemInterface|PropertyItemList {
+        $url = "https://api.notion.com/v1/pages/{$pageId}/properties/{$propertyId}";
+        $queryParams = [];
+        if ($startCursor !== null) {
+            $queryParams["start_cursor"] = $startCursor;
+        }
+        if ($pageSize !== null) {
+            $queryParams["page_size"] = (string) $pageSize;
+        }
+        if (!empty($queryParams)) {
+            $url .= "?" . http_build_query($queryParams);
+        }
+
+        $request = Http::createRequest($url, $this->config);
+        /** @var array<string, mixed> $body */
+        $body = Http::sendRequest($request, $this->config);
+
+        return PropertyItemFactory::fromArray($body);
     }
 
     /** @param list<BlockInterface> $content */

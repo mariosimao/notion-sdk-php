@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support retrieving individual page properties (#446).
 - Support rollup data source properties (#445).
 - Support audio blocks (#444).
 - Add typed `Authentication` client and models for public OAuth integrations (#443).
