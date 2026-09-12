@@ -155,4 +155,80 @@ class RichTextTest extends TestCase
 
         $this->assertEquals($array, $richText->toArray());
     }
+
+    public function test_create_from_link_preview_mention(): void
+    {
+        $mention = Mention::linkPreview("https://notion.so");
+        $richText = RichText::fromMention($mention);
+
+        $this->assertNotNull($richText->mention);
+        $this->assertTrue($richText->mention->isLinkPreview());
+        $this->assertEquals("https://notion.so", $richText->mention->linkPreviewUrl);
+    }
+
+    public function test_create_from_template_mention(): void
+    {
+        $mention = Mention::today();
+        $richText = RichText::fromMention($mention);
+
+        $this->assertNotNull($richText->mention);
+        $this->assertTrue($richText->mention->isTemplateMention());
+        $this->assertNotNull($richText->mention->templateMention);
+        $this->assertTrue($richText->mention->templateMention->isDate());
+    }
+
+    public function test_link_preview_mention_array_conversion(): void
+    {
+        $array = [
+            "plain_text" => "",
+            "href" => null,
+            "annotations" => [
+                "bold"          => false,
+                "italic"        => false,
+                "strikethrough" => false,
+                "underline"     => false,
+                "code"          => false,
+                "color"         => "default",
+            ],
+            "type" => "mention",
+            "mention" => [
+                "type" => "link_preview",
+                "link_preview" => [ "url" => "https://notion.so" ],
+            ],
+        ];
+        $richText = RichText::fromArray($array);
+
+        $this->assertEquals($array, $richText->toArray());
+        $this->assertNotNull($richText->mention);
+        $this->assertTrue($richText->mention->isLinkPreview());
+    }
+
+    public function test_template_mention_array_conversion(): void
+    {
+        $array = [
+            "plain_text" => "@Today",
+            "href" => null,
+            "annotations" => [
+                "bold"          => false,
+                "italic"        => false,
+                "strikethrough" => false,
+                "underline"     => false,
+                "code"          => false,
+                "color"         => "default",
+            ],
+            "type" => "mention",
+            "mention" => [
+                "type" => "template_mention",
+                "template_mention" => [
+                    "type" => "template_mention_date",
+                    "template_mention_date" => "today",
+                ],
+            ],
+        ];
+        $richText = RichText::fromArray($array);
+
+        $this->assertEquals($array, $richText->toArray());
+        $this->assertNotNull($richText->mention);
+        $this->assertTrue($richText->mention->isTemplateMention());
+    }
 }
