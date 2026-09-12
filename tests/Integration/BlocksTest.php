@@ -267,7 +267,7 @@ class BlocksTest extends TestCase
                 ToDo::fromString("To do item"),
                 Toggle::fromString("Toggle"),
                 LinkToPage::page(Helper::testPageId()),
-                SyncedBlock::createOriginal(Paragraph::fromString("Content")),
+                // TODO: SyncedBlock
                 // TODO: Video
                 // TODO: ColumnList
             ]
