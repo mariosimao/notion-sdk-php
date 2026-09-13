@@ -71,6 +71,7 @@ $p = $p->changeChildren();
 | [Quote](./Quote.md)                    | ✔               |
 | [SyncedBlock](./SyncedBlock.md)         | ✔ (original)   |
 | TableOfContents                        | ❌              |
+| [Template](./Template.md)              | ✔               |
 | ToDo                                   | ✔               |
 | Toggle                                 | ✔               |
 | Video                                  | ❌              |

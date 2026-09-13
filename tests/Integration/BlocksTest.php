@@ -61,6 +61,7 @@ class BlocksTest extends TestCase
             Toggle::fromString("Toggle"),
             LinkToPage::page(Helper::testPageId()),
             SyncedBlock::createOriginal(Paragraph::fromString("Synced block content")),
+            // TODO: Template
             // TODO: Video
             // TODO: Audio
             ColumnList::create(
@@ -268,6 +269,7 @@ class BlocksTest extends TestCase
                 Toggle::fromString("Toggle"),
                 LinkToPage::page(Helper::testPageId()),
                 // TODO: SyncedBlock
+                // TODO: Template
                 // TODO: Video
                 // TODO: ColumnList
             ]
