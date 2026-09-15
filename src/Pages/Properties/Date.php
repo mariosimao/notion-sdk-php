@@ -3,6 +3,7 @@
 namespace Notion\Pages\Properties;
 
 use DateTimeImmutable;
+use DateTimeZone;
 use Notion\Common\Date as CommonDate;
 
 /**
@@ -11,7 +12,8 @@ use Notion\Common\Date as CommonDate;
  *      type: "date",
  *      date: array{
  *          start: string,
- *          end?: string,
+ *          end?: string|null,
+ *          time_zone?: string|null,
  *      }|null,
  * }
  *
@@ -25,18 +27,23 @@ final readonly class Date implements PropertyInterface
     ) {
     }
 
-    public static function create(DateTimeImmutable $date): self
-    {
+    public static function create(
+        DateTimeImmutable $date,
+        DateTimeZone|string|null $timeZone = null,
+    ): self {
         $property = PropertyMetadata::create("", PropertyType::Date);
 
-        return new self($property, CommonDate::create($date));
+        return new self($property, CommonDate::create($date, $timeZone));
     }
 
-    public static function createRange(DateTimeImmutable $start, DateTimeImmutable $end): self
-    {
+    public static function createRange(
+        DateTimeImmutable $start,
+        DateTimeImmutable $end,
+        DateTimeZone|string|null $timeZone = null,
+    ): self {
         $property = PropertyMetadata::create("", PropertyType::Date);
 
-        return new self($property, CommonDate::createRange($start, $end));
+        return new self($property, CommonDate::createRange($start, $end, $timeZone));
     }
 
     public static function createEmpty(): self
@@ -91,6 +98,16 @@ final readonly class Date implements PropertyInterface
         return new self($this->metadata, $this->date?->removeEnd());
     }
 
+    public function changeTimeZone(DateTimeZone|string|null $timeZone): self
+    {
+        return new self($this->metadata, $this->date?->changeTimeZone($timeZone));
+    }
+
+    public function removeTimeZone(): self
+    {
+        return new self($this->metadata, $this->date?->removeTimeZone());
+    }
+
     public function clear(): self
     {
         return new self($this->metadata, null);
@@ -104,6 +121,16 @@ final readonly class Date implements PropertyInterface
     public function end(): DateTimeImmutable|null
     {
         return $this->date?->end;
+    }
+
+    public function timeZone(): DateTimeZone|null
+    {
+        return $this->date?->timeZone;
+    }
+
+    public function hasTimeZone(): bool
+    {
+        return $this->date?->hasTimeZone() ?? false;
     }
 
     public function isRange(): bool
