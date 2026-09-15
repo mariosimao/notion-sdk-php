@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support named IANA time zones in date values (#451).
+  - Add `timeZone` property and support to `Notion\Common\Date`.
+  - Add `timeZone()` and `hasTimeZone()` to `Notion\Pages\Properties\Date` and `Notion\Pages\PropertyItems\DatePropertyItem`.
+  - Add `changeTimeZone()` and `removeTimeZone()` methods to `Notion\Common\Date` and `Notion\Pages\Properties\Date`.
+  - Add optional `$timeZone` parameter to `Date::create()`, `Date::createRange()`, `Date::now()`, `Notion\Pages\Properties\Date::create()`, and `Notion\Pages\Properties\Date::createRange()`.
+  - Add `Notion\Exceptions\DateException` for validating IANA time-zone names and enforcing Notion's documented incompatible date forms (UTC offsets and date-only strings are disallowed when a named time zone is specified).
+  - Automatically format dates without UTC offset when an explicit named time zone is provided, preserving the distinction between an explicit IANA zone and a UTC offset.
 - Support template blocks (#450).
 - Support synced blocks (#449).
 - Support link to page blocks (#448).
