@@ -121,6 +121,14 @@ export default defineConfig({
                 ],
             },
             {
+                text: 'Webhooks',
+                collapsible: true,
+                collapsed: true,
+                items: [
+                    { text: 'Introduction', link: '/webhooks/' },
+                ],
+            },
+            {
                 text: 'Advanced',
                 collapsible: true,
                 items: [
