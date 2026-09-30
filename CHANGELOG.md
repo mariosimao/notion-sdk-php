@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support the Singapore dollar number format (#456).
+  - New `Notion\DataSources\Properties\NumberFormat::SingaporeDollar` enum case, mapped to `singapore_dollar`.
 - Support template blocks (#450).
 - Support synced blocks (#449).
 - Support link to page blocks (#448).
