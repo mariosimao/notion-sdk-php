@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support verification page properties for wiki databases (#461).
+  - `Notion\Pages\Properties\Verification` exposes `state` (`VerificationState::Verified`, `Unverified` or `Expired`), the verification `date` and `verifiedBy` user.
+  - `PropertyFactory` now returns `Verification` instead of `Unknown` for `verification` properties.
 - Support template blocks (#450).
 - Support synced blocks (#449).
 - Support link to page blocks (#448).
@@ -20,6 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` accept `RelativeDate` instances in addition to `DateTimeImmutable`.
 
 ### Changed
+- **[BREAKING]** `verification` page properties are no longer parsed as `Notion\Pages\Properties\Unknown` (#461).
+  - `Page::getProperty()` and `PropertyFactory::fromArray()` now return `Notion\Pages\Properties\Verification`, and its `metadata()->type` is `PropertyType::Verification` instead of `PropertyType::Unknown`.
+  - **Migration instructions:**
+    - Replace `instanceof Unknown` checks and raw `toArray()["verification"]` access with the typed `Verification` model, e.g. `$page->getProperty("Verification")->state` or `->isVerified()`.
 - **[BREAKING]** Change `DateFilter` value from `string` to `DateTimeImmutable|RelativeDate` and remove `array` type (#199).
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` now accept `DateTimeImmutable|RelativeDate` instead of a raw `string`.
   - Removed `array` from the allowed types of the internal `$value` property and `value()` return type hint, which is now `DateTimeImmutable|RelativeDate|bool|stdClass`.

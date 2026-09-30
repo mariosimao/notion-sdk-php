@@ -25,5 +25,6 @@ enum PropertyType: string
     case Title = "title";
     case UniqueId = "unique_id";
     case Url = "url";
+    case Verification = "verification";
     case Unknown = "unknown";
 }
