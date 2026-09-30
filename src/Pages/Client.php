@@ -30,9 +30,13 @@ final readonly class Client
     ) {
     }
 
-    public function find(string $pageId): Page
+    /** @param list<string> $filterProperties Property IDs to include in the response */
+    public function find(string $pageId, array $filterProperties = []): Page
     {
         $url = "https://api.notion.com/v1/pages/{$pageId}";
+        if (!empty($filterProperties)) {
+            $url .= "?" . Http::filterPropertiesQuery($filterProperties);
+        }
         $request = Http::createRequest($url, $this->config);
 
         /** @psalm-var PageJson $body */

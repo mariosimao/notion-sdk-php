@@ -21,6 +21,7 @@ use Notion\DataSources\Query;
 use Notion\DataSources\Query\CompoundFilter;
 use Notion\DataSources\Query\DateFilter;
 use Notion\DataSources\Query\SelectFilter;
+use Notion\DataSources\Query\Sort;
 use Notion\DataSources\DataSource;
 use Notion\DataSources\DataSourceParent;
 use Notion\Exceptions\ApiException;
@@ -165,6 +166,32 @@ class DataSourcesTest extends TestCase
         $client->databases()->delete($database);
 
         $this->assertCount(1, $result->pages);
+    }
+
+    public function test_query_data_source_with_filter_properties(): void
+    {
+        $client = Helper::client();
+
+        $database = $this->newDatabase("Movies DB");
+        $dataSource = self::moviesDataSource($database->id);
+        $categoryId = $dataSource->properties()->get("Category")->metadata()->id;
+
+        $query = Query::create()
+            ->changeFilter(SelectFilter::property("Category")->equals("Drama"))
+            ->addSort(Sort::property("Release date")->ascending())
+            ->changePageSize(2)
+            ->changeFilterProperties("title", $categoryId);
+
+        $result = $client->dataSources()->query($dataSource, $query);
+
+        $client->databases()->delete($database);
+
+        $this->assertCount(2, $result->pages);
+        $this->assertTrue($result->hasMore);
+        $this->assertSame("A Clockwork Orange", $result->pages[0]->title()?->toString());
+        foreach ($result->pages as $page) {
+            $this->assertEqualsCanonicalizing(["Movies", "Category"], array_keys($page->properties));
+        }
     }
 
     public function test_query_inexistent_data_source(): void
