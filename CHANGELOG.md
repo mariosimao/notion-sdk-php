@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support meeting notes blocks with `MeetingNotes`, including title, status, calendar event, recording window and summary/notes/transcript child block IDs (#471).
+  - Blocks returned as `transcription` (API versions prior to `2026-03-11`) are also parsed as `MeetingNotes`.
 - Support template blocks (#450).
 - Support synced blocks (#449).
 - Support link to page blocks (#448).

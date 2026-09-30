@@ -65,6 +65,7 @@ $p = $p->changeChildren();
 | [Image](./Image)                       | ❌              |
 | [LinkPreview](./LinkPreview)           | ❌              |
 | [LinkToPage](./LinkToPage.md)           | ❌              |
+| [MeetingNotes](./MeetingNotes.md)       | ❌              |
 | [NumberedListItem](./NumberedListItem) | ✔               |
 | [Paragraph](./Paragraph)               | ✔               |
 | [PDF](./Pdf.md)                        | ❌              |
