@@ -10,6 +10,8 @@ use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
 use Notion\Databases\DatabaseParentType;
 use Notion\DataSources\Properties\Date;
+use Notion\DataSources\Properties\Number;
+use Notion\DataSources\Properties\NumberFormat;
 use Notion\DataSources\Properties\Relation;
 use Notion\DataSources\Properties\RichTextProperty;
 use Notion\DataSources\Properties\Rollup;
@@ -98,6 +100,27 @@ class DataSourcesTest extends TestCase
         $this->assertEquals("Total tasks", $retrievedRollup->metadata()->name);
         $this->assertSame(RollupFunction::Count, $retrievedRollup->function);
         $this->assertEquals("Tasks", $retrievedRollup->relationPropertyName);
+
+        $client->databases()->delete($database);
+    }
+
+    public function test_create_and_update_australian_dollar_number_property(): void
+    {
+        $database = $this->newDatabase();
+        $dataSource = $this->newDataSource($database->id);
+        $client = Helper::client();
+
+        $dataSource = $dataSource->addProperty(Number::create("Price", NumberFormat::AustralianDollar));
+        $dataSource = $client->dataSources()->update($dataSource);
+
+        $this->assertSame(NumberFormat::AustralianDollar, $dataSource->properties()->getNumber("Price")->format);
+
+        $cost = Number::create("Cost", NumberFormat::Dollar);
+        $dataSource = $client->dataSources()->update($dataSource->addProperty($cost));
+        $cost = $dataSource->properties()->getNumber("Cost")->changeFormat(NumberFormat::AustralianDollar);
+        $dataSource = $client->dataSources()->update($dataSource->changeProperty($cost));
+
+        $this->assertSame(NumberFormat::AustralianDollar, $dataSource->properties()->getNumber("Cost")->format);
 
         $client->databases()->delete($database);
     }
