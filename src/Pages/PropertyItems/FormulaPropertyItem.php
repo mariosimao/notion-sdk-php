@@ -92,7 +92,7 @@ final readonly class FormulaPropertyItem implements PropertyItemInterface
             : null;
         $boolean = isset($formula["boolean"]) && is_bool($formula["boolean"]) ? $formula["boolean"] : null;
 
-        /** @psalm-var array{start: string, end?: string|null}|null $dateArray */
+        /** @psalm-var array{start: string, end?: string|null, time_zone?: string|null}|null $dateArray */
         $dateArray = isset($formula["date"]) && is_array($formula["date"]) ? $formula["date"] : null;
         $date = $dateArray !== null ? Date::fromArray($dateArray) : null;
         $unsupported = $type === FormulaType::Unsupported;
