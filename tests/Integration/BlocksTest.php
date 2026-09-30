@@ -101,6 +101,38 @@ class BlocksTest extends TestCase
         $this->assertSame(BlockType::Heading1, $block->metadata()->type);
     }
 
+    public function test_find_block_parent(): void
+    {
+        $client = Helper::client();
+        $page = Helper::newPage()->changeTitle("Block parent test");
+
+        $content = [
+            Toggle::fromString("Toggle")->addChild(Paragraph::fromString("Nested paragraph")),
+        ];
+
+        $newPage = $client->pages()->create($page, $content);
+
+        $children = $client->blocks()->findChildrenRecursive($newPage->id);
+        $toggle = $children[0];
+        $this->assertInstanceOf(Toggle::class, $toggle);
+        $nested = $toggle->children[0];
+
+        $copies = $client->blocks()->append(Helper::testPageId(), $children);
+
+        $client->pages()->delete($newPage);
+        foreach ($copies as $copy) {
+            $client->blocks()->delete($copy->metadata()->id);
+        }
+
+        $this->assertTrue($toggle->metadata()->parent?->isPage());
+        $this->assertSame($newPage->id, $toggle->metadata()->parent->id);
+
+        $this->assertTrue($nested->metadata()->parent?->isBlock());
+        $this->assertSame($toggle->metadata()->id, $nested->metadata()->parent->id);
+
+        $this->assertTrue($copies[0]->metadata()->parent?->isPage());
+    }
+
     public function test_find_inexistent_block(): void
     {
         $client = Helper::client();

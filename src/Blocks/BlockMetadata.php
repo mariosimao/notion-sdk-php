@@ -7,6 +7,8 @@ use Notion\Exceptions\BlockException;
 use Notion\Common\Date;
 
 /**
+ * @psalm-import-type BlockParentJson from BlockParent
+ *
  * @psalm-type BlockMetadataJson = array{
  *      type: string,
  *      id: string,
@@ -14,6 +16,7 @@ use Notion\Common\Date;
  *      last_edited_time: string,
  *      in_trash: bool,
  *      has_children: bool,
+ *      parent?: BlockParentJson,
  * }
  *
  * @psalm-immutable
@@ -27,6 +30,7 @@ final readonly class BlockMetadata
         public bool $inTrash,
         public bool $hasChildren,
         public BlockType $type,
+        public BlockParent|null $parent = null,
         private string|null $unknownType = null
     ) {
         /** @psalm-suppress DeprecatedProperty */
@@ -63,6 +67,7 @@ final readonly class BlockMetadata
             $array["in_trash"],
             $array["has_children"],
             $type,
+            isset($array["parent"]) ? BlockParent::fromArray($array["parent"]) : null,
             $type === BlockType::Unknown ? $array["type"] : null,
         );
     }
@@ -85,6 +90,10 @@ final readonly class BlockMetadata
             $array["id"] = $this->id;
         }
 
+        if ($this->parent !== null) {
+            $array["parent"] = $this->parent->toArray();
+        }
+
         return $array;
     }
 
@@ -98,6 +107,8 @@ final readonly class BlockMetadata
             true,
             $this->hasChildren,
             $this->type,
+            $this->parent,
+            $this->unknownType,
         );
     }
 
@@ -111,6 +122,8 @@ final readonly class BlockMetadata
             false,
             $this->hasChildren,
             $this->type,
+            $this->parent,
+            $this->unknownType,
         );
     }
 
@@ -124,6 +137,8 @@ final readonly class BlockMetadata
             $this->inTrash,
             $hasChildren,
             $this->type,
+            $this->parent,
+            $this->unknownType,
         );
     }
 
@@ -136,6 +151,8 @@ final readonly class BlockMetadata
             $this->inTrash,
             $this->hasChildren,
             $this->type,
+            $this->parent,
+            $this->unknownType,
         );
     }
 
