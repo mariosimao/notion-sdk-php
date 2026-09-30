@@ -3,6 +3,8 @@
 namespace Notion\Test\Integration;
 
 use Notion\Common\Emoji;
+use Notion\Databases\Database;
+use Notion\Databases\DatabaseParent;
 use Notion\Exceptions\ApiException;
 use Notion\Pages\Page;
 use Notion\Pages\PageParent;
@@ -97,6 +99,52 @@ class PagesTest extends TestCase
         $this->assertSame("Page with title to retrieve", $firstItem->title->plainText);
 
         $client->pages()->delete($page);
+    }
+
+    public function test_move_page_to_another_page(): void
+    {
+        $client = Helper::client();
+
+        $newParent = $client->pages()->create(Helper::newPage()->changeTitle("New parent"));
+        $page = $client->pages()->create(Helper::newPage()->changeTitle("Page to move"));
+
+        $movedPage = $client->pages()->move($page->id, PageParent::page($newParent->id));
+
+        $this->assertSame($page->id, $movedPage->id);
+        $this->assertTrue($movedPage->parent->isPage());
+        $this->assertSame($newParent->id, $movedPage->parent->id);
+
+        $client->pages()->delete($newParent);
+    }
+
+    public function test_move_page_to_data_source(): void
+    {
+        $client = Helper::client();
+
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()))
+            ->changeTitle("Move destination");
+        $database = $client->databases()->create($database);
+        $dataSourceId = $database->dataSources[0]->id;
+        $page = $client->pages()->create(Helper::newPage()->changeTitle("Page to move"));
+
+        $movedPage = $client->pages()->move($page->id, PageParent::dataSource($dataSourceId));
+
+        $this->assertSame($page->id, $movedPage->id);
+        $this->assertTrue($movedPage->parent->isDataSource());
+        $this->assertSame($dataSourceId, $movedPage->parent->id);
+
+        $client->databases()->delete($database);
+    }
+
+    public function test_move_inexistent_page(): void
+    {
+        $client = Helper::client();
+
+        $this->expectException(ApiException::class);
+        $client->pages()->move(
+            "60e79d42-4742-41ca-8d70-cc51660cbd3c",
+            PageParent::page(Helper::testPageId()),
+        );
     }
 
     public function test_find_inexistent_property(): void

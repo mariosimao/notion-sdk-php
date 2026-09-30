@@ -137,6 +137,27 @@ final readonly class Client
         return Page::fromArray($body);
     }
 
+    public function move(string $pageId, PageParent $parent): Page
+    {
+        $parentData = $parent->toArray();
+        if ($parent->isDataSource()) {
+            unset($parentData["database_id"]);
+        }
+
+        $data = json_encode(["parent" => $parentData]);
+
+        $url = "https://api.notion.com/v1/pages/{$pageId}/move";
+        $request = Http::createRequest($url, $this->config)
+            ->withMethod("POST")
+            ->withHeader("Content-Type", "application/json");
+        $request->getBody()->write($data);
+
+        /** @psalm-var PageJson $body */
+        $body = Http::sendRequest($request, $this->config);
+
+        return Page::fromArray($body);
+    }
+
     public function delete(Page $page): Page
     {
         $archivedPage = $page->delete();

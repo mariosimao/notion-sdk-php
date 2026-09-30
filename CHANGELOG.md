@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support moving a page to a new page or data source parent with `Pages\Client::move()` (#466).
 - Support template blocks (#450).
 - Support synced blocks (#449).
 - Support link to page blocks (#448).
