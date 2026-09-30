@@ -66,8 +66,12 @@ final readonly class Client
         return PropertyItemFactory::fromArray($body);
     }
 
-    /** @param list<BlockInterface> $content */
-    public function create(Page $page, array $content = []): Page
+    /**
+     * Content cannot be combined with a template other than `PageTemplate::none()`.
+     *
+     * @param list<BlockInterface> $content
+     */
+    public function create(Page $page, array $content = [], PageTemplate|null $template = null): Page
     {
         $data = [
             "in_trash" => $page->inTrash,
@@ -75,8 +79,15 @@ final readonly class Client
             "cover" => $page->cover?->toArray(),
             "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $page->properties),
             "parent" => $page->parent->toArray(),
-            "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $content),
         ];
+
+        if (!empty($content)) {
+            $data["children"] = array_map(fn(BlockInterface $b) => $b->toArray(), $content);
+        }
+
+        if ($template !== null) {
+            $data["template"] = $template->toArray();
+        }
 
         if ($page->parent->isDataSource()) {
             unset($data["parent"]["database_id"]);
@@ -96,7 +107,11 @@ final readonly class Client
         return Page::fromArray($body);
     }
 
-    public function update(Page $page): Page
+    /**
+     * @param PageTemplate|null $template Template merged into the page. `PageTemplate::none()` is not allowed.
+     * @param bool $eraseContent Irreversibly delete all page content before applying the template (if any).
+     */
+    public function update(Page $page, PageTemplate|null $template = null, bool $eraseContent = false): Page
     {
         $notUpdatableProps = [
             PropertyType::CreatedBy,
@@ -121,6 +136,14 @@ final readonly class Client
             "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $updatableProps),
             "parent" => $page->parent->toArray(),
         ];
+
+        if ($template !== null) {
+            $data["template"] = $template->toArray();
+        }
+
+        if ($eraseContent) {
+            $data["erase_content"] = true;
+        }
 
         $data = json_encode($data);
 

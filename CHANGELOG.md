@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support creating and updating pages from data source templates (#468).
+  - Add `DataSources\Client::listTemplates()` returning a paginated `Notion\DataSources\TemplateList` of `Notion\DataSources\Template` (optionally filtered by name).
+  - Add `Notion\Pages\PageTemplate` (`none()`, `default()`, `fromId()`, `fromTemplate()`) with optional IANA timezone to resolve template variables.
+  - `Pages\Client::create()` accepts an optional `$template` argument.
+  - `Pages\Client::update()` accepts optional `$template` and `$eraseContent` arguments.
 - Support template blocks (#450).
 - Support synced blocks (#449).
 - Support link to page blocks (#448).
@@ -20,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` accept `RelativeDate` instances in addition to `DateTimeImmutable`.
 
 ### Changed
+- `Pages\Client::create()` no longer sends an empty `children` array when no content is given (#468).
 - **[BREAKING]** Change `DateFilter` value from `string` to `DateTimeImmutable|RelativeDate` and remove `array` type (#199).
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` now accept `DateTimeImmutable|RelativeDate` instead of a raw `string`.
   - Removed `array` from the allowed types of the internal `$value` property and `value()` return type hint, which is now `DateTimeImmutable|RelativeDate|bool|stdClass`.
