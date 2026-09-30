@@ -178,6 +178,41 @@ class DataSourcesTest extends TestCase
         $client->dataSources()->query($dataSource, $query);
     }
 
+    public function test_list_templates_of_data_source_without_templates(): void
+    {
+        $database = $this->newDatabase();
+        $dataSource = $this->newDataSource($database->id);
+        $client = Helper::client();
+
+        $templates = $client->dataSources()->listTemplates($dataSource->id, pageSize: 10);
+
+        $client->databases()->delete($database);
+
+        $this->assertEmpty($templates->templates);
+        $this->assertFalse($templates->hasMore);
+        $this->assertNull($templates->nextCursor);
+        $this->assertNull($templates->defaultTemplate());
+    }
+
+    public function test_list_templates_filtered_by_name(): void
+    {
+        $database = $this->newDatabase();
+        $dataSource = $this->newDataSource($database->id);
+        $client = Helper::client();
+
+        $templates = $client->dataSources()->listTemplates($dataSource->id, name: "Inexistent template");
+
+        $client->databases()->delete($database);
+
+        $this->assertEmpty($templates->templates);
+    }
+
+    public function test_list_templates_of_inexistent_data_source(): void
+    {
+        $this->expectException(ApiException::class);
+        Helper::client()->dataSources()->listTemplates("60e79d42-4742-41ca-8d70-cc51660cbd3c");
+    }
+
     private static function moviesDataSource(string $databaseId): DataSource
     {
         $categories = [

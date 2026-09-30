@@ -2,10 +2,12 @@
 
 namespace Notion\Test\Integration;
 
+use Notion\Blocks\Paragraph;
 use Notion\Common\Emoji;
 use Notion\Exceptions\ApiException;
 use Notion\Pages\Page;
 use Notion\Pages\PageParent;
+use Notion\Pages\PageTemplate;
 use Notion\Pages\PropertyItems\PropertyItemList;
 use Notion\Pages\PropertyItems\TitlePropertyItem;
 use PHPUnit\Framework\TestCase;
@@ -95,6 +97,78 @@ class PagesTest extends TestCase
         $firstItem = $property->results[0];
         $this->assertInstanceOf(TitlePropertyItem::class, $firstItem);
         $this->assertSame("Page with title to retrieve", $firstItem->title->plainText);
+
+        $client->pages()->delete($page);
+    }
+
+    public function test_create_page_from_template(): void
+    {
+        $client = Helper::client();
+
+        $templatePage = $client->pages()->create(
+            Helper::newPage()->changeTitle("Template page"),
+            [ Paragraph::fromString("Template content") ],
+        );
+
+        $page = Helper::newPage()->changeTitle("Page from template");
+        $template = PageTemplate::fromId($templatePage->id, "America/New_York");
+        $page = $client->pages()->create($page, template: $template);
+
+        $this->assertNotEmpty($page->id);
+
+        $client->pages()->delete($page);
+        $client->pages()->delete($templatePage);
+    }
+
+    public function test_create_page_without_template(): void
+    {
+        $client = Helper::client();
+
+        $page = Helper::newPage()->changeTitle("Page without template");
+        $page = $client->pages()->create($page, template: PageTemplate::none());
+
+        $this->assertEquals("Page without template", $page->title()?->toString());
+
+        $client->pages()->delete($page);
+    }
+
+    public function test_apply_template_to_existing_page(): void
+    {
+        $client = Helper::client();
+
+        $templatePage = $client->pages()->create(
+            Helper::newPage()->changeTitle("Template page"),
+            [ Paragraph::fromString("Template content") ],
+        );
+        $page = $client->pages()->create(
+            Helper::newPage()->changeTitle("Page to apply template"),
+            [ Paragraph::fromString("Content to be erased") ],
+        );
+
+        $page = $client->pages()->update(
+            $page,
+            template: PageTemplate::fromId($templatePage->id),
+            eraseContent: true,
+        );
+
+        $this->assertEquals("Page to apply template", $page->title()?->toString());
+
+        $client->pages()->delete($page);
+        $client->pages()->delete($templatePage);
+    }
+
+    public function test_erase_page_content(): void
+    {
+        $client = Helper::client();
+
+        $page = $client->pages()->create(
+            Helper::newPage()->changeTitle("Page to erase"),
+            [ Paragraph::fromString("Content to be erased") ],
+        );
+
+        $page = $client->pages()->update($page, eraseContent: true);
+
+        $this->assertEmpty($client->blocks()->findChildren($page->id));
 
         $client->pages()->delete($page);
     }

@@ -53,3 +53,34 @@ $content = [
 
 $page = $notion->pages()->create($page, $content);
 ```
+
+## Page from a template
+
+Templates are applied asynchronously by Notion, so the returned page is initially blank.
+Content cannot be combined with a template.
+
+```php
+<?php
+
+use Notion\Notion;
+use Notion\Pages\Page;
+use Notion\Pages\PageParent;
+use Notion\Pages\PageTemplate;
+
+$token = $_ENV["NOTION_SECRET"];
+$notion = Notion::create($token);
+
+$dataSourceId = "c986d7b0-7051-4f18-b165-cc0b9503ffc2";
+$templates = $notion->dataSources()->listTemplates($dataSourceId, name: "Bug report");
+
+$page = Page::create(PageParent::dataSource($dataSourceId))
+            ->changeTitle("Login button does not work");
+
+// A specific template
+$template = PageTemplate::fromTemplate($templates->templates[0]);
+
+// Or the data source default template, resolving `@now` and `@today` in a given timezone
+$template = PageTemplate::default("America/New_York");
+
+$page = $notion->pages()->create($page, template: $template);
+```

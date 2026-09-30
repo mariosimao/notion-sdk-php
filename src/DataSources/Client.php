@@ -11,6 +11,7 @@ use Notion\Pages\Page;
 /**
  * @psalm-import-type DataSourceJson from DataSource
  * @psalm-import-type QueryResultJson from Result
+ * @psalm-import-type TemplateListJson from TemplateList
  */
 final readonly class Client
 {
@@ -77,6 +78,36 @@ final readonly class Client
         $body = Http::sendRequest($request, $this->config);
 
         return DataSource::fromArray($body);
+    }
+
+    public function listTemplates(
+        string $dataSourceId,
+        string|null $name = null,
+        string|null $startCursor = null,
+        int|null $pageSize = null,
+    ): TemplateList {
+        $queryParams = [];
+        if ($name !== null) {
+            $queryParams["name"] = $name;
+        }
+        if ($startCursor !== null) {
+            $queryParams["start_cursor"] = $startCursor;
+        }
+        if ($pageSize !== null) {
+            $queryParams["page_size"] = (string) $pageSize;
+        }
+
+        $url = "https://api.notion.com/v1/data_sources/{$dataSourceId}/templates";
+        if (!empty($queryParams)) {
+            $url .= "?" . http_build_query($queryParams);
+        }
+
+        $request = Http::createRequest($url, $this->config);
+
+        /** @psalm-var TemplateListJson $body */
+        $body = Http::sendRequest($request, $this->config);
+
+        return TemplateList::fromArray($body);
     }
 
     public function delete(DataSource $dataSource): void
