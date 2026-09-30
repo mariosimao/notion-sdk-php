@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support the markdown content API (#470).
+  - `Pages\Client::createFromMarkdown()` creates a page with enhanced-markdown content.
+  - `Pages\Client::findMarkdown()` retrieves a page (or unknown block subtree) as markdown, with an optional `includeTranscript` flag.
+  - `Pages\Client::updateMarkdown()` applies `InsertContent` (append, `atStart()`, `atEnd()`, `after()`), `ReplaceContentRange`, `UpdateContent` and `ReplaceContent` commands from the `Notion\Pages\Markdown` namespace.
+  - Markdown responses are returned as `Notion\Pages\Markdown\PageMarkdown`.
 - Support template blocks (#450).
 - Support synced blocks (#449).
 - Support link to page blocks (#448).
