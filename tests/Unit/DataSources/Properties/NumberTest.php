@@ -42,4 +42,20 @@ class NumberTest extends TestCase
 
         $this->assertEquals(NumberFormat::Euro, $price->format);
     }
+
+    public function test_singapore_dollar_format(): void
+    {
+        $array = [
+            "id"    => "abc",
+            "name"  => "Price",
+            "type"  => "number",
+            "number" => [
+                "format" => "singapore_dollar",
+            ],
+        ];
+        $number = Number::fromArray($array);
+
+        $this->assertEquals(NumberFormat::SingaporeDollar, $number->format);
+        $this->assertEquals($array, $number->toArray());
+    }
 }
