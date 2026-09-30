@@ -61,14 +61,19 @@ final readonly class Client
 
     /**
      * @param BlockInterface[] $blocks
+     * @param string|null $after ID of an existing child block after which the new blocks are inserted
      *
      * @return BlockInterface[] Newly created blocks
      */
-    public function append(string $blockId, array $blocks): array
+    public function append(string $blockId, array $blocks, string|null $after = null): array
     {
-        $data = json_encode([
+        $payload = [
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $blocks),
-        ]);
+        ];
+        if ($after !== null) {
+            $payload["after"] = $after;
+        }
+        $data = json_encode($payload);
 
         $url = "https://api.notion.com/v1/blocks/{$blockId}/children";
         $request = Http::createRequest($url, $this->config)
