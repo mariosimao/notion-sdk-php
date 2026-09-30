@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support integration webhooks (#463).
+  - `Notion\Webhooks\Signature::verify()` validates `X-Notion-Signature` headers against the raw request body and verification token using a constant-time comparison.
+  - `Notion\Webhooks\Signature::sign()` generates signatures for testing webhook handlers.
+  - `Notion\Webhooks\Event::fromJson()` parses webhook payloads into typed events for every page, database, data source, comment, file upload, and view event type.
+  - Event-specific data is exposed through `Notion\Webhooks\Data` classes, and unknown event types throw `Notion\Exceptions\WebhookException`.
 - Support template blocks (#450).
 - Support synced blocks (#449).
 - Support link to page blocks (#448).
