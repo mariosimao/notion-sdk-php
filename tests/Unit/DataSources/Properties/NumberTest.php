@@ -36,6 +36,22 @@ class NumberTest extends TestCase
         $this->assertEquals($array, $fromFactory->toArray());
     }
 
+    public function test_australian_dollar_array_conversion(): void
+    {
+        $array = [
+            "id"    => "abc",
+            "name"  => "Price",
+            "type"  => "number",
+            "number" => [
+                "format" => "australian_dollar",
+            ],
+        ];
+        $number = Number::fromArray($array);
+
+        $this->assertEquals(NumberFormat::AustralianDollar, $number->format);
+        $this->assertEquals($array, $number->toArray());
+    }
+
     public function test_change_format(): void
     {
         $price = Number::create("Price", NumberFormat::Dollar)->changeFormat(NumberFormat::Euro);
