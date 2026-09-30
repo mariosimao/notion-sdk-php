@@ -36,6 +36,7 @@ use Notion\DataSources\Properties\Title;
  *      parent: DataSourceParentJson,
  *      database_parent?: DatabaseParentJson|null,
  *      url: string,
+ *      public_url?: string|null,
  * }
  *
  * @psalm-immutable
@@ -58,6 +59,7 @@ final readonly class DataSource
         public array $properties,
         public DataSourceParent $parent,
         public string $url,
+        public string|null $publicUrl,
         public DatabaseParent|null $databaseParent = null,
     ) {
     }
@@ -77,6 +79,7 @@ final readonly class DataSource
             [ "Title" => Title::create() ],
             $parent,
             "",
+            null,
             null,
         );
     }
@@ -141,6 +144,7 @@ final readonly class DataSource
             $properties,
             $parent,
             $array["url"],
+            $array["public_url"] ?? null,
             $databaseParent,
         );
     }
@@ -160,6 +164,7 @@ final readonly class DataSource
             "parent"           => $this->parent->toArray(),
             "database_parent"  => $this->databaseParent?->toArray(),
             "url"              => $this->url,
+            "public_url"       => $this->publicUrl,
         ];
     }
 
@@ -184,6 +189,8 @@ final readonly class DataSource
             $this->properties,
             $this->parent,
             $this->url,
+            $this->publicUrl,
+            $this->databaseParent,
         );
     }
 
@@ -200,6 +207,8 @@ final readonly class DataSource
             $this->properties,
             $this->parent,
             $this->url,
+            $this->publicUrl,
+            $this->databaseParent,
         );
     }
 
@@ -221,6 +230,7 @@ final readonly class DataSource
             $this->properties,
             $this->parent,
             $this->url,
+            $this->publicUrl,
             $this->databaseParent,
         );
     }
@@ -238,6 +248,7 @@ final readonly class DataSource
             $this->properties,
             $this->parent,
             $this->url,
+            $this->publicUrl,
             $this->databaseParent,
         );
     }
@@ -263,6 +274,7 @@ final readonly class DataSource
             $this->properties,
             $this->parent,
             $this->url,
+            $this->publicUrl,
             $this->databaseParent,
         );
     }
@@ -280,6 +292,7 @@ final readonly class DataSource
             $this->properties,
             $this->parent,
             $this->url,
+            $this->publicUrl,
             $this->databaseParent,
         );
     }
@@ -302,6 +315,7 @@ final readonly class DataSource
             $this->properties()->add($property)->getAll(),
             $this->parent,
             $this->url,
+            $this->publicUrl,
             $this->databaseParent,
         );
     }
@@ -319,6 +333,7 @@ final readonly class DataSource
             $this->properties()->remove($propertyName)->getAll(),
             $this->parent,
             $this->url,
+            $this->publicUrl,
             $this->databaseParent,
         );
     }
@@ -336,6 +351,7 @@ final readonly class DataSource
             $this->properties()->change($property)->getAll(),
             $this->parent,
             $this->url,
+            $this->publicUrl,
             $this->databaseParent,
         );
     }
@@ -354,6 +370,7 @@ final readonly class DataSource
             PropertyCollection::create(...$properties)->getAll(),
             $this->parent,
             $this->url,
+            $this->publicUrl,
             $this->databaseParent,
         );
     }
@@ -371,6 +388,7 @@ final readonly class DataSource
             $this->properties,
             $parent,
             $this->url,
+            $this->publicUrl,
             $this->databaseParent,
         );
     }

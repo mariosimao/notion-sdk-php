@@ -25,6 +25,7 @@ class DatabasesTest extends TestCase
         $databaseFound = $client->databases()->find($database->id);
 
         $this->assertEquals("Empty database", $database->title[0]->plainText);
+        $this->assertSame($database->publicUrl, $databaseFound->publicUrl);
         if ($databaseFound->icon?->isEmoji()) {
             $this->assertEquals("🌻", $databaseFound->icon->emoji?->emoji);
         }

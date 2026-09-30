@@ -38,6 +38,7 @@ final readonly class Client
     {
         $data = $database->toArray();
         unset($data["id"]);
+        unset($data["public_url"]);
         if ($database->icon === null) {
             unset($data["icon"]);
         }
@@ -72,6 +73,7 @@ final readonly class Client
         unset($data["created_time"]);
         unset($data["last_edited_time"]);
         unset($data["url"]);
+        unset($data["public_url"]);
         unset($data["data_sources"]);
         if ($database->icon === null) {
             unset($data["icon"]);

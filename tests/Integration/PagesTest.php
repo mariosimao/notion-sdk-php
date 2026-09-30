@@ -25,6 +25,7 @@ class PagesTest extends TestCase
         $pageFound = $client->pages()->find($page->id);
 
         $this->assertEquals("Empty page", $page->title()?->toString());
+        $this->assertSame($page->publicUrl, $pageFound->publicUrl);
 
         if ($pageFound->icon?->isEmoji()) {
             $this->assertEquals("⭐", $pageFound->icon->emoji?->emoji);

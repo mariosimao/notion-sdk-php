@@ -29,6 +29,7 @@ use Notion\Pages\Properties\Title;
  *      properties: array<string, PropertyMetadataJson>,
  *      parent: PageParentJson,
  *      url: string,
+ *      public_url?: string|null,
  * }
  *
  * @psalm-immutable
@@ -47,7 +48,8 @@ final readonly class Page
         public File|null $cover,
         public array $properties,
         public PageParent $parent,
-        public string $url
+        public string $url,
+        public string|null $publicUrl,
     ) {
         /** @psalm-suppress DeprecatedProperty */
         $this->archived = $inTrash;
@@ -63,7 +65,7 @@ final readonly class Page
     {
         $now = new DateTimeImmutable("now");
 
-        return new self("", $now, $now, false, null, null, [], $parent, "");
+        return new self("", $now, $now, false, null, null, [], $parent, "", null);
     }
 
 
@@ -111,6 +113,7 @@ final readonly class Page
             $properties,
             $parent,
             $array["url"],
+            $array["public_url"] ?? null,
         );
     }
 
@@ -127,6 +130,7 @@ final readonly class Page
             "properties"       => array_map(fn($p) => $p->toArray(), $this->properties),
             "parent"           => $this->parent->toArray(),
             "url"              => $this->url,
+            "public_url"       => $this->publicUrl,
         ];
     }
 
@@ -150,6 +154,7 @@ final readonly class Page
             $this->properties,
             $this->parent,
             $this->url,
+            $this->publicUrl,
         );
     }
 
@@ -174,6 +179,7 @@ final readonly class Page
             $this->properties,
             $this->parent,
             $this->url,
+            $this->publicUrl,
         );
     }
 
@@ -206,6 +212,7 @@ final readonly class Page
             $this->properties,
             $this->parent,
             $this->url,
+            $this->publicUrl,
         );
     }
 
@@ -221,6 +228,7 @@ final readonly class Page
             $this->properties,
             $this->parent,
             $this->url,
+            $this->publicUrl,
         );
     }
 
@@ -236,6 +244,7 @@ final readonly class Page
             $this->properties,
             $this->parent,
             $this->url,
+            $this->publicUrl,
         );
     }
 
@@ -251,6 +260,7 @@ final readonly class Page
             $this->properties,
             $this->parent,
             $this->url,
+            $this->publicUrl,
         );
     }
 
@@ -276,6 +286,7 @@ final readonly class Page
             $this->properties()->add($name, $property)->getAll(),
             $this->parent,
             $this->url,
+            $this->publicUrl,
         );
     }
 
@@ -292,6 +303,7 @@ final readonly class Page
             PropertyCollection::create($properties)->getAll(),
             $this->parent,
             $this->url,
+            $this->publicUrl,
         );
     }
 
@@ -320,6 +332,7 @@ final readonly class Page
             $this->properties,
             $parent,
             $this->url,
+            $this->publicUrl,
         );
     }
 }

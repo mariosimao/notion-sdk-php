@@ -30,6 +30,7 @@ use Notion\Exceptions\DatabaseException;
  *      cover: FileJson|null,
  *      parent: DatabaseParentJson,
  *      url: string,
+ *      public_url?: string|null,
  *      is_inline: bool,
  * }
  *
@@ -54,6 +55,7 @@ final readonly class Database
         public File|null $cover,
         public DatabaseParent $parent,
         public string $url,
+        public string|null $publicUrl,
         public bool $isInline,
     ) {
         if ($cover !== null && $cover->isInternal()) {
@@ -77,6 +79,7 @@ final readonly class Database
             null,
             $parent,
             "",
+            null,
             false,
         );
     }
@@ -142,6 +145,7 @@ final readonly class Database
             $cover,
             $parent,
             $array["url"],
+            $array["public_url"] ?? null,
             $array["is_inline"],
         );
     }
@@ -161,6 +165,7 @@ final readonly class Database
             "cover"            => $this->cover?->toArray(),
             "parent"           => $this->parent->toArray(),
             "url"              => $this->url,
+            "public_url"       => $this->publicUrl,
             "is_inline"        => $this->isInline,
         ];
     }
@@ -187,6 +192,7 @@ final readonly class Database
             $this->cover,
             $this->parent,
             $this->url,
+            $this->publicUrl,
             $this->isInline,
         );
     }
@@ -205,6 +211,7 @@ final readonly class Database
             $this->cover,
             $this->parent,
             $this->url,
+            $this->publicUrl,
             $this->isInline,
         );
     }
@@ -223,6 +230,7 @@ final readonly class Database
             $this->cover,
             $this->parent,
             $this->url,
+            $this->publicUrl,
             $this->isInline,
         );
     }
@@ -241,6 +249,7 @@ final readonly class Database
             $this->cover,
             $this->parent,
             $this->url,
+            $this->publicUrl,
             $this->isInline,
         );
     }
@@ -267,6 +276,7 @@ final readonly class Database
             $this->cover,
             $this->parent,
             $this->url,
+            $this->publicUrl,
             $this->isInline,
         );
     }
@@ -285,6 +295,7 @@ final readonly class Database
             $this->cover,
             $this->parent,
             $this->url,
+            $this->publicUrl,
             $this->isInline,
         );
     }
@@ -303,6 +314,7 @@ final readonly class Database
             $cover,
             $this->parent,
             $this->url,
+            $this->publicUrl,
             $this->isInline,
         );
     }
@@ -321,6 +333,7 @@ final readonly class Database
             null,
             $this->parent,
             $this->url,
+            $this->publicUrl,
             $this->isInline,
         );
     }
@@ -339,6 +352,7 @@ final readonly class Database
             $this->cover,
             $parent,
             $this->url,
+            $this->publicUrl,
             $this->isInline,
         );
     }
@@ -357,6 +371,7 @@ final readonly class Database
             $this->cover,
             $this->parent,
             $this->url,
+            $this->publicUrl,
             true,
         );
     }
@@ -375,6 +390,7 @@ final readonly class Database
             $this->cover,
             $this->parent,
             $this->url,
+            $this->publicUrl,
             false,
         );
     }

@@ -187,10 +187,15 @@ class DataSourceTest extends TestCase
             ],
             "database_parent" => null,
             "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+            "public_url" => "https://my-workspace.notion.site/a7e80c0ba76643c3a9e921ce94595e0e",
         ];
         $dataSource = DataSource::fromArray($array);
 
         $this->assertEquals($array, $dataSource->toArray());
+        $this->assertSame(
+            "https://my-workspace.notion.site/a7e80c0ba76643c3a9e921ce94595e0e",
+            $dataSource->archive()->publicUrl,
+        );
         $this->assertSame("a7e80c0b-a766-43c3-a9e9-21ce94595e0e", $dataSource->id);
         $this->assertSame("https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e", $dataSource->url);
         $this->assertEquals(
@@ -246,6 +251,7 @@ class DataSourceTest extends TestCase
         ];
         $database = DataSource::fromArray($array);
 
+        $this->assertNull($database->publicUrl);
         if ($database->icon?->isEmoji()) {
             $this->assertEquals("⭐", $database->icon->emoji?->emoji);
         }
