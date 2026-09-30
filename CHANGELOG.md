@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support bot workspace names (#454).
+  - New nullable `Notion\Users\Bot::$workspaceName` property, parsed from and serialized to `workspace_name`.
+  - It holds the owning workspace name for workspace-owned bots and is `null` for user-owned bots.
 - Support template blocks (#450).
 - Support synced blocks (#449).
 - Support link to page blocks (#448).
