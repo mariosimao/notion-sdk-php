@@ -2,10 +2,13 @@
 
 namespace Notion\Test\Integration;
 
+use Notion\Blocks\ChildPage;
+use Notion\Blocks\Paragraph;
 use Notion\Common\Emoji;
 use Notion\Exceptions\ApiException;
 use Notion\Pages\Page;
 use Notion\Pages\PageParent;
+use Notion\Pages\PagePosition;
 use Notion\Pages\PropertyItems\PropertyItemList;
 use Notion\Pages\PropertyItems\TitlePropertyItem;
 use PHPUnit\Framework\TestCase;
@@ -31,6 +34,41 @@ class PagesTest extends TestCase
         }
 
         $client->pages()->delete($page);
+    }
+
+    public function test_create_page_with_position(): void
+    {
+        $client = Helper::client();
+
+        $parent = $client->pages()->create(
+            Helper::newPage()->changeTitle("Page with positioned children"),
+            [Paragraph::fromString("First"), Paragraph::fromString("Second")],
+        );
+        $parentId = PageParent::page($parent->id);
+        $firstParagraphId = $client->blocks()->findChildren($parent->id)[0]->metadata()->id;
+
+        $client->pages()->create(
+            Page::create($parentId)->changeTitle("End"),
+            position: PagePosition::pageEnd(),
+        );
+        $client->pages()->create(
+            Page::create($parentId)->changeTitle("Start"),
+            position: PagePosition::pageStart(),
+        );
+        $client->pages()->create(
+            Page::create($parentId)->changeTitle("After first"),
+            position: PagePosition::afterBlock($firstParagraphId),
+        );
+
+        $children = $client->blocks()->findChildren($parent->id);
+        $order = array_map(
+            fn($b) => $b instanceof ChildPage ? $b->title : ($b instanceof Paragraph ? $b->toString() : ""),
+            $children,
+        );
+
+        $this->assertSame(["Start", "First", "After first", "Second", "End"], $order);
+
+        $client->pages()->delete($parent);
     }
 
     public function test_find_page(): void

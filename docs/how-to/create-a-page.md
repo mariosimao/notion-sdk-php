@@ -53,3 +53,26 @@ $content = [
 
 $page = $notion->pages()->create($page, $content);
 ```
+
+## Page at a specific position
+
+When the parent is a page, choose where the new page is inserted with
+`PagePosition::pageStart()`, `PagePosition::pageEnd()`, or
+`PagePosition::afterBlock($blockId)`.
+
+```php
+<?php
+
+use Notion\Notion;
+use Notion\Pages\Page;
+use Notion\Pages\PageParent;
+use Notion\Pages\PagePosition;
+
+$token = $_ENV["NOTION_SECRET"];
+$notion = Notion::create($token);
+
+$parent = PageParent::page("c986d7b0-7051-4f18-b165-cc0b9503ffc2");
+$page = Page::create($parent)->changeTitle("Pinned page");
+
+$page = $notion->pages()->create($page, position: PagePosition::pageStart());
+```

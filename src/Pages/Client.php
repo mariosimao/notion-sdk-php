@@ -67,7 +67,7 @@ final readonly class Client
     }
 
     /** @param list<BlockInterface> $content */
-    public function create(Page $page, array $content = []): Page
+    public function create(Page $page, array $content = [], PagePosition|null $position = null): Page
     {
         $data = [
             "in_trash" => $page->inTrash,
@@ -80,6 +80,10 @@ final readonly class Client
 
         if ($page->parent->isDataSource()) {
             unset($data["parent"]["database_id"]);
+        }
+
+        if ($position !== null) {
+            $data["position"] = $position->toArray();
         }
 
         $data = json_encode($data);

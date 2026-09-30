@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support positioning a newly created page within its parent page (#467).
+  - New `Notion\Pages\PagePosition` with `afterBlock()`, `pageStart()`, and `pageEnd()` variants.
+  - `Pages\Client::create()` accepts an optional `PagePosition` as third argument.
 - Support template blocks (#450).
 - Support synced blocks (#449).
 - Support link to page blocks (#448).
