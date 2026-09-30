@@ -7,6 +7,7 @@ namespace Notion\Pages\Properties;
  *      id: string,
  *      type: "relation",
  *      relation: array{ id: non-empty-string }[],
+ *      has_more?: bool,
  * }
  *
  * @psalm-immutable
@@ -16,7 +17,9 @@ final readonly class Relation implements PropertyInterface
     /** @param string[] $pageIds */
     private function __construct(
         private PropertyMetadata $metadata,
-        public array $pageIds
+        public array $pageIds,
+        /** True when Notion omitted references beyond the 25-item limit of the page response. */
+        public bool $hasMore = false,
     ) {
     }
 
@@ -40,7 +43,7 @@ final readonly class Relation implements PropertyInterface
             $array["relation"],
         );
 
-        return new self($property, $pageIds);
+        return new self($property, $pageIds, $array["has_more"] ?? false);
     }
 
     public function toArray(): array
@@ -73,7 +76,7 @@ final readonly class Relation implements PropertyInterface
         $pageIds = $this->pageIds;
         $pageIds[] = $pageId;
 
-        return new self($this->metadata, $pageIds);
+        return new self($this->metadata, $pageIds, $this->hasMore);
     }
 
     public function removeRelation(string $pageId): self
@@ -81,6 +84,7 @@ final readonly class Relation implements PropertyInterface
         return new self(
             $this->metadata,
             array_filter($this->pageIds, fn (string $p) => $p !== $pageId),
+            $this->hasMore,
         );
     }
 }
