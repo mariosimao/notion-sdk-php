@@ -23,6 +23,7 @@ use Notion\DataSources\Query\DateFilter;
 use Notion\DataSources\Query\SelectFilter;
 use Notion\DataSources\DataSource;
 use Notion\DataSources\DataSourceParent;
+use Notion\DataSources\DataSourceParentType;
 use Notion\Exceptions\ApiException;
 use Notion\Pages\Page;
 use Notion\Pages\PageParent;
@@ -70,6 +71,26 @@ class DataSourcesTest extends TestCase
         );
 
         $client->databases()->delete($database);
+    }
+
+    public function test_move_data_source_to_another_database(): void
+    {
+        $client = Helper::client();
+        $sourceDatabase = $this->newDatabase("Source database");
+        $targetDatabase = $this->newDatabase("Target database");
+        $dataSource = $this->newDataSource($sourceDatabase->id, "Data source to be moved");
+
+        $movedDataSource = $client->dataSources()->move($dataSource, $targetDatabase->id);
+        $dataSourceFound = $client->dataSources()->find($dataSource->id);
+
+        $this->assertEquals($dataSource->id, $movedDataSource->id);
+        $this->assertEquals(DataSourceParentType::Database, $movedDataSource->parent->type);
+        $this->assertEquals($targetDatabase->id, $movedDataSource->parent->id);
+        $this->assertEquals(Helper::testPageId(), $movedDataSource->databaseParent?->id);
+        $this->assertEquals($targetDatabase->id, $dataSourceFound->parent->id);
+
+        $client->databases()->delete($sourceDatabase);
+        $client->databases()->delete($targetDatabase);
     }
 
     public function test_create_and_update_rollup_property(): void

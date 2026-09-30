@@ -79,6 +79,24 @@ final readonly class Client
         return DataSource::fromArray($body);
     }
 
+    public function move(DataSource $dataSource, string $databaseId): DataSource
+    {
+        $dataSourceId = $dataSource->id;
+        $url = "https://api.notion.com/v1/data_sources/{$dataSourceId}";
+        $request = Http::createRequest($url, $this->config)
+            ->withMethod("PATCH")
+            ->withHeader("Content-Type", "application/json");
+
+        $request->getBody()->write(json_encode([
+            "parent" => DataSourceParent::database($databaseId)->toArray(),
+        ]));
+
+        /** @psalm-var DataSourceJson $body */
+        $body = Http::sendRequest($request, $this->config);
+
+        return DataSource::fromArray($body);
+    }
+
     public function delete(DataSource $dataSource): void
     {
         $dataSourceId = $dataSource->id;
