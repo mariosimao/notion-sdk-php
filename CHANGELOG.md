@@ -7,13 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support Notion's retry policy with `Notion\RetryPolicy` (#469).
+  - Rate limited (HTTP 429) and overloaded (HTTP 529) responses are retried for every HTTP method. Requests blocked with `public_api_request_blocked` are not retried.
+  - Server errors (HTTP 500, 502, 503 and 504) are retried for `GET` and `DELETE` requests only.
+  - Conflict errors keep being retried for every HTTP method.
+  - The `Retry-After` header (seconds or HTTP date) is honored; otherwise exponential backoff with jitter is used.
+  - Retries are bounded by `maxRetries` (default `2`), `initialDelayMs` (default `1000`) and `maxDelayMs` (default `60000`).
+  - Add `Configuration::withRetryPolicy()` and `Configuration::withoutRetries()`.
 - Support template blocks (#450).
 - Support synced blocks (#449).
 - Support link to page blocks (#448).
 - Support link preview and template mentions in rich text (#447).
 - Support retrieving individual page properties (#446).
 - Support rollup data source properties (#445).
-- Support audio blocks (#444).
+- Support audio bReplace conflict-only retries with a configurable retry policy (#469).
+  - Removed `Configuration::enableRetryOnConflict()`, `Configuration::disableRetryOnConflict()` and the `retryOnConflict` and `retryOnConflictAttempts` properties in favor of `Configuration::$retryPolicy`.
+  - Default number of retries changed from `3` to `2`, and retries now wait between attempts instead of retrying immediately.
+  - Removed the `$currentAttempt` parameter from `Notion\Infrastructure\Http::sendRequest()`.
+  - **Migration instructions:**
+    - Change `$config->enableRetryOnConflict(3)` to `$config->withRetryPolicy(RetryPolicy::create(maxRetries: 3))`.
+    - Change `$config->disableRetryOnConflict()` to `$config->withoutRetries()`.
+    - Change reads of `$config->retryOnConflictAttempts` to `$config->retryPolicy->maxRetries`, and `$config->retryOnConflict` to `$config->retryPolicy->maxRetries > 0`.
+    - To keep the previous default of 3 retries, use `$config->withRetryPolicy(RetryPolicy::create(maxRetries: 3))`.
+- **[BREAKING]** locks (#444).
 - Add typed `Authentication` client and models for public OAuth integrations (#443).
 - Add `Notion\DataSources\Query\RelativeDate` enum for relative date filter conditions (#199).
   - Supported relative dates: `Today`, `Tomorrow`, `Yesterday`, `OneWeekAgo`, `OneWeekFromNow`, `OneMonthAgo`, and `OneMonthFromNow`.

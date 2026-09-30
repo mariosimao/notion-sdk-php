@@ -4,7 +4,6 @@ namespace Notion\Infrastructure;
 
 use Notion\Configuration;
 use Notion\Exceptions\ApiException;
-use Notion\Exceptions\ConflictException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -42,27 +41,33 @@ final readonly class Http
             ->withHeader("Notion-Version", $config->version);
     }
 
-    public static function sendRequest(
-        RequestInterface $request,
-        Configuration $config,
-        int $currentAttempt = 0,
-    ): array {
-        $response = $config->httpClient->sendRequest($request);
+    public static function sendRequest(RequestInterface $request, Configuration $config): array
+    {
+        $policy = $config->retryPolicy;
+        $retries = 0;
 
-        try {
-            $body = self::parseBody($response);
-        } catch (ConflictException $e) {
-            if (
-                !$config->retryOnConflict ||
-                $currentAttempt >= $config->retryOnConflictAttempts
-            ) {
-                throw $e;
+        while (true) {
+            $response = $config->httpClient->sendRequest($request);
+
+            try {
+                return self::parseBody($response);
+            } catch (ApiException $e) {
+                if (!$policy->shouldRetry($request->getMethod(), $e, $retries)) {
+                    throw $e;
+                }
             }
 
-            // Try again
-            return self::sendRequest($request, $config, $currentAttempt + 1);
-        }
+            $delayMs = $policy->delayMs($response, $retries);
+            if ($delayMs > 0) {
+                usleep($delayMs * 1000);
+            }
 
-        return $body;
+            $body = $request->getBody();
+            if ($body->isSeekable()) {
+                $body->rewind();
+            }
+
+            $retries++;
+        }
     }
 }

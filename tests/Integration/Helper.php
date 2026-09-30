@@ -7,6 +7,7 @@ use Notion\Configuration;
 use Notion\Notion;
 use Notion\Pages\Page;
 use Notion\Pages\PageParent;
+use Notion\RetryPolicy;
 
 final class Helper
 {
@@ -18,7 +19,7 @@ final class Helper
         }
 
         $config = Configuration::create($token)
-            ->enableRetryOnConflict(10);
+            ->withRetryPolicy(RetryPolicy::create(maxRetries: 10));
 
         return Notion::createFromConfig($config);
     }
