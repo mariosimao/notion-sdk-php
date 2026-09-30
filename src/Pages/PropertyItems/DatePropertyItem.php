@@ -12,6 +12,7 @@ use Notion\Pages\Properties\PropertyType;
  *      date: array{
  *          start: string,
  *          end?: string|null,
+ *          time_zone?: string|null,
  *      }|null,
  *      ...
  * }

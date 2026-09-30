@@ -3,6 +3,7 @@
 namespace Notion\Test\Integration;
 
 use DateTimeImmutable;
+use DateTimeZone;
 use Notion\Common\Color;
 use Notion\Common\Emoji;
 use Notion\Common\RichText;
@@ -176,6 +177,36 @@ class DataSourcesTest extends TestCase
 
         $this->expectException(ApiException::class);
         $client->dataSources()->query($dataSource, $query);
+    }
+
+    public function test_create_page_with_time_zone_date(): void
+    {
+        $client = Helper::client();
+        $database = $this->newDatabase("Time zone DB");
+        $dataSource = self::newDataSource($database->id)
+            ->changeProperties([
+                "Title" => Title::create("Title"),
+                "Meeting" => Date::create("Meeting"),
+            ]);
+        $dataSource = $client->dataSources()->create($dataSource);
+
+        $start = new DateTimeImmutable("2025-06-15T18:30:00Z");
+        $end = new DateTimeImmutable("2025-06-15T19:30:00Z");
+        $page = Page::create(PageParent::dataSource($dataSource->id))
+            ->changeTitle("Meeting in New York")
+            ->addProperty(
+                "Meeting",
+                DateProp::createRange($start, $end, new DateTimeZone("America/New_York")),
+            );
+
+        $page = $client->pages()->create($page);
+        $found = $client->pages()->find($page->id);
+
+        $client->databases()->delete($database);
+
+        $meeting = $found->properties()->getDate("Meeting");
+        $this->assertEquals($start, $meeting->start());
+        $this->assertEquals($end, $meeting->end());
     }
 
     private static function moviesDataSource(string $databaseId): DataSource

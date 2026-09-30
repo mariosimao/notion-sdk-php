@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Pages\Properties;
 
 use DateTimeImmutable;
+use DateTimeZone;
 use Notion\Pages\Properties\Date;
 use Notion\Pages\Properties\PropertyFactory;
 use Notion\Pages\Properties\PropertyType;
@@ -109,5 +110,65 @@ class DateTest extends TestCase
 
         $this->assertTrue($date->isEmpty());
         $this->assertFalse($date->isRange());
+    }
+
+    public function test_create_with_time_zone(): void
+    {
+        $date = Date::create(new DateTimeImmutable("2025-06-15T18:30:00Z"), new DateTimeZone("America/New_York"));
+
+        $this->assertSame("America/New_York", $date->timeZone()?->getName());
+        $this->assertSame([
+            "start" => "2025-06-15T14:30:00.000000",
+            "end" => null,
+            "time_zone" => "America/New_York",
+        ], $date->toArray()["date"]);
+    }
+
+    public function test_create_range_with_time_zone(): void
+    {
+        $date = Date::createRange(
+            new DateTimeImmutable("2025-06-15T18:30:00Z"),
+            new DateTimeImmutable("2025-06-15T19:30:00Z"),
+            new DateTimeZone("America/New_York"),
+        );
+
+        $this->assertTrue($date->isRange());
+        $this->assertSame("America/New_York", $date->timeZone()?->getName());
+    }
+
+    public function test_change_and_remove_time_zone(): void
+    {
+        $date = Date::create(new DateTimeImmutable("2025-06-15T18:30:00Z"))
+            ->changeTimeZone(new DateTimeZone("Europe/Paris"));
+
+        $this->assertSame("Europe/Paris", $date->timeZone()?->getName());
+        $this->assertSame("2025-06-15T20:30:00.000000", $date->toArray()["date"]["start"] ?? null);
+
+        $date = $date->removeTimeZone();
+
+        $this->assertNull($date->timeZone());
+        $this->assertSame("2025-06-15T20:30:00.000000+02:00", $date->toArray()["date"]["start"] ?? null);
+    }
+
+    public function test_empty_date_has_no_time_zone(): void
+    {
+        $this->assertNull(Date::createEmpty()->timeZone());
+    }
+
+    public function test_array_conversion_with_time_zone(): void
+    {
+        $array = [
+            "id"   => "a7ede3b7-c7ae-4eb8-b415-a7f80ac4dfe5",
+            "type" => "date",
+            "date" => [
+                "start"     => "2021-01-01T09:00:00.000000",
+                "end"       => null,
+                "time_zone" => "America/Sao_Paulo",
+            ],
+        ];
+        $date = Date::fromArray($array);
+
+        $this->assertSame("America/Sao_Paulo", $date->timeZone()?->getName());
+        $this->assertEquals($array, $date->toArray());
     }
 }

@@ -16,7 +16,8 @@ use Notion\Common\Date;
  *          'boolean'?: bool,
  *          date?: array{
  *              start: string,
- *              end: string|null
+ *              end: string|null,
+ *              time_zone?: string|null,
  *          }
  *      }
  * }
