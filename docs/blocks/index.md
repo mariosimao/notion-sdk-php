@@ -19,6 +19,18 @@ $p->metadata()->inTrash;                         // false
 $p->metadata()->hasChildren;                     // false
 ```
 
+Blocks retrieved from the API also expose their direct parent. Blocks created
+locally have a `null` parent until they are sent to Notion.
+
+```php
+$block = $notion->blocks()->find($blockId);
+
+$parent = $block->metadata()->parent; // instance of Notion\Blocks\BlockParent
+$parent->type;      // BlockParentType::Block (enum)
+$parent->id;        // 7d50a184...
+$parent->isBlock(); // true
+```
+
 ## Children
 
 Some blocks additionally support adding or changing children. Children can be

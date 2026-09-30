@@ -97,6 +97,7 @@ final readonly class Client
         unset($data["created_time"]);
         unset($data["last_edited_time"]);
         unset($data["has_children"]);
+        unset($data["parent"]);
         if (is_array($data[$blockType])) {
             unset($data[$blockType]["children"]);
         }

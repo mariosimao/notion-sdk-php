@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support block parent metadata (#453).
+  - New `Notion\Blocks\BlockParent` class and `Notion\Blocks\BlockParentType` enum representing the direct parent of a block.
+  - Supported parent types: `Page` (`page_id`), `DataSource` (`data_source_id`), `Database` (`database_id`), `Block` (`block_id`) and `Agent` (`agent_id`).
+  - New nullable `Notion\Blocks\BlockMetadata::$parent` property, parsed from `parent`. It is `null` for blocks created locally that were not sent to Notion yet.
+  - `Notion\Pages\PageParent` and `Notion\Databases\DatabaseParent` keep supporting direct `block_id` parents.
 - Support template blocks (#450).
 - Support synced blocks (#449).
 - Support link to page blocks (#448).
@@ -20,6 +25,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` accept `RelativeDate` instances in addition to `DateTimeImmutable`.
 
 ### Changed
+- **[BREAKING]** Serialize the block parent in `Notion\Blocks\BlockMetadata::toArray()` (#453).
+  - `toArray()` of any block now includes a `parent` key when the parent is known (blocks retrieved from the API). `Blocks\Client::update()` strips it from update requests.
+  - `BlockMetadata::delete()`, `restore()`, `update()` and `updateHasChildren()` now keep the parent (and the raw type of unknown blocks) instead of dropping them.
+  - **Migration instructions:**
+    - If you store or compare the `toArray()` output of blocks retrieved from the API, expect the additional `parent` key.
+    - Blocks created locally (e.g. `Paragraph::fromString()`) are not affected.
 - **[BREAKING]** Change `DateFilter` value from `string` to `DateTimeImmutable|RelativeDate` and remove `array` type (#199).
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` now accept `DateTimeImmutable|RelativeDate` instead of a raw `string`.
   - Removed `array` from the allowed types of the internal `$value` property and `value()` return type hint, which is now `DateTimeImmutable|RelativeDate|bool|stdClass`.
