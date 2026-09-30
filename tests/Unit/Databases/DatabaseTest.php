@@ -159,10 +159,12 @@ class DatabaseTest extends TestCase
             "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
             "is_inline" => true,
             "in_trash" => false,
+            "is_locked" => true,
         ];
         $database = Database::fromArray($array);
 
         $this->assertEquals($array, $database->toArray());
+        $this->assertTrue($database->isLocked);
         $this->assertFalse($database->inTrash);
         $this->assertSame("a7e80c0b-a766-43c3-a9e9-21ce94595e0e", $database->id);
         $this->assertSame("https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e", $database->url);
@@ -300,5 +302,18 @@ class DatabaseTest extends TestCase
 
         $restored = $database->restore();
         $this->assertFalse($restored->inTrash);
+    }
+
+    public function test_lock_and_unlock(): void
+    {
+        $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $database = Database::create($parent);
+        $this->assertFalse($database->isLocked);
+
+        $database = $database->lock();
+        $this->assertTrue($database->isLocked);
+
+        $database = $database->unlock();
+        $this->assertFalse($database->isLocked);
     }
 }

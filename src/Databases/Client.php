@@ -38,6 +38,7 @@ final readonly class Client
     {
         $data = $database->toArray();
         unset($data["id"]);
+        unset($data["is_locked"]);
         if ($database->icon === null) {
             unset($data["icon"]);
         }

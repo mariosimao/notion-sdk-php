@@ -100,6 +100,18 @@ class PageTest extends TestCase
         $this->assertFalse($page->inTrash);
     }
 
+    public function test_lock_and_unlock(): void
+    {
+        $page = Page::create(PageParent::workspace());
+        $this->assertFalse($page->isLocked);
+
+        $page = $page->lock();
+        $this->assertTrue($page->isLocked);
+
+        $page = $page->unlock();
+        $this->assertFalse($page->isLocked);
+    }
+
     public function test_move_page(): void
     {
         $oldParent = PageParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
@@ -174,10 +186,12 @@ class PageTest extends TestCase
                 "page_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
             ],
             "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+            "is_locked" => true,
         ];
         $page = Page::fromArray($array);
 
         $this->assertSame($array, $page->toArray());
+        $this->assertTrue($page->isLocked);
         $this->assertSame("a7e80c0b-a766-43c3-a9e9-21ce94595e0e", $page->id);
         $this->assertSame("https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e", $page->url);
         $this->assertEquals(

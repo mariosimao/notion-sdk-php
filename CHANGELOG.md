@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support page and database locking (#465).
+  - Add `Page::$isLocked` and `Database::$isLocked`, read from the API `is_locked` field.
+  - Add `Page::lock()`, `Page::unlock()`, `Database::lock()`, and `Database::unlock()`.
+  - `Pages\Client::update()` and `Databases\Client::update()` send the lock state, so the page or database is locked or unlocked in the Notion UI.
 - Support template blocks (#450).
 - Support synced blocks (#449).
 - Support link to page blocks (#448).

@@ -78,6 +78,24 @@ class PagesTest extends TestCase
         $client->pages()->update($page);
     }
 
+    public function test_lock_and_unlock_page(): void
+    {
+        $client = Helper::client();
+
+        $page = $client->pages()->create(Helper::newPage()->changeTitle("Page to be locked"));
+        $this->assertFalse($page->isLocked);
+
+        $page = $client->pages()->update($page->lock());
+        $this->assertTrue($page->isLocked);
+        $this->assertTrue($client->pages()->find($page->id)->isLocked);
+
+        $page = $client->pages()->update($page->unlock());
+        $this->assertFalse($page->isLocked);
+        $this->assertFalse($client->pages()->find($page->id)->isLocked);
+
+        $client->pages()->delete($page);
+    }
+
     public function test_find_property_item_list(): void
     {
         $client = Helper::client();

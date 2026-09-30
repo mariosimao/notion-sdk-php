@@ -181,6 +181,26 @@ class DatabasesTest extends TestCase
         $client->databases()->delete($database);
     }
 
+    public function test_lock_and_unlock_database(): void
+    {
+        $client = Helper::client();
+
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()))
+            ->changeTitle("Database to be locked");
+        $database = $client->databases()->create($database);
+        $this->assertFalse($database->isLocked);
+
+        $database = $client->databases()->update($database->lock());
+        $this->assertTrue($database->isLocked);
+        $this->assertTrue($client->databases()->find($database->id)->isLocked);
+
+        $database = $client->databases()->update($database->unlock());
+        $this->assertFalse($database->isLocked);
+        $this->assertFalse($client->databases()->find($database->id)->isLocked);
+
+        $client->databases()->delete($database);
+    }
+
     public function test_delete_database(): void
     {
         $client = Helper::client();

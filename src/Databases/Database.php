@@ -31,6 +31,7 @@ use Notion\Exceptions\DatabaseException;
  *      parent: DatabaseParentJson,
  *      url: string,
  *      is_inline: bool,
+ *      is_locked?: bool,
  * }
  *
  * @psalm-immutable
@@ -55,6 +56,7 @@ final readonly class Database
         public DatabaseParent $parent,
         public string $url,
         public bool $isInline,
+        public bool $isLocked,
     ) {
         if ($cover !== null && $cover->isInternal()) {
             throw DatabaseException::internalCover();
@@ -77,6 +79,7 @@ final readonly class Database
             null,
             $parent,
             "",
+            false,
             false,
         );
     }
@@ -143,6 +146,7 @@ final readonly class Database
             $parent,
             $array["url"],
             $array["is_inline"],
+            $array["is_locked"] ?? false,
         );
     }
 
@@ -162,6 +166,7 @@ final readonly class Database
             "parent"           => $this->parent->toArray(),
             "url"              => $this->url,
             "is_inline"        => $this->isInline,
+            "is_locked"        => $this->isLocked,
         ];
     }
 
@@ -188,6 +193,7 @@ final readonly class Database
             $this->parent,
             $this->url,
             $this->isInline,
+            $this->isLocked,
         );
     }
 
@@ -206,6 +212,7 @@ final readonly class Database
             $this->parent,
             $this->url,
             $this->isInline,
+            $this->isLocked,
         );
     }
 
@@ -224,6 +231,7 @@ final readonly class Database
             $this->parent,
             $this->url,
             $this->isInline,
+            $this->isLocked,
         );
     }
 
@@ -242,6 +250,7 @@ final readonly class Database
             $this->parent,
             $this->url,
             $this->isInline,
+            $this->isLocked,
         );
     }
 
@@ -268,6 +277,7 @@ final readonly class Database
             $this->parent,
             $this->url,
             $this->isInline,
+            $this->isLocked,
         );
     }
 
@@ -286,6 +296,7 @@ final readonly class Database
             $this->parent,
             $this->url,
             $this->isInline,
+            $this->isLocked,
         );
     }
 
@@ -304,6 +315,7 @@ final readonly class Database
             $this->parent,
             $this->url,
             $this->isInline,
+            $this->isLocked,
         );
     }
 
@@ -322,6 +334,7 @@ final readonly class Database
             $this->parent,
             $this->url,
             $this->isInline,
+            $this->isLocked,
         );
     }
 
@@ -340,6 +353,7 @@ final readonly class Database
             $parent,
             $this->url,
             $this->isInline,
+            $this->isLocked,
         );
     }
 
@@ -358,6 +372,7 @@ final readonly class Database
             $this->parent,
             $this->url,
             true,
+            $this->isLocked,
         );
     }
 
@@ -375,6 +390,45 @@ final readonly class Database
             $this->cover,
             $this->parent,
             $this->url,
+            false,
+            $this->isLocked,
+        );
+    }
+
+    public function lock(): self
+    {
+        return new self(
+            $this->id,
+            $this->dataSources,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $this->inTrash,
+            $this->title,
+            $this->description,
+            $this->icon,
+            $this->cover,
+            $this->parent,
+            $this->url,
+            $this->isInline,
+            true,
+        );
+    }
+
+    public function unlock(): self
+    {
+        return new self(
+            $this->id,
+            $this->dataSources,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $this->inTrash,
+            $this->title,
+            $this->description,
+            $this->icon,
+            $this->cover,
+            $this->parent,
+            $this->url,
+            $this->isInline,
             false,
         );
     }
