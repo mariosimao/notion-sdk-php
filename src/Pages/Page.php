@@ -11,18 +11,22 @@ use Notion\Pages\Properties\PropertyCollection;
 use Notion\Pages\Properties\PropertyFactory;
 use Notion\Pages\Properties\PropertyInterface;
 use Notion\Pages\Properties\Title;
+use Notion\Users\User;
 
 /**
  * @psalm-import-type EmojiJson from \Notion\Common\Emoji
  * @psalm-import-type FileJson from \Notion\Common\File
  * @psalm-import-type PropertyMetadataJson from \Notion\Pages\Properties\PropertyMetadata
  * @psalm-import-type PageParentJson from PageParent
+ * @psalm-import-type UserJson from \Notion\Users\User
  *
  * @psalm-type PageJson = array{
  *      object: "page",
  *      id: string,
  *      created_time: string,
  *      last_edited_time: string,
+ *      created_by?: UserJson,
+ *      last_edited_by?: UserJson,
  *      in_trash: bool,
  *      icon: EmojiJson|FileJson|null,
  *      cover: FileJson|null,
@@ -42,6 +46,8 @@ final readonly class Page
         public string $id,
         public DateTimeImmutable $createdTime,
         public DateTimeImmutable $lastEditedTime,
+        public User|null $createdBy,
+        public User|null $lastEditedBy,
         public bool $inTrash,
         public Icon|null $icon,
         public File|null $cover,
@@ -63,7 +69,7 @@ final readonly class Page
     {
         $now = new DateTimeImmutable("now");
 
-        return new self("", $now, $now, false, null, null, [], $parent, "");
+        return new self("", $now, $now, null, null, false, null, null, [], $parent, "");
     }
 
 
@@ -105,6 +111,8 @@ final readonly class Page
             $array["id"],
             new DateTimeImmutable($array["created_time"]),
             new DateTimeImmutable($array["last_edited_time"]),
+            isset($array["created_by"]) ? User::fromArray($array["created_by"]) : null,
+            isset($array["last_edited_by"]) ? User::fromArray($array["last_edited_by"]) : null,
             $array["in_trash"],
             $icon,
             $cover,
@@ -116,7 +124,7 @@ final readonly class Page
 
     public function toArray(): array
     {
-        return [
+        $array = [
             "object"           => "page",
             "id"               => $this->id,
             "created_time"     => $this->createdTime->format(Date::FORMAT),
@@ -128,6 +136,16 @@ final readonly class Page
             "parent"           => $this->parent->toArray(),
             "url"              => $this->url,
         ];
+
+        if ($this->createdBy !== null) {
+            $array["created_by"] = $this->createdBy->toArray();
+        }
+
+        if ($this->lastEditedBy !== null) {
+            $array["last_edited_by"] = $this->lastEditedBy->toArray();
+        }
+
+        return $array;
     }
 
     /**
@@ -144,6 +162,8 @@ final readonly class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->createdBy,
+            $this->lastEditedBy,
             true,
             $this->icon,
             $this->cover,
@@ -168,6 +188,8 @@ final readonly class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->createdBy,
+            $this->lastEditedBy,
             false,
             $this->icon,
             $this->cover,
@@ -200,6 +222,8 @@ final readonly class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->createdBy,
+            $this->lastEditedBy,
             $this->inTrash,
             $icon,
             $this->cover,
@@ -215,6 +239,8 @@ final readonly class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->createdBy,
+            $this->lastEditedBy,
             $this->inTrash,
             null,
             $this->cover,
@@ -230,6 +256,8 @@ final readonly class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->createdBy,
+            $this->lastEditedBy,
             $this->inTrash,
             $this->icon,
             $cover,
@@ -245,6 +273,8 @@ final readonly class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->createdBy,
+            $this->lastEditedBy,
             $this->inTrash,
             $this->icon,
             null,
@@ -270,6 +300,8 @@ final readonly class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->createdBy,
+            $this->lastEditedBy,
             $this->inTrash,
             $this->icon,
             $this->cover,
@@ -286,6 +318,8 @@ final readonly class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->createdBy,
+            $this->lastEditedBy,
             $this->inTrash,
             $this->icon,
             $this->cover,
@@ -314,6 +348,8 @@ final readonly class Page
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->createdBy,
+            $this->lastEditedBy,
             $this->inTrash,
             $this->icon,
             $this->cover,

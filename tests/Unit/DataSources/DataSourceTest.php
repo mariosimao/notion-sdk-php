@@ -337,4 +337,60 @@ class DataSourceTest extends TestCase
 
         $this->assertNull($dataSource->databaseParent);
     }
+
+    public function test_create_has_no_creator_and_editor(): void
+    {
+        $dataSource = DataSource::create(DataSourceParent::database("1ce62b6f-b7f3-4201-afd0-08acb02e61c6"));
+
+        $this->assertNull($dataSource->createdBy);
+        $this->assertNull($dataSource->lastEditedBy);
+        $this->assertArrayNotHasKey("created_by", $dataSource->toArray());
+        $this->assertArrayNotHasKey("last_edited_by", $dataSource->toArray());
+    }
+
+    public function test_creator_and_editor(): void
+    {
+        $array = [
+            "object" => "data_source",
+            "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
+            "created_time" => "2020-12-08T12:00:00.000000Z",
+            "last_edited_time" => "2020-12-08T12:00:00.000000Z",
+            "in_trash" => false,
+            "title" => [],
+            "description" => [],
+            "icon" => null,
+            "properties" => [],
+            "parent" => [
+                "type" => "database_id",
+                "database_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
+            ],
+            "database_parent" => [
+                "type" => "page_id",
+                "page_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
+            ],
+            "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+            "created_by" => [ "object" => "user", "id" => "creator-id" ],
+            "last_edited_by" => [ "object" => "user", "id" => "editor-id" ],
+        ];
+
+        $dataSource = DataSource::fromArray($array);
+        $transformed = $dataSource
+            ->archive()
+            ->restore()
+            ->delete()
+            ->changeTitle("Title")
+            ->changeAdvancedTitle(RichText::fromString("Title"))
+            ->changeIcon(Emoji::fromString("⭐"))
+            ->removeIcon()
+            ->addProperty(Title::create("Name"))
+            ->changeProperty(Title::create("Name"))
+            ->removePropertyByName("Name")
+            ->changeProperties([])
+            ->changeParent(DataSourceParent::database("1ce62b6f-b7f3-4201-afd0-08acb02e61c6"));
+
+        $this->assertSame($array, $dataSource->toArray());
+        $this->assertSame("creator-id", $transformed->createdBy?->id);
+        $this->assertSame("editor-id", $transformed->lastEditedBy?->id);
+        $this->assertNotNull($transformed->databaseParent);
+    }
 }

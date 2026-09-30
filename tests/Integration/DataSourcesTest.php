@@ -72,6 +72,26 @@ class DataSourcesTest extends TestCase
         $client->databases()->delete($database);
     }
 
+    public function test_data_source_creator_and_editor(): void
+    {
+        $database = $this->newDatabase();
+        $dataSource = $this->newDataSource($database->id);
+        $client = Helper::client();
+        $botId = $client->users()->me()->id;
+
+        $dataSourceFound = $client->dataSources()->find($dataSource->id);
+        $updatedDataSource = $client->dataSources()->update(
+            $dataSourceFound->changeTitle("Creator and editor updated"),
+        );
+
+        $this->assertSame($botId, $dataSourceFound->createdBy?->id);
+        $this->assertSame($botId, $dataSourceFound->lastEditedBy?->id);
+        $this->assertSame($botId, $updatedDataSource->createdBy?->id);
+        $this->assertSame($botId, $updatedDataSource->lastEditedBy?->id);
+
+        $client->databases()->delete($database);
+    }
+
     public function test_create_and_update_rollup_property(): void
     {
         $database = $this->newDatabase();

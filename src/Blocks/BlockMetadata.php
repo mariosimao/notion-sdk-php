@@ -5,13 +5,18 @@ namespace Notion\Blocks;
 use DateTimeImmutable;
 use Notion\Exceptions\BlockException;
 use Notion\Common\Date;
+use Notion\Users\User;
 
 /**
+ * @psalm-import-type UserJson from \Notion\Users\User
+ *
  * @psalm-type BlockMetadataJson = array{
  *      type: string,
  *      id: string,
  *      created_time: string,
  *      last_edited_time: string,
+ *      created_by?: UserJson,
+ *      last_edited_by?: UserJson,
  *      in_trash: bool,
  *      has_children: bool,
  * }
@@ -24,6 +29,8 @@ final readonly class BlockMetadata
         public string $id,
         public DateTimeImmutable $createdTime,
         public DateTimeImmutable $lastEditedTime,
+        public User|null $createdBy,
+        public User|null $lastEditedBy,
         public bool $inTrash,
         public bool $hasChildren,
         public BlockType $type,
@@ -44,7 +51,7 @@ final readonly class BlockMetadata
     {
         $now = new DateTimeImmutable("now");
 
-        return new self("", $now, $now, false, false, $type);
+        return new self("", $now, $now, null, null, false, false, $type);
     }
 
     /**
@@ -60,6 +67,8 @@ final readonly class BlockMetadata
             $array["id"],
             new DateTimeImmutable($array["created_time"]),
             new DateTimeImmutable($array["last_edited_time"]),
+            isset($array["created_by"]) ? User::fromArray($array["created_by"]) : null,
+            isset($array["last_edited_by"]) ? User::fromArray($array["last_edited_by"]) : null,
             $array["in_trash"],
             $array["has_children"],
             $type,
@@ -85,6 +94,14 @@ final readonly class BlockMetadata
             $array["id"] = $this->id;
         }
 
+        if ($this->createdBy !== null) {
+            $array["created_by"] = $this->createdBy->toArray();
+        }
+
+        if ($this->lastEditedBy !== null) {
+            $array["last_edited_by"] = $this->lastEditedBy->toArray();
+        }
+
         return $array;
     }
 
@@ -95,9 +112,12 @@ final readonly class BlockMetadata
             $this->id,
             $this->createdTime,
             new DateTimeImmutable("now"),
+            $this->createdBy,
+            $this->lastEditedBy,
             true,
             $this->hasChildren,
             $this->type,
+            $this->unknownType,
         );
     }
 
@@ -108,9 +128,12 @@ final readonly class BlockMetadata
             $this->id,
             $this->createdTime,
             new DateTimeImmutable("now"),
+            $this->createdBy,
+            $this->lastEditedBy,
             false,
             $this->hasChildren,
             $this->type,
+            $this->unknownType,
         );
     }
 
@@ -121,9 +144,12 @@ final readonly class BlockMetadata
             $this->id,
             $this->createdTime,
             new DateTimeImmutable("now"),
+            $this->createdBy,
+            $this->lastEditedBy,
             $this->inTrash,
             $hasChildren,
             $this->type,
+            $this->unknownType,
         );
     }
 
@@ -133,9 +159,12 @@ final readonly class BlockMetadata
             $this->id,
             $this->createdTime,
             new DateTimeImmutable("now"),
+            $this->createdBy,
+            $this->lastEditedBy,
             $this->inTrash,
             $this->hasChildren,
             $this->type,
+            $this->unknownType,
         );
     }
 

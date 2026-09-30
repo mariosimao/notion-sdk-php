@@ -95,6 +95,28 @@ class DatabasesTest extends TestCase
         $client->databases()->delete($database);
     }
 
+    public function test_database_creator_and_editor(): void
+    {
+        $client = Helper::client();
+        $botId = $client->users()->me()->id;
+
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()))
+            ->changeTitle("Creator and editor");
+        $database = $client->databases()->create($database);
+
+        $databaseFound = $client->databases()->find($database->id);
+        $updatedDatabase = $client->databases()->update(
+            $databaseFound->changeTitle("Creator and editor updated"),
+        );
+
+        $this->assertSame($botId, $databaseFound->createdBy?->id);
+        $this->assertSame($botId, $databaseFound->lastEditedBy?->id);
+        $this->assertSame($botId, $updatedDatabase->createdBy?->id);
+        $this->assertSame($botId, $updatedDatabase->lastEditedBy?->id);
+
+        $client->databases()->delete($updatedDatabase);
+    }
+
     public function test_find_inexistent_database(): void
     {
         $client = Helper::client();

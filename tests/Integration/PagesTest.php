@@ -42,6 +42,23 @@ class PagesTest extends TestCase
         $this->assertNotNull($page->title()?->toString());
     }
 
+    public function test_page_creator_and_editor(): void
+    {
+        $client = Helper::client();
+        $botId = $client->users()->me()->id;
+
+        $page = $client->pages()->create(Helper::newPage()->changeTitle("Creator and editor"));
+        $pageFound = $client->pages()->find($page->id);
+        $updatedPage = $client->pages()->update($pageFound->changeTitle("Creator and editor updated"));
+
+        $this->assertSame($botId, $pageFound->createdBy?->id);
+        $this->assertSame($botId, $pageFound->lastEditedBy?->id);
+        $this->assertSame($botId, $updatedPage->createdBy?->id);
+        $this->assertSame($botId, $updatedPage->lastEditedBy?->id);
+
+        $client->pages()->delete($updatedPage);
+    }
+
     public function test_find_inexistent_page(): void
     {
         $client = Helper::client();

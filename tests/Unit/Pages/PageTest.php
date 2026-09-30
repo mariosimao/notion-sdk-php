@@ -245,4 +245,52 @@ class PageTest extends TestCase
         }
         $this->assertTrue($page->icon?->isFile());
     }
+
+    public function test_create_has_no_creator_and_editor(): void
+    {
+        $page = Page::create(PageParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6"));
+
+        $this->assertNull($page->createdBy);
+        $this->assertNull($page->lastEditedBy);
+        $this->assertArrayNotHasKey("created_by", $page->toArray());
+        $this->assertArrayNotHasKey("last_edited_by", $page->toArray());
+    }
+
+    public function test_creator_and_editor(): void
+    {
+        $array = [
+            "object" => "page",
+            "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
+            "created_time" => "2020-12-08T12:00:00.000000Z",
+            "last_edited_time" => "2020-12-08T12:00:00.000000Z",
+            "in_trash" => false,
+            "icon" => null,
+            "cover" => null,
+            "properties" => [],
+            "parent" => [
+                "type" => "page_id",
+                "page_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
+            ],
+            "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+            "created_by" => [ "object" => "user", "id" => "creator-id" ],
+            "last_edited_by" => [ "object" => "user", "id" => "editor-id" ],
+        ];
+
+        $page = Page::fromArray($array);
+        $transformed = $page
+            ->delete()
+            ->restore()
+            ->changeIcon(Emoji::fromString("⭐"))
+            ->removeIcon()
+            ->changeCover(File::createExternal("https://my-site.com/image.png"))
+            ->removeCover()
+            ->addProperty("Description", RichTextProperty::fromString("Description"))
+            ->changeProperties([])
+            ->changeTitle("Title")
+            ->changeParent(PageParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6"));
+
+        $this->assertSame($array, $page->toArray());
+        $this->assertSame("creator-id", $transformed->createdBy?->id);
+        $this->assertSame("editor-id", $transformed->lastEditedBy?->id);
+    }
 }
