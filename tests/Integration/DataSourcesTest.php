@@ -45,9 +45,11 @@ class DataSourcesTest extends TestCase
 
         // Act
         $dataSource = Helper::client()->dataSources()->create($dataSource);
+        $dataSourceFound = Helper::client()->dataSources()->find($dataSource->id);
 
         // Assert
         $this->assertEquals("Test data source", $dataSource->title[0]->plainText);
+        $this->assertSame($dataSource->publicUrl, $dataSourceFound->publicUrl);
         $this->assertEquals(Helper::testPageId(), $dataSource->databaseParent?->id);
         $this->assertEquals(DatabaseParentType::Page, $dataSource->databaseParent?->type);
 

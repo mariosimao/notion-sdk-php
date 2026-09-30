@@ -174,12 +174,17 @@ class PageTest extends TestCase
                 "page_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
             ],
             "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+            "public_url" => "https://my-workspace.notion.site/a7e80c0ba76643c3a9e921ce94595e0e",
         ];
         $page = Page::fromArray($array);
 
         $this->assertSame($array, $page->toArray());
         $this->assertSame("a7e80c0b-a766-43c3-a9e9-21ce94595e0e", $page->id);
         $this->assertSame("https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e", $page->url);
+        $this->assertSame(
+            "https://my-workspace.notion.site/a7e80c0ba76643c3a9e921ce94595e0e",
+            $page->changeTitle("New title")->publicUrl,
+        );
         $this->assertEquals(
             "2020-12-08T12:00:00.000000Z",
             $page->createdTime->format(Date::FORMAT),
@@ -212,6 +217,7 @@ class PageTest extends TestCase
         ];
         $page = Page::fromArray($array);
 
+        $this->assertNull($page->publicUrl);
         if ($page->icon?->isEmoji()) {
             $this->assertEquals("⭐", $page->icon->emoji?->emoji);
         }

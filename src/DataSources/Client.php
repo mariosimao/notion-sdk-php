@@ -38,6 +38,7 @@ final readonly class Client
         $data = $dataSource->toArray();
         unset($data["id"]);
         unset($data["database_parent"]);
+        unset($data["public_url"]);
         if ($dataSource->parent->isDatabase()) {
             unset($data["description"]);
         }
@@ -61,6 +62,7 @@ final readonly class Client
         unset($data["created_time"]);
         unset($data["last_edited_time"]);
         unset($data["database_parent"]);
+        unset($data["public_url"]);
         if ($dataSource->parent->isDatabase()) {
             unset($data["description"]);
         }

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support public URLs on pages, databases and data sources (#460).
+  - `Page`, `Database` and `DataSource` expose a nullable `$publicUrl` property, which is `null` when the object is not shared publicly.
+  - `public_url` is read-only and is not sent on create or update requests.
 - Support template blocks (#450).
 - Support synced blocks (#449).
 - Support link to page blocks (#448).
@@ -54,6 +57,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Migration instructions:**
     - If you extended concrete SDK classes (e.g., `Page`, `Block`, `Client`, `RichText`, etc.) to override or add behavior, refactor your code to use **composition** instead of inheritance (e.g., wrap the SDK instance in your own service or decorator class).
     - If you mocked concrete SDK classes in unit tests, refactor test suites to mock interfaces (such as PSR-18 `ClientInterface`, PSR-17 factories, `BlockInterface`, `PropertyInterface`) or use real instances with HTTP mock handlers (`MockHandler`) or integration tests.
+
+### Fixed
+- `DataSource::archive()` and `DataSource::restore()` no longer drop the `$databaseParent` (#460).
 
 ## [v1.16.0] 2026-01-11
 
