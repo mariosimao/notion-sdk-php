@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\HttpFactory;
 use Notion\Configuration;
 use Notion\Notion;
+use Notion\RetryPolicy;
 use PHPUnit\Framework\TestCase;
 
 final class ConfigurationTest extends TestCase
@@ -17,8 +18,7 @@ final class ConfigurationTest extends TestCase
 
         $this->assertSame($token, $config->token);
         $this->assertSame(Notion::API_VERSION, $config->version);
-        $this->assertSame(true, $config->retryOnConflict);
-        $this->assertSame(3, $config->retryOnConflictAttempts);
+        $this->assertEquals(RetryPolicy::create(), $config->retryPolicy);
     }
 
     public function test_create_from_psr_implementations(): void
@@ -33,19 +33,18 @@ final class ConfigurationTest extends TestCase
         $this->assertSame($factory, $config->requestFactory);
     }
 
-    public function test_enable_retry_on_conflict(): void
+    public function test_with_retry_policy(): void
     {
-        $config = Configuration::create("secret_123abc")->enableRetryOnConflict(3);
+        $policy = RetryPolicy::create(maxRetries: 5);
+        $config = Configuration::create("secret_123abc")->withRetryPolicy($policy);
 
-        $this->assertTrue($config->retryOnConflict);
-        $this->assertSame(3, $config->retryOnConflictAttempts);
+        $this->assertSame($policy, $config->retryPolicy);
     }
 
-    public function test_disable_retry_on_conflict(): void
+    public function test_without_retries(): void
     {
-        $config = Configuration::create("secret_123abc")->disableRetryOnConflict();
+        $config = Configuration::create("secret_123abc")->withoutRetries();
 
-        $this->assertFalse($config->retryOnConflict);
-        $this->assertSame(0, $config->retryOnConflictAttempts);
+        $this->assertSame(0, $config->retryPolicy->maxRetries);
     }
 }

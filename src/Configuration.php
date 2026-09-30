@@ -15,8 +15,7 @@ use Psr\Http\Message\RequestFactoryInterface;
  *     version: string,
  *     httpClient: ClientInterface,
  *     requestFactory: RequestFactoryInterface,
- *     retryOnConflict: bool,
- *     retryOnConflictAttempts: int,
+ *     retryPolicy: RetryPolicy,
  *     ...
  * }
  *
@@ -29,8 +28,7 @@ final readonly class Configuration
         public string $version,
         public ClientInterface $httpClient,
         public RequestFactoryInterface $requestFactory,
-        public bool $retryOnConflict,
-        public int $retryOnConflictAttempts,
+        public RetryPolicy $retryPolicy,
     ) {
     }
 
@@ -41,8 +39,7 @@ final readonly class Configuration
             version: Notion::API_VERSION,
             httpClient: Psr18ClientDiscovery::find(),
             requestFactory: Psr17FactoryDiscovery::findRequestFactory(),
-            retryOnConflict: true,
-            retryOnConflictAttempts: 3,
+            retryPolicy: RetryPolicy::create(),
         );
     }
 
@@ -56,32 +53,21 @@ final readonly class Configuration
             version: Notion::API_VERSION,
             httpClient: $httpClient,
             requestFactory: $requestFactory,
-            retryOnConflict: true,
-            retryOnConflictAttempts: 3,
+            retryPolicy: RetryPolicy::create(),
         );
     }
 
-    /**
-     * Retry operations when the Notion API responds with conflict error.
-     *
-     * @param int $attempts Number of attempts
-     */
-    public function enableRetryOnConflict(int $attempts = 1): self
+    public function withRetryPolicy(RetryPolicy $retryPolicy): self
     {
         $properties = $this->properties();
-        $properties["retryOnConflict"] = true;
-        $properties["retryOnConflictAttempts"] = $attempts;
+        $properties["retryPolicy"] = $retryPolicy;
 
         return new self(...$properties);
     }
 
-    public function disableRetryOnConflict(): self
+    public function withoutRetries(): self
     {
-        $properties = $this->properties();
-        $properties["retryOnConflict"] = false;
-        $properties["retryOnConflictAttempts"] = 0;
-
-        return new self(...$properties);
+        return $this->withRetryPolicy(RetryPolicy::none());
     }
 
     /** @psalm-return ConfigProperties */

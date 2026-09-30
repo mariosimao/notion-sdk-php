@@ -12,31 +12,46 @@ $notion = Notion::createFromConfig($config);
 
 | Option | Type | Default |
 |--------|------|---------|
-|[`retryOnConflict`](#retry-on-conflict)|bool|`true`|
-|[`retryOnConflictAttempts`](#retry-on-conflict)|int|`1`|
+|[`retryPolicy->maxRetries`](#automatic-retries)|int|`2`|
+|[`retryPolicy->initialDelayMs`](#automatic-retries)|int|`1000`|
+|[`retryPolicy->maxDelayMs`](#automatic-retries)|int|`60000`|
 
-## Retry on conflict
+## Automatic retries
 
-Sometimes, the Notion API responds with the following error
+The SDK retries failed requests following
+[Notion's retry guidance](https://developers.notion.com/reference/request-limits#retry-rate-limited-requests).
 
-```json
-{
-    "code": "conflict_error",
-    "message": "Conflict occurred while saving. Please try again."
-}
-```
+Retried errors:
 
-The SDK provides a retry option (enabled by default) and sends the request again
-until a success responde or when reaches the maximum number of attempts.
+| Error | HTTP status | Retried methods |
+|-------|-------------|-----------------|
+| `rate_limited` | 429 | All (except `public_api_request_blocked`) |
+| `service_overload` | 529 | All |
+| `conflict_error` | 409 | All |
+| Server errors | 500, 502, 503, 504 | `GET` and `DELETE` only |
 
-### Enable
+Server errors are only retried for idempotent requests to avoid repeating writes.
+
+The SDK waits for the `Retry-After` response header when present (seconds or
+HTTP date). Otherwise, it uses exponential backoff starting at
+`initialDelayMs`. A random jitter is added to every delay, and no delay exceeds
+`maxDelayMs`.
+
+### Customize
 
 ```php
+use Notion\Configuration;
+use Notion\Notion;
+use Notion\RetryPolicy;
+
 $token = $_ENV["NOTION_TOKEN"];
 
-$retryAttempts = 3;
 $config = Configuration::create($token)
-            ->enableRetryOnConflict($retryAttempts);
+    ->withRetryPolicy(RetryPolicy::create(
+        maxRetries: 5,
+        initialDelayMs: 500,
+        maxDelayMs: 30000,
+    ));
 
 $notion = Notion::createFromConfig($config);
 ```
@@ -46,8 +61,7 @@ $notion = Notion::createFromConfig($config);
 ```php
 $token = $_ENV["NOTION_TOKEN"];
 
-$config = Configuration::create($token)
-            ->disableRetryOnConflict();
+$config = Configuration::create($token)->withoutRetries();
 
 $notion = Notion::createFromConfig($config);
 ```
