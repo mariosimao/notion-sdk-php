@@ -32,6 +32,7 @@ final readonly class PropertyFactory
             PropertyType::Title->value          => Title::fromArray($array),
             PropertyType::UniqueId->value       => UniqueId::fromArray($array),
             PropertyType::Url->value            => Url::fromArray($array),
+            PropertyType::Verification->value   => Verification::fromArray($array),
             default                             => Unknown::fromArray($array),
         };
     }

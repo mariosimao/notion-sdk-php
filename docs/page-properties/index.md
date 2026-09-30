@@ -93,3 +93,5 @@ $notion->pages()->update($page);
 - Relation
 - RichText
 - Select
+- Verification
+
