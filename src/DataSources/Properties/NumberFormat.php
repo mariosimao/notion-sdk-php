@@ -41,4 +41,5 @@ enum NumberFormat: string
     case Riyal = "riyal";
     case Ringgit = "ringgit";
     case Leu = "leu";
+    case PeruvianSol = "peruvian_sol";
 }
