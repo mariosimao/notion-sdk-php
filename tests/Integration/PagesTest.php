@@ -3,9 +3,15 @@
 namespace Notion\Test\Integration;
 
 use Notion\Common\Emoji;
+use Notion\Databases\Database;
+use Notion\Databases\DatabaseParent;
+use Notion\DataSources\DataSource;
+use Notion\DataSources\DataSourceParent;
+use Notion\DataSources\Properties\Relation as RelationDataSourceProperty;
 use Notion\Exceptions\ApiException;
 use Notion\Pages\Page;
 use Notion\Pages\PageParent;
+use Notion\Pages\Properties\Relation;
 use Notion\Pages\PropertyItems\PropertyItemList;
 use Notion\Pages\PropertyItems\TitlePropertyItem;
 use PHPUnit\Framework\TestCase;
@@ -97,6 +103,50 @@ class PagesTest extends TestCase
         $this->assertSame("Page with title to retrieve", $firstItem->title->plainText);
 
         $client->pages()->delete($page);
+    }
+
+    public function test_relation_has_more(): void
+    {
+        $client = Helper::client();
+
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()))
+            ->changeTitle("Relation has_more DB");
+        $database = $client->databases()->create($database);
+
+        $tasks = DataSource::create(DataSourceParent::database($database->id))
+            ->changeTitle("Tasks");
+        $tasks = $client->dataSources()->create($tasks);
+
+        $projects = DataSource::create(DataSourceParent::database($database->id))
+            ->changeTitle("Projects")
+            ->addProperty(RelationDataSourceProperty::createUnidirectional("Tasks", $tasks->id));
+        $projects = $client->dataSources()->create($projects);
+
+        $taskIds = [];
+        for ($i = 0; $i < 26; $i++) {
+            $task = Page::create(PageParent::dataSource($tasks->id))->changeTitle("Task #{$i}");
+            $taskIds[] = $client->pages()->create($task)->id;
+        }
+
+        $smallProject = Page::create(PageParent::dataSource($projects->id))
+            ->changeTitle("Small project")
+            ->addProperty("Tasks", Relation::create($taskIds[0]));
+        $smallProject = $client->pages()->create($smallProject);
+
+        $bigProject = Page::create(PageParent::dataSource($projects->id))
+            ->changeTitle("Big project")
+            ->addProperty("Tasks", Relation::create(...$taskIds));
+        $bigProject = $client->pages()->create($bigProject);
+
+        $smallRelation = $client->pages()->find($smallProject->id)->properties()->getRelation("Tasks");
+        $bigRelation = $client->pages()->find($bigProject->id)->properties()->getRelation("Tasks");
+
+        $client->databases()->delete($database);
+
+        $this->assertFalse($smallRelation->hasMore);
+        $this->assertCount(1, $smallRelation->pageIds);
+        $this->assertTrue($bigRelation->hasMore);
+        $this->assertCount(25, $bigRelation->pageIds);
     }
 
     public function test_find_inexistent_property(): void
