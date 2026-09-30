@@ -118,4 +118,22 @@ class QueryTest extends TestCase
 
         $this->assertEquals($expected, $query->toArray());
     }
+
+    public function test_change_filter_properties(): void
+    {
+        $query = Query::create()
+            ->changeFilterProperties("title", "abc1")
+            ->changeFilter(TextFilter::property("Title")->contains("abc"))
+            ->addSort(Sort::property("Title")->ascending())
+            ->changeStartCursor("889431ed-4f50-460b-a926-36f6cf0f9669")
+            ->changePageSize(20);
+
+        $this->assertSame(["title", "abc1"], $query->filterProperties);
+        $this->assertArrayNotHasKey("filter_properties", $query->toArray());
+    }
+
+    public function test_empty_query_has_no_filter_properties(): void
+    {
+        $this->assertSame([], Query::create()->filterProperties);
+    }
 }

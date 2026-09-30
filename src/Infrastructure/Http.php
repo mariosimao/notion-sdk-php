@@ -22,6 +22,19 @@ final readonly class Http
         return $body;
     }
 
+    /**
+     * Encodes property IDs as repeated `filter_properties` query parameters.
+     *
+     * @param string[] $propertyIds
+     */
+    public static function filterPropertiesQuery(array $propertyIds): string
+    {
+        return implode("&", array_map(
+            fn (string $id) => "filter_properties=" . rawurlencode($id),
+            $propertyIds,
+        ));
+    }
+
     public static function createRequest(string $uri, Configuration $config): RequestInterface
     {
         return $config->requestFactory

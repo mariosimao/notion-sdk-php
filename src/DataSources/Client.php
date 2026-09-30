@@ -100,6 +100,9 @@ final readonly class Client
 
         $dataSourceId = $dataSource->id;
         $url = "https://api.notion.com/v1/data_sources/{$dataSourceId}/query";
+        if (!empty($query->filterProperties)) {
+            $url .= "?" . Http::filterPropertiesQuery($query->filterProperties);
+        }
         $request = Http::createRequest($url, $this->config)
             ->withMethod("POST")
             ->withHeader("Content-Type", "application/json");

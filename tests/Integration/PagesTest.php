@@ -3,6 +3,13 @@
 namespace Notion\Test\Integration;
 
 use Notion\Common\Emoji;
+use Notion\Databases\Database;
+use Notion\Databases\DatabaseParent;
+use Notion\DataSources\DataSource;
+use Notion\DataSources\DataSourceParent;
+use Notion\DataSources\Properties\Checkbox;
+use Notion\DataSources\Properties\RichTextProperty;
+use Notion\DataSources\Properties\Title;
 use Notion\Exceptions\ApiException;
 use Notion\Pages\Page;
 use Notion\Pages\PageParent;
@@ -40,6 +47,35 @@ class PagesTest extends TestCase
         $page = $client->pages()->find(Helper::testPageId());
 
         $this->assertNotNull($page->title()?->toString());
+    }
+
+    public function test_find_page_with_filter_properties(): void
+    {
+        $client = Helper::client();
+
+        $database = $client->databases()->create(
+            Database::create(DatabaseParent::page(Helper::testPageId()))->changeTitle("Filter properties DB"),
+        );
+        $dataSource = $client->dataSources()->create(
+            DataSource::create(DataSourceParent::database($database->id))
+                ->changeProperties([
+                    "Name" => Title::create("Name"),
+                    "Description" => RichTextProperty::create("Description"),
+                    "Done" => Checkbox::create("Done"),
+                ]),
+        );
+        $descriptionId = $dataSource->properties()->get("Description")->metadata()->id;
+
+        $page = $client->pages()->create(
+            Page::create(PageParent::dataSource($dataSource->id))->changeTitle("Filtered page"),
+        );
+
+        $pageFound = $client->pages()->find($page->id, ["title", $descriptionId]);
+
+        $client->databases()->delete($database);
+
+        $this->assertEqualsCanonicalizing(["Name", "Description"], array_keys($pageFound->properties));
+        $this->assertSame("Filtered page", $pageFound->title()?->toString());
     }
 
     public function test_find_inexistent_page(): void

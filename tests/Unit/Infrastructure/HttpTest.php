@@ -17,6 +17,21 @@ use PHPUnit\Framework\TestCase;
 
 final class HttpTest extends TestCase
 {
+    public function test_filter_properties_query_repeats_parameter(): void
+    {
+        $query = Http::filterPropertiesQuery(["title", "%3AUPp", "a b"]);
+
+        $this->assertSame(
+            "filter_properties=title&filter_properties=%253AUPp&filter_properties=a%20b",
+            $query,
+        );
+    }
+
+    public function test_filter_properties_query_empty(): void
+    {
+        $this->assertSame("", Http::filterPropertiesQuery([]));
+    }
+
     public function test_create_request(): void
     {
         $client = new Client();

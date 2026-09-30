@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support `filter_properties` when retrieving pages and querying data sources (#457).
+  - `Pages\Client::find()` accepts an optional list of property IDs: `$notion->pages()->find($pageId, ["title", $propertyId])`.
+  - `DataSources\Query::changeFilterProperties(string ...$propertyIds)` limits the properties returned by `DataSources\Client::query()`.
+  - Property IDs are sent as repeated `filter_properties` query parameters; filters, sorts, and pagination are still sent in the request body.
 - Support template blocks (#450).
 - Support synced blocks (#449).
 - Support link to page blocks (#448).
