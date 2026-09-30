@@ -5,6 +5,8 @@ namespace Notion\Pages;
 use Notion\Blocks\BlockInterface;
 use Notion\Configuration;
 use Notion\Infrastructure\Http;
+use Notion\Pages\Markdown\MarkdownUpdateInterface;
+use Notion\Pages\Markdown\PageMarkdown;
 use Notion\Pages\Properties\CreatedBy;
 use Notion\Pages\Properties\CreatedTime;
 use Notion\Pages\Properties\Formula;
@@ -19,6 +21,7 @@ use Notion\Pages\PropertyItems\PropertyItemList;
 
 /**
  * @psalm-import-type PageJson from Page
+ * @psalm-import-type PageMarkdownJson from PageMarkdown
  */
 final readonly class Client
 {
@@ -69,18 +72,62 @@ final readonly class Client
     /** @param list<BlockInterface> $content */
     public function create(Page $page, array $content = []): Page
     {
+        return $this->sendCreate($page, [
+            "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $content),
+        ]);
+    }
+
+    /** @param string $markdown Page content in Notion enhanced markdown. */
+    public function createFromMarkdown(Page $page, string $markdown): Page
+    {
+        return $this->sendCreate($page, [ "markdown" => $markdown ]);
+    }
+
+    public function findMarkdown(string $pageId, bool $includeTranscript = false): PageMarkdown
+    {
+        $url = "https://api.notion.com/v1/pages/{$pageId}/markdown";
+        if ($includeTranscript) {
+            $url .= "?include_transcript=true";
+        }
+
+        $request = Http::createRequest($url, $this->config);
+
+        /** @psalm-var PageMarkdownJson $body */
+        $body = Http::sendRequest($request, $this->config);
+
+        return PageMarkdown::fromArray($body);
+    }
+
+    public function updateMarkdown(string $pageId, MarkdownUpdateInterface $update): PageMarkdown
+    {
+        $url = "https://api.notion.com/v1/pages/{$pageId}/markdown";
+        $request = Http::createRequest($url, $this->config)
+            ->withMethod("PATCH")
+            ->withHeader("Content-Type", "application/json");
+        $request->getBody()->write(json_encode($update->toArray()));
+
+        /** @psalm-var PageMarkdownJson $body */
+        $body = Http::sendRequest($request, $this->config);
+
+        return PageMarkdown::fromArray($body);
+    }
+
+    /** @param array<string, mixed> $content */
+    private function sendCreate(Page $page, array $content): Page
+    {
+        $parent = $page->parent->toArray();
+        if ($page->parent->isDataSource()) {
+            unset($parent["database_id"]);
+        }
+
         $data = [
             "in_trash" => $page->inTrash,
             "icon" => $page->icon?->toArray(),
             "cover" => $page->cover?->toArray(),
             "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $page->properties),
-            "parent" => $page->parent->toArray(),
-            "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $content),
+            "parent" => $parent,
+            ...$content,
         ];
-
-        if ($page->parent->isDataSource()) {
-            unset($data["parent"]["database_id"]);
-        }
 
         $data = json_encode($data);
 
