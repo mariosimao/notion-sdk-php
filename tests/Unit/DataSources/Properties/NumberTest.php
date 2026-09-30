@@ -42,4 +42,20 @@ class NumberTest extends TestCase
 
         $this->assertEquals(NumberFormat::Euro, $price->format);
     }
+
+    public function test_peruvian_sol_format(): void
+    {
+        $array = [
+            "id"    => "abc",
+            "name"  => "Price",
+            "type"  => "number",
+            "number" => [
+                "format" => "peruvian_sol",
+            ],
+        ];
+        $number = Number::fromArray($array);
+
+        $this->assertEquals(NumberFormat::PeruvianSol, $number->format);
+        $this->assertEquals($array, $number->toArray());
+    }
 }
