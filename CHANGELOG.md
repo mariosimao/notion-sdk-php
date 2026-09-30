@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support creator and editor metadata (#452).
+  - `BlockMetadata`, `Page`, `Database` and `DataSource` expose `createdBy` and `lastEditedBy` as `Notion\Users\User|null` (partial users with only `id` populated).
+  - Both are `null` for objects created locally with `create()` until they are saved to Notion, and are preserved by all immutable transformations.
+  - Both are read-only and never sent in create or update requests.
 - Support template blocks (#450).
 - Support synced blocks (#449).
 - Support link to page blocks (#448).
@@ -54,6 +58,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Migration instructions:**
     - If you extended concrete SDK classes (e.g., `Page`, `Block`, `Client`, `RichText`, etc.) to override or add behavior, refactor your code to use **composition** instead of inheritance (e.g., wrap the SDK instance in your own service or decorator class).
     - If you mocked concrete SDK classes in unit tests, refactor test suites to mock interfaces (such as PSR-18 `ClientInterface`, PSR-17 factories, `BlockInterface`, `PropertyInterface`) or use real instances with HTTP mock handlers (`MockHandler`) or integration tests.
+
+### Fixed
+- `DataSource::archive()`, `restore()` and `delete()` no longer drop `databaseParent` (#452).
+- Transformations on blocks of unknown type no longer lose the original type name (#452).
 
 ## [v1.16.0] 2026-01-11
 

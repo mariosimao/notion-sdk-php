@@ -301,4 +301,56 @@ class DatabaseTest extends TestCase
         $restored = $database->restore();
         $this->assertFalse($restored->inTrash);
     }
+
+    public function test_create_has_no_creator_and_editor(): void
+    {
+        $database = Database::create(DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6"));
+
+        $this->assertNull($database->createdBy);
+        $this->assertNull($database->lastEditedBy);
+        $this->assertArrayNotHasKey("created_by", $database->toArray());
+        $this->assertArrayNotHasKey("last_edited_by", $database->toArray());
+    }
+
+    public function test_creator_and_editor(): void
+    {
+        $array = [
+            "object" => "database",
+            "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
+            "data_sources" => [],
+            "created_time" => "2020-12-08T12:00:00.000000Z",
+            "last_edited_time" => "2020-12-08T12:00:00.000000Z",
+            "in_trash" => false,
+            "title" => [],
+            "description" => [],
+            "icon" => null,
+            "cover" => null,
+            "parent" => [
+                "type" => "page_id",
+                "page_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
+            ],
+            "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+            "is_inline" => false,
+            "created_by" => [ "object" => "user", "id" => "creator-id" ],
+            "last_edited_by" => [ "object" => "user", "id" => "editor-id" ],
+        ];
+
+        $database = Database::fromArray($array);
+        $transformed = $database
+            ->archive()
+            ->restore()
+            ->changeTitle("Title")
+            ->changeAdvancedTitle(RichText::fromString("Title"))
+            ->changeIcon(Emoji::fromString("⭐"))
+            ->removeIcon()
+            ->changeCover(File::createExternal("https://my-site.com/image.png"))
+            ->removeCover()
+            ->changeParent(DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6"))
+            ->enableInline()
+            ->disableInline();
+
+        $this->assertSame($array, $database->toArray());
+        $this->assertSame("creator-id", $transformed->createdBy?->id);
+        $this->assertSame("editor-id", $transformed->lastEditedBy?->id);
+    }
 }
