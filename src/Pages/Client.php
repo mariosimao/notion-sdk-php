@@ -116,6 +116,7 @@ final readonly class Client
 
         $data = [
             "in_trash" => $page->inTrash,
+            "is_locked" => $page->isLocked,
             "icon" => $page->icon?->toArray(),
             "cover" => $page->cover?->toArray(),
             "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $updatableProps),

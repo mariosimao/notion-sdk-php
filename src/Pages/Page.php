@@ -29,6 +29,7 @@ use Notion\Pages\Properties\Title;
  *      properties: array<string, PropertyMetadataJson>,
  *      parent: PageParentJson,
  *      url: string,
+ *      is_locked?: bool,
  * }
  *
  * @psalm-immutable
@@ -47,7 +48,8 @@ final readonly class Page
         public File|null $cover,
         public array $properties,
         public PageParent $parent,
-        public string $url
+        public string $url,
+        public bool $isLocked,
     ) {
         /** @psalm-suppress DeprecatedProperty */
         $this->archived = $inTrash;
@@ -63,7 +65,7 @@ final readonly class Page
     {
         $now = new DateTimeImmutable("now");
 
-        return new self("", $now, $now, false, null, null, [], $parent, "");
+        return new self("", $now, $now, false, null, null, [], $parent, "", false);
     }
 
 
@@ -111,6 +113,7 @@ final readonly class Page
             $properties,
             $parent,
             $array["url"],
+            $array["is_locked"] ?? false,
         );
     }
 
@@ -127,6 +130,7 @@ final readonly class Page
             "properties"       => array_map(fn($p) => $p->toArray(), $this->properties),
             "parent"           => $this->parent->toArray(),
             "url"              => $this->url,
+            "is_locked"        => $this->isLocked,
         ];
     }
 
@@ -150,6 +154,7 @@ final readonly class Page
             $this->properties,
             $this->parent,
             $this->url,
+            $this->isLocked,
         );
     }
 
@@ -174,6 +179,7 @@ final readonly class Page
             $this->properties,
             $this->parent,
             $this->url,
+            $this->isLocked,
         );
     }
 
@@ -206,6 +212,7 @@ final readonly class Page
             $this->properties,
             $this->parent,
             $this->url,
+            $this->isLocked,
         );
     }
 
@@ -221,6 +228,7 @@ final readonly class Page
             $this->properties,
             $this->parent,
             $this->url,
+            $this->isLocked,
         );
     }
 
@@ -236,6 +244,7 @@ final readonly class Page
             $this->properties,
             $this->parent,
             $this->url,
+            $this->isLocked,
         );
     }
 
@@ -251,6 +260,7 @@ final readonly class Page
             $this->properties,
             $this->parent,
             $this->url,
+            $this->isLocked,
         );
     }
 
@@ -276,6 +286,7 @@ final readonly class Page
             $this->properties()->add($name, $property)->getAll(),
             $this->parent,
             $this->url,
+            $this->isLocked,
         );
     }
 
@@ -292,6 +303,7 @@ final readonly class Page
             PropertyCollection::create($properties)->getAll(),
             $this->parent,
             $this->url,
+            $this->isLocked,
         );
     }
 
@@ -320,6 +332,39 @@ final readonly class Page
             $this->properties,
             $parent,
             $this->url,
+            $this->isLocked,
+        );
+    }
+
+    public function lock(): self
+    {
+        return new self(
+            $this->id,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $this->inTrash,
+            $this->icon,
+            $this->cover,
+            $this->properties,
+            $this->parent,
+            $this->url,
+            true,
+        );
+    }
+
+    public function unlock(): self
+    {
+        return new self(
+            $this->id,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $this->inTrash,
+            $this->icon,
+            $this->cover,
+            $this->properties,
+            $this->parent,
+            $this->url,
+            false,
         );
     }
 }
