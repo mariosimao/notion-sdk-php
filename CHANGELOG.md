@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support the Singapore dollar number format (#456).
+  - New `Notion\DataSources\Properties\NumberFormat::SingaporeDollar` enum case, mapped to `singapore_dollar`.
 - Support creator and editor metadata (#452).
   - `BlockMetadata`, `Page`, `Database` and `DataSource` expose `createdBy` and `lastEditedBy` as `Notion\Users\User|null` (partial users with only `id` populated).
   - Both are `null` for objects created locally with `create()` until they are saved to Notion, and are preserved by all immutable transformations.
