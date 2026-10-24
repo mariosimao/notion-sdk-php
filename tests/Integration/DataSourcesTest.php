@@ -10,8 +10,6 @@ use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
 use Notion\Databases\DatabaseParentType;
 use Notion\DataSources\Properties\Date;
-use Notion\DataSources\Properties\Number;
-use Notion\DataSources\Properties\NumberFormat;
 use Notion\DataSources\Properties\Relation;
 use Notion\DataSources\Properties\RichTextProperty;
 use Notion\DataSources\Properties\Rollup;
