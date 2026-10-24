@@ -41,6 +41,7 @@ class UserTest extends TestCase
                 "workspace_limits" => [
                     "max_file_upload_size_in_bytes" => 104857600,
                 ],
+                "workspace_name" => "Mario's Workspace",
             ],
         ];
 
@@ -49,7 +50,49 @@ class UserTest extends TestCase
         $this->assertEquals($array, $user->toArray());
         $this->assertTrue($user->isBot());
         $this->assertNotNull($user->bot);
+        $this->assertEquals("Mario's Workspace", $user->bot->workspaceName);
         $this->assertNull($user->avatarUrl);
+    }
+
+    public function test_user_owned_bot_has_null_workspace_name(): void
+    {
+        $array = [
+            "object" => "user",
+            "id"     => "b0688871-85db-4637-8fc9-043a240fcaec",
+            "type"   => "bot",
+            "bot"    => [
+                "object" => "bot",
+                "workspace_limits" => [
+                    "max_file_upload_size_in_bytes" => 5242880,
+                ],
+                "workspace_name" => null,
+            ],
+        ];
+
+        $user = User::fromArray($array);
+
+        $this->assertNull($user->bot?->workspaceName);
+        $this->assertEquals($array, $user->toArray());
+    }
+
+    public function test_bot_without_workspace_name_field(): void
+    {
+        $array = [
+            "object" => "user",
+            "id"     => "b0688871-85db-4637-8fc9-043a240fcaec",
+            "type"   => "bot",
+            "bot"    => [
+                "object" => "bot",
+                "workspace_limits" => [
+                    "max_file_upload_size_in_bytes" => 5242880,
+                ],
+            ],
+        ];
+
+        $user = User::fromArray($array);
+
+        $this->assertNull($user->bot?->workspaceName);
+        $this->assertArrayHasKey("workspace_name", $user->toArray()["bot"] ?? []);
     }
 
     public function test_invalid_type_from_array(): void

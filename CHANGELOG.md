@@ -9,6 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Support the Peruvian sol number format (#458).
   - New `Notion\DataSources\Properties\NumberFormat::PeruvianSol` enum case, mapped to `peruvian_sol`.
+- Add `NumberFormat::AustralianDollar` (`australian_dollar`) number format (#462).
+- Support `has_more` on relation page properties (#455).
+  - `Notion\Pages\Properties\Relation::$hasMore` is `true` when the retrieve-page response omitted references beyond its 25-item limit. Use `Pages\Client::findProperty()` to retrieve the full relation.
+  - `addRelation()` and `removeRelation()` preserve `hasMore`; `create()` and `changeRelations()` set it to `false`.
+  - `has_more` is response-only and is not sent in request payloads.
+- Support bot workspace names (#454).
+  - New nullable `Notion\Users\Bot::$workspaceName` property, parsed from and serialized to `workspace_name`.
+  - It holds the owning workspace name for workspace-owned bots and is `null` for user-owned bots.
+- Support appending blocks after a sibling block with the optional `$after` argument of `Blocks\Client::append()` (#459).
+- Support the Singapore dollar number format (#456).
+  - New `Notion\DataSources\Properties\NumberFormat::SingaporeDollar` enum case, mapped to `singapore_dollar`.
+- Support creator and editor metadata (#452).
+  - `BlockMetadata`, `Page`, `Database` and `DataSource` expose `createdBy` and `lastEditedBy` as `Notion\Users\User|null` (partial users with only `id` populated).
+  - Both are `null` for objects created locally with `create()` until they are saved to Notion, and are preserved by all immutable transformations.
+  - Both are read-only and never sent in create or update requests.
+- Support named IANA time zones in date values (#451).
+  - Add `timeZone` property and support to `Notion\Common\Date`.
+  - Add `timeZone()` and `hasTimeZone()` to `Notion\Pages\Properties\Date` and `Notion\Pages\PropertyItems\DatePropertyItem`.
+  - Add `changeTimeZone()` and `removeTimeZone()` methods to `Notion\Common\Date` and `Notion\Pages\Properties\Date`.
+  - Add optional `$timeZone` parameter to `Date::create()`, `Date::createRange()`, `Date::now()`, `Notion\Pages\Properties\Date::create()`, and `Notion\Pages\Properties\Date::createRange()`.
+  - Automatically format dates without UTC offset when an explicit named time zone is provided, preserving the distinction between an explicit IANA zone and a UTC offset.
 - Support template blocks (#450).
 - Support synced blocks (#449).
 - Support link to page blocks (#448).
@@ -56,6 +77,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Migration instructions:**
     - If you extended concrete SDK classes (e.g., `Page`, `Block`, `Client`, `RichText`, etc.) to override or add behavior, refactor your code to use **composition** instead of inheritance (e.g., wrap the SDK instance in your own service or decorator class).
     - If you mocked concrete SDK classes in unit tests, refactor test suites to mock interfaces (such as PSR-18 `ClientInterface`, PSR-17 factories, `BlockInterface`, `PropertyInterface`) or use real instances with HTTP mock handlers (`MockHandler`) or integration tests.
+
+### Fixed
+- `DataSource::archive()`, `restore()` and `delete()` no longer drop `databaseParent` (#452).
+- Transformations on blocks of unknown type no longer lose the original type name (#452).
 
 ## [v1.16.0] 2026-01-11
 
