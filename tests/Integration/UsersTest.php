@@ -16,6 +16,8 @@ class UsersTest extends TestCase
 
         $this->assertTrue($user->isBot());
         $this->assertEquals($user, $sameUser);
+        $this->assertNotNull($user->bot?->workspaceName);
+        $this->assertEquals($user->bot?->workspaceName, $user->toArray()["bot"]["workspace_name"] ?? null);
     }
 
     public function test_find_all_users(): void
