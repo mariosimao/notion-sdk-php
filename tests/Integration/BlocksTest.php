@@ -155,13 +155,13 @@ class BlocksTest extends TestCase
     {
         $client = Helper::client();
 
-        $blocks = $client->blocks()->append(Helper::testPageId(), [
+        $page = $client->pages()->create(Helper::newPage()->changeTitle("Blocks test"));
+
+        $blocks = $client->blocks()->append($page->id, [
             Paragraph::fromString("This is a simple paragraph"),
         ]);
 
-        foreach ($blocks as $block) {
-            $client->blocks()->delete($block->metadata()->id);
-        }
+        $client->pages()->delete($page);
 
         $this->assertSame(BlockType::Paragraph, $blocks[0]->metadata()->type);
     }
