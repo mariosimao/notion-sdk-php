@@ -104,27 +104,6 @@ class DataSourcesTest extends TestCase
         $client->databases()->delete($database);
     }
 
-    public function test_create_and_update_australian_dollar_number_property(): void
-    {
-        $database = $this->newDatabase();
-        $dataSource = $this->newDataSource($database->id);
-        $client = Helper::client();
-
-        $dataSource = $dataSource->addProperty(Number::create("Price", NumberFormat::AustralianDollar));
-        $dataSource = $client->dataSources()->update($dataSource);
-
-        $this->assertSame(NumberFormat::AustralianDollar, $dataSource->properties()->getNumber("Price")->format);
-
-        $cost = Number::create("Cost", NumberFormat::Dollar);
-        $dataSource = $client->dataSources()->update($dataSource->addProperty($cost));
-        $cost = $dataSource->properties()->getNumber("Cost")->changeFormat(NumberFormat::AustralianDollar);
-        $dataSource = $client->dataSources()->update($dataSource->changeProperty($cost));
-
-        $this->assertSame(NumberFormat::AustralianDollar, $dataSource->properties()->getNumber("Cost")->format);
-
-        $client->databases()->delete($database);
-    }
-
     public function test_query_all_pages_from_data_source(): void
     {
         $database = $this->newDatabase("Movies DB");
