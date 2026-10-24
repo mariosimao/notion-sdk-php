@@ -29,7 +29,7 @@ class DateTest extends TestCase
     {
         $someday = new DateTimeImmutable("2021-01-01 12:00:00", new DateTimeZone("America/New_York"));
 
-        $date = Date::create($someday, "America/New_York");
+        $date = Date::create($someday, new DateTimeZone("America/New_York"));
 
         $this->assertEquals($someday, $date->start());
         $this->assertSame("America/New_York", $date->timeZone()?->getName());
@@ -55,7 +55,7 @@ class DateTest extends TestCase
         $start = new DateTimeImmutable("2021-01-01 09:00:00", new DateTimeZone("America/New_York"));
         $end = new DateTimeImmutable("2021-01-01 17:00:00", new DateTimeZone("America/New_York"));
 
-        $date = Date::createRange($start, $end, "America/New_York");
+        $date = Date::createRange($start, $end, new DateTimeZone("America/New_York"));
 
         $this->assertTrue($date->isRange());
         $this->assertSame("America/New_York", $date->timeZone()?->getName());
@@ -69,7 +69,7 @@ class DateTest extends TestCase
         $this->assertTrue($date->isEmpty());
         $this->assertNull($date->timeZone());
         $this->assertFalse($date->hasTimeZone());
-        $this->assertTrue($date->changeTimeZone("America/New_York")->isEmpty());
+        $this->assertTrue($date->changeTimeZone(new DateTimeZone("America/New_York"))->isEmpty());
         $this->assertTrue($date->removeTimeZone()->isEmpty());
     }
 
@@ -108,7 +108,7 @@ class DateTest extends TestCase
     {
         $someday = new DateTimeImmutable("2021-01-01 12:00:00");
 
-        $date = Date::create($someday)->changeTimeZone("America/New_York");
+        $date = Date::create($someday)->changeTimeZone(new DateTimeZone("America/New_York"));
 
         $this->assertSame("America/New_York", $date->timeZone()?->getName());
         $this->assertTrue($date->hasTimeZone());
@@ -118,7 +118,7 @@ class DateTest extends TestCase
     {
         $someday = new DateTimeImmutable("2021-01-01 12:00:00", new DateTimeZone("America/New_York"));
 
-        $date = Date::create($someday, "America/New_York")->removeTimeZone();
+        $date = Date::create($someday, new DateTimeZone("America/New_York"))->removeTimeZone();
 
         $this->assertNull($date->timeZone());
         $this->assertFalse($date->hasTimeZone());

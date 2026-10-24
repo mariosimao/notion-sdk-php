@@ -29,7 +29,7 @@ final readonly class Date implements PropertyInterface
 
     public static function create(
         DateTimeImmutable $date,
-        DateTimeZone|string|null $timeZone = null,
+        DateTimeZone|null $timeZone = null,
     ): self {
         $property = PropertyMetadata::create("", PropertyType::Date);
 
@@ -39,7 +39,7 @@ final readonly class Date implements PropertyInterface
     public static function createRange(
         DateTimeImmutable $start,
         DateTimeImmutable $end,
-        DateTimeZone|string|null $timeZone = null,
+        DateTimeZone|null $timeZone = null,
     ): self {
         $property = PropertyMetadata::create("", PropertyType::Date);
 
@@ -98,7 +98,7 @@ final readonly class Date implements PropertyInterface
         return new self($this->metadata, $this->date?->removeEnd());
     }
 
-    public function changeTimeZone(DateTimeZone|string|null $timeZone): self
+    public function changeTimeZone(DateTimeZone|null $timeZone): self
     {
         return new self($this->metadata, $this->date?->changeTimeZone($timeZone));
     }

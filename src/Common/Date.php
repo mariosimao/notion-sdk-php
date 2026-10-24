@@ -4,7 +4,6 @@ namespace Notion\Common;
 
 use DateTimeImmutable;
 use DateTimeZone;
-use Notion\Exceptions\DateException;
 
 /**
  * @psalm-type DateJson = array{
@@ -30,36 +29,30 @@ final readonly class Date
 
     public static function create(
         DateTimeImmutable $date,
-        DateTimeZone|string|null $timeZone = null,
+        DateTimeZone|null $timeZone = null,
     ): self {
-        $tz = self::parseTimeZone($timeZone);
-
         return new self(
-            $tz !== null ? $date->setTimezone($tz) : $date,
+            $timeZone !== null ? $date->setTimezone($timeZone) : $date,
             null,
-            $tz,
+            $timeZone,
         );
     }
 
     public static function createRange(
         DateTimeImmutable $start,
         DateTimeImmutable $end,
-        DateTimeZone|string|null $timeZone = null,
+        DateTimeZone|null $timeZone = null,
     ): self {
-        $tz = self::parseTimeZone($timeZone);
-
         return new self(
-            $tz !== null ? $start->setTimezone($tz) : $start,
-            $tz !== null ? $end->setTimezone($tz) : $end,
-            $tz,
+            $timeZone !== null ? $start->setTimezone($timeZone) : $start,
+            $timeZone !== null ? $end->setTimezone($timeZone) : $end,
+            $timeZone,
         );
     }
 
-    public static function now(DateTimeZone|string|null $timeZone = null): self
+    public static function now(DateTimeZone|null $timeZone = null): self
     {
-        $tz = self::parseTimeZone($timeZone);
-
-        return self::create(new DateTimeImmutable("now", $tz), $tz);
+        return self::create(new DateTimeImmutable("now", $timeZone), $timeZone);
     }
 
     /**
@@ -69,15 +62,9 @@ final readonly class Date
      */
     public static function fromArray(array $array): self
     {
-        $timeZoneRaw = $array["time_zone"] ?? null;
-        $timeZone = self::parseTimeZone($timeZoneRaw);
-
-        if ($timeZone !== null) {
-            self::validateDateStringForNamedTimeZone($array["start"]);
-            if (isset($array["end"])) {
-                self::validateDateStringForNamedTimeZone($array["end"]);
-            }
-        }
+        /** @psalm-var non-empty-string|null $name */
+        $name = $array["time_zone"] ?? null;
+        $timeZone = $name !== null ? new DateTimeZone($name) : null;
 
         $start = new DateTimeImmutable($array["start"], $timeZone);
         $end = isset($array["end"])
@@ -136,52 +123,17 @@ final readonly class Date
         return new self($this->start, null, $this->timeZone);
     }
 
-    public function changeTimeZone(DateTimeZone|string|null $timeZone): self
+    public function changeTimeZone(DateTimeZone|null $timeZone): self
     {
-        $tz = self::parseTimeZone($timeZone);
-
         return new self(
-            $tz !== null ? $this->start->setTimezone($tz) : $this->start,
-            $tz !== null ? $this->end?->setTimezone($tz) : $this->end,
-            $tz,
+            $timeZone !== null ? $this->start->setTimezone($timeZone) : $this->start,
+            $timeZone !== null ? $this->end?->setTimezone($timeZone) : $this->end,
+            $timeZone,
         );
     }
 
     public function removeTimeZone(): self
     {
         return new self($this->start, $this->end, null);
-    }
-
-    /**
-     * @psalm-pure
-     */
-    private static function parseTimeZone(DateTimeZone|string|null $timeZone): DateTimeZone|null
-    {
-        if ($timeZone === null) {
-            return null;
-        }
-
-        $name = $timeZone instanceof DateTimeZone ? $timeZone->getName() : $timeZone;
-
-        if ($name === "" || !in_array($name, timezone_identifiers_list(DateTimeZone::ALL_WITH_BC), true)) {
-            throw DateException::invalidTimeZone($name);
-        }
-
-        /** @psalm-var non-empty-string $name */
-        return $timeZone instanceof DateTimeZone ? $timeZone : new DateTimeZone($name);
-    }
-
-    /**
-     * @psalm-pure
-     */
-    private static function validateDateStringForNamedTimeZone(string $dateString): void
-    {
-        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateString) === 1) {
-            throw DateException::timeInformationRequired();
-        }
-
-        if (preg_match('/(Z|[+-]\d{2}(?::?\d{2})?)$/i', $dateString) === 1) {
-            throw DateException::utcOffsetNotAllowed();
-        }
     }
 }

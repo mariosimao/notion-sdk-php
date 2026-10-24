@@ -5,7 +5,6 @@ namespace Notion\Test\Unit\Common;
 use DateTimeImmutable;
 use DateTimeZone;
 use Notion\Common\Date;
-use Notion\Exceptions\DateException;
 use PHPUnit\Framework\TestCase;
 
 class DateTest extends TestCase
@@ -66,10 +65,10 @@ class DateTest extends TestCase
         $this->assertFalse($date->hasTimeZone());
     }
 
-    public function test_create_date_with_time_zone_string(): void
+    public function test_create_date_with_time_zone_from_name(): void
     {
         $start = new DateTimeImmutable("2021-01-01 12:00:00", new DateTimeZone("America/New_York"));
-        $date = Date::create($start, "America/New_York");
+        $date = Date::create($start, new DateTimeZone("America/New_York"));
 
         $this->assertSame("America/New_York", $date->timeZone?->getName());
         $this->assertTrue($date->hasTimeZone());
@@ -107,7 +106,7 @@ class DateTest extends TestCase
     {
         $start = new DateTimeImmutable("2021-01-01 09:00:00", new DateTimeZone("America/New_York"));
         $end = new DateTimeImmutable("2021-01-01 17:00:00", new DateTimeZone("America/New_York"));
-        $date = Date::createRange($start, $end, "America/New_York");
+        $date = Date::createRange($start, $end, new DateTimeZone("America/New_York"));
 
         $this->assertSame("America/New_York", $date->timeZone?->getName());
         $this->assertTrue($date->isRange());
@@ -134,7 +133,7 @@ class DateTest extends TestCase
         $start = new DateTimeImmutable("2021-01-01 12:00:00", new DateTimeZone("America/New_York"));
         $newStart = new DateTimeImmutable("2022-01-01 12:00:00", new DateTimeZone("America/New_York"));
 
-        $date = Date::create($start, "America/New_York")->changeStart($newStart);
+        $date = Date::create($start, new DateTimeZone("America/New_York"))->changeStart($newStart);
 
         $this->assertSame("America/New_York", $date->timeZone?->getName());
         $this->assertTrue($date->hasTimeZone());
@@ -155,7 +154,7 @@ class DateTest extends TestCase
         $start = new DateTimeImmutable("2021-01-01 12:00:00", new DateTimeZone("America/New_York"));
         $end = new DateTimeImmutable("2021-01-02 12:00:00", new DateTimeZone("America/New_York"));
 
-        $date = Date::create($start, "America/New_York")->changeEnd($end);
+        $date = Date::create($start, new DateTimeZone("America/New_York"))->changeEnd($end);
 
         $this->assertSame("America/New_York", $date->timeZone?->getName());
         $this->assertTrue($date->hasTimeZone());
@@ -176,7 +175,7 @@ class DateTest extends TestCase
         $start = new DateTimeImmutable("2021-01-01 12:00:00", new DateTimeZone("America/New_York"));
         $end = new DateTimeImmutable("2021-01-02 12:00:00", new DateTimeZone("America/New_York"));
 
-        $date = Date::createRange($start, $end, "America/New_York")->removeEnd();
+        $date = Date::createRange($start, $end, new DateTimeZone("America/New_York"))->removeEnd();
 
         $this->assertNull($date->end);
         $this->assertSame("America/New_York", $date->timeZone?->getName());
@@ -185,7 +184,7 @@ class DateTest extends TestCase
     public function test_change_time_zone(): void
     {
         $start = new DateTimeImmutable("2021-01-01 12:00:00");
-        $date = Date::create($start)->changeTimeZone("America/New_York");
+        $date = Date::create($start)->changeTimeZone(new DateTimeZone("America/New_York"));
 
         $this->assertSame("America/New_York", $date->timeZone?->getName());
         $this->assertTrue($date->hasTimeZone());
@@ -194,7 +193,7 @@ class DateTest extends TestCase
     public function test_remove_time_zone(): void
     {
         $start = new DateTimeImmutable("2021-01-01 12:00:00", new DateTimeZone("America/New_York"));
-        $date = Date::create($start, "America/New_York")->removeTimeZone();
+        $date = Date::create($start, new DateTimeZone("America/New_York"))->removeTimeZone();
 
         $this->assertNull($date->timeZone);
         $this->assertFalse($date->hasTimeZone());
@@ -212,74 +211,10 @@ class DateTest extends TestCase
 
     public function test_now_with_time_zone(): void
     {
-        $date = Date::now("America/New_York");
+        $date = Date::now(new DateTimeZone("America/New_York"));
 
         $this->assertNull($date->end);
         $this->assertSame("America/New_York", $date->timeZone?->getName());
         $this->assertTrue($date->hasTimeZone());
-    }
-
-    public function test_invalid_time_zone_string_throws(): void
-    {
-        $this->expectException(DateException::class);
-        $this->expectExceptionMessage("The time zone 'Invalid/Zone' is not a valid IANA time-zone name.");
-
-        Date::create(new DateTimeImmutable("2021-01-01"), "Invalid/Zone");
-    }
-
-    public function test_utc_offset_as_time_zone_throws(): void
-    {
-        $this->expectException(DateException::class);
-        $this->expectExceptionMessage("The time zone '+02:00' is not a valid IANA time-zone name.");
-
-        Date::create(new DateTimeImmutable("2021-01-01"), "+02:00");
-    }
-
-    public function test_start_with_utc_offset_and_named_time_zone_throws(): void
-    {
-        $this->expectException(DateException::class);
-        $this->expectExceptionMessage("Dates cannot contain UTC offsets when a named time zone is provided.");
-
-        Date::fromArray([
-            "start"     => "2021-01-01T12:00:00Z",
-            "time_zone" => "America/New_York",
-        ]);
-    }
-
-    public function test_start_without_time_and_named_time_zone_throws(): void
-    {
-        $this->expectException(DateException::class);
-        $expected = "Dates cannot be dates without time information when a named time zone is provided.";
-        $this->expectExceptionMessage($expected);
-
-        Date::fromArray([
-            "start"     => "2021-01-01",
-            "time_zone" => "America/New_York",
-        ]);
-    }
-
-    public function test_end_with_utc_offset_and_named_time_zone_throws(): void
-    {
-        $this->expectException(DateException::class);
-        $this->expectExceptionMessage("Dates cannot contain UTC offsets when a named time zone is provided.");
-
-        Date::fromArray([
-            "start"     => "2021-01-01T12:00:00",
-            "end"       => "2021-01-02T12:00:00+02:00",
-            "time_zone" => "America/New_York",
-        ]);
-    }
-
-    public function test_end_without_time_and_named_time_zone_throws(): void
-    {
-        $this->expectException(DateException::class);
-        $expected = "Dates cannot be dates without time information when a named time zone is provided.";
-        $this->expectExceptionMessage($expected);
-
-        Date::fromArray([
-            "start"     => "2021-01-01T12:00:00",
-            "end"       => "2021-01-02",
-            "time_zone" => "America/New_York",
-        ]);
     }
 }

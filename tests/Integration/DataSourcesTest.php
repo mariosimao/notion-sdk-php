@@ -3,6 +3,7 @@
 namespace Notion\Test\Integration;
 
 use DateTimeImmutable;
+use DateTimeZone;
 use Notion\Common\Color;
 use Notion\Common\Emoji;
 use Notion\Common\RichText;
@@ -191,7 +192,7 @@ class DataSourcesTest extends TestCase
 
         $dateProp = DateProp::create(
             new DateTimeImmutable("2025-06-15 14:30:00"),
-            "America/New_York",
+            new DateTimeZone("America/New_York"),
         );
         $page = Page::create(PageParent::dataSource($dataSource->id))
             ->changeTitle("Page with timezone date")
