@@ -9,7 +9,6 @@ use Notion\Common\File;
 use Notion\Common\Icon;
 use Notion\Common\RichText;
 use Notion\Exceptions\DatabaseException;
-use Notion\Users\User;
 
 /**
  * @psalm-import-type ChildDataSourceJson from ChildDataSource
@@ -17,7 +16,6 @@ use Notion\Users\User;
  * @psalm-import-type FileJson from \Notion\Common\File
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
  * @psalm-import-type DatabaseParentJson from DatabaseParent
- * @psalm-import-type UserJson from \Notion\Users\User
  *
  * @psalm-type DatabaseJson = array{
  *      object: "database",
@@ -25,8 +23,6 @@ use Notion\Users\User;
  *      data_sources: ChildDataSourceJson[],
  *      created_time: string,
  *      last_edited_time: string,
- *      created_by?: UserJson,
- *      last_edited_by?: UserJson,
  *      in_trash?: bool,
  *      title: RichTextJson[],
  *      description: RichTextJson[],
@@ -51,8 +47,6 @@ final readonly class Database
         public array $dataSources,
         public DateTimeImmutable $createdTime,
         public DateTimeImmutable $lastEditedTime,
-        public User|null $createdBy,
-        public User|null $lastEditedBy,
         public bool $inTrash,
         public array $title,
         public array $description,
@@ -76,8 +70,6 @@ final readonly class Database
             [],
             $now,
             $now,
-            null,
-            null,
             false,
             [],
             [],
@@ -143,8 +135,6 @@ final readonly class Database
             $dataSources,
             new DateTimeImmutable($array["created_time"]),
             new DateTimeImmutable($array["last_edited_time"]),
-            isset($array["created_by"]) ? User::fromArray($array["created_by"]) : null,
-            isset($array["last_edited_by"]) ? User::fromArray($array["last_edited_by"]) : null,
             $array["in_trash"] ?? false,
             $title,
             $description,
@@ -174,14 +164,6 @@ final readonly class Database
             "is_inline"        => $this->isInline,
         ];
 
-        if ($this->createdBy !== null) {
-            $array["created_by"] = $this->createdBy->toArray();
-        }
-
-        if ($this->lastEditedBy !== null) {
-            $array["last_edited_by"] = $this->lastEditedBy->toArray();
-        }
-
         return $array;
     }
 
@@ -200,8 +182,6 @@ final readonly class Database
             $this->dataSources,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->createdBy,
-            $this->lastEditedBy,
             true,
             $this->title,
             $this->description,
@@ -220,8 +200,6 @@ final readonly class Database
             $this->dataSources,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->createdBy,
-            $this->lastEditedBy,
             false,
             $this->title,
             $this->description,
@@ -240,8 +218,6 @@ final readonly class Database
             $this->dataSources,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->createdBy,
-            $this->lastEditedBy,
             $this->inTrash,
             [ RichText::fromString($title) ],
             $this->description,
@@ -260,8 +236,6 @@ final readonly class Database
             $this->dataSources,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->createdBy,
-            $this->lastEditedBy,
             $this->inTrash,
             $title,
             $this->description,
@@ -288,8 +262,6 @@ final readonly class Database
             $this->dataSources,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->createdBy,
-            $this->lastEditedBy,
             $this->inTrash,
             $this->title,
             $this->description,
@@ -308,8 +280,6 @@ final readonly class Database
             $this->dataSources,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->createdBy,
-            $this->lastEditedBy,
             $this->inTrash,
             $this->title,
             $this->description,
@@ -328,8 +298,6 @@ final readonly class Database
             $this->dataSources,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->createdBy,
-            $this->lastEditedBy,
             $this->inTrash,
             $this->title,
             $this->description,
@@ -348,8 +316,6 @@ final readonly class Database
             $this->dataSources,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->createdBy,
-            $this->lastEditedBy,
             $this->inTrash,
             $this->title,
             $this->description,
@@ -368,8 +334,6 @@ final readonly class Database
             $this->dataSources,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->createdBy,
-            $this->lastEditedBy,
             $this->inTrash,
             $this->title,
             $this->description,
@@ -388,8 +352,6 @@ final readonly class Database
             $this->dataSources,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->createdBy,
-            $this->lastEditedBy,
             $this->inTrash,
             $this->title,
             $this->description,
@@ -408,8 +370,6 @@ final readonly class Database
             $this->dataSources,
             $this->createdTime,
             $this->lastEditedTime,
-            $this->createdBy,
-            $this->lastEditedBy,
             $this->inTrash,
             $this->title,
             $this->description,
