@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support the Peruvian sol number format (#458).
+  - New `Notion\DataSources\Properties\NumberFormat::PeruvianSol` enum case, mapped to `peruvian_sol`.
 - Add `NumberFormat::AustralianDollar` (`australian_dollar`) number format (#462).
 - Support `has_more` on relation page properties (#455).
   - `Notion\Pages\Properties\Relation::$hasMore` is `true` when the retrieve-page response omitted references beyond its 25-item limit. Use `Pages\Client::findProperty()` to retrieve the full relation.
