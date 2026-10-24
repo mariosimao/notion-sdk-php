@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `BlockMetadata`, `Page`, `Database` and `DataSource` expose `createdBy` and `lastEditedBy` as `Notion\Users\User|null` (partial users with only `id` populated).
   - Both are `null` for objects created locally with `create()` until they are saved to Notion, and are preserved by all immutable transformations.
   - Both are read-only and never sent in create or update requests.
+- Support named IANA time zones in date values (#451).
+  - Add `timeZone` property and support to `Notion\Common\Date`.
+  - Add `timeZone()` and `hasTimeZone()` to `Notion\Pages\Properties\Date` and `Notion\Pages\PropertyItems\DatePropertyItem`.
+  - Add `changeTimeZone()` and `removeTimeZone()` methods to `Notion\Common\Date` and `Notion\Pages\Properties\Date`.
+  - Add optional `$timeZone` parameter to `Date::create()`, `Date::createRange()`, `Date::now()`, `Notion\Pages\Properties\Date::create()`, and `Notion\Pages\Properties\Date::createRange()`.
+  - Automatically format dates without UTC offset when an explicit named time zone is provided, preserving the distinction between an explicit IANA zone and a UTC offset.
 - Support template blocks (#450).
 - Support synced blocks (#449).
 - Support link to page blocks (#448).
