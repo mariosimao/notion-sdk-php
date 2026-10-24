@@ -3,6 +3,7 @@
 namespace Notion\Test\Integration;
 
 use Notion\Blocks\Audio;
+use Notion\Blocks\BlockInterface;
 use Notion\Blocks\BlockType;
 use Notion\Blocks\Bookmark;
 use Notion\Blocks\Breadcrumb;
@@ -165,6 +166,51 @@ class BlocksTest extends TestCase
         $this->assertSame(BlockType::Paragraph, $blocks[0]->metadata()->type);
     }
 
+    public function test_add_block_after_sibling(): void
+    {
+        $client = Helper::client();
+        $page = Helper::newPage()->changeTitle("Blocks test");
+
+        $newPage = $client->pages()->create($page, [
+            Paragraph::fromString("First"),
+            Paragraph::fromString("Last"),
+        ]);
+
+        $children = $client->blocks()->findChildren($newPage->id);
+
+        $client->blocks()->append(
+            $newPage->id,
+            [Paragraph::fromString("Middle")],
+            $children[0]->metadata()->id,
+        );
+
+        $childrenAfterAppend = $client->blocks()->findChildren($newPage->id);
+
+        $client->pages()->delete($newPage);
+
+        $texts = array_map(
+            function (BlockInterface $block): string {
+                $this->assertInstanceOf(Paragraph::class, $block);
+                return $block->toString();
+            },
+            $childrenAfterAppend,
+        );
+
+        $this->assertSame(["First", "Middle", "Last"], $texts);
+    }
+
+    public function test_add_block_after_inexistent_sibling(): void
+    {
+        $client = Helper::client();
+
+        $this->expectException(ApiException::class);
+        $client->blocks()->append(
+            Helper::testPageId(),
+            [Paragraph::fromString("This is a simple paragraph")],
+            "inexistentId",
+        );
+    }
+
     public function test_add_audio_block(): void
     {
         $client = Helper::client();
@@ -280,6 +326,28 @@ class BlocksTest extends TestCase
             $archivedBlock = $client->blocks()->find($block->metadata()->id);
             $this->assertTrue($archivedBlock->metadata()->inTrash);
         }
+    }
+
+    public function test_block_creator_and_editor(): void
+    {
+        $client = Helper::client();
+        $botId = $client->users()->me()->id;
+
+        $blocks = $client->blocks()->append(Helper::testPageId(), [
+            Paragraph::fromString("Creator and editor"),
+        ]);
+        /** @var Paragraph $blockFound */
+        $blockFound = $client->blocks()->find($blocks[0]->metadata()->id);
+        $updatedBlock = $client->blocks()->update(
+            $blockFound->changeText([RichText::fromString("Creator and editor updated")]),
+        );
+
+        $this->assertSame($botId, $blockFound->metadata()->createdBy?->id);
+        $this->assertSame($botId, $blockFound->metadata()->lastEditedBy?->id);
+        $this->assertSame($botId, $updatedBlock->metadata()->createdBy?->id);
+        $this->assertSame($botId, $updatedBlock->metadata()->lastEditedBy?->id);
+
+        $client->blocks()->delete($updatedBlock->metadata()->id);
     }
 
     public function test_update_newly_created_block(): void
