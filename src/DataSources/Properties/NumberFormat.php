@@ -42,4 +42,5 @@ enum NumberFormat: string
     case Riyal = "riyal";
     case Ringgit = "ringgit";
     case Leu = "leu";
+    case SingaporeDollar = "singapore_dollar";
 }

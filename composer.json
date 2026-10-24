@@ -42,7 +42,7 @@
         "ci:psalm": "psalm --output-format=github --shepherd --stats",
         "ci:coverage": [
             "Composer\\Config::disableProcessTimeout",
-            "paratest --coverage-clover dist/phpunit/clover.xml"
+            "phpunit --coverage-clover dist/phpunit/clover.xml"
         ],
         "ci:unit": "paratest --testsuite Unit",
         "ci:integration": "paratest --testsuite Integration",
