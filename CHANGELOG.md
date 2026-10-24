@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support `has_more` on relation page properties (#455).
+  - `Notion\Pages\Properties\Relation::$hasMore` is `true` when the retrieve-page response omitted references beyond its 25-item limit. Use `Pages\Client::findProperty()` to retrieve the full relation.
+  - `addRelation()` and `removeRelation()` preserve `hasMore`; `create()` and `changeRelations()` set it to `false`.
+  - `has_more` is response-only and is not sent in request payloads.
 - Support bot workspace names (#454).
   - New nullable `Notion\Users\Bot::$workspaceName` property, parsed from and serialized to `workspace_name`.
   - It holds the owning workspace name for workspace-owned bots and is `null` for user-owned bots.
