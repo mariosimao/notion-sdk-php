@@ -19,6 +19,8 @@ class DatePropertyItemTest extends TestCase
         $this->assertSame(PropertyType::Date, $item->metadata()->type);
         $this->assertSame($date, $item->date);
         $this->assertFalse($item->isEmpty());
+        $this->assertNull($item->timeZone());
+        $this->assertFalse($item->hasTimeZone());
     }
 
     public function test_from_array(): void
@@ -39,6 +41,8 @@ class DatePropertyItemTest extends TestCase
         $this->assertSame("i%3Ahj", $item->metadata()->id);
         $this->assertNotNull($item->date);
         $this->assertSame("2021-05-11T11:00:00.000-04:00", $item->date->start->format("Y-m-d\TH:i:s.vP"));
+        $this->assertNull($item->timeZone());
+        $this->assertFalse($item->hasTimeZone());
         $this->assertEquals([
             "object" => "property_item",
             "id" => "i%3Ahj",
@@ -50,9 +54,42 @@ class DatePropertyItemTest extends TestCase
         ], $item->toArray());
     }
 
+    public function test_from_array_with_time_zone(): void
+    {
+        $array = [
+            "object" => "property_item",
+            "id" => "i%3Ahj",
+            "type" => "date",
+            "date" => [
+                "start" => "2021-05-11T11:00:00.000000",
+                "end" => null,
+                "time_zone" => "America/New_York",
+            ],
+        ];
+
+        $item = DatePropertyItem::fromArray($array);
+
+        $this->assertSame("i%3Ahj", $item->metadata()->id);
+        $this->assertNotNull($item->date);
+        $this->assertSame("America/New_York", $item->timeZone()?->getName());
+        $this->assertTrue($item->hasTimeZone());
+        $this->assertEquals([
+            "object" => "property_item",
+            "id" => "i%3Ahj",
+            "type" => "date",
+            "date" => [
+                "start" => "2021-05-11T11:00:00.000000",
+                "end" => null,
+                "time_zone" => "America/New_York",
+            ],
+        ], $item->toArray());
+    }
+
     public function test_empty(): void
     {
         $item = DatePropertyItem::create(null);
         $this->assertTrue($item->isEmpty());
+        $this->assertNull($item->timeZone());
+        $this->assertFalse($item->hasTimeZone());
     }
 }
