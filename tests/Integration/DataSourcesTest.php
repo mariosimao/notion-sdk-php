@@ -3,6 +3,7 @@
 namespace Notion\Test\Integration;
 
 use DateTimeImmutable;
+use DateTimeZone;
 use Notion\Common\Color;
 use Notion\Common\Emoji;
 use Notion\Common\RichText;
@@ -176,6 +177,34 @@ class DataSourcesTest extends TestCase
 
         $this->expectException(ApiException::class);
         $client->dataSources()->query($dataSource, $query);
+    }
+
+    public function test_create_page_with_named_time_zone_date(): void
+    {
+        $client = Helper::client();
+        $database = $this->newDatabase();
+        $dataSource = self::newDataSource($database->id, "Date with timezone")
+            ->changeProperties([
+                "Title" => Title::create("Title"),
+                "Due date" => Date::create("Due date"),
+            ]);
+        $dataSource = $client->dataSources()->create($dataSource);
+
+        $dateProp = DateProp::create(
+            new DateTimeImmutable("2025-06-15 14:30:00"),
+            new DateTimeZone("America/New_York"),
+        );
+        $page = Page::create(PageParent::dataSource($dataSource->id))
+            ->changeTitle("Page with timezone date")
+            ->addProperty("Due date", $dateProp);
+
+        $page = $client->pages()->create($page);
+        $found = $client->pages()->find($page->id);
+
+        $client->databases()->delete($database);
+
+        $dueDate = $found->properties()->getDate("Due date");
+        $this->assertNotNull($dueDate->date);
     }
 
     private static function moviesDataSource(string $databaseId): DataSource

@@ -98,7 +98,7 @@ final readonly class RollupPropertyItem implements PropertyItemInterface
         /** @psalm-var RollupItemJson $array */
         $metadata = PropertyItemMetadata::fromArray($array);
 
-        /** @var array{type: string, function: string, number?: int|float|null, date?: array{start: string, end?: string|null}|null, array?: list<mixed>} $data */
+        /** @var array{type: string, function: string, number?: int|float|null, date?: array{start: string, end?: string|null, time_zone?: string|null}|null, array?: list<mixed>} $data */
         $data = $array["rollup"];
 
         $rollupType = RollupType::from($data["type"]);
