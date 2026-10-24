@@ -282,6 +282,28 @@ class BlocksTest extends TestCase
         }
     }
 
+    public function test_block_creator_and_editor(): void
+    {
+        $client = Helper::client();
+        $botId = $client->users()->me()->id;
+
+        $blocks = $client->blocks()->append(Helper::testPageId(), [
+            Paragraph::fromString("Creator and editor"),
+        ]);
+        /** @var Paragraph $blockFound */
+        $blockFound = $client->blocks()->find($blocks[0]->metadata()->id);
+        $updatedBlock = $client->blocks()->update(
+            $blockFound->changeText([RichText::fromString("Creator and editor updated")]),
+        );
+
+        $this->assertSame($botId, $blockFound->metadata()->createdBy?->id);
+        $this->assertSame($botId, $blockFound->metadata()->lastEditedBy?->id);
+        $this->assertSame($botId, $updatedBlock->metadata()->createdBy?->id);
+        $this->assertSame($botId, $updatedBlock->metadata()->lastEditedBy?->id);
+
+        $client->blocks()->delete($updatedBlock->metadata()->id);
+    }
+
     public function test_update_newly_created_block(): void
     {
         $client = Helper::client();
