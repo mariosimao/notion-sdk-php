@@ -14,6 +14,7 @@ use Notion\DataSources\Properties\PropertyFactory;
 use Notion\DataSources\Properties\PropertyInterface;
 use Notion\DataSources\Properties\Status;
 use Notion\DataSources\Properties\Title;
+use Notion\Users\User;
 
 /**
  * @psalm-import-type EmojiJson from \Notion\Common\Emoji
@@ -22,12 +23,15 @@ use Notion\DataSources\Properties\Title;
  * @psalm-import-type PropertyMetadataJson from \Notion\DataSources\Properties\PropertyMetadata
  * @psalm-import-type DataSourceParentJson from DataSourceParent
  * @psalm-import-type DatabaseParentJson from \Notion\Databases\DatabaseParent
+ * @psalm-import-type UserJson from \Notion\Users\User
  *
  * @psalm-type DataSourceJson = array{
  *      object: "data_source",
  *      id: string,
  *      created_time: string,
  *      last_edited_time: string,
+ *      created_by?: UserJson,
+ *      last_edited_by?: UserJson,
  *      in_trash?: bool,
  *      title: RichTextJson[],
  *      description: RichTextJson[],
@@ -51,6 +55,8 @@ final readonly class DataSource
         public string $id,
         public DateTimeImmutable $createdTime,
         public DateTimeImmutable $lastEditedTime,
+        public User|null $createdBy,
+        public User|null $lastEditedBy,
         public bool $inTrash,
         public array $title,
         public array $description,
@@ -70,6 +76,8 @@ final readonly class DataSource
             "",
             $now,
             $now,
+            null,
+            null,
             false,
             [],
             [],
@@ -134,6 +142,8 @@ final readonly class DataSource
             $array["id"],
             new DateTimeImmutable($array["created_time"]),
             new DateTimeImmutable($array["last_edited_time"]),
+            isset($array["created_by"]) ? User::fromArray($array["created_by"]) : null,
+            isset($array["last_edited_by"]) ? User::fromArray($array["last_edited_by"]) : null,
             $array["in_trash"] ?? false,
             $title,
             $description,
@@ -147,7 +157,7 @@ final readonly class DataSource
 
     public function toArray(): array
     {
-        return [
+        $array = [
             "object"           => "data_source",
             "id"               => $this->id,
             "created_time"     => $this->createdTime->format(Date::FORMAT),
@@ -161,6 +171,16 @@ final readonly class DataSource
             "database_parent"  => $this->databaseParent?->toArray(),
             "url"              => $this->url,
         ];
+
+        if ($this->createdBy !== null) {
+            $array["created_by"] = $this->createdBy->toArray();
+        }
+
+        if ($this->lastEditedBy !== null) {
+            $array["last_edited_by"] = $this->lastEditedBy->toArray();
+        }
+
+        return $array;
     }
 
     /**
@@ -177,6 +197,8 @@ final readonly class DataSource
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->createdBy,
+            $this->lastEditedBy,
             true,
             $this->title,
             $this->description,
@@ -184,6 +206,7 @@ final readonly class DataSource
             $this->properties,
             $this->parent,
             $this->url,
+            $this->databaseParent,
         );
     }
 
@@ -193,6 +216,8 @@ final readonly class DataSource
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->createdBy,
+            $this->lastEditedBy,
             false,
             $this->title,
             $this->description,
@@ -200,6 +225,7 @@ final readonly class DataSource
             $this->properties,
             $this->parent,
             $this->url,
+            $this->databaseParent,
         );
     }
 
@@ -214,6 +240,8 @@ final readonly class DataSource
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->createdBy,
+            $this->lastEditedBy,
             $this->inTrash,
             [ RichText::fromString($title) ],
             $this->description,
@@ -231,6 +259,8 @@ final readonly class DataSource
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->createdBy,
+            $this->lastEditedBy,
             $this->inTrash,
             $title,
             $this->description,
@@ -256,6 +286,8 @@ final readonly class DataSource
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->createdBy,
+            $this->lastEditedBy,
             $this->inTrash,
             $this->title,
             $this->description,
@@ -273,6 +305,8 @@ final readonly class DataSource
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->createdBy,
+            $this->lastEditedBy,
             $this->inTrash,
             $this->title,
             $this->description,
@@ -295,6 +329,8 @@ final readonly class DataSource
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->createdBy,
+            $this->lastEditedBy,
             $this->inTrash,
             $this->title,
             $this->description,
@@ -312,6 +348,8 @@ final readonly class DataSource
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->createdBy,
+            $this->lastEditedBy,
             $this->inTrash,
             $this->title,
             $this->description,
@@ -329,6 +367,8 @@ final readonly class DataSource
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->createdBy,
+            $this->lastEditedBy,
             $this->inTrash,
             $this->title,
             $this->description,
@@ -347,6 +387,8 @@ final readonly class DataSource
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->createdBy,
+            $this->lastEditedBy,
             $this->inTrash,
             $this->title,
             $this->description,
@@ -364,6 +406,8 @@ final readonly class DataSource
             $this->id,
             $this->createdTime,
             $this->lastEditedTime,
+            $this->createdBy,
+            $this->lastEditedBy,
             $this->inTrash,
             $this->title,
             $this->description,

@@ -8,6 +8,7 @@ namespace Notion\Users;
  * @psalm-type BotJson = array{
  *    object: "bot",
  *    workspace_limits: WorkspaceLimitsJson,
+ *    workspace_name?: string|null,
  * }
  *
  * @psalm-immutable
@@ -15,7 +16,8 @@ namespace Notion\Users;
 final readonly class Bot
 {
     private function __construct(
-        public WorkspaceLimits $workspaceLimits
+        public WorkspaceLimits $workspaceLimits,
+        public string|null $workspaceName,
     ) {
     }
 
@@ -28,7 +30,7 @@ final readonly class Bot
     {
         $workspaceLimits = WorkspaceLimits::fromArray($array["workspace_limits"] ?? []);
 
-        return new self($workspaceLimits);
+        return new self($workspaceLimits, $array["workspace_name"] ?? null);
     }
 
     /** @return BotJson */
@@ -37,6 +39,7 @@ final readonly class Bot
         return [
             "object" => "bot",
             "workspace_limits" => $this->workspaceLimits->toArray(),
+            "workspace_name" => $this->workspaceName,
         ];
     }
 }

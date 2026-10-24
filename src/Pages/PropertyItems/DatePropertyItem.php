@@ -2,6 +2,7 @@
 
 namespace Notion\Pages\PropertyItems;
 
+use DateTimeZone;
 use Notion\Common\Date as CommonDate;
 use Notion\Pages\Properties\PropertyType;
 
@@ -12,6 +13,7 @@ use Notion\Pages\Properties\PropertyType;
  *      date: array{
  *          start: string,
  *          end?: string|null,
+ *          time_zone?: string|null,
  *      }|null,
  *      ...
  * }
@@ -53,6 +55,16 @@ final readonly class DatePropertyItem implements PropertyItemInterface
     public function metadata(): PropertyItemMetadata
     {
         return $this->metadata;
+    }
+
+    public function timeZone(): DateTimeZone|null
+    {
+        return $this->date?->timeZone;
+    }
+
+    public function hasTimeZone(): bool
+    {
+        return $this->date?->hasTimeZone() ?? false;
     }
 
     public function isEmpty(): bool

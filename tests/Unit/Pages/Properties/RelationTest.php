@@ -67,5 +67,61 @@ class RelationTest extends TestCase
 
         $this->assertEquals($array, $relation->toArray());
         $this->assertEquals($array, $fromFactory->toArray());
+        $this->assertFalse($relation->hasMore);
+    }
+
+    public function test_has_more_from_array(): void
+    {
+        $array = [
+            "id" => "abc",
+            "type" => "relation",
+            "relation" => [
+                [ "id" => "264f3f43-3d87-4bb2-bb66-11812ab74eae" ],
+            ],
+            "has_more" => true,
+        ];
+
+        $relation = Relation::fromArray($array);
+
+        $this->assertTrue($relation->hasMore);
+        $this->assertArrayNotHasKey("has_more", $relation->toArray());
+    }
+
+    public function test_create_has_no_more(): void
+    {
+        $relation = Relation::create("264f3f43-3d87-4bb2-bb66-11812ab74eae");
+
+        $this->assertFalse($relation->hasMore);
+    }
+
+    public function test_add_and_remove_relation_keep_has_more(): void
+    {
+        $relation = Relation::fromArray([
+            "id" => "abc",
+            "type" => "relation",
+            "relation" => [
+                [ "id" => "264f3f43-3d87-4bb2-bb66-11812ab74eae" ],
+            ],
+            "has_more" => true,
+        ]);
+
+        $this->assertTrue($relation->addRelation("f3902b7f-e9e2-4406-8c3f-5d07dbc87d66")->hasMore);
+        $this->assertTrue($relation->removeRelation("264f3f43-3d87-4bb2-bb66-11812ab74eae")->hasMore);
+    }
+
+    public function test_change_relations_resets_has_more(): void
+    {
+        $relation = Relation::fromArray([
+            "id" => "abc",
+            "type" => "relation",
+            "relation" => [
+                [ "id" => "264f3f43-3d87-4bb2-bb66-11812ab74eae" ],
+            ],
+            "has_more" => true,
+        ]);
+
+        $relation = $relation->changeRelations("f3902b7f-e9e2-4406-8c3f-5d07dbc87d66");
+
+        $this->assertFalse($relation->hasMore);
     }
 }
