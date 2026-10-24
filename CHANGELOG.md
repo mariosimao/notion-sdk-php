@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Add `NumberFormat::AustralianDollar` (`australian_dollar`) number format (#462).
 - Support `has_more` on relation page properties (#455).
   - `Notion\Pages\Properties\Relation::$hasMore` is `true` when the retrieve-page response omitted references beyond its 25-item limit. Use `Pages\Client::findProperty()` to retrieve the full relation.
   - `addRelation()` and `removeRelation()` preserve `hasMore`; `create()` and `changeRelations()` set it to `false`.

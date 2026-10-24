@@ -10,6 +10,7 @@ enum NumberFormat: string
     case Percent = "percent";
     case Dollar = "dollar";
     case CanadianDollar = "canadian_dollar";
+    case AustralianDollar = "australian_dollar";
     case Euro = "euro";
     case Pound = "pound";
     case Yen = "yen";
