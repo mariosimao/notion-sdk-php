@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support appending blocks after a sibling block with the optional `$after` argument of `Blocks\Client::append()` (#459).
 - Support the Singapore dollar number format (#456).
   - New `Notion\DataSources\Properties\NumberFormat::SingaporeDollar` enum case, mapped to `singapore_dollar`.
 - Support creator and editor metadata (#452).
