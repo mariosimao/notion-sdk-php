@@ -148,7 +148,7 @@ final readonly class Database
 
     public function toArray(): array
     {
-        $array = [
+        return [
             "object"           => "database",
             "id"               => $this->id,
             "data_sources"     => array_map(fn(ChildDataSource $ds) => $ds->toArray(), $this->dataSources),
@@ -163,8 +163,6 @@ final readonly class Database
             "url"              => $this->url,
             "is_inline"        => $this->isInline,
         ];
-
-        return $array;
     }
 
     /**

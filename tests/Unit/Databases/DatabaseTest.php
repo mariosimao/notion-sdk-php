@@ -301,6 +301,4 @@ class DatabaseTest extends TestCase
         $restored = $database->restore();
         $this->assertFalse($restored->inTrash);
     }
-
-
 }
