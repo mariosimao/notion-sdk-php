@@ -28,7 +28,66 @@ class UnknownTest extends TestCase
 
         $this->assertInstanceOf(Unknown::class, $block);
         $this->assertSame(BlockType::Unknown, $block->metadata()->type);
+        $this->assertFalse($block->isUnsupported());
+        $this->assertNull($block->unsupportedBlockType);
         $this->assertEquals($this->rawBlock, $block->toArray());
+    }
+
+    public function test_deserialize_unsupported_block(): void
+    {
+        $rawBlock = $this->unsupportedRawBlock();
+
+        $block = BlockFactory::fromArray($rawBlock);
+
+        $this->assertInstanceOf(Unknown::class, $block);
+        $this->assertSame(BlockType::Unsupported, $block->metadata()->type);
+        $this->assertTrue($block->isUnsupported());
+        $this->assertSame("form", $block->unsupportedBlockType);
+        $this->assertEquals($rawBlock, $block->toArray());
+    }
+
+    public function test_deserialize_unsupported_block_without_block_type(): void
+    {
+        $rawBlock = $this->unsupportedRawBlock();
+        $rawBlock["unsupported"] = [];
+
+        $block = Unknown::fromArray($rawBlock);
+
+        $this->assertTrue($block->isUnsupported());
+        $this->assertNull($block->unsupportedBlockType);
+        $this->assertEquals($rawBlock, $block->toArray());
+    }
+
+    public function test_non_unsupported_block_ignores_unsupported_key(): void
+    {
+        $rawBlock = $this->rawBlock;
+        $rawBlock["unsupported"] = ["block_type" => "form"];
+
+        $block = Unknown::fromArray($rawBlock);
+
+        $this->assertFalse($block->isUnsupported());
+        $this->assertNull($block->unsupportedBlockType);
+    }
+
+    public function test_transformations_preserve_unsupported_block_type(): void
+    {
+        $block = Unknown::fromArray($this->unsupportedRawBlock());
+
+        $this->assertSame("form", $block->delete()->unsupportedBlockType);
+        $this->assertSame("form", $block->addChild(Paragraph::fromString("a"))->unsupportedBlockType);
+        $this->assertSame("form", $block->changeChildren()->unsupportedBlockType);
+        $this->assertSame("unsupported", $block->delete()->toArray()["type"]);
+    }
+
+    /** @return array{ type: string, ... } */
+    private function unsupportedRawBlock(): array
+    {
+        $rawBlock = $this->rawBlock;
+        unset($rawBlock["blabla"]);
+        $rawBlock["type"] = "unsupported";
+        $rawBlock["unsupported"] = ["block_type" => "form"];
+
+        return $rawBlock;
     }
 
     public function test_delete(): void
