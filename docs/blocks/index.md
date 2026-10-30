@@ -77,3 +77,23 @@ $p = $p->changeChildren();
 | ToDo                                   | ✔               |
 | Toggle                                 | ✔               |
 | Video                                  | ❌              |
+## Unknown and unsupported blocks
+
+Blocks not implemented by the SDK are returned as `Notion\Blocks\Unknown`, which
+keeps the raw API payload available through `toArray()`.
+
+Blocks that the Notion API itself does not support (e.g. forms or buttons) are
+returned with type `unsupported`. They are also exposed as `Unknown`, with
+`BlockType::Unsupported` as metadata type and the underlying block type
+available on `$unsupportedBlockType`.
+
+```php
+use Notion\Blocks\Unknown;
+
+foreach ($notion->blocks()->findChildren($pageId) as $block) {
+    if ($block instanceof Unknown && $block->isUnsupported()) {
+        $block->unsupportedBlockType; // "form"
+        $block->toArray();            // raw API payload
+    }
+}
+```

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Expose the underlying type of blocks unsupported by the Notion API (#472).
+  - New `Notion\Blocks\Unknown::$unsupportedBlockType` property, parsed from `unsupported.block_type` (e.g. `form`, `button`). It is `null` for blocks the API supports but the SDK does not implement yet, or when the API omits the field.
+  - New `Notion\Blocks\Unknown::isUnsupported()` method.
+  - The raw API payload remains available through `Unknown::toArray()`.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
@@ -45,6 +49,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` accept `RelativeDate` instances in addition to `DateTimeImmutable`.
 
 ### Changed
+- **[BREAKING]** Blocks unsupported by the Notion API now have `BlockType::Unsupported` as metadata type (#472).
+  - Blocks returned with `"type": "unsupported"` are still deserialized as `Notion\Blocks\Unknown`, but `$block->metadata()->type` is now the new `Notion\Blocks\BlockType::Unsupported` case instead of `BlockType::Unknown`.
+  - `BlockType::Unknown` is now only used for block types the SDK does not implement yet.
+  - **Migration instructions:**
+    - Replace checks such as `$block->metadata()->type === BlockType::Unknown` that should also match unsupported blocks with `$block instanceof Unknown`, or explicitly handle `BlockType::Unsupported`.
+    - Add a `BlockType::Unsupported` arm to exhaustive `match` expressions over `BlockType` that have no `default` arm.
 - **[BREAKING]** Change `DateFilter` value from `string` to `DateTimeImmutable|RelativeDate` and remove `array` type (#199).
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` now accept `DateTimeImmutable|RelativeDate` instead of a raw `string`.
   - Removed `array` from the allowed types of the internal `$value` property and `value()` return type hint, which is now `DateTimeImmutable|RelativeDate|bool|stdClass`.
