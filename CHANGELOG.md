@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support custom emoji icons on pages, databases, data sources and callout blocks (#476).
+  - New `Notion\Common\CustomEmoji` value object with `id`, and read-only `name` and `url` (populated from Notion responses).
+  - Create one for writes with `CustomEmoji::fromId("45ce454c-d427-4f53-9489-e5d0f3d1db6b")`; only the `id` is serialized.
+  - New `Icon::fromCustomEmoji()`, `Icon::isCustomEmoji()` and nullable `Icon::$customEmoji` property.
+  - `changeIcon()` on `Page`, `Database`, `DataSource` and `Callout` accepts `CustomEmoji`.
+  - New `Icon::from()` helper to build an icon from an `Emoji`, `CustomEmoji`, `File` or `Icon`, and `Icon::fromArray()`/`Icon::tryFromArray()` to parse icon objects.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
@@ -45,6 +51,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` accept `RelativeDate` instances in addition to `DateTimeImmutable`.
 
 ### Changed
+- **[BREAKING]** Rework icon exceptions to account for custom emoji icons (#476).
+  - `IconException::bothNull()` was renamed to `IconException::noneSet()` and `IconException::bothSet()` to `IconException::multipleSet()`.
+  - `Callout::fromArray()` now throws `Notion\Exceptions\IconException` (instead of `ValueError`) for unsupported icon types.
+  - **Migration instructions:**
+    - Replace `IconException::bothNull()` with `IconException::noneSet()` and `IconException::bothSet()` with `IconException::multipleSet()`.
+    - Catch `IconException` instead of `ValueError` when parsing callouts with unsupported icons:
+      - Change `catch (\ValueError $e)` to `catch (\Notion\Exceptions\IconException $e)`.
 - **[BREAKING]** Change `DateFilter` value from `string` to `DateTimeImmutable|RelativeDate` and remove `array` type (#199).
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` now accept `DateTimeImmutable|RelativeDate` instead of a raw `string`.
   - Removed `array` from the allowed types of the internal `$value` property and `value()` return type hint, which is now `DateTimeImmutable|RelativeDate|bool|stdClass`.

@@ -4,6 +4,7 @@ namespace Notion\Test\Unit\DataSources;
 
 use Exception;
 use Notion\Common\Date;
+use Notion\Common\CustomEmoji;
 use Notion\Common\Emoji;
 use Notion\Common\File;
 use Notion\Common\Icon;
@@ -65,6 +66,19 @@ class DataSourceTest extends TestCase
         );
 
         $this->assertTrue($database->icon?->isFile());
+    }
+
+    public function test_add_custom_emoji_icon(): void
+    {
+        $parent = DataSourceParent::database("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $database = DataSource::create($parent)->changeIcon(
+            CustomEmoji::fromId("45ce454c-d427-4f53-9489-e5d0f3d1db6b")
+        );
+
+        $this->assertTrue($database->icon?->isCustomEmoji());
+        $this->assertEquals("45ce454c-d427-4f53-9489-e5d0f3d1db6b", $database->icon->customEmoji?->id);
+        $this->assertNull($database->icon->customEmoji?->name);
+        $this->assertNull($database->icon->customEmoji?->url);
     }
 
     public function test_remove_icon(): void
@@ -297,6 +311,66 @@ class DataSourceTest extends TestCase
         if ($database->icon?->isFile()) {
             $this->assertEquals("https://my-site.com/image.png", $database->icon->file?->url);
         }
+    }
+
+    public function test_from_array_custom_emoji_icon(): void
+    {
+        $array = [
+            "object" => "data_source",
+            "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
+            "created_time" => "2020-12-08T12:00:00.000000Z",
+            "last_edited_time" => "2020-12-08T12:00:00.000000Z",
+            "in_trash" => false,
+            "title" => [[
+                "plain_text" => "Page title",
+                "href" => null,
+                "annotations" => [
+                    "bold"          => false,
+                    "italic"        => false,
+                    "strikethrough" => false,
+                    "underline"     => false,
+                    "code"          => false,
+                    "color"         => "default",
+                ],
+                "type" => "text",
+                "text" => [ "content" => "DataSource title" ],
+            ]],
+            "description" => [],
+            "icon" => [
+                "type" => "custom_emoji",
+                "custom_emoji" => [
+                    "id" => "45ce454c-d427-4f53-9489-e5d0f3d1db6b",
+                    "name" => "bufo",
+                    "url" => "https://example.com/bufo.png",
+                ],
+            ],
+            "properties" => [
+                "Title" => [
+                    "id"    => "title",
+                    "name"  => "Title",
+                    "type"  => "title",
+                    "title" => new \stdClass(),
+                ],
+            ],
+            "parent" => [
+                "type" => "database_id",
+                "database_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
+            ],
+            "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+        ];
+        $database = DataSource::fromArray($array);
+
+        $this->assertTrue($database->icon?->isCustomEmoji());
+        $this->assertEquals("45ce454c-d427-4f53-9489-e5d0f3d1db6b", $database->icon->customEmoji?->id);
+        $this->assertEquals("bufo", $database->icon->customEmoji?->name);
+        $this->assertEquals("https://example.com/bufo.png", $database->icon->customEmoji?->url);
+        $this->assertEquals(
+            [
+                "type" => "custom_emoji",
+                "custom_emoji" => [ "id" => "45ce454c-d427-4f53-9489-e5d0f3d1db6b" ],
+            ],
+            $database->toArray()["icon"],
+        );
     }
 
     public function test_archive(): void

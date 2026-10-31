@@ -112,6 +112,27 @@ Output:
 https://cdn-icons-png.flaticon.com/512/648/648675.png
 ```
 
+### Custom emoji
+
+Custom emojis are referenced by the ID of an emoji uploaded to the workspace.
+
+```php
+$block = Callout::fromString("😎", "A brilliant idea");
+
+$newIcon = CustomEmoji::fromId("45ce454c-d427-4f53-9489-e5d0f3d1db6b");
+$block = $block->changeIcon($newIcon);
+
+echo $block->icon->customEmoji->id;
+```
+
+Output:
+```
+45ce454c-d427-4f53-9489-e5d0f3d1db6b
+```
+
+When a block is retrieved from Notion, the custom emoji `name` and `url` are
+also available. Only the `id` is sent back to Notion when saving.
+
 ## Add child
 
 ```php

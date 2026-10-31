@@ -6,6 +6,8 @@ use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Callout;
 use Notion\Common\Color;
 use Notion\Exceptions\BlockException;
+use Notion\Exceptions\IconException;
+use Notion\Common\CustomEmoji;
 use Notion\Common\Date;
 use Notion\Common\Emoji;
 use Notion\Common\File;
@@ -185,7 +187,7 @@ class CalloutTest extends TestCase
 
     public function test_error_on_wrong_icon_type(): void
     {
-        $this->expectException(\ValueError::class);
+        $this->expectException(IconException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -308,6 +310,52 @@ class CalloutTest extends TestCase
             ->changeIcon($file);
 
         $this->assertTrue($callout->icon->isFile());
+    }
+
+    public function test_replace_icon_custom_emoji(): void
+    {
+        $callout = Callout::fromString("☀️", "Simple callout.")
+            ->changeIcon(CustomEmoji::fromId("45ce454c-d427-4f53-9489-e5d0f3d1db6b"));
+
+        $this->assertTrue($callout->icon->isCustomEmoji());
+        $this->assertEquals(
+            [
+                "type" => "custom_emoji",
+                "custom_emoji" => [ "id" => "45ce454c-d427-4f53-9489-e5d0f3d1db6b" ],
+            ],
+            $callout->icon->toArray(),
+        );
+    }
+
+    public function test_create_from_array_custom_emoji_icon(): void
+    {
+        $array = [
+            "object"           => "block",
+            "id"               => "04a13895-f072-4814-8af7-cd11af127040",
+            "created_time"     => "2021-10-18T17:09:00.000Z",
+            "last_edited_time" => "2021-10-18T17:09:00.000Z",
+            "in_trash"         => false,
+            "has_children"     => false,
+            "type"             => "callout",
+            "callout"          => [
+                "rich_text" => [],
+                "icon"      => [
+                    "type"         => "custom_emoji",
+                    "custom_emoji" => [
+                        "id"   => "45ce454c-d427-4f53-9489-e5d0f3d1db6b",
+                        "name" => "bufo",
+                        "url"  => "https://example.com/bufo.png",
+                    ],
+                ],
+                "color"     => "default",
+                "children"  => [],
+            ],
+        ];
+
+        $callout = Callout::fromArray($array);
+
+        $this->assertTrue($callout->icon->isCustomEmoji());
+        $this->assertEquals("bufo", $callout->icon->customEmoji?->name);
     }
 
     public function test_change_color(): void

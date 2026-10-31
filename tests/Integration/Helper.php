@@ -33,6 +33,14 @@ final class Helper
         return $pageId;
     }
 
+    /** Custom emoji ID from the test workspace, or `null` when not configured. */
+    public static function customEmojiId(): string|null
+    {
+        $customEmojiId = getenv("TEST_CUSTOM_EMOJI_ID");
+
+        return $customEmojiId ?: null;
+    }
+
     public static function newPage(): Page
     {
         return Page::create(PageParent::page(self::testPageId()));

@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Pages;
 
 use Notion\Common\Date;
+use Notion\Common\CustomEmoji;
 use Notion\Common\Emoji;
 use Notion\Common\File;
 use Notion\Common\Icon;
@@ -53,6 +54,20 @@ class PageTest extends TestCase
 
         $this->assertTrue($page->hasIcon());
         $this->assertTrue($page->icon?->isFile());
+    }
+
+    public function test_add_custom_emoji_icon(): void
+    {
+        $parent = PageParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $page = Page::create($parent)->changeIcon(
+            CustomEmoji::fromId("45ce454c-d427-4f53-9489-e5d0f3d1db6b")
+        );
+
+        $this->assertTrue($page->hasIcon());
+        $this->assertTrue($page->icon?->isCustomEmoji());
+        $this->assertEquals("45ce454c-d427-4f53-9489-e5d0f3d1db6b", $page->icon->customEmoji?->id);
+        $this->assertNull($page->icon->customEmoji?->name);
+        $this->assertNull($page->icon->customEmoji?->url);
     }
 
     public function test_remove_icon(): void
@@ -244,6 +259,45 @@ class PageTest extends TestCase
             $this->assertEquals("https://my-site.com/image.png", $page->icon->file?->url);
         }
         $this->assertTrue($page->icon?->isFile());
+    }
+
+    public function test_from_array_custom_emoji_icon(): void
+    {
+        $array = [
+            "object" => "page",
+            "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
+            "created_time" => "2020-12-08T12:00:00.000000Z",
+            "last_edited_time" => "2020-12-08T12:00:00.000000Z",
+            "in_trash" => false,
+            "icon" => [
+                "type" => "custom_emoji",
+                "custom_emoji" => [
+                    "id" => "45ce454c-d427-4f53-9489-e5d0f3d1db6b",
+                    "name" => "bufo",
+                    "url" => "https://example.com/bufo.png",
+                ],
+            ],
+            "cover" => null,
+            "properties" => [],
+            "parent" => [
+                "type" => "page_id",
+                "page_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
+            ],
+            "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+        ];
+        $page = Page::fromArray($array);
+
+        $this->assertTrue($page->icon?->isCustomEmoji());
+        $this->assertEquals("45ce454c-d427-4f53-9489-e5d0f3d1db6b", $page->icon->customEmoji?->id);
+        $this->assertEquals("bufo", $page->icon->customEmoji?->name);
+        $this->assertEquals("https://example.com/bufo.png", $page->icon->customEmoji?->url);
+        $this->assertEquals(
+            [
+                "type" => "custom_emoji",
+                "custom_emoji" => [ "id" => "45ce454c-d427-4f53-9489-e5d0f3d1db6b" ],
+            ],
+            $page->toArray()["icon"],
+        );
     }
 
     public function test_create_has_no_creator_and_editor(): void
