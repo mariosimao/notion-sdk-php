@@ -6,9 +6,12 @@ use Notion\Blocks\BlockFactory;
 use Notion\Blocks\Callout;
 use Notion\Common\Color;
 use Notion\Exceptions\BlockException;
+use Notion\Exceptions\IconException;
 use Notion\Common\Date;
 use Notion\Common\Emoji;
 use Notion\Common\File;
+use Notion\Common\NativeIconColor;
+use Notion\Common\NativeIcon;
 use Notion\Common\RichText;
 use PHPUnit\Framework\TestCase;
 
@@ -185,7 +188,7 @@ class CalloutTest extends TestCase
 
     public function test_error_on_wrong_icon_type(): void
     {
-        $this->expectException(\ValueError::class);
+        $this->expectException(IconException::class);
         $array = [
             "object"           => "block",
             "id"               => "04a13895-f072-4814-8af7-cd11af127040",
@@ -315,5 +318,45 @@ class CalloutTest extends TestCase
         $block = Callout::fromString("☀️", "Hello World!")->changeColor(Color::Red);
 
         $this->assertSame(Color::Red, $block->color);
+    }
+
+    public function test_replace_icon_native(): void
+    {
+        $callout = Callout::fromString("☀️", "Simple callout.")
+            ->changeIcon(NativeIcon::create("pizza", NativeIconColor::Blue));
+
+        $this->assertTrue($callout->icon->isNativeIcon());
+        $this->assertEquals(
+            ["type" => "icon", "icon" => ["name" => "pizza", "color" => "blue"]],
+            $callout->icon->toArray(),
+        );
+    }
+
+    public function test_create_from_array_native_icon(): void
+    {
+        $array = [
+            "object"           => "block",
+            "id"               => "04a13895-f072-4814-8af7-cd11af127040",
+            "created_time"     => "2021-10-18T17:09:00.000Z",
+            "last_edited_time" => "2021-10-18T17:09:00.000Z",
+            "in_trash"         => false,
+            "has_children"     => false,
+            "type"             => "callout",
+            "callout"        => [
+                "rich_text" => [],
+                "children"  => [],
+                "icon"      => [
+                    "type" => "icon",
+                    "icon" => [ "name" => "pizza", "color" => "blue" ],
+                ],
+            ],
+        ];
+
+        $callout = Callout::fromArray($array);
+
+        $this->assertTrue($callout->icon->isNativeIcon());
+        $this->assertEquals("pizza", $callout->icon->nativeIcon?->name);
+        $this->assertSame(NativeIconColor::Blue, $callout->icon->nativeIcon?->color);
+        $this->assertEquals($array["callout"]["icon"], $callout->icon->toArray());
     }
 }

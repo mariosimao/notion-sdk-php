@@ -112,6 +112,26 @@ Output:
 https://cdn-icons-png.flaticon.com/512/648/648675.png
 ```
 
+### Native Notion icon
+
+Built-in Notion icons are identified by name and an optional color (defaults to
+gray). The name may be the API icon name or the name shown in the Notion icon
+picker.
+
+```php
+$block = Callout::fromString("😎", "A brilliant idea");
+
+$newIcon = NativeIcon::create("pizza", NativeIconColor::Blue);
+$block = $block->changeIcon($newIcon);
+
+echo $block->icon->nativeIcon->name;
+```
+
+Output:
+```
+pizza
+```
+
 ## Add child
 
 ```php

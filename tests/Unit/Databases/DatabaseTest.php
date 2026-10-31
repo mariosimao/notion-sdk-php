@@ -6,6 +6,8 @@ use Exception;
 use Notion\Common\Date;
 use Notion\Common\Emoji;
 use Notion\Common\File;
+use Notion\Common\NativeIconColor;
+use Notion\Common\NativeIcon;
 use Notion\Common\Icon;
 use Notion\Common\RichText;
 use Notion\Databases\Database;
@@ -300,5 +302,106 @@ class DatabaseTest extends TestCase
 
         $restored = $database->restore();
         $this->assertFalse($restored->inTrash);
+    }
+
+    public function test_add_native_icon(): void
+    {
+        $database = Database::create(DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6"))->changeIcon(
+            NativeIcon::create("pizza", NativeIconColor::Blue)
+        );
+
+        $this->assertTrue($database->icon?->isNativeIcon());
+        $this->assertEquals(
+            ["type" => "icon", "icon" => ["name" => "pizza", "color" => "blue"]],
+            $database->toArray()["icon"],
+        );
+    }
+
+    public function test_from_array_change_native_icon(): void
+    {
+        $array = [
+            "object" => "database",
+            "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
+            "data_sources" => [[
+                "id" => "058d158b-09de-4d69-be07-901c20a7ca5c",
+                "name" => "Data Source Name",
+            ]],
+            "created_time" => "2020-12-08T12:00:00.000000Z",
+            "last_edited_time" => "2020-12-08T12:00:00.000000Z",
+            "title" => [[
+                "plain_text" => "Page title",
+                "href" => null,
+                "annotations" => [
+                    "bold"          => false,
+                    "italic"        => false,
+                    "strikethrough" => false,
+                    "underline"     => false,
+                    "code"          => false,
+                    "color"         => "default",
+                ],
+                "type" => "text",
+                "text" => [ "content" => "Database title" ],
+            ]],
+            "description" => [],
+            "icon" => [
+                "type" => "icon",
+                "icon" => [ "name" => "pizza", "color" => "blue" ],
+            ],
+            "cover" => null,
+            "parent" => [
+                "type" => "page_id",
+                "page_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
+            ],
+            "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+            "is_inline" => false,
+        ];
+        $database = Database::fromArray($array);
+
+        $this->assertTrue($database->icon?->isNativeIcon());
+        $this->assertEquals("pizza", $database->icon->nativeIcon?->name);
+        $this->assertSame(NativeIconColor::Blue, $database->icon->nativeIcon?->color);
+    }
+
+    /** @psalm-suppress InvalidArgument */
+    public function test_from_array_ignores_unsupported_icon(): void
+    {
+        $array = [
+            "object" => "database",
+            "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
+            "data_sources" => [[
+                "id" => "058d158b-09de-4d69-be07-901c20a7ca5c",
+                "name" => "Data Source Name",
+            ]],
+            "created_time" => "2020-12-08T12:00:00.000000Z",
+            "last_edited_time" => "2020-12-08T12:00:00.000000Z",
+            "title" => [[
+                "plain_text" => "Page title",
+                "href" => null,
+                "annotations" => [
+                    "bold"          => false,
+                    "italic"        => false,
+                    "strikethrough" => false,
+                    "underline"     => false,
+                    "code"          => false,
+                    "color"         => "default",
+                ],
+                "type" => "text",
+                "text" => [ "content" => "Database title" ],
+            ]],
+            "description" => [],
+            "icon" => [
+                "type" => "unsupported",
+            ],
+            "cover" => null,
+            "parent" => [
+                "type" => "page_id",
+                "page_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
+            ],
+            "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+            "is_inline" => false,
+        ];
+        $database = Database::fromArray($array);
+
+        $this->assertNull($database->icon);
     }
 }
