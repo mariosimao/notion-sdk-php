@@ -5,6 +5,7 @@ namespace Notion;
 use Notion\Authentication\Client as AuthenticationClient;
 use Notion\Blocks\Client as BlocksClient;
 use Notion\Comments\Client as CommentsClient;
+use Notion\CustomEmojis\Client as CustomEmojisClient;
 use Notion\Databases\Client as DatabasesClient;
 use Notion\DataSources\Client as DataSourcesClient;
 use Notion\Pages\Client as PagesClient;
@@ -87,6 +88,11 @@ final readonly class Notion
     public function fileUploads(): FileUploadsClient
     {
         return new FileUploadsClient($this->configuration);
+    }
+
+    public function customEmojis(): CustomEmojisClient
+    {
+        return new CustomEmojisClient($this->configuration);
     }
 
     public function authentication(string $clientId, string $clientSecret): AuthenticationClient

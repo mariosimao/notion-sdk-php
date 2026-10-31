@@ -36,4 +36,14 @@ class NotionTest extends TestCase
         $this->assertSame("client_id", $authClient->clientId);
         $this->assertSame("client_secret", $authClient->clientSecret);
     }
+
+    public function test_custom_emojis(): void
+    {
+        $notion = Notion::create("secret_token");
+
+        $this->assertInstanceOf(
+            \Notion\CustomEmojis\Client::class,
+            $notion->customEmojis(),
+        );
+    }
 }
