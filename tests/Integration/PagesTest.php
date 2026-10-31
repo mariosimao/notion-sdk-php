@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Integration;
 
+use Notion\Common\CustomEmoji;
 use Notion\Common\Emoji;
 use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
@@ -35,6 +36,30 @@ class PagesTest extends TestCase
         if ($pageFound->icon?->isEmoji()) {
             $this->assertEquals("⭐", $pageFound->icon->emoji?->emoji);
         }
+
+        $client->pages()->delete($page);
+    }
+
+    public function test_create_page_with_custom_emoji_icon(): void
+    {
+        $customEmojiId = Helper::customEmojiId();
+        if ($customEmojiId === null) {
+            $this->markTestSkipped("TEST_CUSTOM_EMOJI_ID is required to test custom emoji icons.");
+        }
+
+        $client = Helper::client();
+
+        $page = Helper::newPage()
+            ->changeTitle("Page with custom emoji")
+            ->changeIcon(CustomEmoji::fromId($customEmojiId));
+
+        $page = $client->pages()->create($page);
+        $pageFound = $client->pages()->find($page->id);
+
+        $this->assertTrue($pageFound->icon?->isCustomEmoji());
+        $this->assertEquals($customEmojiId, $pageFound->icon->customEmoji?->id);
+        $this->assertNotNull($pageFound->icon->customEmoji?->name);
+        $this->assertNotNull($pageFound->icon->customEmoji?->url);
 
         $client->pages()->delete($page);
     }
