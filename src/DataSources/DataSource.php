@@ -12,7 +12,6 @@ use Notion\Databases\DatabaseParent;
 use Notion\DataSources\Properties\PropertyCollection;
 use Notion\DataSources\Properties\PropertyFactory;
 use Notion\DataSources\Properties\PropertyInterface;
-use Notion\DataSources\Properties\Status;
 use Notion\DataSources\Properties\Title;
 use Notion\Users\User;
 
@@ -425,9 +424,6 @@ final readonly class DataSource
 
         $properties = $this->properties;
         foreach ($properties as $name => $property) {
-            if ($property instanceof Status) {
-                continue;
-            }
             $array[$name] = $property->toArray();
         }
 

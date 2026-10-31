@@ -17,6 +17,9 @@ use Notion\DataSources\Properties\Rollup;
 use Notion\DataSources\Properties\RollupFunction;
 use Notion\DataSources\Properties\Select;
 use Notion\DataSources\Properties\SelectOption;
+use Notion\DataSources\Properties\Status;
+use Notion\DataSources\Properties\StatusGroupName;
+use Notion\DataSources\Properties\StatusOption;
 use Notion\DataSources\Properties\Title;
 use Notion\DataSources\Query;
 use Notion\DataSources\Query\CompoundFilter;
@@ -140,6 +143,75 @@ class DataSourcesTest extends TestCase
         $this->assertEquals("Total tasks", $retrievedRollup->metadata()->name);
         $this->assertSame(RollupFunction::Count, $retrievedRollup->function);
         $this->assertEquals("Tasks", $retrievedRollup->relationPropertyName);
+
+        $client->databases()->delete($database);
+    }
+
+    public function test_create_status_property_with_default_options(): void
+    {
+        $database = $this->newDatabase();
+        $client = Helper::client();
+
+        $dataSource = DataSource::create(DataSourceParent::database($database->id))
+            ->changeTitle("Status defaults")
+            ->addProperty(Status::create("Status"));
+        $dataSource = $client->dataSources()->create($dataSource);
+
+        $status = $dataSource->properties()->getStatus("Status");
+        $optionNames = array_map(fn(StatusOption $o) => $o->name, $status->options);
+        $groupNames = array_map(fn($g) => $g->name, $status->groups);
+
+        $this->assertEquals(["Not started", "In progress", "Done"], $optionNames);
+        $this->assertEquals(["To-do", "In progress", "Complete"], $groupNames);
+
+        $client->databases()->delete($database);
+    }
+
+    public function test_create_and_update_status_property_with_custom_options(): void
+    {
+        $database = $this->newDatabase();
+        $client = Helper::client();
+
+        $status = Status::create("Stage", [
+            StatusOption::fromName("Backlog")->changeGroup(StatusGroupName::ToDo),
+            StatusOption::fromName("Building")
+                ->changeColor(Color::Blue)
+                ->changeGroup(StatusGroupName::InProgress),
+        ]);
+        $dataSource = DataSource::create(DataSourceParent::database($database->id))
+            ->changeTitle("Status custom")
+            ->addProperty($status);
+        $dataSource = $client->dataSources()->create($dataSource);
+
+        $status = $dataSource->properties()->getStatus("Stage");
+        $this->assertEquals(
+            ["Backlog", "Building"],
+            array_map(fn(StatusOption $o) => $o->name, $status->options),
+        );
+        $backlog = $status->options[0];
+        $this->assertNotNull($backlog->id);
+        $this->assertContains($backlog->id, self::statusGroupOptionIds($status, "To-do"));
+
+        $status = $status
+            ->changeOptions(
+                $backlog->changeColor(Color::Gray)->changeGroup(StatusGroupName::InProgress),
+                $status->options[1],
+            )
+            ->addOption(
+                StatusOption::fromName("Shipped")
+                    ->changeColor(Color::Green)
+                    ->changeGroup(StatusGroupName::Complete),
+            );
+        $dataSource = $client->dataSources()->update($dataSource->changeProperty($status));
+
+        $status = $dataSource->properties()->getStatus("Stage");
+        $this->assertEquals(
+            ["Backlog", "Building", "Shipped"],
+            array_map(fn(StatusOption $o) => $o->name, $status->options),
+        );
+        $this->assertSame(Color::Gray, $status->options[0]->color);
+        $this->assertContains($backlog->id, self::statusGroupOptionIds($status, "In progress"));
+        $this->assertContains($status->options[2]->id, self::statusGroupOptionIds($status, "Complete"));
 
         $client->databases()->delete($database);
     }
@@ -315,6 +387,18 @@ class DataSourcesTest extends TestCase
         }
 
         return $dataSource;
+    }
+
+    /** @return string[] */
+    private static function statusGroupOptionIds(Status $status, string $groupName): array
+    {
+        foreach ($status->groups as $group) {
+            if ($group->name === $groupName) {
+                return $group->optionIds;
+            }
+        }
+
+        return [];
     }
 
     private static function newDatabase(string|null $name = null): Database

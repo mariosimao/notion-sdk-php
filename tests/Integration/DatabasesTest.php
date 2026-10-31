@@ -7,6 +7,9 @@ use Notion\Common\RichText;
 use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
 use Notion\DataSources\Properties\RichTextProperty;
+use Notion\DataSources\Properties\Status;
+use Notion\DataSources\Properties\StatusGroupName;
+use Notion\DataSources\Properties\StatusOption;
 use Notion\Exceptions\ApiException;
 use PHPUnit\Framework\TestCase;
 
@@ -72,6 +75,31 @@ class DatabasesTest extends TestCase
         $this->assertEquals("Description", $dataSource->properties()->getRichText("Description")->metadata()->name);
 
         // Clean up
+        $client->databases()->delete($database);
+    }
+
+    public function test_create_database_with_initial_status_property(): void
+    {
+        $client = Helper::client();
+
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()))
+            ->changeTitle("Database with status");
+
+        $database = $client->databases()->create($database, [
+            "Stage" => Status::create("Stage", [
+                StatusOption::fromName("Idea")->changeGroup(StatusGroupName::ToDo),
+                StatusOption::fromName("Live")->changeGroup(StatusGroupName::Complete),
+            ]),
+        ]);
+
+        $dataSource = $client->dataSources()->find($database->dataSources[0]->id);
+        $status = $dataSource->properties()->getStatus("Stage");
+
+        $this->assertEquals(
+            ["Idea", "Live"],
+            array_map(fn(StatusOption $o) => $o->name, $status->options),
+        );
+
         $client->databases()->delete($database);
     }
 

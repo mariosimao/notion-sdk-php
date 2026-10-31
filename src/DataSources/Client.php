@@ -3,6 +3,8 @@
 namespace Notion\DataSources;
 
 use Notion\Configuration;
+use Notion\DataSources\Properties\PropertyFactory;
+use Notion\DataSources\Properties\PropertyInterface;
 use Notion\DataSources\Query\Result;
 use Notion\DataSources\Query\Sort;
 use Notion\Infrastructure\Http;
@@ -36,6 +38,7 @@ final readonly class Client
     public function create(DataSource $dataSource): DataSource
     {
         $data = $dataSource->toArray();
+        $data["properties"] = self::propertiesToRequest($dataSource);
         unset($data["id"]);
         unset($data["database_parent"]);
         unset($data["created_by"]);
@@ -59,6 +62,7 @@ final readonly class Client
     public function update(DataSource $dataSource): DataSource
     {
         $data = $dataSource->toArray();
+        $data["properties"] = self::propertiesToRequest($dataSource);
         unset($data["parent"]);
         unset($data["created_time"]);
         unset($data["last_edited_time"]);
@@ -162,5 +166,13 @@ final readonly class Client
         }
 
         return $pages;
+    }
+
+    private static function propertiesToRequest(DataSource $dataSource): array
+    {
+        return array_map(
+            fn(PropertyInterface $property) => PropertyFactory::toRequestArray($property),
+            $dataSource->properties,
+        );
     }
 }
