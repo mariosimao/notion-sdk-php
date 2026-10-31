@@ -21,6 +21,7 @@ use Notion\Blocks\Heading3;
 use Notion\Blocks\LinkToPage;
 use Notion\Blocks\NumberedListItem;
 use Notion\Blocks\Paragraph;
+use Notion\Blocks\Position;
 use Notion\Blocks\SyncedBlock;
 use Notion\Blocks\TableOfContents;
 use Notion\Blocks\ToDo;
@@ -181,7 +182,7 @@ class BlocksTest extends TestCase
         $client->blocks()->append(
             $newPage->id,
             [Paragraph::fromString("Middle")],
-            $children[0]->metadata()->id,
+            Position::afterBlock($children[0]->metadata()->id),
         );
 
         $childrenAfterAppend = $client->blocks()->findChildren($newPage->id);
@@ -207,8 +208,43 @@ class BlocksTest extends TestCase
         $client->blocks()->append(
             Helper::testPageId(),
             [Paragraph::fromString("This is a simple paragraph")],
-            "inexistentId",
+            Position::afterBlock("inexistentId"),
         );
+    }
+
+    public function test_add_block_at_start(): void
+    {
+        $client = Helper::client();
+        $page = Helper::newPage()->changeTitle("Blocks test");
+
+        $newPage = $client->pages()->create($page, [
+            Paragraph::fromString("Second"),
+        ]);
+
+        $client->blocks()->append(
+            $newPage->id,
+            [Paragraph::fromString("First")],
+            Position::start(),
+        );
+        $client->blocks()->append(
+            $newPage->id,
+            [Paragraph::fromString("Last")],
+            Position::end(),
+        );
+
+        $children = $client->blocks()->findChildren($newPage->id);
+
+        $client->pages()->delete($newPage);
+
+        $texts = array_map(
+            function (BlockInterface $block): string {
+                $this->assertInstanceOf(Paragraph::class, $block);
+                return $block->toString();
+            },
+            $children,
+        );
+
+        $this->assertSame(["First", "Second", "Last"], $texts);
     }
 
     public function test_add_audio_block(): void

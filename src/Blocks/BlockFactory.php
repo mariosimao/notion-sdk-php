@@ -32,6 +32,7 @@ final readonly class BlockFactory
             BlockType::Image->value            => Image::fromArray($array),
             BlockType::LinkPreview->value      => LinkPreview::fromArray($array),
             BlockType::LinkToPage->value       => LinkToPage::fromArray($array),
+            BlockType::MeetingNotes->value     => MeetingNotes::fromArray($array),
             BlockType::NumberedListItem->value => NumberedListItem::fromArray($array),
             BlockType::Paragraph->value        => Paragraph::fromArray($array),
             BlockType::Pdf->value              => Pdf::fromArray($array),

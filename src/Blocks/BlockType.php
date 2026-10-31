@@ -34,6 +34,7 @@ enum BlockType: string
     case ColumnList = "column_list";
     case LinkPreview = "link_preview";
     case LinkToPage = "link_to_page";
+    case MeetingNotes = "meeting_notes";
     case SyncedBlock = "synced_block";
     case Template = "template";
     case Unknown = "unknown";

@@ -61,17 +61,17 @@ final readonly class Client
 
     /**
      * @param BlockInterface[] $blocks
-     * @param string|null $after ID of an existing child block after which the new blocks are inserted
+     * @param Position|null $position Where to insert the new blocks. Defaults to the end of the parent.
      *
      * @return BlockInterface[] Newly created blocks
      */
-    public function append(string $blockId, array $blocks, string|null $after = null): array
+    public function append(string $blockId, array $blocks, Position|null $position = null): array
     {
         $payload = [
             "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $blocks),
         ];
-        if ($after !== null) {
-            $payload["after"] = $after;
+        if ($position !== null) {
+            $payload["position"] = $position->toArray();
         }
         $data = json_encode($payload);
 

@@ -16,7 +16,7 @@ use Psr\Http\Message\RequestFactoryInterface;
 
 final readonly class Notion
 {
-    public const API_VERSION = "2025-09-03";
+    public const API_VERSION = "2026-03-11";
 
     private function __construct(
         private Configuration $configuration,
