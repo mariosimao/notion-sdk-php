@@ -4,6 +4,7 @@ namespace Notion\Databases;
 
 use Notion\Common\RichText;
 use Notion\Configuration;
+use Notion\DataSources\Properties\PropertyFactory;
 use Notion\DataSources\Properties\PropertyInterface;
 use Notion\Infrastructure\Http;
 
@@ -45,7 +46,10 @@ final readonly class Client
             unset($data["cover"]);
         }
 
-        $propertiesData = array_map(fn(PropertyInterface $property) => $property->toArray(), $initialProperties);
+        $propertiesData = array_map(
+            fn(PropertyInterface $property) => PropertyFactory::toRequestArray($property),
+            $initialProperties,
+        );
         if (!empty($propertiesData)) {
             $data["initial_data_source"] = [
                 "properties" => $propertiesData,

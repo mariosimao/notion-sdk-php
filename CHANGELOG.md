@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support writable status property schemas (#475).
+  - New `Notion\DataSources\Properties\Status::create()`, `changeOptions()` and `addOption()` to create status properties on data sources (`DataSources\Client::create()`/`update()`) and databases (`Databases\Client::create()` initial properties).
+  - `Status::create()` without options lets Notion create the default `Not started`, `In progress` and `Done` options.
+  - New `StatusOption::changeGroup()` to place new or existing options in a group, accepting the new `Notion\DataSources\Properties\StatusGroupName` enum (`ToDo`, `InProgress`, `Complete`) or a group name string.
+  - New `StatusOption::$description`, `StatusOption::$group` and `StatusOption::changeDescription()`.
+  - New read-only `Status::$defaultOption`, parsed from `default_option`.
+  - Status groups and the default option are read-only and are never sent in requests. Existing options are referenced by ID (the API does not rename options).
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
@@ -45,6 +52,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` accept `RelativeDate` instances in addition to `DateTimeImmutable`.
 
 ### Changed
+- **[BREAKING]** Status properties are no longer dropped from data source payloads (#475).
+  - `DataSource::toArray()` now includes status properties, and `DataSources\Client::create()`/`update()` now send their schema (options only).
+  - On update, the options of every status property are sent, so options removed from a `Status` property are removed in Notion. Previously status properties were silently ignored.
+  - Migration: if you update a data source containing a status property you did not intend to change, keep the property as retrieved (its options are retained by ID). To change options, use `changeOptions()`/`addOption()`:
+    ```php
+    // Before: status properties could not be written
+    // After
+    $status = $dataSource->properties()->getStatus("Status")
+        ->addOption(StatusOption::fromName("Shipped")->changeGroup(StatusGroupName::Complete));
+    $dataSource = $client->dataSources()->update($dataSource->changeProperty($status));
+    ```
 - **[BREAKING]** Change `DateFilter` value from `string` to `DateTimeImmutable|RelativeDate` and remove `array` type (#199).
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` now accept `DateTimeImmutable|RelativeDate` instead of a raw `string`.
   - Removed `array` from the allowed types of the internal `$value` property and `value()` return type hint, which is now `DateTimeImmutable|RelativeDate|bool|stdClass`.

@@ -36,4 +36,19 @@ final readonly class PropertyFactory
             default                      => Unknown::fromArray($array),
         };
     }
+
+    /**
+     * Convert a property to the schema format accepted by create and update
+     * requests, which may differ from the format returned by the API.
+     *
+     * @internal
+     */
+    public static function toRequestArray(PropertyInterface $property): array
+    {
+        if ($property instanceof Status) {
+            return $property->toRequestArray();
+        }
+
+        return $property->toArray();
+    }
 }

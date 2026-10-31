@@ -12,6 +12,7 @@ use Notion\DataSources\DataSource;
 use Notion\DataSources\DataSourceParent;
 use Notion\DataSources\Properties\Number;
 use Notion\DataSources\Properties\NumberFormat;
+use Notion\DataSources\Properties\Status;
 use Notion\DataSources\Properties\Title;
 use PHPUnit\Framework\TestCase;
 
@@ -107,6 +108,18 @@ class DataSourceTest extends TestCase
             ->addProperty($prop);
 
         $this->assertSame($prop, $database->properties()->get("Price"));
+    }
+
+    public function test_status_property_in_array(): void
+    {
+        $parent = DataSourceParent::database("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $dataSource = DataSource::create($parent)
+            ->addProperty(Status::create("Progress"));
+
+        /** @var array<string, array> $properties */
+        $properties = $dataSource->toArray()["properties"];
+
+        $this->assertArrayHasKey("Progress", $properties);
     }
 
     public function test_change_property(): void
