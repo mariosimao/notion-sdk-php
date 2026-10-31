@@ -121,6 +121,14 @@ export default defineConfig({
                 ],
             },
             {
+                text: 'Custom emojis',
+                collapsible: true,
+                collapsed: true,
+                items: [
+                    { text: 'Introduction', link: '/custom-emojis/' },
+                ],
+            },
+            {
                 text: 'Advanced',
                 collapsible: true,
                 items: [

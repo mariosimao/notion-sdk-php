@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support listing custom emojis (#477).
+  - New `Notion\Notion::customEmojis()` client with `list()`, `findAll()` and `findByName()` methods.
+  - New `Notion\CustomEmojis\CustomEmoji` model (`id`, `name`, `url`).
+  - New `Notion\CustomEmojis\Query` for exact name filtering (`name`) and cursor pagination (`startCursor`, `pageSize`), and `Notion\CustomEmojis\Result` exposing `results`, `nextCursor` and `hasMore`.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
