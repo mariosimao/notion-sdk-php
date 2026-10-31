@@ -19,7 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support bot workspace names (#454).
   - New nullable `Notion\Users\Bot::$workspaceName` property, parsed from and serialized to `workspace_name`.
   - It holds the owning workspace name for workspace-owned bots and is `null` for user-owned bots.
-- Support appending blocks after a sibling block with the optional `$after` argument of `Blocks\Client::append()` (#459).
+- Support choosing where appended blocks are inserted with the optional `$position` argument of `Blocks\Client::append()` (#459, #473).
+  - New `Notion\Blocks\Position` value object with `Position::start()`, `Position::end()` (default) and `Position::afterBlock($blockId)`.
+  - New `Notion\Blocks\PositionType` enum (`Start`, `End`, `AfterBlock`).
+- Support meeting notes blocks (#473).
+  - New read-only `Notion\Blocks\MeetingNotes` block (`BlockType::MeetingNotes`, `meeting_notes`), formerly named `transcription` in the Notion API.
+  - Exposes `title`, `status` (`Notion\Blocks\MeetingNotesStatus|null`), `summaryBlockId`, `notesBlockId`, `transcriptBlockId`, `calendarEvent` (`Notion\Blocks\MeetingNotesCalendarEvent|null`) and `recording` (`Notion\Blocks\MeetingNotesRecording|null`).
 - Support the Singapore dollar number format (#456).
   - New `Notion\DataSources\Properties\NumberFormat::SingaporeDollar` enum case, mapped to `singapore_dollar`.
 - Support creator and editor metadata (#452).
@@ -45,6 +50,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` accept `RelativeDate` instances in addition to `DateTimeImmutable`.
 
 ### Changed
+- **[BREAKING]** Upgrade to Notion API version `2026-03-11` (#473).
+  - `Notion\Notion::API_VERSION` is now `2026-03-11`, the only API version supported by the SDK; every request sends `Notion-Version: 2026-03-11`.
+  - Appending blocks uses the new `position` request parameter instead of the removed `after` parameter.
+  - Trash status is exclusively read from and written to `in_trash`; the `archived` field is no longer used.
+  - `meeting_notes` blocks (previously `transcription`) are parsed as `MeetingNotes` instead of `Unknown`.
+  - **Migration instructions:**
+    - Replace the block ID passed as third argument of `Blocks\Client::append()` with a `Position`:
+      ```php
+      // Before
+      $notion->blocks()->append($pageId, $blocks, $siblingBlockId);
+
+      // After
+      use Notion\Blocks\Position;
+      $notion->blocks()->append($pageId, $blocks, Position::afterBlock($siblingBlockId));
+      ```
+    - Replace `Unknown` block handling of `transcription` blocks with `MeetingNotes` (`BlockType::MeetingNotes`).
 - **[BREAKING]** Change `DateFilter` value from `string` to `DateTimeImmutable|RelativeDate` and remove `array` type (#199).
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` now accept `DateTimeImmutable|RelativeDate` instead of a raw `string`.
   - Removed `array` from the allowed types of the internal `$value` property and `value()` return type hint, which is now `DateTimeImmutable|RelativeDate|bool|stdClass`.
@@ -79,6 +100,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Migration instructions:**
     - If you extended concrete SDK classes (e.g., `Page`, `Block`, `Client`, `RichText`, etc.) to override or add behavior, refactor your code to use **composition** instead of inheritance (e.g., wrap the SDK instance in your own service or decorator class).
     - If you mocked concrete SDK classes in unit tests, refactor test suites to mock interfaces (such as PSR-18 `ClientInterface`, PSR-17 factories, `BlockInterface`, `PropertyInterface`) or use real instances with HTTP mock handlers (`MockHandler`) or integration tests.
+
+### Removed
+- **[BREAKING]** Remove the deprecated `archived` property from `Notion\Pages\Page` and `Notion\Blocks\BlockMetadata` (#473).
+  - Notion API version `2026-03-11` removed the `archived` field in favor of `in_trash`.
+  - **Migration instructions:**
+    ```php
+    // Before
+    $page->archived;
+    $block->metadata()->archived;
+
+    // After
+    $page->inTrash;
+    $block->metadata()->inTrash;
+    ```
 
 ### Fixed
 - `DataSource::archive()`, `restore()` and `delete()` no longer drop `databaseParent` (#452).

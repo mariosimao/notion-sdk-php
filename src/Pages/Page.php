@@ -55,15 +55,7 @@ final readonly class Page
         public PageParent $parent,
         public string $url
     ) {
-        /** @psalm-suppress DeprecatedProperty */
-        $this->archived = $inTrash;
     }
-
-    /**
-     * @deprecated 1.17.0 Use `$inTrash` instead.
-     * @codeCoverageIgnore
-     */
-    public bool $archived;
 
     public static function create(PageParent $parent): self
     {

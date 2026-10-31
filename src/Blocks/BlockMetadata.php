@@ -36,15 +36,7 @@ final readonly class BlockMetadata
         public BlockType $type,
         private string|null $unknownType = null
     ) {
-        /** @psalm-suppress DeprecatedProperty */
-        $this->archived = $inTrash;
     }
-
-    /**
-     * @deprecated 1.17.0 Use `$inTrash` instead.
-     * @codeCoverageIgnore
-     */
-    public bool $archived;
 
     /** @internal */
     public static function create(BlockType $type): self
