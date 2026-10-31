@@ -7,6 +7,7 @@ use Notion\Common\Date;
 use Notion\Common\Emoji;
 use Notion\Common\File;
 use Notion\Common\Icon;
+use Notion\Common\NativeIcon;
 use Notion\Pages\Properties\PropertyCollection;
 use Notion\Pages\Properties\PropertyFactory;
 use Notion\Pages\Properties\PropertyInterface;
@@ -14,7 +15,7 @@ use Notion\Pages\Properties\Title;
 use Notion\Users\User;
 
 /**
- * @psalm-import-type EmojiJson from \Notion\Common\Emoji
+ * @psalm-import-type IconJson from \Notion\Common\Icon
  * @psalm-import-type FileJson from \Notion\Common\File
  * @psalm-import-type PropertyMetadataJson from \Notion\Pages\Properties\PropertyMetadata
  * @psalm-import-type PageParentJson from PageParent
@@ -28,7 +29,7 @@ use Notion\Users\User;
  *      created_by?: UserJson,
  *      last_edited_by?: UserJson,
  *      in_trash: bool,
- *      icon: EmojiJson|FileJson|null,
+ *      icon: IconJson|null,
  *      cover: FileJson|null,
  *      properties: array<string, PropertyMetadataJson>,
  *      parent: PageParentJson,
@@ -80,23 +81,7 @@ final readonly class Page
      */
     public static function fromArray(array $array): self
     {
-        $icon = null;
-        if (is_array($array["icon"])) {
-            $iconArray = $array["icon"];
-            $iconType = $iconArray["type"];
-
-            if ($iconType === "emoji") {
-                /** @psalm-var EmojiJson $iconArray */
-                $emoji = Emoji::fromArray($iconArray);
-                $icon = Icon::fromEmoji($emoji);
-            }
-
-            if ($iconType === "file" || $iconType === "external") {
-                /** @psalm-var FileJson $iconArray */
-                $file = File::fromArray($iconArray);
-                $icon = Icon::fromFile($file);
-            }
-        }
+        $icon = is_array($array["icon"]) ? Icon::tryFromArray($array["icon"]) : null;
 
         $cover = isset($array["cover"]) ? File::fromArray($array["cover"]) : null;
 
@@ -208,15 +193,9 @@ final readonly class Page
         return $this->restore();
     }
 
-    public function changeIcon(Emoji|File|Icon $icon): self
+    public function changeIcon(Emoji|File|NativeIcon|Icon $icon): self
     {
-        if ($icon instanceof Emoji) {
-            $icon = Icon::fromEmoji($icon);
-        }
-
-        if ($icon instanceof File) {
-            $icon = Icon::fromFile($icon);
-        }
+        $icon = Icon::from($icon);
 
         return new self(
             $this->id,

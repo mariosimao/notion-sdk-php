@@ -3,6 +3,8 @@
 namespace Notion\Test\Integration;
 
 use Notion\Common\Emoji;
+use Notion\Common\NativeIcon;
+use Notion\Common\NativeIconColor;
 use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
 use Notion\DataSources\DataSource;
@@ -179,5 +181,29 @@ class PagesTest extends TestCase
         } finally {
             $client->pages()->delete($page);
         }
+    }
+
+    public function test_page_native_icon(): void
+    {
+        $client = Helper::client();
+
+        $page = Helper::newPage()
+            ->changeTitle("Native icon")
+            ->changeIcon(NativeIcon::create("pizza", NativeIconColor::Blue));
+
+        $page = $client->pages()->create($page);
+        $pageFound = $client->pages()->find($page->id);
+
+        $this->assertTrue($pageFound->icon?->isNativeIcon());
+        $this->assertSame("pizza", $pageFound->icon->nativeIcon?->name);
+        $this->assertSame(NativeIconColor::Blue, $pageFound->icon->nativeIcon?->color);
+
+        $updatedPage = $client->pages()->update(
+            $pageFound->changeIcon(NativeIcon::create("pizza", NativeIconColor::Red))
+        );
+
+        $this->assertSame(NativeIconColor::Red, $updatedPage->icon?->nativeIcon?->color);
+
+        $client->pages()->delete($page);
     }
 }

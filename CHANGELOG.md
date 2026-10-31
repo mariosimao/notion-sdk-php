@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support native Notion icons on pages, databases, data sources and callout blocks (#478).
+  - New `Notion\Common\NativeIcon` value object (`name` and `color`) and `Notion\Common\NativeIconColor` enum.
+  - New `Icon::fromNativeIcon()`, `Icon::isNativeIcon()` and nullable `Icon::$nativeIcon` property.
+  - `changeIcon()` on `Page`, `Database`, `DataSource` and `Callout` now also accepts a `NativeIcon`.
+  - New `Icon::from()`, `Icon::fromArray()` and `Icon::tryFromArray()` helpers centralize icon parsing.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
@@ -45,6 +50,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` accept `RelativeDate` instances in addition to `DateTimeImmutable`.
 
 ### Changed
+- **[BREAKING]** `Callout::fromArray()` throws `Notion\Exceptions\IconException` instead of `ValueError` when the icon type is not supported (#478).
+  - Before: `catch (\ValueError $e)`. After: `catch (\Notion\Exceptions\IconException $e)`.
+  - Unsupported icon types on pages, databases and data sources are still parsed as a `null` icon.
 - **[BREAKING]** Change `DateFilter` value from `string` to `DateTimeImmutable|RelativeDate` and remove `array` type (#199).
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` now accept `DateTimeImmutable|RelativeDate` instead of a raw `string`.
   - Removed `array` from the allowed types of the internal `$value` property and `value()` return type hint, which is now `DateTimeImmutable|RelativeDate|bool|stdClass`.

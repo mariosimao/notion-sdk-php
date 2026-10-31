@@ -6,20 +6,20 @@ use Notion\Common\Color;
 use Notion\Common\Emoji;
 use Notion\Common\File;
 use Notion\Common\Icon;
+use Notion\Common\NativeIcon;
 use Notion\Common\RichText;
 
 /**
  * @psalm-import-type BlockMetadataJson from BlockMetadata
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
- * @psalm-import-type EmojiJson from \Notion\Common\Emoji
- * @psalm-import-type FileJson from \Notion\Common\File
+ * @psalm-import-type IconJson from \Notion\Common\Icon
  *
  * @psalm-type CalloutJson = array{
  *      callout: array{
  *          rich_text: list<RichTextJson>,
  *          color?: string,
  *          children?: list<BlockMetadataJson>,
- *          icon: EmojiJson|FileJson,
+ *          icon: IconJson,
  *      },
  * }
  *
@@ -68,16 +68,7 @@ final readonly class Callout implements BlockInterface
 
         $text = array_map(fn($t) => RichText::fromArray($t), $callout["rich_text"]);
 
-        $iconArray = $callout["icon"];
-        if ($iconArray["type"] === "emoji") {
-            /** @psalm-var EmojiJson $iconArray */
-            $emoji = Emoji::fromArray($iconArray);
-            $icon = Icon::fromEmoji($emoji);
-        } else {
-            /** @psalm-var FileJson $iconArray */
-            $file = File::fromArray($iconArray);
-            $icon = Icon::fromFile($file);
-        }
+        $icon = Icon::fromArray($callout["icon"]);
 
         $color = Color::tryFrom($callout["color"] ?? "") ?? Color::Default;
 
@@ -123,15 +114,9 @@ final readonly class Callout implements BlockInterface
         return new self($this->metadata, $texts, $this->icon, $this->color, $this->children);
     }
 
-    public function changeIcon(Emoji|File|Icon $icon): self
+    public function changeIcon(Emoji|File|NativeIcon|Icon $icon): self
     {
-        if ($icon instanceof Emoji) {
-            $icon = Icon::fromEmoji($icon);
-        }
-
-        if ($icon instanceof File) {
-            $icon = Icon::fromFile($icon);
-        }
+        $icon = Icon::from($icon);
 
         return new self($this->metadata, $this->text, $icon, $this->color, $this->children);
     }

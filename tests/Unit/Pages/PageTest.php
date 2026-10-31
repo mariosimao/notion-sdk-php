@@ -5,6 +5,8 @@ namespace Notion\Test\Unit\Pages;
 use Notion\Common\Date;
 use Notion\Common\Emoji;
 use Notion\Common\File;
+use Notion\Common\NativeIconColor;
+use Notion\Common\NativeIcon;
 use Notion\Common\Icon;
 use Notion\Pages\Page;
 use Notion\Pages\PageParent;
@@ -292,5 +294,70 @@ class PageTest extends TestCase
         $this->assertSame($array, $page->toArray());
         $this->assertSame("creator-id", $transformed->createdBy?->id);
         $this->assertSame("editor-id", $transformed->lastEditedBy?->id);
+    }
+
+    public function test_add_native_icon(): void
+    {
+        $page = Page::create(PageParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6"))->changeIcon(
+            NativeIcon::create("pizza", NativeIconColor::Blue)
+        );
+
+        $this->assertTrue($page->icon?->isNativeIcon());
+        $this->assertEquals(
+            ["type" => "icon", "icon" => ["name" => "pizza", "color" => "blue"]],
+            $page->toArray()["icon"],
+        );
+    }
+
+    public function test_from_array_change_native_icon(): void
+    {
+        $array = [
+            "object" => "page",
+            "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
+            "created_time" => "2020-12-08T12:00:00.000000Z",
+            "last_edited_time" => "2020-12-08T12:00:00.000000Z",
+            "in_trash" => false,
+            "icon" => [
+                "type" => "icon",
+                "icon" => [ "name" => "pizza", "color" => "blue" ],
+            ],
+            "cover" => null,
+            "properties" => [],
+            "parent" => [
+                "type" => "page_id",
+                "page_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
+            ],
+            "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+        ];
+        $page = Page::fromArray($array);
+
+        $this->assertTrue($page->icon?->isNativeIcon());
+        $this->assertEquals("pizza", $page->icon->nativeIcon?->name);
+        $this->assertSame(NativeIconColor::Blue, $page->icon->nativeIcon?->color);
+    }
+
+    /** @psalm-suppress InvalidArgument */
+    public function test_from_array_ignores_unsupported_icon(): void
+    {
+        $array = [
+            "object" => "page",
+            "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
+            "created_time" => "2020-12-08T12:00:00.000000Z",
+            "last_edited_time" => "2020-12-08T12:00:00.000000Z",
+            "in_trash" => false,
+            "icon" => [
+                "type" => "unsupported",
+            ],
+            "cover" => null,
+            "properties" => [],
+            "parent" => [
+                "type" => "page_id",
+                "page_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
+            ],
+            "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+        ];
+        $page = Page::fromArray($array);
+
+        $this->assertNull($page->icon);
     }
 }

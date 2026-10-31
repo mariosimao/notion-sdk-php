@@ -25,6 +25,8 @@ use Notion\Blocks\SyncedBlock;
 use Notion\Blocks\TableOfContents;
 use Notion\Blocks\ToDo;
 use Notion\Blocks\Toggle;
+use Notion\Common\NativeIcon;
+use Notion\Common\NativeIconColor;
 use Notion\Common\RichText;
 use Notion\Exceptions\ApiException;
 use PHPUnit\Framework\TestCase;
@@ -358,5 +360,24 @@ class BlocksTest extends TestCase
 
         $this->expectException(ApiException::class);
         $client->blocks()->update($paragraph);
+    }
+
+    public function test_callout_native_icon(): void
+    {
+        $client = Helper::client();
+
+        $callout = Callout::fromString("💡", "Native icon callout")
+            ->changeIcon(NativeIcon::create("pizza", NativeIconColor::Blue));
+
+        $blocks = $client->blocks()->append(Helper::testPageId(), [ $callout ]);
+        $blockId = $blocks[0]->metadata()->id;
+
+        $calloutFound = $client->blocks()->find($blockId);
+        $this->assertInstanceOf(Callout::class, $calloutFound);
+        $this->assertTrue($calloutFound->icon->isNativeIcon());
+        $this->assertSame("pizza", $calloutFound->icon->nativeIcon?->name);
+        $this->assertSame(NativeIconColor::Blue, $calloutFound->icon->nativeIcon?->color);
+
+        $client->blocks()->delete($blockId);
     }
 }
