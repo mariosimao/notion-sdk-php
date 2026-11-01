@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support multi-value property filters (#484).
+  - `SelectFilter::equals()`/`doesNotEqual()` and `StatusFilter::equals()`/`doesNotEqual()` accept a `string` or a non-empty `list<string>`.
+  - `MultiSelectFilter::contains()`/`doesNotContain()` accept a `string` or a non-empty `list<string>`.
+  - Entries matching any of the listed values are matched (or excluded, for the negated conditions). Empty lists and non-string values throw `InvalidArgumentException`.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
@@ -45,6 +49,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` accept `RelativeDate` instances in addition to `DateTimeImmutable`.
 
 ### Changed
+- **[BREAKING]** `value()` of `SelectFilter`, `StatusFilter` and `MultiSelectFilter` now returns `string|list<string>|bool` instead of `string|bool` (#484).
+  - Code reading the filter value must handle lists when multiple values were provided:
+    ```php
+    // Before
+    $value = $filter->value(); // string|bool
+
+    // After
+    $value = $filter->value(); // string|list<string>|bool
+    $values = is_array($value) ? $value : [$value];
+    ```
 - **[BREAKING]** Change `DateFilter` value from `string` to `DateTimeImmutable|RelativeDate` and remove `array` type (#199).
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` now accept `DateTimeImmutable|RelativeDate` instead of a raw `string`.
   - Removed `array` from the allowed types of the internal `$value` property and `value()` return type hint, which is now `DateTimeImmutable|RelativeDate|bool|stdClass`.
