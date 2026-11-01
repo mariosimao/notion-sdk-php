@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support tab blocks (#479).
+  - New `Notion\Blocks\Tab` block (`BlockType::Tab`, `tab`), parsed by `BlockFactory`, with `create(Paragraph ...$tabs)`, `addTab()`, `changeTabs()` and a `tabs` property.
+  - Only paragraphs are accepted as tab children: `addChild()`, `changeChildren()` and `fromArray()` throw `Notion\Exceptions\BlockException\TabException` otherwise.
+  - Each tab paragraph holds the tab label (rich text), icon and content (children), and nested content is serialized when creating tabs with `Blocks\Client::append()`.
+  - New nullable `Notion\Blocks\Paragraph::$icon` property with `changeIcon()` and `removeIcon()` methods. The icon is only serialized when set, and only accepted by Notion on paragraphs that are direct children of a tab block.
+  - Tab blocks are rendered by `MarkdownRenderer` as a bold label (with emoji icon) followed by the tab content.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
@@ -81,6 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - If you mocked concrete SDK classes in unit tests, refactor test suites to mock interfaces (such as PSR-18 `ClientInterface`, PSR-17 factories, `BlockInterface`, `PropertyInterface`) or use real instances with HTTP mock handlers (`MockHandler`) or integration tests.
 
 ### Fixed
+- `Blocks\Client::update()` sends empty block type objects (e.g. `"tab": {}`) as JSON objects instead of arrays (#479).
 - `DataSource::archive()`, `restore()` and `delete()` no longer drop `databaseParent` (#452).
 - Transformations on blocks of unknown type no longer lose the original type name (#452).
 

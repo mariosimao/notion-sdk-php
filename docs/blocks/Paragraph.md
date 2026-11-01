@@ -50,3 +50,17 @@ $paragraph = Paragraph::create()->changeText(...$text);
 Note that `changeText()` will replace the text on a new instance of `Paragraph`.
 
 ![](../images/paragraph-rich-text-multiple.png)
+
+## Icon
+
+Paragraphs that are direct children of a [Tab](./Tab) block can have an icon,
+displayed alongside the tab label. Notion only accepts icons on such paragraphs.
+
+```php
+$paragraph = Paragraph::fromString("Overview")
+    ->changeIcon(Emoji::fromString("📋"));
+
+$paragraph->icon; // Icon|null
+
+$paragraph = $paragraph->removeIcon();
+```

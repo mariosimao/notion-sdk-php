@@ -3,17 +3,23 @@
 namespace Notion\Blocks;
 
 use Notion\Common\Color;
+use Notion\Common\Emoji;
+use Notion\Common\File;
+use Notion\Common\Icon;
 use Notion\Common\RichText;
 
 /**
  * @psalm-import-type BlockMetadataJson from BlockMetadata
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
+ * @psalm-import-type EmojiJson from \Notion\Common\Emoji
+ * @psalm-import-type FileJson from \Notion\Common\File
  *
  * @psalm-type ParagraphJson = array{
  *      paragraph: array{
  *          rich_text: list<RichTextJson>,
  *          children?: list<BlockMetadataJson>,
  *          color?: string,
+ *          icon?: EmojiJson|FileJson|array{ type: string }|null,
  *      },
  * }
  *
@@ -30,6 +36,7 @@ final readonly class Paragraph implements BlockInterface
         public array $text,
         public array $children,
         public Color $color,
+        public Icon|null $icon = null,
     ) {
         $metadata->checkType(BlockType::Paragraph);
     }
@@ -63,7 +70,29 @@ final readonly class Paragraph implements BlockInterface
 
         $color = Color::tryFrom($paragraph["color"] ?? "") ?? Color::Default;
 
-        return new self($block, $text, $children, $color);
+        $icon = self::iconFromArray($paragraph["icon"] ?? null);
+
+        return new self($block, $text, $children, $color, $icon);
+    }
+
+    /** @param EmojiJson|FileJson|array{ type: string }|null $array */
+    private static function iconFromArray(array|null $array): Icon|null
+    {
+        if ($array === null) {
+            return null;
+        }
+
+        if ($array["type"] === "emoji") {
+            /** @psalm-var EmojiJson $array */
+            return Icon::fromEmoji(Emoji::fromArray($array));
+        }
+
+        if (in_array($array["type"], ["external", "file", "file_upload"], true)) {
+            /** @psalm-var FileJson $array */
+            return Icon::fromFile(File::fromArray($array));
+        }
+
+        return null;
     }
 
     public function toArray(): array
@@ -75,6 +104,10 @@ final readonly class Paragraph implements BlockInterface
             "children"  => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
             "color"     => $this->color->value,
         ];
+
+        if ($this->icon !== null) {
+            $array["paragraph"]["icon"] = $this->icon->toArray();
+        }
 
         return $array;
     }
@@ -97,7 +130,7 @@ final readonly class Paragraph implements BlockInterface
     /** @param RichText[] $text */
     public function changeText(array $text): self
     {
-        return new self($this->metadata, $text, $this->children, $this->color);
+        return new self($this->metadata, $text, $this->children, $this->color, $this->icon);
     }
 
     public function addText(RichText $text): self
@@ -105,7 +138,7 @@ final readonly class Paragraph implements BlockInterface
         $texts = $this->text;
         $texts[] = $text;
 
-        return new self($this->metadata, $texts, $this->children, $this->color);
+        return new self($this->metadata, $texts, $this->children, $this->color, $this->icon);
     }
 
     public function changeChildren(BlockInterface ...$children): self
@@ -117,6 +150,7 @@ final readonly class Paragraph implements BlockInterface
             $this->text,
             $children,
             $this->color,
+            $this->icon,
         );
     }
 
@@ -130,6 +164,7 @@ final readonly class Paragraph implements BlockInterface
             $this->text,
             $children,
             $this->color,
+            $this->icon,
         );
     }
 
@@ -140,6 +175,41 @@ final readonly class Paragraph implements BlockInterface
             $this->text,
             $this->children,
             $color,
+            $this->icon,
+        );
+    }
+
+    /**
+     * Icons can only be set on paragraphs that are direct children of a tab
+     * block, where they are displayed alongside the tab label.
+     */
+    public function changeIcon(Emoji|File|Icon $icon): self
+    {
+        if ($icon instanceof Emoji) {
+            $icon = Icon::fromEmoji($icon);
+        }
+
+        if ($icon instanceof File) {
+            $icon = Icon::fromFile($icon);
+        }
+
+        return new self(
+            $this->metadata->update(),
+            $this->text,
+            $this->children,
+            $this->color,
+            $icon,
+        );
+    }
+
+    public function removeIcon(): self
+    {
+        return new self(
+            $this->metadata->update(),
+            $this->text,
+            $this->children,
+            $this->color,
+            null,
         );
     }
 
@@ -150,6 +220,7 @@ final readonly class Paragraph implements BlockInterface
             $this->text,
             $this->children,
             $this->color,
+            $this->icon,
         );
     }
 

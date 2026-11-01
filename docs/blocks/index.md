@@ -72,6 +72,7 @@ $p = $p->changeChildren();
 | [PDF](./Pdf.md)                        | ❌              |
 | [Quote](./Quote.md)                    | ✔               |
 | [SyncedBlock](./SyncedBlock.md)         | ✔ (original)   |
+| [Tab](./Tab.md)                        | ✔ (paragraphs)  |
 | TableOfContents                        | ❌              |
 | [Template](./Template.md)              | ✔               |
 | ToDo                                   | ✔               |

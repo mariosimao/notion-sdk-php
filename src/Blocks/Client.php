@@ -106,6 +106,9 @@ final readonly class Client
         unset($data["has_children"]);
         if (is_array($data[$blockType])) {
             unset($data[$blockType]["children"]);
+            if ($data[$blockType] === []) {
+                $data[$blockType] = new \stdClass();
+            }
         }
 
         $json = json_encode($data);

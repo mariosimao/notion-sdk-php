@@ -7,6 +7,8 @@ use Notion\Exceptions\BlockException;
 use Notion\Blocks\Paragraph;
 use Notion\Common\Color;
 use Notion\Common\Date;
+use Notion\Common\Emoji;
+use Notion\Common\File;
 use Notion\Common\RichText;
 use PHPUnit\Framework\TestCase;
 
@@ -193,5 +195,84 @@ class ParagraphTest extends TestCase
         $paragraph = Paragraph::fromString("Hello World!")->changeColor(Color::Red);
 
         $this->assertSame(Color::Red, $paragraph->color);
+    }
+
+    public function test_change_icon(): void
+    {
+        $paragraph = Paragraph::fromString("Overview")->changeIcon(Emoji::fromString("📋"));
+
+        $this->assertSame("📋", $paragraph->icon?->emoji?->emoji);
+        /** @psalm-var array{ paragraph: array<string, mixed> } $array */
+        $array = $paragraph->toArray();
+        $this->assertSame([ "type" => "emoji", "emoji" => "📋" ], $array["paragraph"]["icon"]);
+    }
+
+    public function test_change_icon_to_file(): void
+    {
+        $file = File::createExternal("https://example.com/icon.png");
+        $paragraph = Paragraph::fromString("Overview")->changeIcon($file);
+
+        $this->assertEquals($file, $paragraph->icon?->file);
+    }
+
+    public function test_remove_icon(): void
+    {
+        $paragraph = Paragraph::fromString("Overview")
+            ->changeIcon(Emoji::fromString("📋"))
+            ->removeIcon();
+
+        $this->assertNull($paragraph->icon);
+        /** @psalm-var array{ paragraph: array<string, mixed> } $array */
+        $array = $paragraph->toArray();
+        $this->assertArrayNotHasKey("icon", $array["paragraph"]);
+    }
+
+    public function test_icon_is_preserved(): void
+    {
+        $paragraph = Paragraph::fromString("Overview")
+            ->changeIcon(Emoji::fromString("📋"))
+            ->changeText([ RichText::fromString("Details") ])
+            ->addText(RichText::fromString("!"))
+            ->addChild(Paragraph::fromString("Content"))
+            ->changeChildren(Paragraph::fromString("Content"))
+            ->changeColor(Color::Red)
+            ->delete();
+
+        $this->assertInstanceOf(Paragraph::class, $paragraph);
+        $this->assertSame("📋", $paragraph->icon?->emoji?->emoji);
+    }
+
+    public function test_icon_from_array(): void
+    {
+        $base = [
+            "object"           => "block",
+            "id"               => "04a13895-f072-4814-8af7-cd11af127040",
+            "created_time"     => "2026-03-25T17:09:00.000000Z",
+            "last_edited_time" => "2026-03-25T17:09:00.000000Z",
+            "in_trash"         => false,
+            "has_children"     => false,
+            "type"             => "paragraph",
+        ];
+
+        $emoji = Paragraph::fromArray($base + [
+            "paragraph" => [ "rich_text" => [], "icon" => [ "type" => "emoji", "emoji" => "📋" ] ],
+        ]);
+        $file = Paragraph::fromArray($base + [
+            "paragraph" => [
+                "rich_text" => [],
+                "icon" => [ "type" => "external", "external" => [ "url" => "https://example.com/icon.png" ] ],
+            ],
+        ]);
+        $unsupported = Paragraph::fromArray($base + [
+            "paragraph" => [ "rich_text" => [], "icon" => [ "type" => "icon", "icon" => [ "name" => "star" ] ] ],
+        ]);
+        $null = Paragraph::fromArray($base + [
+            "paragraph" => [ "rich_text" => [], "icon" => null ],
+        ]);
+
+        $this->assertSame("📋", $emoji->icon?->emoji?->emoji);
+        $this->assertSame("https://example.com/icon.png", $file->icon?->file?->url);
+        $this->assertNull($unsupported->icon);
+        $this->assertNull($null->icon);
     }
 }
