@@ -19,6 +19,14 @@ use Notion\Blocks\Heading1;
 use Notion\Blocks\Heading2;
 use Notion\Blocks\Heading3;
 use Notion\Blocks\LinkToPage;
+use Notion\Blocks\MeetingNotes;
+use Notion\Blocks\MeetingNotes\Query as MeetingNotesQuery;
+use Notion\Blocks\MeetingNotes\Query\CompoundFilter as MeetingNotesCompoundFilter;
+use Notion\Blocks\MeetingNotes\Query\DateFilter as MeetingNotesDateFilter;
+use Notion\Blocks\MeetingNotes\Query\PeopleFilter as MeetingNotesPeopleFilter;
+use Notion\Blocks\MeetingNotes\Query\Result as MeetingNotesResult;
+use Notion\Blocks\MeetingNotes\Query\Sort as MeetingNotesSort;
+use Notion\Blocks\MeetingNotes\Query\TextFilter as MeetingNotesTextFilter;
 use Notion\Blocks\NumberedListItem;
 use Notion\Blocks\Paragraph;
 use Notion\Blocks\SyncedBlock;
@@ -26,6 +34,7 @@ use Notion\Blocks\TableOfContents;
 use Notion\Blocks\ToDo;
 use Notion\Blocks\Toggle;
 use Notion\Common\RichText;
+use Notion\DataSources\Query\RelativeDate;
 use Notion\Exceptions\ApiException;
 use PHPUnit\Framework\TestCase;
 
@@ -358,5 +367,52 @@ class BlocksTest extends TestCase
 
         $this->expectException(ApiException::class);
         $client->blocks()->update($paragraph);
+    }
+
+    public function test_query_meeting_notes(): void
+    {
+        $client = Helper::client();
+
+        $query = MeetingNotesQuery::create()
+            ->changeFilter(MeetingNotesCompoundFilter::and(
+                MeetingNotesPeopleFilter::attendees()->containsMe(),
+                MeetingNotesDateFilter::createdTime()->onOrBefore(RelativeDate::Today),
+                MeetingNotesCompoundFilter::or(
+                    MeetingNotesTextFilter::title()->isNotEmpty(),
+                    MeetingNotesTextFilter::title()->isEmpty(),
+                ),
+            ))
+            ->addSort(MeetingNotesSort::lastEditedTime()->descending())
+            ->changeLimit(5);
+
+        $result = $this->queryMeetingNotesOrSkip(fn() => $client->blocks()->queryMeetingNotes($query));
+
+        $this->assertLessThanOrEqual(5, count($result->meetingNotes));
+        $this->assertContainsOnlyInstancesOf(MeetingNotes::class, $result->meetingNotes);
+    }
+
+    public function test_query_meeting_notes_without_parameters(): void
+    {
+        $client = Helper::client();
+
+        $result = $this->queryMeetingNotesOrSkip(fn() => $client->blocks()->queryMeetingNotes());
+
+        $this->assertLessThanOrEqual(MeetingNotesQuery::MAX_LIMIT, count($result->meetingNotes));
+    }
+
+    /** @param callable(): MeetingNotesResult $query */
+    private function queryMeetingNotesOrSkip(callable $query): MeetingNotesResult
+    {
+        try {
+            return $query();
+        } catch (ApiException $e) {
+            // The API returns a validation error when AI meeting notes are
+            // not available for the integration's user
+            if ($e->notionCode === "validation_error" && stripos($e->getMessage(), "meeting") !== false) {
+                $this->markTestSkipped("AI meeting notes not available: {$e->getMessage()}");
+            }
+
+            throw $e;
+        }
     }
 }

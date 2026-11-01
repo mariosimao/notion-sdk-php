@@ -3,9 +3,15 @@
 namespace Notion\Blocks;
 
 use Notion\Blocks\BlockInterface;
+use Notion\Blocks\MeetingNotes\Query as MeetingNotesQuery;
+use Notion\Blocks\MeetingNotes\Query\Result as MeetingNotesResult;
 use Notion\Configuration;
 use Notion\Infrastructure\Http;
+use stdClass;
 
+/**
+ * @psalm-import-type QueryResultJson from MeetingNotesResult as MeetingNotesResultJson
+ */
 final readonly class Client
 {
     /**
@@ -121,6 +127,30 @@ final readonly class Client
         $body = Http::sendRequest($request, $this->config);
 
         return BlockFactory::fromArray($body);
+    }
+
+    /**
+     * Query AI meeting notes where the user tied to the integration is an attendee
+     *
+     * Requires the "Read content" capability and AI meeting notes enabled for
+     * the integration's user.
+     */
+    public function queryMeetingNotes(MeetingNotesQuery|null $query = null): MeetingNotesResult
+    {
+        $data = ($query ?? MeetingNotesQuery::create())->toArray();
+        $json = json_encode(count($data) > 0 ? $data : new stdClass());
+
+        $url = "https://api.notion.com/v1/blocks/meeting_notes/query";
+        $request = Http::createRequest($url, $this->config)
+            ->withMethod("POST")
+            ->withHeader("Content-Type", "application/json");
+
+        $request->getBody()->write($json);
+
+        /** @psalm-var MeetingNotesResultJson $body */
+        $body = Http::sendRequest($request, $this->config);
+
+        return MeetingNotesResult::fromArray($body);
     }
 
     public function delete(string $blockId): BlockInterface

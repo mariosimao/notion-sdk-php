@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support querying AI meeting notes with `Notion\Blocks\Client::queryMeetingNotes()` (#488).
+  - New `Notion\Blocks\MeetingNotes\Query` with `changeFilter()`, `addSort()`/`changeSorts()` and `changeLimit()` (1 to 50, server default 50). The endpoint has no cursor pagination.
+  - Typed filters in `Notion\Blocks\MeetingNotes\Query`: `TextFilter::title()`, `PeopleFilter::attendees()`/`createdBy()`/`lastEditedBy()`, `DateFilter::createdTime()`/`lastEditedTime()` and `CompoundFilter::and()`/`or()` (one nesting level).
+  - Attendee/people filters accept user IDs (plain UUID or `user://<uuid>`), `Notion\Users\User` objects or `UserReference` values (including `UserReference::me()`), normalized and de-duplicated into the API user list.
+  - Date filters accept `DateTimeImmutable` or `Notion\DataSources\Query\RelativeDate`, and ranges through `DateRange` (`relative()`, `past()`, `next()`, `surrounding()`, `between()`).
+  - Sorts with `Sort::title()`, `attendees()`, `createdTime()`, `createdBy()`, `lastEditedTime()` and `lastEditedBy()`.
+  - Results are returned as `Notion\Blocks\MeetingNotes\Query\Result` with `meetingNotes` and `hasMore`.
+- Support meeting notes blocks with the read-only `Notion\Blocks\MeetingNotes` block (#488).
+  - Exposes `isFullPage`, `title`, `status` (`MeetingNotes\Status`), `tabs` (summary, notes and transcript block IDs), `calendarEvent` and `recording`.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
@@ -45,6 +54,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` accept `RelativeDate` instances in addition to `DateTimeImmutable`.
 
 ### Changed
+- **[BREAKING]** Blocks of type `meeting_notes` are now parsed as `Notion\Blocks\MeetingNotes` instead of `Notion\Blocks\Unknown`, and `Notion\Blocks\BlockType` has a new `MeetingNotes` case (#488).
+  - **Migration instructions:**
+    - Code relying on `Unknown` to detect meeting notes must use the new class:
+      - Change `$block instanceof Unknown && $block->toArray()["type"] === "meeting_notes"` to `$block instanceof MeetingNotes`.
+    - Exhaustive `match` expressions over `BlockType` must handle `BlockType::MeetingNotes`.
 - **[BREAKING]** Change `DateFilter` value from `string` to `DateTimeImmutable|RelativeDate` and remove `array` type (#199).
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` now accept `DateTimeImmutable|RelativeDate` instead of a raw `string`.
   - Removed `array` from the allowed types of the internal `$value` property and `value()` return type hint, which is now `DateTimeImmutable|RelativeDate|bool|stdClass`.
