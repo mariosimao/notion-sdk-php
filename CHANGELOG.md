@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support rate-limit error metadata (#500).
+  - New `Notion\Exceptions\ErrorAdditionalData` value object exposing the error `additional_data` (`retryAfter`, `rateLimitReason`, `retryGuidance`, `committedResourceId`, `committedChildIds` and the `raw` array via `toArray()`).
+  - New `ApiException::$additionalData` property and `ApiException::retryAfter()` method, which returns `additional_data.retry_after` and falls back to the `Retry-After` header (seconds or HTTP date).
+  - New `Notion\Exceptions\RateLimitedException` (extends `ApiException`) thrown for `rate_limited` errors, with `rateLimitReason()` and `isRetryable()` (`false` for `public_api_request_blocked`).
+  - New `Configuration::enableRetryOnRateLimit(int $attempts = 3, int $maxWait = 60)` and `Configuration::disableRetryOnRateLimit()`, plus `retryOnRateLimit`, `retryOnRateLimitAttempts` and `retryOnRateLimitMaxWait` properties.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
@@ -45,6 +50,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` accept `RelativeDate` instances in addition to `DateTimeImmutable`.
 
 ### Changed
+- **[BREAKING]** Rate-limited requests are retried by default (#500).
+  - Previously, a `429 rate_limited` response threw an `ApiException` immediately. Now the SDK throws a `RateLimitedException` (still an `ApiException`) and, by default, retries up to 3 times, waiting the number of seconds given by `additional_data.retry_after` (or the `Retry-After` header), capped at 60 seconds. Without either value, it uses exponential backoff. Requests blocked with `public_api_request_blocked` are never retried.
+  - **Migration instructions:**
+    - To keep the previous behaviour (fail immediately), disable the retry:
+      ```php
+      // Before
+      $config = Configuration::create($token);
+
+      // After
+      $config = Configuration::create($token)->disableRetryOnRateLimit();
+      ```
+    - Code catching `ApiException` and checking `$e->notionCode === "rate_limited"` keeps working, but can catch `RateLimitedException` instead and use `$e->retryAfter()`.
 - **[BREAKING]** Change `DateFilter` value from `string` to `DateTimeImmutable|RelativeDate` and remove `array` type (#199).
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` now accept `DateTimeImmutable|RelativeDate` instead of a raw `string`.
   - Removed `array` from the allowed types of the internal `$value` property and `value()` return type hint, which is now `DateTimeImmutable|RelativeDate|bool|stdClass`.

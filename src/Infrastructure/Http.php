@@ -5,6 +5,7 @@ namespace Notion\Infrastructure;
 use Notion\Configuration;
 use Notion\Exceptions\ApiException;
 use Notion\Exceptions\ConflictException;
+use Notion\Exceptions\RateLimitedException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -46,6 +47,7 @@ final readonly class Http
         RequestInterface $request,
         Configuration $config,
         int $currentAttempt = 0,
+        int $currentRateLimitAttempt = 0,
     ): array {
         $response = $config->httpClient->sendRequest($request);
 
@@ -60,7 +62,22 @@ final readonly class Http
             }
 
             // Try again
-            return self::sendRequest($request, $config, $currentAttempt + 1);
+            return self::sendRequest($request, $config, $currentAttempt + 1, $currentRateLimitAttempt);
+        } catch (RateLimitedException $e) {
+            if (
+                !$config->retryOnRateLimit ||
+                !$e->isRetryable() ||
+                $currentRateLimitAttempt >= $config->retryOnRateLimitAttempts
+            ) {
+                throw $e;
+            }
+
+            // Exponential backoff when Notion does not tell how long to wait
+            $wait = $e->retryAfter() ?? 2 ** $currentRateLimitAttempt;
+            $wait = max(0, min($wait, $config->retryOnRateLimitMaxWait));
+            sleep($wait);
+
+            return self::sendRequest($request, $config, $currentAttempt, $currentRateLimitAttempt + 1);
         }
 
         return $body;
