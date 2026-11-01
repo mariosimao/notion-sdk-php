@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support the Views API with the new `Notion::views()` client (#474).
+  - `Notion\Views\Client` supports `list()`, `listAll()`, `find()`, `create()`, `update()` and `delete()` for database views.
+  - View queries: `query()`, `queryResults()`, `deleteQuery()` and `queryAllPages()` (paginates and cleans up the cached query).
+  - Typed `Notion\Views\View` model with immutable `change*()`/`remove*()` methods for name, filter, sorts, quick filters and configuration.
+  - Typed configurations for every view type: table, board, gallery, list, calendar, timeline, map, form, chart and (read-only) dashboard, including `GroupBy`, `PropertyConfiguration`, `Cover`, `SubtaskConfiguration` and chart value objects.
+  - `ViewTarget` to create views in an existing database, as a new linked database inside a page, or as a dashboard widget.
+  - `ListQuery` to filter views by database or data source with pagination.
+- `Notion\DataSources\Query\Sort::fromArray()` and `Notion\DataSources\Query\RawFilter` to parse sorts and filters returned by the API (#474).
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
