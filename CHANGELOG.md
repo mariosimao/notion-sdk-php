@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support incomplete query status (#486).
+  - New `Notion\Common\RequestStatus` value object with `RequestStatusType` (`Complete`, `Incomplete`) and `IncompleteReason` (`QueryResultLimitReached`) enums.
+  - `Notion\DataSources\Query\Result` and `Notion\Search\Result` expose `requestStatus` and an `isIncomplete()` helper. Notion stops paginating after 10,000 results and returns `has_more: false`; `isIncomplete()` distinguishes this cap from an exhausted query.
+  - `requestStatus` defaults to complete when the API response omits `request_status`.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
