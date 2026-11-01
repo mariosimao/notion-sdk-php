@@ -26,7 +26,6 @@ use Notion\Common\RichText;
  */
 final readonly class Comment
 {
-    /** @param RichText[] $text */
     private function __construct(
         public string $id,
         public ParentBlock|null $parent,
@@ -34,11 +33,17 @@ final readonly class Comment
         public DateTimeImmutable $createdTime,
         public DateTimeImmutable $lastEditedTime,
         public string $userId,
-        public array $text,
+        public CommentBody $body,
     ) {
     }
 
-    public static function create(string $pageId, RichText ...$text): self
+    /**
+     * Create a new comment on a page
+     *
+     * Use `CommentBody::richText()` or `CommentBody::markdown()` to define the
+     * comment content.
+     */
+    public static function create(string $pageId, CommentBody $body): self
     {
         $createdTime = $lastEditedTime = new DateTimeImmutable("now");
 
@@ -46,17 +51,20 @@ final readonly class Comment
         $parent = ParentBlock::page($pageId);
         $discussionId = null;
 
-        return new self($id, $parent, $discussionId, $createdTime, $lastEditedTime, $userId, $text);
+        return new self($id, $parent, $discussionId, $createdTime, $lastEditedTime, $userId, $body);
     }
 
-    public static function createReply(string $discussionId, RichText ...$text): self
+    /**
+     * Create a reply on an existing discussion thread
+     */
+    public static function createReply(string $discussionId, CommentBody $body): self
     {
         $createdTime = $lastEditedTime = new DateTimeImmutable("now");
 
         $id = $userId = "";
         $parent = null;
 
-        return new self($id, $parent, $discussionId, $createdTime, $lastEditedTime, $userId, $text);
+        return new self($id, $parent, $discussionId, $createdTime, $lastEditedTime, $userId, $body);
     }
 
     /** @psalm-param CommentJson $array */
@@ -69,8 +77,22 @@ final readonly class Comment
         $lastEditedTime = new DateTimeImmutable($array["last_edited_time"]);
         $userId = $array["created_by"]["id"];
         $text = array_map(fn ($t) => RichText::fromArray($t), $array["rich_text"]);
+        $body = CommentBody::richText(...$text);
 
-        return new self($id, $parent, $discussionId, $createdTime, $lastEditedTime, $userId, $text);
+        return new self($id, $parent, $discussionId, $createdTime, $lastEditedTime, $userId, $body);
+    }
+
+    public function changeBody(CommentBody $body): self
+    {
+        return new self(
+            $this->id,
+            $this->parent,
+            $this->discussionId,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $this->userId,
+            $body,
+        );
     }
 
     public function toArray(): array
@@ -83,7 +105,7 @@ final readonly class Comment
                 "object" => "user",
                 "id" => $this->userId,
             ],
-            "rich_text" => array_map(fn (RichText $t) => $t->toArray(), $this->text),
+            ...$this->body->toArray(),
         ];
 
         if ($this->parent !== null) {

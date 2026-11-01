@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support markdown comment bodies (#483).
+  - New `Notion\Comments\CommentBody` value object to choose exactly one comment body representation: `CommentBody::richText(RichText ...$text)` or `CommentBody::markdown(string $markdown, MarkdownVersion $version = MarkdownVersion::V2)`.
+  - New `Notion\Common\MarkdownVersion` enum (`V1`, `V2`), serialized as `markdown_version`. `V2` (Notion-flavored Markdown) is the default.
+  - New `Comment::changeBody()` method. Markdown bodies are serialized by `CommentBody::toArray()` as `markdown`/`markdown_version` instead of `rich_text`, ready to be sent in comment create (and update) requests.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
@@ -45,6 +49,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` accept `RelativeDate` instances in addition to `DateTimeImmutable`.
 
 ### Changed
+- **[BREAKING]** Comment content is now represented by a `Notion\Comments\CommentBody` (#483).
+  - `Comment::create()` and `Comment::createReply()` now take a `CommentBody` instead of variadic `RichText` arguments.
+  - The `Comment::$text` property was replaced by `Comment::$body`. Comments returned by Notion expose their content in `$comment->body->richText`.
+  - **Migration instructions:**
+    - Before: `Comment::create($pageId, RichText::fromString("Hi"))`
+    - After: `Comment::create($pageId, CommentBody::richText(RichText::fromString("Hi")))`
+    - Before: `Comment::createReply($discussionId, $text1, $text2)`
+    - After: `Comment::createReply($discussionId, CommentBody::richText($text1, $text2))`
+    - Before: `$comment->text`
+    - After: `$comment->body->richText`
 - **[BREAKING]** Change `DateFilter` value from `string` to `DateTimeImmutable|RelativeDate` and remove `array` type (#199).
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` now accept `DateTimeImmutable|RelativeDate` instead of a raw `string`.
   - Removed `array` from the allowed types of the internal `$value` property and `value()` return type hint, which is now `DateTimeImmutable|RelativeDate|bool|stdClass`.
