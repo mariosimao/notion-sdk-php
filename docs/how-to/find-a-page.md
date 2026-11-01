@@ -39,3 +39,16 @@ $notion = \Notion\Notion::create($token);
 $pageId = "471373adacbe4247aa4b2ce06ed14026";
 $content = $notion->blocks()->findChildren($pageId);
 ```
+
+Both methods follow pagination and return all children. To fetch a single page
+of children, use `listChildren()`:
+
+```php
+$list = $notion->blocks()->listChildren($pageId, pageSize: 50);
+
+$list->results;    // BlockInterface[]
+$list->hasMore;    // true if there are more children
+$list->nextCursor; // pass as $startCursor to fetch the next page
+
+$next = $notion->blocks()->listChildren($pageId, $list->nextCursor, 50);
+```

@@ -29,6 +29,22 @@ class UsersTest extends TestCase
         $this->assertTrue(count($users) > 1);
     }
 
+    public function test_paginate_users(): void
+    {
+        $client = Helper::client();
+
+        $firstPage = $client->users()->list(pageSize: 1);
+
+        $this->assertCount(1, $firstPage->results);
+        $this->assertTrue($firstPage->hasMore);
+        $this->assertNotNull($firstPage->nextCursor);
+
+        $secondPage = $client->users()->list($firstPage->nextCursor, 1);
+
+        $this->assertCount(1, $secondPage->results);
+        $this->assertNotSame($firstPage->results[0]->id, $secondPage->results[0]->id);
+    }
+
     public function test_find_inexistent_user(): void
     {
         $client = Helper::client();

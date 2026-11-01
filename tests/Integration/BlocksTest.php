@@ -102,6 +102,41 @@ class BlocksTest extends TestCase
         $this->assertSame(BlockType::Heading1, $block->metadata()->type);
     }
 
+    public function test_paginate_children(): void
+    {
+        $client = Helper::client();
+        $page = Helper::newPage()->changeTitle("Blocks pagination test");
+
+        $content = array_map(
+            fn(int $i) => Paragraph::fromString("Paragraph {$i}"),
+            range(1, 100),
+        );
+        $newPage = $client->pages()->create($page, $content);
+        $client->blocks()->append($newPage->id, [ Paragraph::fromString("Paragraph 101") ]);
+
+        $firstPage = $client->blocks()->listChildren($newPage->id, pageSize: 2);
+        $this->assertCount(2, $firstPage->results);
+        $this->assertTrue($firstPage->hasMore);
+        $this->assertNotNull($firstPage->nextCursor);
+
+        $secondPage = $client->blocks()->listChildren($newPage->id, $firstPage->nextCursor, 2);
+        $this->assertCount(2, $secondPage->results);
+        $this->assertInstanceOf(Paragraph::class, $secondPage->results[0]);
+        $this->assertSame("Paragraph 3", RichText::multipleToString(...$secondPage->results[0]->text));
+
+        $defaultPage = $client->blocks()->listChildren($newPage->id);
+        $this->assertCount(100, $defaultPage->results);
+        $this->assertTrue($defaultPage->hasMore);
+
+        $allChildren = $client->blocks()->findChildren($newPage->id);
+        $this->assertCount(101, $allChildren);
+        $last = $allChildren[100];
+        $this->assertInstanceOf(Paragraph::class, $last);
+        $this->assertSame("Paragraph 101", RichText::multipleToString(...$last->text));
+
+        $client->pages()->delete($newPage);
+    }
+
     public function test_find_inexistent_block(): void
     {
         $client = Helper::client();
