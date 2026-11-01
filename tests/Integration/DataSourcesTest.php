@@ -209,6 +209,29 @@ class DataSourcesTest extends TestCase
         $this->assertCount(1, $result->pages);
     }
 
+    public function test_query_data_source_with_multi_value_select_filter(): void
+    {
+        $client = Helper::client();
+
+        $database = $this->newDatabase("Movies DB");
+        $dataSource = self::moviesDataSource($database->id);
+
+        $dramasOrComedies = Query::create()->changeFilter(
+            SelectFilter::property("Category")->equals(["Drama", "Comedy"]),
+        );
+        $notDramasOrComedies = Query::create()->changeFilter(
+            SelectFilter::property("Category")->doesNotEqual(["Drama", "Comedy"]),
+        );
+
+        $included = $client->dataSources()->query($dataSource, $dramasOrComedies);
+        $excluded = $client->dataSources()->query($dataSource, $notDramasOrComedies);
+
+        $client->databases()->delete($database);
+
+        $this->assertCount(4, $included->pages);
+        $this->assertCount(1, $excluded->pages);
+    }
+
     public function test_query_inexistent_data_source(): void
     {
         $client = Helper::client();

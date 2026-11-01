@@ -66,4 +66,52 @@ class MultiSelectFilterTest extends TestCase
         ];
         $this->assertSame($expected, $filter->toArray());
     }
+
+    public function test_contains_multiple_values(): void
+    {
+        $filter = MultiSelectFilter::property("Categories")->contains(["Marketing", "Sales"]);
+
+        $expected = [
+            "property" => "Categories",
+            "multi_select" => [ "contains" => ["Marketing", "Sales"] ],
+        ];
+        $this->assertSame($expected, $filter->toArray());
+        $this->assertSame(["Marketing", "Sales"], $filter->value());
+    }
+
+    public function test_does_not_contain_multiple_values(): void
+    {
+        $filter = MultiSelectFilter::property("Categories")->doesNotContain(["Engineering", "QA"]);
+
+        $expected = [
+            "property" => "Categories",
+            "multi_select" => [ "does_not_contain" => ["Engineering", "QA"] ],
+        ];
+        $this->assertSame($expected, $filter->toArray());
+        $this->assertSame(["Engineering", "QA"], $filter->value());
+    }
+
+    public function test_contains_single_value_list(): void
+    {
+        $filter = MultiSelectFilter::property("Categories")->contains(["Marketing"]);
+
+        $expected = [
+            "property" => "Categories",
+            "multi_select" => [ "contains" => ["Marketing"] ],
+        ];
+        $this->assertSame($expected, $filter->toArray());
+    }
+
+    public function test_empty_list_is_rejected(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        MultiSelectFilter::property("Categories")->contains([]);
+    }
+
+    public function test_non_string_values_are_rejected(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        /** @psalm-suppress InvalidArgument */
+        MultiSelectFilter::property("Categories")->doesNotContain(["Engineering", 1]);
+    }
 }

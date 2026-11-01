@@ -15,7 +15,8 @@ final readonly class StatusFilter implements Filter, Condition
     private function __construct(
         private string $propertyName,
         private Operator $operator,
-        private string|bool $value,
+        /** @var string|non-empty-list<string>|bool */
+        private string|array|bool $value,
     ) {
         if (!in_array($operator, self::VALID_OPERATORS)) {
             throw new \Exception("Invalid operator");
@@ -47,7 +48,8 @@ final readonly class StatusFilter implements Filter, Condition
         return $this->operator;
     }
 
-    public function value(): string|bool
+    /** @return string|non-empty-list<string>|bool */
+    public function value(): string|array|bool
     {
         return $this->value;
     }
@@ -62,14 +64,26 @@ final readonly class StatusFilter implements Filter, Condition
         ];
     }
 
-    public function equals(string $value): self
+    /**
+     * Accepts a single value or a list of values. Entries matching any of the
+     * provided values are considered a match.
+     *
+     * @param string|list<string> $value
+     */
+    public function equals(string|array $value): self
     {
-        return new self($this->propertyName, Operator::Equals, $value);
+        return new self($this->propertyName, Operator::Equals, self::validateValue($value));
     }
 
-    public function doesNotEqual(string $value): self
+    /**
+     * Accepts a single value or a list of values. Entries matching none of the
+     * provided values are considered a match.
+     *
+     * @param string|list<string> $value
+     */
+    public function doesNotEqual(string|array $value): self
     {
-        return new self($this->propertyName, Operator::DoesNotEqual, $value);
+        return new self($this->propertyName, Operator::DoesNotEqual, self::validateValue($value));
     }
 
     public function isEmpty(): self
@@ -80,5 +94,37 @@ final readonly class StatusFilter implements Filter, Condition
     public function isNotEmpty(): self
     {
         return new self($this->propertyName, Operator::IsNotEmpty, true);
+    }
+
+    /**
+     * @param string|list<string> $value
+     *
+     * @return string|non-empty-list<string>
+     *
+     * @psalm-pure
+     */
+    private static function validateValue(string|array $value): string|array
+    {
+        if (is_string($value)) {
+            return $value;
+        }
+
+        if ($value === []) {
+            throw new \InvalidArgumentException("At least one value must be provided.");
+        }
+
+        /** @psalm-suppress RedundantCondition */
+        if (!array_is_list($value)) {
+            throw new \InvalidArgumentException("Values must be a list.");
+        }
+
+        foreach ($value as $item) {
+            /** @psalm-suppress DocblockTypeContradiction */
+            if (!is_string($item)) {
+                throw new \InvalidArgumentException("All values must be strings.");
+            }
+        }
+
+        return $value;
     }
 }

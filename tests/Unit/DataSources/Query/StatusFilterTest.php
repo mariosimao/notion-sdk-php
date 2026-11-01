@@ -60,4 +60,52 @@ class StatusFilterTest extends TestCase
         ];
         $this->assertSame($expected, $filter->toArray());
     }
+
+    public function test_equals_multiple_values(): void
+    {
+        $filter = StatusFilter::property("Status")->equals(["Not started", "In progress"]);
+
+        $expected = [
+            "property" => "Status",
+            "status" => [ "equals" => ["Not started", "In progress"] ],
+        ];
+        $this->assertSame($expected, $filter->toArray());
+        $this->assertSame(["Not started", "In progress"], $filter->value());
+    }
+
+    public function test_does_not_equal_multiple_values(): void
+    {
+        $filter = StatusFilter::property("Status")->doesNotEqual(["Done", "Archive"]);
+
+        $expected = [
+            "property" => "Status",
+            "status" => [ "does_not_equal" => ["Done", "Archive"] ],
+        ];
+        $this->assertSame($expected, $filter->toArray());
+        $this->assertSame(["Done", "Archive"], $filter->value());
+    }
+
+    public function test_equals_single_value_list(): void
+    {
+        $filter = StatusFilter::property("Status")->equals(["Not started"]);
+
+        $expected = [
+            "property" => "Status",
+            "status" => [ "equals" => ["Not started"] ],
+        ];
+        $this->assertSame($expected, $filter->toArray());
+    }
+
+    public function test_empty_list_is_rejected(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        StatusFilter::property("Status")->equals([]);
+    }
+
+    public function test_non_string_values_are_rejected(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        /** @psalm-suppress InvalidArgument */
+        StatusFilter::property("Status")->doesNotEqual(["Done", 1]);
+    }
 }
