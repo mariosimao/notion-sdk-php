@@ -3,7 +3,9 @@
 namespace Notion\Test\Unit\Common;
 
 use DateTimeImmutable;
+use Notion\Common\CustomEmoji;
 use Notion\Common\Date;
+use Notion\Common\LinkMention;
 use Notion\Common\Mention;
 use Notion\Common\MentionType;
 use Notion\Common\TemplateMention;
@@ -203,6 +205,116 @@ class MentionTest extends TestCase
         ];
         $mention = Mention::fromArray($array);
 
+        $this->assertEquals($array, $mention->toArray());
+    }
+
+    public function test_mention_link_mention(): void
+    {
+        $mention = Mention::linkMention("https://github.com/mariosimao/notion-sdk-php");
+
+        $this->assertTrue($mention->isLinkMention());
+        $this->assertEquals(MentionType::LinkMention, $mention->type);
+        $this->assertEquals("https://github.com/mariosimao/notion-sdk-php", $mention->linkMention?->href);
+        $this->assertNull($mention->linkMention?->title);
+    }
+
+    public function test_mention_link_mention_object(): void
+    {
+        $linkMention = LinkMention::create("https://notion.so");
+        $mention = Mention::linkMention($linkMention);
+
+        $this->assertTrue($mention->isLinkMention());
+        $this->assertSame($linkMention, $mention->linkMention);
+    }
+
+    public function test_link_mention_array_conversion(): void
+    {
+        $array = [
+            "type" => "link_mention",
+            "link_mention" => [
+                "href"          => "https://github.com/mariosimao/notion-sdk-php",
+                "title"         => "notion-sdk-php",
+                "description"   => "A complete Notion SDK for PHP developers.",
+                "link_author"   => "mariosimao",
+                "link_provider" => "GitHub",
+                "thumbnail_url" => "https://example.com/thumbnail.png",
+                "icon_url"      => "https://github.com/favicon.ico",
+                "iframe_url"    => "https://example.com/iframe",
+                "height"        => 200,
+                "padding"       => 10,
+                "padding_top"   => 5,
+            ],
+        ];
+        $mention = Mention::fromArray($array);
+
+        $this->assertTrue($mention->isLinkMention());
+        $linkMention = $mention->linkMention;
+        $this->assertEquals("notion-sdk-php", $linkMention?->title);
+        $this->assertEquals("A complete Notion SDK for PHP developers.", $linkMention?->description);
+        $this->assertEquals("mariosimao", $linkMention?->linkAuthor);
+        $this->assertEquals("GitHub", $linkMention?->linkProvider);
+        $this->assertEquals("https://example.com/thumbnail.png", $linkMention?->thumbnailUrl);
+        $this->assertEquals("https://github.com/favicon.ico", $linkMention?->iconUrl);
+        $this->assertEquals("https://example.com/iframe", $linkMention?->iframeUrl);
+        $this->assertEquals(200, $linkMention?->height);
+        $this->assertEquals(10, $linkMention?->padding);
+        $this->assertEquals(5, $linkMention?->paddingTop);
+        $this->assertEquals($array, $mention->toArray());
+    }
+
+    public function test_link_mention_minimal_array_conversion(): void
+    {
+        $array = [
+            "type" => "link_mention",
+            "link_mention" => [ "href" => "https://notion.so" ],
+        ];
+        $mention = Mention::fromArray($array);
+
+        $this->assertEquals($array, $mention->toArray());
+    }
+
+    public function test_mention_custom_emoji(): void
+    {
+        $emoji = CustomEmoji::create(
+            "45ce454c-d427-4f53-9489-e5d0f3d1db6b",
+            "bufo",
+            "https://example.com/bufo.png",
+        );
+        $mention = Mention::customEmoji($emoji);
+
+        $this->assertTrue($mention->isCustomEmoji());
+        $this->assertEquals(MentionType::CustomEmoji, $mention->type);
+        $this->assertEquals("45ce454c-d427-4f53-9489-e5d0f3d1db6b", $mention->customEmoji?->id);
+        $this->assertEquals("bufo", $mention->customEmoji?->name);
+        $this->assertEquals("https://example.com/bufo.png", $mention->customEmoji?->url);
+    }
+
+    public function test_custom_emoji_array_conversion(): void
+    {
+        $array = [
+            "type" => "custom_emoji",
+            "custom_emoji" => [
+                "id"   => "45ce454c-d427-4f53-9489-e5d0f3d1db6b",
+                "name" => "bufo",
+                "url"  => "https://example.com/bufo.png",
+            ],
+        ];
+        $mention = Mention::fromArray($array);
+
+        $this->assertTrue($mention->isCustomEmoji());
+        $this->assertEquals($array, $mention->toArray());
+    }
+
+    public function test_custom_emoji_only_id_array_conversion(): void
+    {
+        $array = [
+            "type" => "custom_emoji",
+            "custom_emoji" => [ "id" => "45ce454c-d427-4f53-9489-e5d0f3d1db6b" ],
+        ];
+        $mention = Mention::fromArray($array);
+
+        $this->assertNull($mention->customEmoji?->name);
+        $this->assertNull($mention->customEmoji?->url);
         $this->assertEquals($array, $mention->toArray());
     }
 }

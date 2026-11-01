@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support `link_mention` and `custom_emoji` rich text mentions (#501).
+  - New `Notion\Common\LinkMention` value object exposing `href`, `title`, `description`, `linkAuthor`, `linkProvider`, `thumbnailUrl`, `iconUrl`, `iframeUrl`, `height`, `padding` and `paddingTop`.
+  - New `Notion\Common\CustomEmoji` value object exposing `id`, `name` and `url`.
+  - New `MentionType::LinkMention` and `MentionType::CustomEmoji` enum cases.
+  - New `Mention::linkMention()`, `Mention::customEmoji()`, `Mention::isLinkMention()` and `Mention::isCustomEmoji()` methods, with `Mention::$linkMention` and `Mention::$customEmoji` properties.
+  - Rich text containing these mentions no longer throws when parsed.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).

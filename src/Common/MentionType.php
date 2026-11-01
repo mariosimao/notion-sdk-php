@@ -10,4 +10,6 @@ enum MentionType: string
     case Date = "date";
     case LinkPreview = "link_preview";
     case TemplateMention = "template_mention";
+    case LinkMention = "link_mention";
+    case CustomEmoji = "custom_emoji";
 }
