@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support Agent API sessions with the new `Notion\Sessions` namespace and `Notion::sessions()` client (#498).
+  - `send()` starts a session (`Message::start()`) or replies to one (`Message::reply()`), with file upload attachments, metadata and prompt context.
+  - `stream()` sends a message or action submission and yields `StreamEvent` objects parsed from the server-sent events response; `resumeStream()` reconnects with `continue_from`.
+  - `submitActions()` approves or rejects required actions with `ActionSubmission`.
+  - `find()`, `query()`/`queryAll()` (with `Query`, `SessionFilter` and `Sort`) and `cancel()`.
+  - `queryEvents()`/`queryAllEvents()` return typed session events (`UserMessage`, `AgentMessage`, `AgentThinking`, `AgentToolUse`, `AgentToolResult`, `StatusChange`, `UnknownEvent`) filterable with `EventQuery` and `EventFilter`.
+  - Session requests always use at least the `2026-03-11` `Notion-Version` required by the Agent API.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).

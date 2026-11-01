@@ -1,0 +1,9 @@
+<?php
+
+namespace Notion\Sessions;
+
+enum SortDirection: string
+{
+    case Ascending = "ascending";
+    case Descending = "descending";
+}

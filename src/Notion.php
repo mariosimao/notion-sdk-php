@@ -9,6 +9,7 @@ use Notion\Databases\Client as DatabasesClient;
 use Notion\DataSources\Client as DataSourcesClient;
 use Notion\Pages\Client as PagesClient;
 use Notion\Search\Client as SearchClient;
+use Notion\Sessions\Client as SessionsClient;
 use Notion\Users\Client as UsersClient;
 use Notion\FileUploads\Client as FileUploadsClient;
 use Psr\Http\Client\ClientInterface;
@@ -87,6 +88,12 @@ final readonly class Notion
     public function fileUploads(): FileUploadsClient
     {
         return new FileUploadsClient($this->configuration);
+    }
+
+    /** Chat with Custom Agents through the Agent API (public beta). */
+    public function sessions(): SessionsClient
+    {
+        return new SessionsClient($this->configuration);
     }
 
     public function authentication(string $clientId, string $clientSecret): AuthenticationClient

@@ -113,6 +113,14 @@ export default defineConfig({
                 ],
             },
             {
+                text: 'Agent sessions',
+                collapsible: true,
+                collapsed: true,
+                items: [
+                    { text: 'Introduction', link: '/sessions/' },
+                ],
+            },
+            {
                 text: 'Search',
                 collapsible: true,
                 collapsed: true,

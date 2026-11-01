@@ -33,6 +33,13 @@ final class Helper
         return $pageId;
     }
 
+    public static function testAgentId(): string|null
+    {
+        $agentId = getenv("TEST_AGENT_ID");
+
+        return $agentId ?: null;
+    }
+
     public static function newPage(): Page
     {
         return Page::create(PageParent::page(self::testPageId()));
