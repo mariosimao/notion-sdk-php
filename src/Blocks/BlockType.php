@@ -8,6 +8,7 @@ enum BlockType: string
     case Heading1 = "heading_1";
     case Heading2 = "heading_2";
     case Heading3 = "heading_3";
+    case Heading4 = "heading_4";
     case Callout = "callout";
     case Quote = "quote";
     case BulletedListItem = "bulleted_list_item";

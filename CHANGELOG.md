@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support heading 4 blocks (#480).
+  - New `Notion\Blocks\Heading4` block, with the same rich text, color, toggle and children behavior as the other headings.
+  - New `Notion\Blocks\BlockType::Heading4` enum case, mapped to `heading_4`, registered in `BlockFactory`.
+  - `MarkdownRenderer` renders heading 4 blocks as `####` headings.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
