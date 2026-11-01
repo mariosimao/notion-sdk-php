@@ -1,6 +1,6 @@
 # Heading
 
-Small, medium and big section heading.
+Section headings, from the biggest (`Heading1`) to the smallest (`Heading4`).
 
 ## Create from string
 
@@ -9,6 +9,7 @@ $blocks = [
     Heading1::fromString("Heading 1"),
     Heading2::fromString("Heading 2"),
     Heading3::fromString("Heading 3"),
+    Heading4::fromString("Heading 4"),
 ];
 ```
 

@@ -29,6 +29,7 @@ final readonly class BlockFactory
             BlockType::Heading1->value         => Heading1::fromArray($array),
             BlockType::Heading2->value         => Heading2::fromArray($array),
             BlockType::Heading3->value         => Heading3::fromArray($array),
+            BlockType::Heading4->value         => Heading4::fromArray($array),
             BlockType::Image->value            => Image::fromArray($array),
             BlockType::LinkPreview->value      => LinkPreview::fromArray($array),
             BlockType::LinkToPage->value       => LinkToPage::fromArray($array),

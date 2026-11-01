@@ -1,0 +1,189 @@
+<?php
+
+namespace Notion\Blocks;
+
+use Notion\Common\Color;
+use Notion\Exceptions\BlockException;
+use Notion\Common\RichText;
+use Notion\Exceptions\BlockException\HeadingException;
+
+/**
+ * @psalm-import-type BlockMetadataJson from BlockMetadata
+ * @psalm-import-type RichTextJson from \Notion\Common\RichText
+ *
+ * @psalm-type Heading4Json = array{
+ *      heading_4: array{
+ *          rich_text: RichTextJson[],
+ *          is_toggleable: bool,
+ *          color?: string,
+ *          children?: BlockMetadataJson[]
+ *      },
+ * }
+ *
+ * @psalm-immutable
+ */
+final readonly class Heading4 implements BlockInterface
+{
+    /**
+     * @param RichText[] $text
+     * @param BlockInterface[]|null $children
+     */
+    private function __construct(
+        private BlockMetadata $metadata,
+        public array $text,
+        public bool $isToggleable,
+        public Color $color,
+        public array|null $children,
+    ) {
+        $metadata->checkType(BlockType::Heading4);
+    }
+
+    public static function fromText(RichText ...$text): self
+    {
+        $block = BlockMetadata::create(BlockType::Heading4);
+
+        return new self($block, $text, false, Color::Default, []);
+    }
+
+    public static function fromString(string $content): self
+    {
+        $block = BlockMetadata::create(BlockType::Heading4);
+        $text = [ RichText::fromString($content) ];
+
+        return new self($block, $text, false, Color::Default, []);
+    }
+
+    public static function fromArray(array $array): self
+    {
+        /** @psalm-var BlockMetadataJson $array */
+        $block = BlockMetadata::fromArray($array);
+
+        /** @psalm-var Heading4Json $array */
+        $heading = $array["heading_4"];
+
+        $text = array_map(fn($t) => RichText::fromArray($t), $heading["rich_text"]);
+
+        $isToggleable = $heading["is_toggleable"];
+
+        $color = Color::tryFrom($heading["color"] ?? "") ?? Color::Default;
+
+        $children = null;
+        if ($isToggleable) {
+            $children = array_map(fn($b) => BlockFactory::fromArray($b), $heading["children"] ?? []);
+        }
+
+        return new self($block, $text, $isToggleable, $color, $children);
+    }
+
+    public function toArray(): array
+    {
+        $array = $this->metadata->toArray();
+
+        $array["heading_4"] = [
+            "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
+            "is_toggleable" => $this->isToggleable,
+            "color" => $this->color->value,
+            "children" => array_map(fn($b) => $b->toArray(), $this->children ?? [])
+        ];
+
+        return $array;
+    }
+
+    public function toString(): string
+    {
+        $string = "";
+        foreach ($this->text as $richText) {
+            $string = $string . $richText->plainText;
+        }
+
+        return $string;
+    }
+
+    public function metadata(): BlockMetadata
+    {
+        return $this->metadata;
+    }
+
+    public function changeText(RichText ...$text): self
+    {
+        return new self($this->metadata, $text, $this->isToggleable, $this->color, $this->children);
+    }
+
+    public function addText(RichText $text): self
+    {
+        $texts = $this->text;
+        $texts[] = $text;
+
+        return new self($this->metadata, $texts, $this->isToggleable, $this->color, $this->children);
+    }
+
+    public function toggllify(): self
+    {
+        return new self($this->metadata, $this->text, true, $this->color, []);
+    }
+
+    public function untogglify(): self
+    {
+        if (!empty($this->children)) {
+            throw HeadingException::untogglifyWithChildren();
+        }
+
+        return new self($this->metadata, $this->text, false, $this->color, null);
+    }
+
+    public function changeColor(Color $color): self
+    {
+        return new self(
+            $this->metadata->update(),
+            $this->text,
+            $this->isToggleable,
+            $color,
+            $this->children,
+        );
+    }
+
+    public function addChild(BlockInterface $child): self
+    {
+        if (!$this->isToggleable) {
+            throw BlockException::noChindrenSupport();
+        }
+
+        $children = $this->children ? [...$this->children, $child] : [$child];
+        return new self(
+            $this->metadata,
+            $this->text,
+            $this->isToggleable,
+            $this->color,
+            $children,
+        );
+    }
+
+    public function changeChildren(BlockInterface ...$children): self
+    {
+        if (!$this->isToggleable) {
+            throw BlockException::noChindrenSupport();
+        }
+
+        return new self($this->metadata, $this->text, $this->isToggleable, $this->color, $children);
+    }
+
+    public function delete(): BlockInterface
+    {
+        return new self(
+            $this->metadata->delete(),
+            $this->text,
+            $this->isToggleable,
+            $this->color,
+            $this->children,
+        );
+    }
+
+    /**
+     * @deprecated 1.17.0 Use `delete()` instead.
+     * @codeCoverageIgnore
+     */
+    public function archive(): BlockInterface
+    {
+        return $this->delete();
+    }
+}

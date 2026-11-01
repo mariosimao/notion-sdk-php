@@ -75,6 +75,7 @@ final readonly class MarkdownRenderer implements RendererInterface
             BlockType::Heading1         => Markdown\Heading1Renderer::render($block, $depth),
             BlockType::Heading2         => Markdown\Heading2Renderer::render($block, $depth),
             BlockType::Heading3         => Markdown\Heading3Renderer::render($block, $depth),
+            BlockType::Heading4         => Markdown\Heading4Renderer::render($block, $depth),
             BlockType::Image            => Markdown\ImageRenderer::render($block, $depth),
             BlockType::LinkPreview      => Markdown\LinkPreviewRenderer::render($block, $depth),
             BlockType::NumberedListItem => Markdown\NumberedListItemRenderer::render($block, $depth),

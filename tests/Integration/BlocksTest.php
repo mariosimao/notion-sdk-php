@@ -18,6 +18,7 @@ use Notion\Blocks\EquationBlock;
 use Notion\Blocks\Heading1;
 use Notion\Blocks\Heading2;
 use Notion\Blocks\Heading3;
+use Notion\Blocks\Heading4;
 use Notion\Blocks\LinkToPage;
 use Notion\Blocks\NumberedListItem;
 use Notion\Blocks\Paragraph;
@@ -53,6 +54,7 @@ class BlocksTest extends TestCase
             Heading1::fromText()->changeText(RichText::fromString("Heading 1")),
             Heading2::fromText()->changeText(RichText::fromString("Heading 2")),
             Heading3::fromText()->changeText(RichText::fromString("Heading 3")),
+            Heading4::fromText()->changeText(RichText::fromString("Heading 4")),
             // TODO: Image
             NumberedListItem::create()->changeText(RichText::fromString("List item ")),
             Paragraph::fromString("Paragraph"),
@@ -306,6 +308,7 @@ class BlocksTest extends TestCase
                 Heading1::fromText()->changeText(RichText::fromString("Heading 1")),
                 Heading2::fromText()->changeText(RichText::fromString("Heading 2")),
                 Heading3::fromText()->changeText(RichText::fromString("Heading 3")),
+                Heading4::fromText()->changeText(RichText::fromString("Heading 4")),
                 // TODO: Image
                 NumberedListItem::create()->changeText(RichText::fromString("List item ")),
                 Paragraph::fromString("Paragraph"),

@@ -64,6 +64,7 @@ $p = $p->changeChildren();
 | [Heading1](./Heading)                  | ✔               |
 | [Heading2](./Heading)                  | ✔               |
 | [Heading3](./Heading)                  | ✔               |
+| [Heading4](./Heading)                  | ✔               |
 | [Image](./Image)                       | ❌              |
 | [LinkPreview](./LinkPreview)           | ❌              |
 | [LinkToPage](./LinkToPage.md)           | ❌              |
