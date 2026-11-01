@@ -38,9 +38,22 @@ use Notion\Search\Query;
 $query = Query::title("Example");                                // Page or database title
 $query = $query->filterByPages();                                // Return only pages
 $query = $query->filterByDatabases();                            // Return only databases
+$query = $query->filterByTrash();                                // Return only content in the trash
 $query = $query->sortByLastEditedTime(SortDirection::Ascending); // Results order
 
 // Pagination
 $query = $query->changePageSize(10);
 $query = $query->changeNextCursor("70d73991-7e06-43d9-ad3c-3711213f1235")
+```
+## Searching the trash
+
+Use `filterByTrash()` to list content in the trash. It can be used by itself or
+combined with `filterByPages()` and `filterByDataSources()`.
+
+```php
+use Notion\Search\Query;
+
+$query = Query::all()->filterByTrash();                  // Everything in the trash
+$query = Query::all()->filterByTrash()->filterByPages(); // Only pages in the trash
+$query = Query::all()->filterByTrash(false);             // Only content not in the trash
 ```

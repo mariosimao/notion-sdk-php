@@ -35,4 +35,52 @@ class FilterTest extends TestCase
         ];
         $this->assertSame($expected, $f->toArray());
     }
+
+    public function test_by_trash(): void
+    {
+        $f = Filter::byTrash();
+
+        $this->assertNull($f->value);
+        $this->assertNull($f->property);
+        $this->assertTrue($f->inTrash);
+        $this->assertSame(["in_trash" => true], $f->toArray());
+    }
+
+    public function test_by_trash_false(): void
+    {
+        $f = Filter::byTrash(false);
+
+        $this->assertSame(["in_trash" => false], $f->toArray());
+    }
+
+    public function test_pages_in_trash(): void
+    {
+        $f = Filter::byTrash()->pages();
+
+        $expected = [
+            "value"    => "page",
+            "property" => "object",
+            "in_trash" => true,
+        ];
+        $this->assertSame($expected, $f->toArray());
+    }
+
+    public function test_data_sources_in_trash(): void
+    {
+        $f = Filter::byDataSources()->changeInTrash(true);
+
+        $this->assertSame(FilterValue::DataSource, $f->value);
+        $this->assertTrue($f->inTrash);
+
+        $f = Filter::byTrash()->dataSources();
+
+        $this->assertSame(FilterValue::DataSource, $f->value);
+        $this->assertTrue($f->inTrash);
+    }
+
+    public function test_object_filter_has_no_trash_status(): void
+    {
+        $this->assertNull(Filter::byPages()->inTrash);
+        $this->assertArrayNotHasKey("in_trash", Filter::byPages()->toArray());
+    }
 }

@@ -92,4 +92,35 @@ class QueryTest extends TestCase
         ];
         $this->assertSame($expected, $q->toArray());
     }
+
+    public function test_filter_by_trash(): void
+    {
+        $q = Query::all()->filterByTrash();
+
+        $this->assertTrue($q->filter?->inTrash);
+        $this->assertSame(["filter" => ["in_trash" => true]], $q->toArray());
+    }
+
+    public function test_filter_by_trash_combined_with_object_filter(): void
+    {
+        $expected = [
+            "query" => "Term",
+            "filter" => [
+                "value" => "page",
+                "property" => "object",
+                "in_trash" => true,
+            ],
+        ];
+
+        $this->assertSame($expected, Query::title("Term")->filterByPages()->filterByTrash()->toArray());
+        $this->assertSame($expected, Query::title("Term")->filterByTrash()->filterByPages()->toArray());
+    }
+
+    public function test_filter_by_data_sources_keeps_trash_status(): void
+    {
+        $q = Query::all()->filterByTrash(false)->filterByDataSources();
+
+        $this->assertSame(FilterValue::DataSource, $q->filter?->value);
+        $this->assertFalse($q->filter?->inTrash);
+    }
 }

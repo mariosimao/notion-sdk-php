@@ -17,6 +17,7 @@ final readonly class Query
         public array $sorts,
         public string|null $startCursor,
         public int $pageSize,
+        public bool $isArchived = false,
     ) {
     }
 
@@ -27,7 +28,7 @@ final readonly class Query
 
     public function changeFilter(Filter $filter): self
     {
-        return new self($filter, $this->sorts, $this->startCursor, $this->pageSize);
+        return new self($filter, $this->sorts, $this->startCursor, $this->pageSize, $this->isArchived);
     }
 
     /** Add new sort with lowest priority */
@@ -36,18 +37,18 @@ final readonly class Query
         $sorts = $this->sorts;
         $sorts[] = $sort;
 
-        return new self($this->filter, $sorts, $this->startCursor, $this->pageSize);
+        return new self($this->filter, $sorts, $this->startCursor, $this->pageSize, $this->isArchived);
     }
 
     /** Replace all sorts */
     public function changeSorts(Sort ...$sorts): self
     {
-        return new self($this->filter, $sorts, $this->startCursor, $this->pageSize);
+        return new self($this->filter, $sorts, $this->startCursor, $this->pageSize, $this->isArchived);
     }
 
     public function changeStartCursor(string $startCursor): self
     {
-        return new self($this->filter, $this->sorts, $startCursor, $this->pageSize);
+        return new self($this->filter, $this->sorts, $startCursor, $this->pageSize, $this->isArchived);
     }
 
     public function changePageSize(int $pageSize): self
@@ -56,7 +57,17 @@ final readonly class Query
             throw new Exception("Maximum page size: " . self::MAX_PAGE_SIZE);
         }
 
-        return new self($this->filter, $this->sorts, $this->startCursor, $pageSize);
+        return new self($this->filter, $this->sorts, $this->startCursor, $pageSize, $this->isArchived);
+    }
+
+    /**
+     * Query archived pages instead of non-archived pages.
+     *
+     * The archive selector is applied before filters and sorts.
+     */
+    public function changeIsArchived(bool $isArchived = true): self
+    {
+        return new self($this->filter, $this->sorts, $this->startCursor, $this->pageSize, $isArchived);
     }
 
     public function toArray(): array
@@ -72,6 +83,10 @@ final readonly class Query
 
         if ($this->startCursor !== null) {
             $array["start_cursor"] = $this->startCursor;
+        }
+
+        if ($this->isArchived) {
+            $array["is_archived"] = true;
         }
 
         return $array;
