@@ -4,9 +4,11 @@ namespace Notion\Comments;
 
 use Notion\Configuration;
 use Notion\Infrastructure\Http;
+use Notion\Infrastructure\Pagination;
 
 /**
  * @psalm-import-type CommentJson from \Notion\Comments\Comment
+ * @psalm-import-type CommentListJson from CommentList
  */
 final readonly class Client
 {
@@ -19,21 +21,47 @@ final readonly class Client
     }
 
     /**
-     * List comments from a page
+     * Retrieve a single page of comments from a page or block
+     *
+     * @param string $id Page or Block ID
+     * @param string|null $startCursor Cursor returned as `nextCursor` by a previous call
+     * @param int|null $pageSize Number of comments to return (maximum: 100)
+     */
+    public function list(string $id, string|null $startCursor = null, int|null $pageSize = null): CommentList
+    {
+        $url = Pagination::url(
+            "https://api.notion.com/v1/comments",
+            $startCursor,
+            $pageSize,
+            [ "block_id" => $id ],
+        );
+        $request = Http::createRequest($url, $this->config);
+
+        /** @psalm-var CommentListJson $body */
+        $body = Http::sendRequest($request, $this->config);
+
+        return CommentList::fromArray($body);
+    }
+
+    /**
+     * Retrieve all comments from a page or block, following pagination
      *
      * @param string $id Page or Block ID
      *
-     * @return Comment[]
+     * @return list<Comment>
      */
-    public function list(string $id): array
+    public function findAll(string $id): array
     {
-        $url = "https://api.notion.com/v1/comments?block_id={$id}";
-        $request = Http::createRequest($url, $this->config);
+        $comments = [];
+        $startCursor = null;
 
-        /** @psalm-var array{ results: CommentJson[] } $body */
-        $body = Http::sendRequest($request, $this->config);
+        do {
+            $list = $this->list($id, $startCursor, Pagination::MAX_PAGE_SIZE);
+            $comments = [ ...$comments, ...$list->results ];
+            $startCursor = $list->nextCursor;
+        } while ($list->hasMore && $startCursor !== null);
 
-        return array_map(fn($c) => Comment::fromArray($c), $body["results"]);
+        return $comments;
     }
 
     public function create(Comment $comment): Comment

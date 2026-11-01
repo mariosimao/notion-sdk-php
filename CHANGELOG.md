@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support pagination on all list endpoints (#504).
+  - New typed list responses `Notion\Blocks\BlockList`, `Notion\Comments\CommentList`, `Notion\Users\UserList` and `Notion\FileUploads\FileUploadList`, exposing `results`, `nextCursor` and `hasMore`.
+  - New `Blocks\Client::listChildren(string $blockId, ?string $startCursor = null, ?int $pageSize = null): BlockList` to retrieve a single page of block children.
+  - New `Users\Client::list(?string $startCursor = null, ?int $pageSize = null): UserList` to retrieve a single page of users.
+  - New `Comments\Client::findAll(string $id): Comment[]` to retrieve all comments of a page or block.
+  - `Comments\Client::list()` and `FileUploads\Client::list()` accept `$startCursor` and `$pageSize`.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
@@ -45,6 +51,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` accept `RelativeDate` instances in addition to `DateTimeImmutable`.
 
 ### Changed
+- `Blocks\Client::findChildren()`, `Blocks\Client::findChildrenRecursive()` and `Users\Client::findAll()` now follow pagination and return all results instead of only the first 100 (#504).
+- **[BREAKING]** `Comments\Client::list()` returns a paginated `Notion\Comments\CommentList` instead of `Comment[]` (#504).
+  - **Migration instructions:**
+    - To keep receiving every comment as an array, use `findAll()`:
+      - Before: `$comments = $notion->comments()->list($pageId);`
+      - After: `$comments = $notion->comments()->findAll($pageId);`
+    - Or read a single page from `results`:
+      - Before: `$comments = $notion->comments()->list($pageId); $comments[0];`
+      - After: `$comments = $notion->comments()->list($pageId)->results; $comments[0];`
+- **[BREAKING]** `FileUploads\Client::list()` returns a `Notion\FileUploads\FileUploadList` instead of an `array{results, nextCursor, hasMore}` shape, and its `$cursor` argument was renamed to `$startCursor` (#504).
+  - **Migration instructions:**
+    - Before:
+      ```php
+      $page = $notion->fileUploads()->list(FileUploadStatus::Uploaded, cursor: $cursor);
+      $page["results"]; $page["nextCursor"]; $page["hasMore"];
+      ```
+    - After:
+      ```php
+      $page = $notion->fileUploads()->list(FileUploadStatus::Uploaded, startCursor: $cursor);
+      $page->results; $page->nextCursor; $page->hasMore;
+      ```
 - **[BREAKING]** Change `DateFilter` value from `string` to `DateTimeImmutable|RelativeDate` and remove `array` type (#199).
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` now accept `DateTimeImmutable|RelativeDate` instead of a raw `string`.
   - Removed `array` from the allowed types of the internal `$value` property and `value()` return type hint, which is now `DateTimeImmutable|RelativeDate|bool|stdClass`.
@@ -81,6 +108,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - If you mocked concrete SDK classes in unit tests, refactor test suites to mock interfaces (such as PSR-18 `ClientInterface`, PSR-17 factories, `BlockInterface`, `PropertyInterface`) or use real instances with HTTP mock handlers (`MockHandler`) or integration tests.
 
 ### Fixed
+- `FileUploads\Client::list()` and `findAll()` now send the `status`, `start_cursor` and `page_size` query parameters, which were previously dropped (#504).
 - `DataSource::archive()`, `restore()` and `delete()` no longer drop `databaseParent` (#452).
 - Transformations on blocks of unknown type no longer lose the original type name (#452).
 

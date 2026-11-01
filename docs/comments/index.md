@@ -18,12 +18,25 @@ $comment->text;             // RichText array
 ## Read comments
 
 ```php
-$pageComments = $notion->comments()->list($pageId);
-$blockComments = $notion->comments()->list($blockId);
+$pageComments = $notion->comments()->findAll($pageId);
+$blockComments = $notion->comments()->findAll($blockId);
 
 foreach ($pageComments as $comment) {
-    echo RichText::multipleToString($comment);
+    echo RichText::multipleToString(...$comment->text);
 }
+```
+
+`findAll()` follows pagination and returns every comment. To fetch a single
+page of comments, use `list()`:
+
+```php
+$list = $notion->comments()->list($pageId, pageSize: 50);
+
+$list->results;    // Comment[]
+$list->hasMore;    // true if there are more comments
+$list->nextCursor; // pass as $startCursor to fetch the next page
+
+$next = $notion->comments()->list($pageId, $list->nextCursor, 50);
 ```
 
 ## Add page comment

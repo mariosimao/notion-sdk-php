@@ -7,15 +7,16 @@ use Http\Message\MultipartStream\MultipartStreamBuilder;
 use Notion\Configuration;
 use Notion\Exceptions\FileUploadException;
 use Notion\Infrastructure\Http;
+use Notion\Infrastructure\Pagination;
 
 /**
  * @psalm-import-type FileUploadJson from FileUpload
+ * @psalm-import-type FileUploadListJson from FileUploadList
  */
 final readonly class Client
 {
     private const SINGLE_PART_MAX_SIZE = 20 * 1024 * 1024; // 20 MB
     private const CHUNK_SIZE = 10 * 1024 * 1024; // 10 MB
-    private const MAX_PAGE_SIZE = 100;
 
     /**
      * @internal Use `\Notion\Notion::pages()` instead
@@ -38,59 +39,46 @@ final readonly class Client
     }
 
     /**
-     * @return array{
-     *      results: FileUpload[],
-     *      nextCursor: string|null,
-     *      hasMore: bool,
-     * }
+     * Retrieve a single page of file uploads
+     *
+     * @param string|null $startCursor Cursor returned as `nextCursor` by a previous call
+     * @param int|null $pageSize Number of file uploads to return (maximum: 100)
      */
-    public function list(FileUploadStatus|null $status = null, string|null $cursor = null): array
-    {
-        $uriFactory = Psr17FactoryDiscovery::findUriFactory();
-        $uri = $uriFactory->createUri("https://api.notion.com/v1/file_uploads");
-
-        $queryParams = [ "page_size" => self::MAX_PAGE_SIZE ];
+    public function list(
+        FileUploadStatus|null $status = null,
+        string|null $startCursor = null,
+        int|null $pageSize = null,
+    ): FileUploadList {
+        $params = [];
         if ($status !== null) {
-            $queryParams["status"] = $status->value;
+            $params["status"] = $status->value;
         }
-        if ($cursor !== null) {
-            $queryParams["start_cursor"] = $cursor;
-        }
-        $uri->withQuery(http_build_query($queryParams));
+        $url = Pagination::url("https://api.notion.com/v1/file_uploads", $startCursor, $pageSize, $params);
 
-        $request = Http::createRequest((string) $uri, $this->config)
+        $request = Http::createRequest($url, $this->config)
             ->withMethod("GET");
 
-        /** @psalm-var array{results: FileUploadJson[], next_cursor: string|null, has_more: bool} $body */
+        /** @psalm-var FileUploadListJson $body */
         $body = Http::sendRequest($request, $this->config);
 
-        $results = array_map(
-            fn (array $item): FileUpload => FileUpload::fromArray($item),
-            $body["results"]
-        );
-        return [
-            "results" => $results,
-            "nextCursor" => $body["next_cursor"],
-            "hasMore" => $body["has_more"],
-        ];
+        return FileUploadList::fromArray($body);
     }
 
     /**
-     * @return FileUpload[]
+     * Retrieve all file uploads, following pagination
+     *
+     * @return list<FileUpload>
      */
     public function findAll(FileUploadStatus|null $status = null): array
     {
         $fileUploads = [];
         $startCursor = null;
-        $hasMore = true;
 
-        while ($hasMore) {
-            $result = $this->list($status, $startCursor);
-
-            $fileUploads = array_merge($fileUploads, $result["results"]);
-            $hasMore = $result["hasMore"];
-            $startCursor = $result["nextCursor"];
-        }
+        do {
+            $list = $this->list($status, $startCursor, Pagination::MAX_PAGE_SIZE);
+            $fileUploads = [ ...$fileUploads, ...$list->results ];
+            $startCursor = $list->nextCursor;
+        } while ($list->hasMore && $startCursor !== null);
 
         return $fileUploads;
     }

@@ -4,8 +4,12 @@ namespace Notion\Users;
 
 use Notion\Configuration;
 use Notion\Infrastructure\Http;
+use Notion\Infrastructure\Pagination;
 
-/** @psalm-import-type UserJson from User */
+/**
+ * @psalm-import-type UserJson from User
+ * @psalm-import-type UserListJson from UserList
+ */
 final readonly class Client
 {
     /**
@@ -28,22 +32,39 @@ final readonly class Client
     }
 
     /**
-     * @return User[]
+     * Retrieve a single page of the workspace users
+     *
+     * @param string|null $startCursor Cursor returned as `nextCursor` by a previous call
+     * @param int|null $pageSize Number of users to return (maximum: 100)
+     */
+    public function list(string|null $startCursor = null, int|null $pageSize = null): UserList
+    {
+        $url = Pagination::url("https://api.notion.com/v1/users", $startCursor, $pageSize);
+        $request = Http::createRequest($url, $this->config);
+
+        /** @psalm-var UserListJson $body */
+        $body = Http::sendRequest($request, $this->config);
+
+        return UserList::fromArray($body);
+    }
+
+    /**
+     * Retrieve all workspace users, following pagination
+     *
+     * @return list<User>
      */
     public function findAll(): array
     {
-        $url = "https://api.notion.com/v1/users";
-        $request = Http::createRequest($url, $this->config);
+        $users = [];
+        $startCursor = null;
 
-        /** @var array{ results: UserJson[] } $body */
-        $body = Http::sendRequest($request, $this->config);
+        do {
+            $list = $this->list($startCursor, Pagination::MAX_PAGE_SIZE);
+            $users = [ ...$users, ...$list->results ];
+            $startCursor = $list->nextCursor;
+        } while ($list->hasMore && $startCursor !== null);
 
-        return array_map(
-            function (array $userData): User {
-                return User::fromArray($userData);
-            },
-            $body["results"],
-        );
+        return $users;
     }
 
     public function me(): User

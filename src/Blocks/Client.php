@@ -5,7 +5,9 @@ namespace Notion\Blocks;
 use Notion\Blocks\BlockInterface;
 use Notion\Configuration;
 use Notion\Infrastructure\Http;
+use Notion\Infrastructure\Pagination;
 
+/** @psalm-import-type BlockListJson from BlockList */
 final readonly class Client
 {
     /**
@@ -27,19 +29,47 @@ final readonly class Client
         return BlockFactory::fromArray($body);
     }
 
-    /** @return BlockInterface[] */
-    public function findChildren(string $blockId): array
-    {
-        $url = "https://api.notion.com/v1/blocks/{$blockId}/children";
+    /**
+     * Retrieve a single page of a block's children.
+     *
+     * @param string|null $startCursor Cursor returned as `nextCursor` by a previous call
+     * @param int|null $pageSize Number of children to return (maximum: 100)
+     */
+    public function listChildren(
+        string $blockId,
+        string|null $startCursor = null,
+        int|null $pageSize = null,
+    ): BlockList {
+        $url = Pagination::url(
+            "https://api.notion.com/v1/blocks/{$blockId}/children",
+            $startCursor,
+            $pageSize,
+        );
         $request = Http::createRequest($url, $this->config);
 
-        /** @var array{ results: list<array{ type: string }> } $body */
+        /** @psalm-var BlockListJson $body */
         $body = Http::sendRequest($request, $this->config);
 
-        return array_map(
-            fn(array $blockArray) => BlockFactory::fromArray($blockArray),
-            $body["results"],
-        );
+        return BlockList::fromArray($body);
+    }
+
+    /**
+     * Retrieve all children of a block, following pagination.
+     *
+     * @return list<BlockInterface>
+     */
+    public function findChildren(string $blockId): array
+    {
+        $children = [];
+        $startCursor = null;
+
+        do {
+            $list = $this->listChildren($blockId, $startCursor, Pagination::MAX_PAGE_SIZE);
+            $children = [ ...$children, ...$list->results ];
+            $startCursor = $list->nextCursor;
+        } while ($list->hasMore && $startCursor !== null);
+
+        return $children;
     }
 
     /** @return BlockInterface[] */
