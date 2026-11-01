@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support numbered-list metadata (#505).
+  - New nullable `Notion\Blocks\NumberedListItem::$listStartIndex` and `$listFormat` properties, parsed from and serialized to `list_start_index` and `list_format` (omitted from requests when `null`).
+  - New `Notion\Blocks\NumberedListFormat` enum (`Numbers`, `Letters`, `Roman`).
+  - New `NumberedListItem::changeListStartIndex()` and `NumberedListItem::changeListFormat()` methods (pass `null` to remove).
+  - The Markdown renderer uses `listStartIndex` as the item number when set.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).

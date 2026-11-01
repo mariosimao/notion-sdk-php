@@ -4,6 +4,7 @@ namespace Notion\Test\Unit\Blocks;
 
 use Notion\Blocks\BlockFactory;
 use Notion\Exceptions\BlockException;
+use Notion\Blocks\NumberedListFormat;
 use Notion\Blocks\NumberedListItem;
 use Notion\Common\Color;
 use Notion\Common\Date;
@@ -193,5 +194,117 @@ class NumberedListItemTest extends TestCase
         $block = NumberedListItem::fromString("Hello World!")->changeColor(Color::Red);
 
         $this->assertSame(Color::Red, $block->color);
+    }
+
+    public function test_list_metadata_defaults_to_null(): void
+    {
+        $item = NumberedListItem::fromString("Item");
+
+        $this->assertNull($item->listStartIndex);
+        $this->assertNull($item->listFormat);
+        $this->assertArrayNotHasKey("list_start_index", self::itemArray($item));
+        $this->assertArrayNotHasKey("list_format", self::itemArray($item));
+    }
+
+    public function test_create_from_array_with_list_metadata(): void
+    {
+        $array = [
+            "object"           => "block",
+            "id"               => "04a13895-f072-4814-8af7-cd11af127040",
+            "created_time"     => "2021-10-18T17:09:00.000Z",
+            "last_edited_time" => "2021-10-18T17:09:00.000Z",
+            "in_trash"         => false,
+            "has_children"     => false,
+            "type"             => "numbered_list_item",
+            "numbered_list_item" => [
+                "rich_text"        => [],
+                "color"            => "default",
+                "list_start_index" => 3,
+                "list_format"      => "roman",
+            ],
+        ];
+
+        $item = NumberedListItem::fromArray($array);
+
+        $this->assertSame(3, $item->listStartIndex);
+        $this->assertSame(NumberedListFormat::Roman, $item->listFormat);
+        $this->assertSame(3, self::itemArray($item)["list_start_index"]);
+        $this->assertSame("roman", self::itemArray($item)["list_format"]);
+    }
+
+    public function test_unknown_list_format_is_ignored(): void
+    {
+        $array = [
+            "object"           => "block",
+            "id"               => "04a13895-f072-4814-8af7-cd11af127040",
+            "created_time"     => "2021-10-18T17:09:00.000Z",
+            "last_edited_time" => "2021-10-18T17:09:00.000Z",
+            "in_trash"         => false,
+            "has_children"     => false,
+            "type"             => "numbered_list_item",
+            "numbered_list_item" => [
+                "rich_text"   => [],
+                "list_format" => "unknown",
+            ],
+        ];
+
+        $this->assertNull(NumberedListItem::fromArray($array)->listFormat);
+    }
+
+    public function test_change_list_metadata(): void
+    {
+        $item = NumberedListItem::fromString("Item")
+            ->changeListStartIndex(4)
+            ->changeListFormat(NumberedListFormat::Letters);
+
+        $this->assertSame(4, $item->listStartIndex);
+        $this->assertSame(NumberedListFormat::Letters, $item->listFormat);
+
+        $expected = [
+            "rich_text"        => self::itemArray($item)["rich_text"],
+            "color"            => "default",
+            "children"         => [],
+            "list_start_index" => 4,
+            "list_format"      => "letters",
+        ];
+        $this->assertSame($expected, self::itemArray($item));
+    }
+
+    public function test_list_metadata_is_preserved(): void
+    {
+        $item = NumberedListItem::fromString("Item")
+            ->changeListStartIndex(2)
+            ->changeListFormat(NumberedListFormat::Numbers)
+            ->changeText(RichText::fromString("Changed"))
+            ->addText(RichText::fromString(" text"))
+            ->changeColor(Color::Blue)
+            ->addChild(NumberedListItem::fromString("Child"))
+            ->changeChildren()
+            ->delete();
+
+        $this->assertInstanceOf(NumberedListItem::class, $item);
+        $this->assertSame(2, $item->listStartIndex);
+        $this->assertSame(NumberedListFormat::Numbers, $item->listFormat);
+    }
+
+    public function test_remove_list_metadata(): void
+    {
+        $item = NumberedListItem::fromString("Item")
+            ->changeListStartIndex(2)
+            ->changeListFormat(NumberedListFormat::Roman)
+            ->changeListStartIndex(null)
+            ->changeListFormat(null);
+
+        $this->assertNull($item->listStartIndex);
+        $this->assertNull($item->listFormat);
+    }
+
+    /** @return array<string, mixed> */
+    private static function itemArray(NumberedListItem $item): array
+    {
+        /** @var array{numbered_list_item: array<string, mixed>} $array */
+        $array = $item->toArray();
+
+        return $array["numbered_list_item"];
     }
 }

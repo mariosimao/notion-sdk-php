@@ -13,6 +13,8 @@ use Notion\Common\RichText;
  *      numbered_list_item: array{
  *          rich_text: list<RichTextJson>,
  *          color?: string,
+ *          list_start_index?: int,
+ *          list_format?: "numbers"|"letters"|"roman",
  *          children?: list<BlockMetadataJson>,
  *      },
  * }
@@ -30,6 +32,8 @@ final readonly class NumberedListItem implements BlockInterface
         public array $text,
         public Color $color,
         public array $children,
+        public int|null $listStartIndex,
+        public NumberedListFormat|null $listFormat,
     ) {
         $metadata->checkType(BlockType::NumberedListItem);
     }
@@ -38,7 +42,7 @@ final readonly class NumberedListItem implements BlockInterface
     {
         $block = BlockMetadata::create(BlockType::NumberedListItem);
 
-        return new self($block, [], Color::Default, []);
+        return new self($block, [], Color::Default, [], null, null);
     }
 
     public static function fromString(string $content): self
@@ -46,7 +50,7 @@ final readonly class NumberedListItem implements BlockInterface
         $block = BlockMetadata::create(BlockType::NumberedListItem);
         $text = [ RichText::fromString($content) ];
 
-        return new self($block, $text, Color::Default, []);
+        return new self($block, $text, Color::Default, [], null, null);
     }
 
     public static function fromArray(array $array): self
@@ -63,18 +67,31 @@ final readonly class NumberedListItem implements BlockInterface
 
         $children = array_map(fn($b) => BlockFactory::fromArray($b), $item["children"] ?? []);
 
-        return new self($block, $text, $color, $children);
+        $listStartIndex = $item["list_start_index"] ?? null;
+        $listFormat = NumberedListFormat::tryFrom($item["list_format"] ?? "");
+
+        return new self($block, $text, $color, $children, $listStartIndex, $listFormat);
     }
 
     public function toArray(): array
     {
         $array = $this->metadata->toArray();
 
-        $array["numbered_list_item"] = [
+        $item = [
             "rich_text" => array_map(fn(RichText $t) => $t->toArray(), $this->text),
             "color"     => $this->color->value,
             "children"  => array_map(fn(BlockInterface $b) => $b->toArray(), $this->children),
         ];
+
+        if ($this->listStartIndex !== null) {
+            $item["list_start_index"] = $this->listStartIndex;
+        }
+
+        if ($this->listFormat !== null) {
+            $item["list_format"] = $this->listFormat->value;
+        }
+
+        $array["numbered_list_item"] = $item;
 
         return $array;
     }
@@ -91,7 +108,14 @@ final readonly class NumberedListItem implements BlockInterface
 
     public function changeText(RichText ...$text): self
     {
-        return new self($this->metadata->update(), $text, $this->color, $this->children);
+        return new self(
+            $this->metadata->update(),
+            $text,
+            $this->color,
+            $this->children,
+            $this->listStartIndex,
+            $this->listFormat,
+        );
     }
 
     public function addText(RichText $text): self
@@ -99,7 +123,14 @@ final readonly class NumberedListItem implements BlockInterface
         $texts = $this->text;
         $texts[] = $text;
 
-        return new self($this->metadata->update(), $texts, $this->color, $this->children);
+        return new self(
+            $this->metadata->update(),
+            $texts,
+            $this->color,
+            $this->children,
+            $this->listStartIndex,
+            $this->listFormat,
+        );
     }
 
     public function addChild(BlockInterface $child): self
@@ -112,6 +143,8 @@ final readonly class NumberedListItem implements BlockInterface
             $this->text,
             $this->color,
             $children,
+            $this->listStartIndex,
+            $this->listFormat,
         );
     }
 
@@ -124,6 +157,8 @@ final readonly class NumberedListItem implements BlockInterface
             $this->text,
             $this->color,
             $children,
+            $this->listStartIndex,
+            $this->listFormat,
         );
     }
 
@@ -134,6 +169,34 @@ final readonly class NumberedListItem implements BlockInterface
             $this->text,
             $color,
             $this->children,
+            $this->listStartIndex,
+            $this->listFormat,
+        );
+    }
+
+    /** Only applies to the first item of a list. */
+    public function changeListStartIndex(int|null $listStartIndex): self
+    {
+        return new self(
+            $this->metadata->update(),
+            $this->text,
+            $this->color,
+            $this->children,
+            $listStartIndex,
+            $this->listFormat,
+        );
+    }
+
+    /** Only applies to the first item of a list. */
+    public function changeListFormat(NumberedListFormat|null $listFormat): self
+    {
+        return new self(
+            $this->metadata->update(),
+            $this->text,
+            $this->color,
+            $this->children,
+            $this->listStartIndex,
+            $listFormat,
         );
     }
 
@@ -144,6 +207,8 @@ final readonly class NumberedListItem implements BlockInterface
             $this->text,
             $this->color,
             $this->children,
+            $this->listStartIndex,
+            $this->listFormat,
         );
     }
 
