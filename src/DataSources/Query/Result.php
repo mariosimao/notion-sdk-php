@@ -10,10 +10,12 @@ use Notion\Pages\Page;
  * @psalm-type QueryResultJson = array{
  *      results: PageJson[],
  *      has_more: bool,
- *      next_cursor: string|null
+ *      next_cursor: string|null,
+ *      request_status?: RequestStatusJson|null
  * }
  *
  * @psalm-import-type PageJson from \Notion\Pages\Page
+ * @psalm-import-type RequestStatusJson from RequestStatus
  * @psalm-immutable
  */
 final readonly class Result
@@ -22,7 +24,8 @@ final readonly class Result
     private function __construct(
         public array $pages,
         public bool $hasMore,
-        public string|null $nextCursor
+        public string|null $nextCursor,
+        public RequestStatus|null $requestStatus,
     ) {
     }
 
@@ -36,6 +39,22 @@ final readonly class Result
             $array["results"],
         );
 
-        return new self($pages, $array["has_more"], $array["next_cursor"]);
+        $requestStatus = isset($array["request_status"])
+            ? RequestStatus::fromArray($array["request_status"])
+            : null;
+
+        return new self($pages, $array["has_more"], $array["next_cursor"], $requestStatus);
+    }
+
+    /**
+     * Whether the query was cut off by the per-query result limit
+     *
+     * When `true`, following `nextCursor` will not reach every matching row.
+     * Use `Notion\DataSources\Client::iterateAll()` or `queryAll()` to read
+     * all rows.
+     */
+    public function isIncomplete(): bool
+    {
+        return $this->requestStatus?->isIncomplete() ?? false;
     }
 }
