@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Integration;
 
+use Notion\AsyncTasks\AsyncTask;
 use Notion\Common\Emoji;
 use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
@@ -239,6 +240,37 @@ class PagesTest extends TestCase
         } finally {
             $client->pages()->delete($page);
         }
+    }
+
+    public function test_create_and_update_page_markdown_async(): void
+    {
+        $client = Helper::client();
+        $pages = $client->pages();
+
+        $page = Helper::newPage()->changeTitle("Async markdown page");
+        $page = $pages->createFromMarkdownAsync($page, "First paragraph");
+        if ($page instanceof AsyncTask) {
+            $page = $client->asyncTasks()->wait($page)->page();
+        }
+
+        $markdown = $pages->updateMarkdownAsync($page->id, InsertContent::atEnd("Last paragraph"));
+        if ($markdown instanceof AsyncTask) {
+            $markdown = $client->asyncTasks()->wait($markdown)->pageMarkdown();
+        }
+
+        $this->assertSame($page->id, $markdown->id);
+        $this->assertStringContainsString("First paragraph", $markdown->markdown);
+        $this->assertStringContainsString("Last paragraph", $markdown->markdown);
+
+        $pages->delete($page);
+    }
+
+    public function test_find_inexistent_async_task(): void
+    {
+        $client = Helper::client();
+
+        $this->expectException(ApiException::class);
+        $client->asyncTasks()->find("task_inexistent");
     }
 
     public function test_find_inexistent_property(): void

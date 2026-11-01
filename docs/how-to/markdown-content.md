@@ -70,3 +70,43 @@ $pages->updateMarkdown($pageId, ReplaceContentRange::create("Old...section", "Ne
 Updates that would delete child pages or databases are rejected by default.
 Call `allowDeletingContent()` on `UpdateContent`, `ReplaceContent` or
 `ReplaceContentRange` to permit it.
+
+## Asynchronous writes for large pages
+
+Large markdown writes can be processed in the background. Use
+`createFromMarkdownAsync()` or `updateMarkdownAsync()` to send `allow_async`.
+Notion either completes the request right away, returning the usual `Page` or
+`PageMarkdown`, or accepts it for background execution and returns an
+`AsyncTask`.
+
+```php
+use Notion\AsyncTasks\AsyncTask;
+use Notion\Exceptions\AsyncTaskException;
+
+$page = $notion->pages()->createFromMarkdownAsync($page, $largeMarkdown);
+
+if ($page instanceof AsyncTask) {
+    // Polls honoring `poll_after_seconds`; throws AsyncTaskException
+    // if the task fails or takes longer than the timeout.
+    $page = $notion->asyncTasks()->wait($page, timeoutSeconds: 120)->page();
+}
+
+$markdown = $notion->pages()->updateMarkdownAsync($page->id, ReplaceContent::create($largeMarkdown));
+
+if ($markdown instanceof AsyncTask) {
+    $markdown = $notion->asyncTasks()->wait($markdown)->pageMarkdown();
+}
+```
+
+To poll manually, retrieve the task by ID:
+
+```php
+$task = $notion->asyncTasks()->find($taskId);
+
+$task->status;            // AsyncTaskStatus::Queued, Running, Retrying, Succeeded or Failed
+$task->pollAfterSeconds;  // Seconds to wait before polling again (pending tasks only)
+$task->error?->code;      // Error details (failed tasks only)
+```
+
+Completed tasks are only retained for a limited time, so store any result your
+application needs.
