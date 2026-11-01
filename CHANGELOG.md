@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support creating AI meeting notes with `Notion\Blocks\Client::createMeetingNotes()` (#494).
+  - Build the request with `Notion\Blocks\MeetingNotesRequest::fromFileUpload($fileUploadId, $parentPageId)` or `MeetingNotesRequest::fromBlock($blockId)`, and optionally `changeTitle()`, `changeLanguage()` (new `MeetingNotesLanguage` enum), `enableSummary()` or `disableSummary()`.
+  - Returns a `Notion\Blocks\MeetingNotesCreated` with the created block `id` and the full `block` (`null` when the integration lacks the "Read content" capability).
+  - New `Notion\Exceptions\InvalidBetaException` (subclass of `ApiException`) thrown for `invalid_beta` errors, e.g. when the beta feature is not available to the integration.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).

@@ -4,6 +4,7 @@ namespace Notion\Test\Unit\Exceptions;
 
 use GuzzleHttp\Psr7\Response;
 use Notion\Exceptions\ApiException;
+use Notion\Exceptions\InvalidBetaException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
@@ -26,5 +27,22 @@ class ApiExceptionTest extends TestCase
         $this->assertSame($bodyArray["message"], $e->getMessage());
         $this->assertSame($bodyArray["code"], $e->notionCode);
         $this->assertInstanceOf(ResponseInterface::class, $e->response);
+    }
+
+    public function test_invalid_beta(): void
+    {
+        $body = '{
+            "object": "error",
+            "status": 400,
+            "code": "invalid_beta",
+            "message": "AI meeting notes are not available."
+        }';
+        $response = new Response(400, [], $body);
+
+        $e = ApiException::fromResponse($response);
+
+        $this->assertInstanceOf(InvalidBetaException::class, $e);
+        $this->assertSame("invalid_beta", $e->notionCode);
+        $this->assertSame("AI meeting notes are not available.", $e->getMessage());
     }
 }
