@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Unit\DataSources\Query;
 
+use Notion\DataSources\Query\CurrentUser;
 use Notion\DataSources\Query\Operator;
 use Notion\DataSources\Query\PeopleFilter;
 use PHPUnit\Framework\TestCase;
@@ -55,6 +56,34 @@ class PeopleFilterTest extends TestCase
         $expected = [
             "property" => "Friends",
             "people" => [ "does_not_contain" => "7b23ad4e145c41aea5604374406c2bc0" ],
+        ];
+        $this->assertSame($expected, $filter->toArray());
+    }
+
+    public function test_contains_current_user(): void
+    {
+        $filter = PeopleFilter::property("Assignee")->contains(CurrentUser::Me);
+
+        $this->assertSame(Operator::Contains, $filter->operator());
+        $this->assertSame(CurrentUser::Me, $filter->value());
+
+        $expected = [
+            "property" => "Assignee",
+            "people" => [ "contains" => "me" ],
+        ];
+        $this->assertSame($expected, $filter->toArray());
+    }
+
+    public function test_does_not_contain_current_user(): void
+    {
+        $filter = PeopleFilter::createdBy()->doesNotContain(CurrentUser::Me);
+
+        $this->assertSame(Operator::DoesNotContain, $filter->operator());
+        $this->assertSame(CurrentUser::Me, $filter->value());
+
+        $expected = [
+            "property" => "created_by",
+            "people" => [ "does_not_contain" => "me" ],
         ];
         $this->assertSame($expected, $filter->toArray());
     }

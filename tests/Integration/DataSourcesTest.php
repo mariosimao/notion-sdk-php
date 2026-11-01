@@ -20,7 +20,10 @@ use Notion\DataSources\Properties\SelectOption;
 use Notion\DataSources\Properties\Title;
 use Notion\DataSources\Query;
 use Notion\DataSources\Query\CompoundFilter;
+use Notion\DataSources\Query\CurrentUser;
 use Notion\DataSources\Query\DateFilter;
+use Notion\DataSources\Query\PeopleFilter;
+use Notion\DataSources\Query\RelativeDate;
 use Notion\DataSources\Query\SelectFilter;
 use Notion\DataSources\DataSource;
 use Notion\DataSources\DataSourceParent;
@@ -207,6 +210,37 @@ class DataSourcesTest extends TestCase
         $client->databases()->delete($database);
 
         $this->assertCount(1, $result->pages);
+    }
+
+    public function test_query_data_source_with_relative_date_and_current_user(): void
+    {
+        $client = Helper::client();
+
+        $database = $this->newDatabase("Movies DB");
+        $dataSource = self::moviesDataSource($database->id);
+
+        $createdRecently = Query::create()->changeFilter(
+            DateFilter::createdTime()->onOrAfter(RelativeDate::OneWeekAgo),
+        );
+        $createdInFuture = Query::create()->changeFilter(
+            DateFilter::createdTime()->after(RelativeDate::OneWeekFromNow),
+        );
+        $createdByMe = Query::create()->changeFilter(
+            CompoundFilter::or(
+                PeopleFilter::createdBy()->contains(CurrentUser::Me),
+                PeopleFilter::createdBy()->doesNotContain(CurrentUser::Me),
+            ),
+        );
+
+        $recentResult = $client->dataSources()->query($dataSource, $createdRecently);
+        $futureResult = $client->dataSources()->query($dataSource, $createdInFuture);
+        $meResult = $client->dataSources()->query($dataSource, $createdByMe);
+
+        $client->databases()->delete($database);
+
+        $this->assertCount(5, $recentResult->pages);
+        $this->assertCount(0, $futureResult->pages);
+        $this->assertCount(5, $meResult->pages);
     }
 
     public function test_query_inexistent_data_source(): void
