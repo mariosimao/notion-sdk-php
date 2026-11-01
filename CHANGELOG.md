@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support column width ratios (#502).
+  - New nullable `Notion\Blocks\Column::$widthRatio` property, parsed from and serialized to `column.width_ratio`.
+  - New `Column::changeWidthRatio()` and `Column::removeWidthRatio()` methods. Ratios must be greater than 0 and less than or equal to 1 (`ColumnException::invalidWidthRatio()`).
+  - `ColumnList::create()` and `ColumnList::changeChildren()` require width ratios to add up to 1 when every column has one; `ColumnList::addChild()` only rejects ratios adding up to more than 1 (`ColumnListException::widthRatiosExceedOne()` / `widthRatiosNotAddingUpToOne()`).
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
