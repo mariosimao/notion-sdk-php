@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support comment attachments and display names (#503).
+  - New `Notion\Comments\Comment::$attachments` (`CommentAttachment[]`), `$displayName` (`CommentDisplayName|null`) and `$hasPendingAttachments` properties, parsed from and serialized to `attachments`, `display_name` and `has_pending_attachments`.
+  - New `CommentAttachment` value object with `category` (`CommentAttachmentCategory` enum: audio, image, pdf, productivity, video) and `file` (`Notion\Common\File`). Use `CommentAttachment::fromFileUpload($fileUploadId)` to attach uploaded files when creating comments.
+  - New `CommentDisplayName` value object with `type` (`CommentDisplayNameType` enum: connection, user, custom) and `resolvedName`. Create with `CommentDisplayName::connection()`, `::user()` or `::custom($name)`.
+  - New `Comment::addAttachment()`, `changeAttachments()`, `changeDisplayName()` and `removeDisplayName()` methods.
+  - `Comments\Client::create()` sends file upload attachments and the display name in the request format expected by Notion.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
