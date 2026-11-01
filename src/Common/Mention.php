@@ -8,15 +8,19 @@ use Notion\Users\User;
  * @psalm-import-type UserJson from \Notion\Users\User
  * @psalm-import-type DateJson from Date
  * @psalm-import-type TemplateMentionJson from TemplateMention
+ * @psalm-import-type LinkMentionJson from LinkMention
+ * @psalm-import-type CustomEmojiJson from CustomEmoji
  *
  * @psalm-type MentionJson = array{
- *      type: "page"|"database"|"user"|"date"|"link_preview"|"template_mention",
+ *      type: "page"|"database"|"user"|"date"|"link_preview"|"template_mention"|"link_mention"|"custom_emoji",
  *      page?: array{ id: string },
  *      database?: array{ id: string },
  *      user?: UserJson,
  *      date?: DateJson,
  *      link_preview?: array{ url: string },
  *      template_mention?: TemplateMentionJson,
+ *      link_mention?: LinkMentionJson,
+ *      custom_emoji?: CustomEmojiJson,
  * }
  *
  * @psalm-immutable
@@ -31,6 +35,8 @@ final readonly class Mention
         public Date|null $date,
         public string|null $linkPreviewUrl = null,
         public TemplateMention|null $templateMention = null,
+        public LinkMention|null $linkMention = null,
+        public CustomEmoji|null $customEmoji = null,
     ) {
     }
 
@@ -78,6 +84,34 @@ final readonly class Mention
         );
     }
 
+    public static function linkMention(LinkMention|string $linkMention): self
+    {
+        if (is_string($linkMention)) {
+            $linkMention = LinkMention::create($linkMention);
+        }
+
+        return new self(
+            MentionType::LinkMention,
+            null,
+            null,
+            null,
+            null,
+            linkMention: $linkMention,
+        );
+    }
+
+    public static function customEmoji(CustomEmoji $customEmoji): self
+    {
+        return new self(
+            MentionType::CustomEmoji,
+            null,
+            null,
+            null,
+            null,
+            customEmoji: $customEmoji,
+        );
+    }
+
     public static function templateDate(TemplateMentionDateType $date): self
     {
         return self::templateMention(TemplateMention::date($date));
@@ -120,8 +154,24 @@ final readonly class Mention
         $templateMention = array_key_exists("template_mention", $array)
             ? TemplateMention::fromArray($array["template_mention"])
             : null;
+        $linkMention = array_key_exists("link_mention", $array)
+            ? LinkMention::fromArray($array["link_mention"])
+            : null;
+        $customEmoji = array_key_exists("custom_emoji", $array)
+            ? CustomEmoji::fromArray($array["custom_emoji"])
+            : null;
 
-        return new self($type, $pageId, $databaseId, $user, $date, $linkPreviewUrl, $templateMention);
+        return new self(
+            $type,
+            $pageId,
+            $databaseId,
+            $user,
+            $date,
+            $linkPreviewUrl,
+            $templateMention,
+            $linkMention,
+            $customEmoji,
+        );
     }
 
     public function toArray(): array
@@ -145,6 +195,12 @@ final readonly class Mention
         }
         if ($this->isTemplateMention()) {
             $array["template_mention"] = $this->templateMention->toArray();
+        }
+        if ($this->isLinkMention()) {
+            $array["link_mention"] = $this->linkMention->toArray();
+        }
+        if ($this->isCustomEmoji()) {
+            $array["custom_emoji"] = $this->customEmoji->toArray();
         }
 
         return $array;
@@ -196,5 +252,21 @@ final readonly class Mention
     public function isTemplateMention(): bool
     {
         return $this->type === MentionType::TemplateMention;
+    }
+
+    /**
+     * @psalm-assert-if-true LinkMention $this->linkMention
+     */
+    public function isLinkMention(): bool
+    {
+        return $this->type === MentionType::LinkMention;
+    }
+
+    /**
+     * @psalm-assert-if-true CustomEmoji $this->customEmoji
+     */
+    public function isCustomEmoji(): bool
+    {
+        return $this->type === MentionType::CustomEmoji;
     }
 }

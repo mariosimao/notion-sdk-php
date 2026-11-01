@@ -231,4 +231,67 @@ class RichTextTest extends TestCase
         $this->assertNotNull($richText->mention);
         $this->assertTrue($richText->mention->isTemplateMention());
     }
+
+    public function test_link_mention_array_conversion(): void
+    {
+        $array = [
+            "plain_text" => "https://github.com/mariosimao/notion-sdk-php",
+            "href" => "https://github.com/mariosimao/notion-sdk-php",
+            "annotations" => [
+                "bold"          => false,
+                "italic"        => false,
+                "strikethrough" => false,
+                "underline"     => false,
+                "code"          => false,
+                "color"         => "default",
+            ],
+            "type" => "mention",
+            "mention" => [
+                "type" => "link_mention",
+                "link_mention" => [
+                    "href"          => "https://github.com/mariosimao/notion-sdk-php",
+                    "title"         => "notion-sdk-php",
+                    "link_provider" => "GitHub",
+                    "icon_url"      => "https://github.com/favicon.ico",
+                ],
+            ],
+        ];
+        $richText = RichText::fromArray($array);
+
+        $this->assertEquals($array, $richText->toArray());
+        $this->assertNotNull($richText->mention);
+        $this->assertTrue($richText->mention->isLinkMention());
+        $this->assertEquals("notion-sdk-php", $richText->mention->linkMention?->title);
+    }
+
+    public function test_custom_emoji_mention_array_conversion(): void
+    {
+        $array = [
+            "plain_text" => ":bufo:",
+            "href" => null,
+            "annotations" => [
+                "bold"          => false,
+                "italic"        => false,
+                "strikethrough" => false,
+                "underline"     => false,
+                "code"          => false,
+                "color"         => "default",
+            ],
+            "type" => "mention",
+            "mention" => [
+                "type" => "custom_emoji",
+                "custom_emoji" => [
+                    "id"   => "45ce454c-d427-4f53-9489-e5d0f3d1db6b",
+                    "name" => "bufo",
+                    "url"  => "https://example.com/bufo.png",
+                ],
+            ],
+        ];
+        $richText = RichText::fromArray($array);
+
+        $this->assertEquals($array, $richText->toArray());
+        $this->assertNotNull($richText->mention);
+        $this->assertTrue($richText->mention->isCustomEmoji());
+        $this->assertEquals("bufo", $richText->mention->customEmoji?->name);
+    }
 }
