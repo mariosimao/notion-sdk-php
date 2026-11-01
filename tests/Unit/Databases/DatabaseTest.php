@@ -10,8 +10,13 @@ use Notion\Common\Icon;
 use Notion\Common\RichText;
 use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
+use Notion\Databases\DatabaseType;
+use Notion\Exceptions\DatabaseException;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @psalm-import-type DatabaseJson from \Notion\Databases\Database
+ */
 class DatabaseTest extends TestCase
 {
     public function test_create_database(): void
@@ -159,6 +164,7 @@ class DatabaseTest extends TestCase
             "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
             "is_inline" => true,
             "in_trash" => false,
+            "database_type" => null,
         ];
         $database = Database::fromArray($array);
 
@@ -300,5 +306,114 @@ class DatabaseTest extends TestCase
 
         $restored = $database->restore();
         $this->assertFalse($restored->inTrash);
+    }
+
+    public function test_create_regular_database_has_no_type(): void
+    {
+        $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $database = Database::create($parent);
+
+        $this->assertNull($database->databaseType);
+        $this->assertFalse($database->isTyped());
+    }
+
+    public function test_create_typed_database(): void
+    {
+        $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $database = Database::create($parent, DatabaseType::Tasks);
+
+        $this->assertSame(DatabaseType::Tasks, $database->databaseType);
+        $this->assertTrue($database->isTyped());
+        $this->assertSame("tasks", $database->toArray()["database_type"]);
+    }
+
+    public function test_create_with_non_creatable_type(): void
+    {
+        $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+
+        $this->expectException(DatabaseException::class);
+        Database::create($parent, DatabaseType::Wiki);
+    }
+
+    public function test_creatable_database_types(): void
+    {
+        $creatable = array_filter(
+            DatabaseType::cases(),
+            fn(DatabaseType $type) => $type->isCreatable(),
+        );
+
+        $this->assertSame(
+            [ DatabaseType::Tasks, DatabaseType::Projects, DatabaseType::Skills ],
+            array_values($creatable),
+        );
+    }
+
+    public function test_transformations_preserve_database_type(): void
+    {
+        $parent = DatabaseParent::page("1ce62b6f-b7f3-4201-afd0-08acb02e61c6");
+        $database = Database::create($parent, DatabaseType::Projects)
+            ->archive()
+            ->restore()
+            ->changeTitle("Title")
+            ->changeAdvancedTitle(RichText::fromString("Title"))
+            ->changeIcon(Emoji::fromString("⭐"))
+            ->removeIcon()
+            ->changeCover(File::createExternal("https://my-site.com/image.png"))
+            ->removeCover()
+            ->changeParent(DatabaseParent::workspace())
+            ->enableInline()
+            ->disableInline();
+
+        $this->assertSame(DatabaseType::Projects, $database->databaseType);
+    }
+
+    public function test_from_array_with_database_type(): void
+    {
+        $array = $this->minimalDatabaseArray();
+        $array["database_type"] = "meeting_notes";
+
+        $database = Database::fromArray($array);
+
+        $this->assertSame(DatabaseType::MeetingNotes, $database->databaseType);
+        $this->assertSame("meeting_notes", $database->toArray()["database_type"]);
+    }
+
+    public function test_from_array_without_database_type(): void
+    {
+        $database = Database::fromArray($this->minimalDatabaseArray());
+
+        $this->assertNull($database->databaseType);
+    }
+
+    public function test_from_array_with_unknown_database_type(): void
+    {
+        $array = $this->minimalDatabaseArray();
+        $array["database_type"] = "a_future_type";
+
+        $database = Database::fromArray($array);
+
+        $this->assertSame(DatabaseType::Unknown, $database->databaseType);
+    }
+
+    /** @return DatabaseJson */
+    private function minimalDatabaseArray(): array
+    {
+        return [
+            "object" => "database",
+            "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
+            "data_sources" => [],
+            "created_time" => "2020-12-08T12:00:00.000000Z",
+            "last_edited_time" => "2020-12-08T12:00:00.000000Z",
+            "title" => [],
+            "description" => [],
+            "icon" => null,
+            "cover" => null,
+            "parent" => [
+                "type" => "page_id",
+                "page_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
+            ],
+            "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+            "is_inline" => false,
+        ];
     }
 }

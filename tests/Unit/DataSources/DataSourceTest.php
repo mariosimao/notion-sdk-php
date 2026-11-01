@@ -8,6 +8,7 @@ use Notion\Common\Emoji;
 use Notion\Common\File;
 use Notion\Common\Icon;
 use Notion\Common\RichText;
+use Notion\Databases\DatabaseType;
 use Notion\DataSources\DataSource;
 use Notion\DataSources\DataSourceParent;
 use Notion\DataSources\Properties\Number;
@@ -187,6 +188,7 @@ class DataSourceTest extends TestCase
             ],
             "database_parent" => null,
             "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+            "database_type" => null,
         ];
         $dataSource = DataSource::fromArray($array);
 
@@ -369,6 +371,7 @@ class DataSourceTest extends TestCase
                 "page_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
             ],
             "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+            "database_type" => "tasks",
             "created_by" => [ "object" => "user", "id" => "creator-id" ],
             "last_edited_by" => [ "object" => "user", "id" => "editor-id" ],
         ];
@@ -392,5 +395,38 @@ class DataSourceTest extends TestCase
         $this->assertSame("creator-id", $transformed->createdBy?->id);
         $this->assertSame("editor-id", $transformed->lastEditedBy?->id);
         $this->assertNotNull($transformed->databaseParent);
+        $this->assertSame(DatabaseType::Tasks, $transformed->databaseType);
+    }
+
+    public function test_create_has_no_database_type(): void
+    {
+        $dataSource = DataSource::create(DataSourceParent::database("1ce62b6f-b7f3-4201-afd0-08acb02e61c6"));
+
+        $this->assertNull($dataSource->databaseType);
+        $this->assertNull($dataSource->toArray()["database_type"]);
+    }
+
+    public function test_unknown_database_type(): void
+    {
+        $array = [
+            "object" => "data_source",
+            "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
+            "created_time" => "2020-12-08T12:00:00.000000Z",
+            "last_edited_time" => "2020-12-08T12:00:00.000000Z",
+            "title" => [],
+            "description" => [],
+            "icon" => null,
+            "properties" => [],
+            "parent" => [
+                "type" => "database_id",
+                "database_id" => "1ce62b6f-b7f3-4201-afd0-08acb02e61c6",
+            ],
+            "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+            "database_type" => "a_future_type",
+        ];
+
+        $dataSource = DataSource::fromArray($array);
+
+        $this->assertSame(DatabaseType::Unknown, $dataSource->databaseType);
     }
 }

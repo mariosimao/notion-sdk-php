@@ -6,6 +6,7 @@ use Notion\Common\Emoji;
 use Notion\Common\RichText;
 use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
+use Notion\Databases\DatabaseType;
 use Notion\DataSources\Properties\RichTextProperty;
 use Notion\Exceptions\ApiException;
 use PHPUnit\Framework\TestCase;
@@ -72,6 +73,54 @@ class DatabasesTest extends TestCase
         $this->assertEquals("Description", $dataSource->properties()->getRichText("Description")->metadata()->name);
 
         // Clean up
+        $client->databases()->delete($database);
+    }
+
+    public function test_create_typed_database(): void
+    {
+        $client = Helper::client();
+
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()), DatabaseType::Tasks);
+
+        $database = $client->databases()->create($database);
+
+        $databaseFound = $client->databases()->find($database->id);
+        $dataSource = $client->dataSources()->find($databaseFound->dataSources[0]->id);
+
+        $this->assertSame(DatabaseType::Tasks, $database->databaseType);
+        $this->assertSame(DatabaseType::Tasks, $databaseFound->databaseType);
+        $this->assertSame(DatabaseType::Tasks, $dataSource->databaseType);
+        $this->assertNotEmpty($databaseFound->title);
+
+        $client->databases()->delete($database);
+    }
+
+    public function test_create_typed_database_with_title(): void
+    {
+        $client = Helper::client();
+
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()), DatabaseType::Projects)
+            ->changeTitle("Typed projects database");
+
+        $database = $client->databases()->create($database);
+
+        $this->assertSame(DatabaseType::Projects, $database->databaseType);
+        $this->assertEquals("Typed projects database", $database->title[0]->plainText);
+
+        $client->databases()->delete($database);
+    }
+
+    public function test_regular_database_has_no_type(): void
+    {
+        $client = Helper::client();
+
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()))
+            ->changeTitle("Regular database");
+
+        $database = $client->databases()->create($database);
+
+        $this->assertNull($database->databaseType);
+
         $client->databases()->delete($database);
     }
 
