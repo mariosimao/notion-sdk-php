@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support typed databases (#499).
+  - New `Notion\Databases\DatabaseType` enum (`tasks`, `projects`, `sprints`, `docs`, `wiki`, `meetings`, `meeting_notes`, `skills`, `github_prs`, plus `Unknown` for values not yet supported by the SDK).
+  - New nullable `Database::$databaseType` and `DataSource::$databaseType` properties, parsed from `database_type` (`null` for regular databases). They are read-only and never sent in update requests.
+  - New `Database::isTyped()` helper.
+  - New optional `$databaseType` argument on `Database::create()` to create a database from one of Notion's canonical schemas. Only `DatabaseType::Tasks`, `DatabaseType::Projects` and `DatabaseType::Skills` are accepted (`DatabaseType::isCreatable()`); other types throw a `DatabaseException`.
+  - `Databases\Client::create()` omits the title of typed databases without a title, so Notion names them after their type, and throws a `DatabaseException` when a typed database is created with initial properties (Notion does not allow `database_type` together with `initial_data_source`).
+    ```php
+    $database = Database::create(DatabaseParent::page($pageId), DatabaseType::Tasks);
+    $database = $notion->databases()->create($database);
+    ```
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).

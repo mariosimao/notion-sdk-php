@@ -31,6 +31,7 @@ use Notion\Exceptions\DatabaseException;
  *      parent: DatabaseParentJson,
  *      url: string,
  *      is_inline: bool,
+ *      database_type?: string|null,
  * }
  *
  * @psalm-immutable
@@ -55,14 +56,28 @@ final readonly class Database
         public DatabaseParent $parent,
         public string $url,
         public bool $isInline,
+        public DatabaseType|null $databaseType,
     ) {
         if ($cover !== null && $cover->isInternal()) {
             throw DatabaseException::internalCover();
         }
     }
 
-    public static function create(DatabaseParent $parent): self
+    /**
+     * Creates a database to be saved with `Client::create()`.
+     *
+     * Pass a `$databaseType` to create a typed database using Notion's
+     * canonical schema. Only `DatabaseType::Tasks`, `DatabaseType::Projects`
+     * and `DatabaseType::Skills` are supported. Typed databases cannot be
+     * created with initial properties and, if no title is set, are named after
+     * their type.
+     */
+    public static function create(DatabaseParent $parent, DatabaseType|null $databaseType = null): self
     {
+        if ($databaseType !== null && !$databaseType->isCreatable()) {
+            throw DatabaseException::databaseTypeNotCreatable($databaseType);
+        }
+
         $now = new DateTimeImmutable("now");
 
         return new self(
@@ -78,6 +93,7 @@ final readonly class Database
             $parent,
             "",
             false,
+            $databaseType,
         );
     }
 
@@ -130,6 +146,10 @@ final readonly class Database
 
         $parent = DatabaseParent::fromArray($array["parent"]);
 
+        $databaseType = isset($array["database_type"])
+            ? DatabaseType::tryFrom($array["database_type"]) ?? DatabaseType::Unknown
+            : null;
+
         return new self(
             $array["id"],
             $dataSources,
@@ -143,6 +163,7 @@ final readonly class Database
             $parent,
             $array["url"],
             $array["is_inline"],
+            $databaseType,
         );
     }
 
@@ -162,6 +183,7 @@ final readonly class Database
             "parent"           => $this->parent->toArray(),
             "url"              => $this->url,
             "is_inline"        => $this->isInline,
+            "database_type"    => $this->databaseType?->value,
         ];
     }
 
@@ -171,6 +193,14 @@ final readonly class Database
     public function hasIcon(): bool
     {
         return $this->icon !== null;
+    }
+
+    /**
+     * @psalm-assert-if-true !null $this->databaseType
+     */
+    public function isTyped(): bool
+    {
+        return $this->databaseType !== null;
     }
 
     public function archive(): self
@@ -188,6 +218,7 @@ final readonly class Database
             $this->parent,
             $this->url,
             $this->isInline,
+            $this->databaseType,
         );
     }
 
@@ -206,6 +237,7 @@ final readonly class Database
             $this->parent,
             $this->url,
             $this->isInline,
+            $this->databaseType,
         );
     }
 
@@ -224,6 +256,7 @@ final readonly class Database
             $this->parent,
             $this->url,
             $this->isInline,
+            $this->databaseType,
         );
     }
 
@@ -242,6 +275,7 @@ final readonly class Database
             $this->parent,
             $this->url,
             $this->isInline,
+            $this->databaseType,
         );
     }
 
@@ -268,6 +302,7 @@ final readonly class Database
             $this->parent,
             $this->url,
             $this->isInline,
+            $this->databaseType,
         );
     }
 
@@ -286,6 +321,7 @@ final readonly class Database
             $this->parent,
             $this->url,
             $this->isInline,
+            $this->databaseType,
         );
     }
 
@@ -304,6 +340,7 @@ final readonly class Database
             $this->parent,
             $this->url,
             $this->isInline,
+            $this->databaseType,
         );
     }
 
@@ -322,6 +359,7 @@ final readonly class Database
             $this->parent,
             $this->url,
             $this->isInline,
+            $this->databaseType,
         );
     }
 
@@ -340,6 +378,7 @@ final readonly class Database
             $parent,
             $this->url,
             $this->isInline,
+            $this->databaseType,
         );
     }
 
@@ -358,6 +397,7 @@ final readonly class Database
             $this->parent,
             $this->url,
             true,
+            $this->databaseType,
         );
     }
 
@@ -376,6 +416,7 @@ final readonly class Database
             $this->parent,
             $this->url,
             false,
+            $this->databaseType,
         );
     }
 }

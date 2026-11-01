@@ -5,6 +5,7 @@ namespace Notion\Databases;
 use Notion\Common\RichText;
 use Notion\Configuration;
 use Notion\DataSources\Properties\PropertyInterface;
+use Notion\Exceptions\DatabaseException;
 use Notion\Infrastructure\Http;
 
 /**
@@ -32,12 +33,24 @@ final readonly class Client
     }
 
     /**
-     * @param PropertyInterface[] $initialProperties
+     * @param PropertyInterface[] $initialProperties Not supported for typed databases.
+     *
+     * @throws DatabaseException When a typed database is created with initial properties.
      */
     public function create(Database $database, array $initialProperties = []): Database
     {
+        if ($database->databaseType !== null && !empty($initialProperties)) {
+            throw DatabaseException::typedDatabaseWithInitialProperties();
+        }
+
         $data = $database->toArray();
         unset($data["id"]);
+        if ($database->databaseType === null) {
+            unset($data["database_type"]);
+        } elseif (empty($database->title)) {
+            // Notion names typed databases after their type when the title is omitted
+            unset($data["title"]);
+        }
         if ($database->icon === null) {
             unset($data["icon"]);
         }
@@ -73,6 +86,7 @@ final readonly class Client
         unset($data["last_edited_time"]);
         unset($data["url"]);
         unset($data["data_sources"]);
+        unset($data["database_type"]);
         if ($database->icon === null) {
             unset($data["icon"]);
         }

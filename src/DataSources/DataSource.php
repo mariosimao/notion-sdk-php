@@ -9,6 +9,7 @@ use Notion\Common\File;
 use Notion\Common\Icon;
 use Notion\Common\RichText;
 use Notion\Databases\DatabaseParent;
+use Notion\Databases\DatabaseType;
 use Notion\DataSources\Properties\PropertyCollection;
 use Notion\DataSources\Properties\PropertyFactory;
 use Notion\DataSources\Properties\PropertyInterface;
@@ -40,6 +41,7 @@ use Notion\Users\User;
  *      parent: DataSourceParentJson,
  *      database_parent?: DatabaseParentJson|null,
  *      url: string,
+ *      database_type?: string|null,
  * }
  *
  * @psalm-immutable
@@ -65,6 +67,7 @@ final readonly class DataSource
         public DataSourceParent $parent,
         public string $url,
         public DatabaseParent|null $databaseParent = null,
+        public DatabaseType|null $databaseType = null,
     ) {
     }
 
@@ -85,6 +88,7 @@ final readonly class DataSource
             [ "Title" => Title::create() ],
             $parent,
             "",
+            null,
             null,
         );
     }
@@ -133,6 +137,10 @@ final readonly class DataSource
             ? DatabaseParent::fromArray($array["database_parent"])
             : null;
 
+        $databaseType = isset($array["database_type"])
+            ? DatabaseType::tryFrom($array["database_type"]) ?? DatabaseType::Unknown
+            : null;
+
         $properties = [];
         foreach ($array["properties"] as $propertyName => $propertyArray) {
             $properties[$propertyName] = PropertyFactory::fromArray($propertyArray);
@@ -152,6 +160,7 @@ final readonly class DataSource
             $parent,
             $array["url"],
             $databaseParent,
+            $databaseType,
         );
     }
 
@@ -170,6 +179,7 @@ final readonly class DataSource
             "parent"           => $this->parent->toArray(),
             "database_parent"  => $this->databaseParent?->toArray(),
             "url"              => $this->url,
+            "database_type"    => $this->databaseType?->value,
         ];
 
         if ($this->createdBy !== null) {
@@ -207,6 +217,7 @@ final readonly class DataSource
             $this->parent,
             $this->url,
             $this->databaseParent,
+            $this->databaseType,
         );
     }
 
@@ -226,6 +237,7 @@ final readonly class DataSource
             $this->parent,
             $this->url,
             $this->databaseParent,
+            $this->databaseType,
         );
     }
 
@@ -250,6 +262,7 @@ final readonly class DataSource
             $this->parent,
             $this->url,
             $this->databaseParent,
+            $this->databaseType,
         );
     }
 
@@ -269,6 +282,7 @@ final readonly class DataSource
             $this->parent,
             $this->url,
             $this->databaseParent,
+            $this->databaseType,
         );
     }
 
@@ -296,6 +310,7 @@ final readonly class DataSource
             $this->parent,
             $this->url,
             $this->databaseParent,
+            $this->databaseType,
         );
     }
 
@@ -315,6 +330,7 @@ final readonly class DataSource
             $this->parent,
             $this->url,
             $this->databaseParent,
+            $this->databaseType,
         );
     }
 
@@ -339,6 +355,7 @@ final readonly class DataSource
             $this->parent,
             $this->url,
             $this->databaseParent,
+            $this->databaseType,
         );
     }
 
@@ -358,6 +375,7 @@ final readonly class DataSource
             $this->parent,
             $this->url,
             $this->databaseParent,
+            $this->databaseType,
         );
     }
 
@@ -377,6 +395,7 @@ final readonly class DataSource
             $this->parent,
             $this->url,
             $this->databaseParent,
+            $this->databaseType,
         );
     }
 
@@ -397,6 +416,7 @@ final readonly class DataSource
             $this->parent,
             $this->url,
             $this->databaseParent,
+            $this->databaseType,
         );
     }
 
@@ -416,6 +436,7 @@ final readonly class DataSource
             $parent,
             $this->url,
             $this->databaseParent,
+            $this->databaseType,
         );
     }
 
