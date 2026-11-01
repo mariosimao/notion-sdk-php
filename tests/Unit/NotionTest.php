@@ -36,4 +36,11 @@ class NotionTest extends TestCase
         $this->assertSame("client_id", $authClient->clientId);
         $this->assertSame("client_secret", $authClient->clientSecret);
     }
+
+    public function test_sessions(): void
+    {
+        $notion = Notion::create("secret_token");
+
+        $this->assertInstanceOf(\Notion\Sessions\Client::class, $notion->sessions());
+    }
 }
