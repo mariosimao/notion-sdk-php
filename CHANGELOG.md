@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support asynchronous page writes (#489).
+  - New `Pages\Client::createFromMarkdownAsync()` and `Pages\Client::updateMarkdownAsync()` send `allow_async: true` and return either the synchronous result (`Page` / `PageMarkdown`) or a `Notion\AsyncTasks\AsyncTask` when Notion processes the write in the background.
+  - New `Notion::asyncTasks()` client with `find()` (`GET /v1/async_tasks/{task_id}`) and `wait()`, which polls honoring `poll_after_seconds` and throws `Notion\Exceptions\AsyncTaskException` when the task fails or times out.
+  - New `AsyncTask` model with `AsyncTaskStatus` (`queued`, `running`, `retrying`, `succeeded`, `failed`), `AsyncTaskOperation`, `AsyncTaskError`, and typed `page()` / `pageMarkdown()` result accessors.
+- Support the markdown content API (#470).
+  - `Pages\Client::createFromMarkdown()` creates a page with enhanced-markdown content.
+  - `Pages\Client::findMarkdown()` retrieves a page (or unknown block subtree) as markdown, with an optional `includeTranscript` flag.
+  - `Pages\Client::updateMarkdown()` applies `InsertContent` (append, `atStart()`, `atEnd()`, `after()`), `ReplaceContentRange`, `UpdateContent` and `ReplaceContent` commands from the `Notion\Pages\Markdown` namespace.
+  - Markdown responses are returned as `Notion\Pages\Markdown\PageMarkdown`.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).

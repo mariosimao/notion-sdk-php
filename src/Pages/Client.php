@@ -2,9 +2,12 @@
 
 namespace Notion\Pages;
 
+use Notion\AsyncTasks\AsyncTask;
 use Notion\Blocks\BlockInterface;
 use Notion\Configuration;
 use Notion\Infrastructure\Http;
+use Notion\Pages\Markdown\MarkdownUpdateInterface;
+use Notion\Pages\Markdown\PageMarkdown;
 use Notion\Pages\Properties\CreatedBy;
 use Notion\Pages\Properties\CreatedTime;
 use Notion\Pages\Properties\Formula;
@@ -19,6 +22,8 @@ use Notion\Pages\PropertyItems\PropertyItemList;
 
 /**
  * @psalm-import-type PageJson from Page
+ * @psalm-import-type PageMarkdownJson from PageMarkdown
+ * @psalm-import-type AsyncTaskJson from AsyncTask
  */
 final readonly class Client
 {
@@ -69,18 +74,118 @@ final readonly class Client
     /** @param list<BlockInterface> $content */
     public function create(Page $page, array $content = []): Page
     {
+        /** @psalm-var PageJson $body */
+        $body = $this->sendCreate($page, [
+            "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $content),
+        ]);
+
+        return Page::fromArray($body);
+    }
+
+    /** @param string $markdown Page content in Notion enhanced markdown. */
+    public function createFromMarkdown(Page $page, string $markdown): Page
+    {
+        /** @psalm-var PageJson $body */
+        $body = $this->sendCreate($page, [ "markdown" => $markdown ]);
+
+        return Page::fromArray($body);
+    }
+
+    /**
+     * Same as `createFromMarkdown()`, but sends `allow_async: true`, letting
+     * Notion process large pages in the background.
+     *
+     * Returns an `AsyncTask` when Notion accepted the request for background
+     * execution. Poll it with `Notion::asyncTasks()->wait()` and read the
+     * created page with `AsyncTask::page()`.
+     *
+     * @param string $markdown Page content in Notion enhanced markdown.
+     */
+    public function createFromMarkdownAsync(Page $page, string $markdown): Page|AsyncTask
+    {
+        $body = $this->sendCreate($page, [ "markdown" => $markdown, "allow_async" => true ]);
+
+        if (AsyncTask::isAsyncTaskArray($body)) {
+            /** @psalm-var AsyncTaskJson $body */
+            return AsyncTask::fromArray($body);
+        }
+
+        /** @psalm-var PageJson $body */
+        return Page::fromArray($body);
+    }
+
+    public function findMarkdown(string $pageId, bool $includeTranscript = false): PageMarkdown
+    {
+        $url = "https://api.notion.com/v1/pages/{$pageId}/markdown";
+        if ($includeTranscript) {
+            $url .= "?include_transcript=true";
+        }
+
+        $request = Http::createRequest($url, $this->config);
+
+        /** @psalm-var PageMarkdownJson $body */
+        $body = Http::sendRequest($request, $this->config);
+
+        return PageMarkdown::fromArray($body);
+    }
+
+    public function updateMarkdown(string $pageId, MarkdownUpdateInterface $update): PageMarkdown
+    {
+        /** @psalm-var PageMarkdownJson $body */
+        $body = $this->sendMarkdownUpdate($pageId, $update->toArray());
+
+        return PageMarkdown::fromArray($body);
+    }
+
+    /**
+     * Same as `updateMarkdown()`, but sends `allow_async: true`, letting
+     * Notion process large updates in the background.
+     *
+     * Returns an `AsyncTask` when Notion accepted the request for background
+     * execution. Poll it with `Notion::asyncTasks()->wait()` and read the
+     * updated content with `AsyncTask::pageMarkdown()`.
+     */
+    public function updateMarkdownAsync(string $pageId, MarkdownUpdateInterface $update): PageMarkdown|AsyncTask
+    {
+        $body = $this->sendMarkdownUpdate($pageId, [ ...$update->toArray(), "allow_async" => true ]);
+
+        if (AsyncTask::isAsyncTaskArray($body)) {
+            /** @psalm-var AsyncTaskJson $body */
+            return AsyncTask::fromArray($body);
+        }
+
+        /** @psalm-var PageMarkdownJson $body */
+        return PageMarkdown::fromArray($body);
+    }
+
+    /** @param array<string, mixed> $data */
+    private function sendMarkdownUpdate(string $pageId, array $data): array
+    {
+        $url = "https://api.notion.com/v1/pages/{$pageId}/markdown";
+        $request = Http::createRequest($url, $this->config)
+            ->withMethod("PATCH")
+            ->withHeader("Content-Type", "application/json");
+        $request->getBody()->write(json_encode($data));
+
+        return Http::sendRequest($request, $this->config);
+    }
+
+    /** @param array<string, mixed> $content */
+    private function sendCreate(Page $page, array $content): array
+    {
+        $parent = $page->parent->toArray();
+        if ($page->parent->isDataSource()) {
+            unset($parent["database_id"]);
+        }
+
         $data = [
             "in_trash" => $page->inTrash,
             "icon" => $page->icon?->toArray(),
             "cover" => $page->cover?->toArray(),
             "properties" => array_map(fn(PropertyInterface $p) => $p->toArray(), $page->properties),
-            "parent" => $page->parent->toArray(),
-            "children" => array_map(fn(BlockInterface $b) => $b->toArray(), $content),
+            "parent" => $parent,
+            ...$content,
         ];
-
-        if ($page->parent->isDataSource()) {
-            unset($data["parent"]["database_id"]);
-        }
 
         $data = json_encode($data);
 
@@ -90,10 +195,7 @@ final readonly class Client
             ->withHeader("Content-Type", "application/json");
         $request->getBody()->write($data);
 
-        /** @psalm-var PageJson $body */
-        $body = Http::sendRequest($request, $this->config);
-
-        return Page::fromArray($body);
+        return Http::sendRequest($request, $this->config);
     }
 
     public function update(Page $page): Page

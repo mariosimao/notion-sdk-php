@@ -2,6 +2,7 @@
 
 namespace Notion\Test\Integration;
 
+use Notion\AsyncTasks\AsyncTask;
 use Notion\Common\Emoji;
 use Notion\Databases\Database;
 use Notion\Databases\DatabaseParent;
@@ -9,6 +10,11 @@ use Notion\DataSources\DataSource;
 use Notion\DataSources\DataSourceParent;
 use Notion\DataSources\Properties\Relation as RelationDataSourceProperty;
 use Notion\Exceptions\ApiException;
+use Notion\Pages\Markdown\ContentUpdate;
+use Notion\Pages\Markdown\InsertContent;
+use Notion\Pages\Markdown\ReplaceContent;
+use Notion\Pages\Markdown\ReplaceContentRange;
+use Notion\Pages\Markdown\UpdateContent;
 use Notion\Pages\Page;
 use Notion\Pages\PageParent;
 use Notion\Pages\Properties\Relation;
@@ -164,6 +170,107 @@ class PagesTest extends TestCase
         $this->assertCount(1, $smallRelation->pageIds);
         $this->assertTrue($bigRelation->hasMore);
         $this->assertCount(25, $bigRelation->pageIds);
+    }
+
+    public function test_create_and_find_page_markdown(): void
+    {
+        $client = Helper::client();
+
+        $page = Helper::newPage()->changeTitle("Markdown page");
+        $page = $client->pages()->createFromMarkdown($page, "## Heading\n\nFirst paragraph");
+
+        $markdown = $client->pages()->findMarkdown($page->id, includeTranscript: true);
+
+        $this->assertStringContainsString("## Heading", $markdown->markdown);
+        $this->assertStringContainsString("First paragraph", $markdown->markdown);
+        $this->assertFalse($markdown->truncated);
+        $this->assertSame([], $markdown->unknownBlockIds);
+
+        $client->pages()->delete($page);
+    }
+
+    public function test_update_page_markdown(): void
+    {
+        $client = Helper::client();
+
+        $page = Helper::newPage()->changeTitle("Markdown updates");
+        $page = $client->pages()->createFromMarkdown($page, "Middle paragraph");
+        $pages = $client->pages();
+
+        $pages->updateMarkdown($page->id, InsertContent::atStart("First paragraph"));
+        $pages->updateMarkdown($page->id, InsertContent::atEnd("Last paragraph"));
+        $pages->updateMarkdown($page->id, InsertContent::create("Appended paragraph"));
+        $pages->updateMarkdown($page->id, InsertContent::after("Middle paragraph", "After middle"));
+        $pages->updateMarkdown($page->id, ReplaceContentRange::create("Last paragraph", "Replaced paragraph"));
+        $markdown = $pages->updateMarkdown(
+            $page->id,
+            UpdateContent::create(ContentUpdate::create("Middle", "Center")->replaceAllMatches()),
+        );
+
+        $this->assertSame($page->id, $markdown->id);
+        $content = $markdown->markdown;
+        $this->assertStringContainsString("First paragraph", $content);
+        $this->assertStringContainsString("Center paragraph", $content);
+        $this->assertStringContainsString("After middle", $content);
+        $this->assertStringContainsString("Replaced paragraph", $content);
+        $this->assertStringContainsString("Appended paragraph", $content);
+        $this->assertStringNotContainsString("Last paragraph", $content);
+        $this->assertLessThan(strpos($content, "Center paragraph"), strpos($content, "First paragraph"));
+
+        $markdown = $pages->updateMarkdown($page->id, ReplaceContent::create("Only paragraph"));
+        $this->assertStringContainsString("Only paragraph", $markdown->markdown);
+        $this->assertStringNotContainsString("First paragraph", $markdown->markdown);
+
+        $pages->delete($page);
+    }
+
+    public function test_update_markdown_with_unmatched_selection(): void
+    {
+        $client = Helper::client();
+
+        $page = Helper::newPage();
+        $page = $client->pages()->createFromMarkdown($page, "Some content");
+
+        $this->expectException(ApiException::class);
+        try {
+            $client->pages()->updateMarkdown(
+                $page->id,
+                UpdateContent::create(ContentUpdate::create("Inexistent content", "New")),
+            );
+        } finally {
+            $client->pages()->delete($page);
+        }
+    }
+
+    public function test_create_and_update_page_markdown_async(): void
+    {
+        $client = Helper::client();
+        $pages = $client->pages();
+
+        $page = Helper::newPage()->changeTitle("Async markdown page");
+        $page = $pages->createFromMarkdownAsync($page, "First paragraph");
+        if ($page instanceof AsyncTask) {
+            $page = $client->asyncTasks()->wait($page)->page();
+        }
+
+        $markdown = $pages->updateMarkdownAsync($page->id, InsertContent::atEnd("Last paragraph"));
+        if ($markdown instanceof AsyncTask) {
+            $markdown = $client->asyncTasks()->wait($markdown)->pageMarkdown();
+        }
+
+        $this->assertSame($page->id, $markdown->id);
+        $this->assertStringContainsString("First paragraph", $markdown->markdown);
+        $this->assertStringContainsString("Last paragraph", $markdown->markdown);
+
+        $pages->delete($page);
+    }
+
+    public function test_find_inexistent_async_task(): void
+    {
+        $client = Helper::client();
+
+        $this->expectException(ApiException::class);
+        $client->asyncTasks()->find("task_inexistent");
     }
 
     public function test_find_inexistent_property(): void
