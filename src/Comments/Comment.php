@@ -59,6 +59,19 @@ final readonly class Comment
         return new self($id, $parent, $discussionId, $createdTime, $lastEditedTime, $userId, $text);
     }
 
+    public function changeText(RichText ...$text): self
+    {
+        return new self(
+            $this->id,
+            $this->parent,
+            $this->discussionId,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $this->userId,
+            $text,
+        );
+    }
+
     /** @psalm-param CommentJson $array */
     public static function fromArray(array $array): self
     {

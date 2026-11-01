@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support updating and deleting comments (#485).
+  - New `Notion\Comments\Client::update(Comment $comment): Comment` replaces the comment content with its rich text.
+  - New `Notion\Comments\Client::delete(string $commentId): Comment` deletes a comment and returns it.
+  - New immutable `Notion\Comments\Comment::changeText(RichText ...$text)` method.
+  - Only comments created by the integration can be updated or deleted.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).

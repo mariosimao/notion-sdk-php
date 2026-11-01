@@ -43,3 +43,22 @@ $comment = Comment::createReply($discussionId, $text);
 
 $notion->comments()->create($comment);
 ```
+
+## Update comment
+
+Only comments created by your integration can be updated.
+
+```php
+$text = RichText::fromString("An updated comment.");
+$comment = $comment->changeText($text);
+
+$comment = $notion->comments()->update($comment);
+```
+
+## Delete comment
+
+Only comments created by your integration can be deleted.
+
+```php
+$deletedComment = $notion->comments()->delete($commentId);
+```
