@@ -19,6 +19,9 @@ final class ConfigurationTest extends TestCase
         $this->assertSame(Notion::API_VERSION, $config->version);
         $this->assertSame(true, $config->retryOnConflict);
         $this->assertSame(3, $config->retryOnConflictAttempts);
+        $this->assertTrue($config->retryOnRateLimit);
+        $this->assertSame(3, $config->retryOnRateLimitAttempts);
+        $this->assertSame(60, $config->retryOnRateLimitMaxWait);
     }
 
     public function test_create_from_psr_implementations(): void
@@ -47,5 +50,22 @@ final class ConfigurationTest extends TestCase
 
         $this->assertFalse($config->retryOnConflict);
         $this->assertSame(0, $config->retryOnConflictAttempts);
+    }
+
+    public function test_enable_retry_on_rate_limit(): void
+    {
+        $config = Configuration::create("secret_123abc")->enableRetryOnRateLimit(5, 30);
+
+        $this->assertTrue($config->retryOnRateLimit);
+        $this->assertSame(5, $config->retryOnRateLimitAttempts);
+        $this->assertSame(30, $config->retryOnRateLimitMaxWait);
+    }
+
+    public function test_disable_retry_on_rate_limit(): void
+    {
+        $config = Configuration::create("secret_123abc")->disableRetryOnRateLimit();
+
+        $this->assertFalse($config->retryOnRateLimit);
+        $this->assertSame(0, $config->retryOnRateLimitAttempts);
     }
 }

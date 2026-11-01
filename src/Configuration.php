@@ -17,6 +17,9 @@ use Psr\Http\Message\RequestFactoryInterface;
  *     requestFactory: RequestFactoryInterface,
  *     retryOnConflict: bool,
  *     retryOnConflictAttempts: int,
+ *     retryOnRateLimit: bool,
+ *     retryOnRateLimitAttempts: int,
+ *     retryOnRateLimitMaxWait: int,
  *     ...
  * }
  *
@@ -31,6 +34,9 @@ final readonly class Configuration
         public RequestFactoryInterface $requestFactory,
         public bool $retryOnConflict,
         public int $retryOnConflictAttempts,
+        public bool $retryOnRateLimit,
+        public int $retryOnRateLimitAttempts,
+        public int $retryOnRateLimitMaxWait,
     ) {
     }
 
@@ -43,6 +49,9 @@ final readonly class Configuration
             requestFactory: Psr17FactoryDiscovery::findRequestFactory(),
             retryOnConflict: true,
             retryOnConflictAttempts: 3,
+            retryOnRateLimit: true,
+            retryOnRateLimitAttempts: 3,
+            retryOnRateLimitMaxWait: 60,
         );
     }
 
@@ -58,6 +67,9 @@ final readonly class Configuration
             requestFactory: $requestFactory,
             retryOnConflict: true,
             retryOnConflictAttempts: 3,
+            retryOnRateLimit: true,
+            retryOnRateLimitAttempts: 3,
+            retryOnRateLimitMaxWait: 60,
         );
     }
 
@@ -80,6 +92,36 @@ final readonly class Configuration
         $properties = $this->properties();
         $properties["retryOnConflict"] = false;
         $properties["retryOnConflictAttempts"] = 0;
+
+        return new self(...$properties);
+    }
+
+    /**
+     * Retry operations when the Notion API responds with a rate limit error.
+     *
+     * The SDK waits the number of seconds sent by Notion in
+     * `additional_data.retry_after` (or the `Retry-After` header) before
+     * retrying. Requests blocked by Notion (`public_api_request_blocked`) are
+     * never retried.
+     *
+     * @param int $attempts Maximum number of retries
+     * @param int $maxWait Maximum number of seconds to wait before each retry
+     */
+    public function enableRetryOnRateLimit(int $attempts = 3, int $maxWait = 60): self
+    {
+        $properties = $this->properties();
+        $properties["retryOnRateLimit"] = true;
+        $properties["retryOnRateLimitAttempts"] = $attempts;
+        $properties["retryOnRateLimitMaxWait"] = $maxWait;
+
+        return new self(...$properties);
+    }
+
+    public function disableRetryOnRateLimit(): self
+    {
+        $properties = $this->properties();
+        $properties["retryOnRateLimit"] = false;
+        $properties["retryOnRateLimitAttempts"] = 0;
 
         return new self(...$properties);
     }

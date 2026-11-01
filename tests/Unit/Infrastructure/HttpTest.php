@@ -9,6 +9,7 @@ use GuzzleHttp\Psr7\HttpFactory;
 use GuzzleHttp\Psr7\Response;
 use Notion\Configuration;
 use Notion\Exceptions\ConflictException;
+use Notion\Exceptions\RateLimitedException;
 use Notion\Infrastructure\Http;
 use Notion\Notion;
 use Notion\Pages\Page;
@@ -90,6 +91,123 @@ final class HttpTest extends TestCase
 
         $this->expectException(ConflictException::class);
         $notion->pages()->create($page);
+    }
+
+    public function test_retry_sending_request_after_rate_limit_errors(): void
+    {
+        // Body value (0s) is used instead of the header value (30s)
+        $mock = new MockHandler([
+            new Response(429, [ "Retry-After" => "30" ], $this->rateLimitedErrorJson("0")),
+            new Response(429, [ "Retry-After" => "30" ], $this->rateLimitedErrorJson("0")),
+            new Response(201, [], $this->createdPageJson()),
+        ]);
+        $notion = $this->notionWithMock($mock, fn (Configuration $c) => $c->enableRetryOnRateLimit(2));
+
+        $start = microtime(true);
+        $notion->pages()->create(Page::create(PageParent::workspace()));
+
+        $this->assertCount(0, $mock);
+        $this->assertLessThan(5, microtime(true) - $start);
+    }
+
+    public function test_retry_after_rate_limit_uses_header_without_body_value(): void
+    {
+        $mock = new MockHandler([
+            new Response(429, [ "Retry-After" => "0" ], $this->rateLimitedErrorJson(null)),
+            new Response(201, [], $this->createdPageJson()),
+        ]);
+        $notion = $this->notionWithMock($mock, fn (Configuration $c) => $c->enableRetryOnRateLimit(1));
+
+        $notion->pages()->create(Page::create(PageParent::workspace()));
+
+        $this->assertCount(0, $mock);
+    }
+
+    public function test_retry_after_rate_limit_respects_max_wait(): void
+    {
+        $mock = new MockHandler([
+            new Response(429, [ "Retry-After" => "60" ], $this->rateLimitedErrorJson("60")),
+            new Response(201, [], $this->createdPageJson()),
+        ]);
+        $notion = $this->notionWithMock($mock, fn (Configuration $c) => $c->enableRetryOnRateLimit(1, 0));
+
+        $start = microtime(true);
+        $notion->pages()->create(Page::create(PageParent::workspace()));
+
+        $this->assertCount(0, $mock);
+        $this->assertLessThan(5, microtime(true) - $start);
+    }
+
+    public function test_retry_sending_request_after_many_rate_limit_errors(): void
+    {
+        $mock = new MockHandler([
+            new Response(429, [], $this->rateLimitedErrorJson("0")),
+            new Response(429, [], $this->rateLimitedErrorJson("0")),
+            new Response(429, [], $this->rateLimitedErrorJson("0")),
+        ]);
+        $notion = $this->notionWithMock($mock, fn (Configuration $c) => $c->enableRetryOnRateLimit(2));
+
+        $this->expectException(RateLimitedException::class);
+        $notion->pages()->create(Page::create(PageParent::workspace()));
+    }
+
+    public function test_do_not_retry_blocked_requests(): void
+    {
+        $mock = new MockHandler([
+            new Response(429, [], $this->rateLimitedErrorJson("0", "public_api_request_blocked")),
+            new Response(201, [], $this->createdPageJson()),
+        ]);
+        $notion = $this->notionWithMock($mock, fn (Configuration $c) => $c->enableRetryOnRateLimit(2));
+
+        try {
+            $notion->pages()->create(Page::create(PageParent::workspace()));
+            $this->fail("Expected RateLimitedException");
+        } catch (RateLimitedException $e) {
+            $this->assertFalse($e->isRetryable());
+        }
+        $this->assertCount(1, $mock);
+    }
+
+    public function test_do_not_retry_rate_limit_when_disabled(): void
+    {
+        $mock = new MockHandler([
+            new Response(429, [], $this->rateLimitedErrorJson("0")),
+            new Response(201, [], $this->createdPageJson()),
+        ]);
+        $notion = $this->notionWithMock($mock, fn (Configuration $c) => $c->disableRetryOnRateLimit());
+
+        try {
+            $notion->pages()->create(Page::create(PageParent::workspace()));
+            $this->fail("Expected RateLimitedException");
+        } catch (RateLimitedException $e) {
+            $this->assertSame(0, $e->retryAfter());
+        }
+        $this->assertCount(1, $mock);
+    }
+
+    /** @param callable(Configuration): Configuration $configure */
+    private function notionWithMock(MockHandler $mock, callable $configure): Notion
+    {
+        $client = new Client([ "handler" => HandlerStack::create($mock)]);
+        $config = Configuration::createFromPsrImplementations("secret_123", $client, new HttpFactory());
+
+        return Notion::createFromConfig($configure($config));
+    }
+
+    private function rateLimitedErrorJson(?string $retryAfter, string $reason = "public_api_request_rate_limit"): string
+    {
+        $additionalData = [ "rate_limit_reason" => $reason ];
+        if ($retryAfter !== null) {
+            $additionalData["retry_after"] = $retryAfter;
+        }
+
+        return json_encode([
+            "object" => "error",
+            "status" => 429,
+            "code" => "rate_limited",
+            "message" => "You have been rate limited. Please try again later.",
+            "additional_data" => $additionalData,
+        ], JSON_THROW_ON_ERROR);
     }
 
     private function conflictErrorJson(): string
