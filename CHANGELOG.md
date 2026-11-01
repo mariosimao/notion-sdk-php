@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support current-user people filters and document relative-date query filters (#481).
+  - New `Notion\DataSources\Query\CurrentUser` enum with the `Me` case, serialized as `"me"`.
+  - `PeopleFilter::contains()` and `PeopleFilter::doesNotContain()` accept `CurrentUser::Me` in addition to user IDs, e.g. `PeopleFilter::property("Assignee")->contains(CurrentUser::Me)`.
+  - Relative date values (`RelativeDate::Today`, `Tomorrow`, `Yesterday`, `OneWeekAgo`, `OneWeekFromNow`, `OneMonthAgo`, `OneMonthFromNow`) are supported by `DateFilter` comparisons, e.g. `DateFilter::property("Due date")->onOrAfter(RelativeDate::Today)`.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
@@ -45,6 +49,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` accept `RelativeDate` instances in addition to `DateTimeImmutable`.
 
 ### Changed
+- **[BREAKING]** `PeopleFilter::value()` return type changed from `string|bool` to `string|CurrentUser|bool` (#481).
+  - **Migration instructions:** code that reads `PeopleFilter::value()` must handle `CurrentUser` instances, e.g. `$value instanceof CurrentUser ? $value->value : $value`.
 - **[BREAKING]** Change `DateFilter` value from `string` to `DateTimeImmutable|RelativeDate` and remove `array` type (#199).
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` now accept `DateTimeImmutable|RelativeDate` instead of a raw `string`.
   - Removed `array` from the allowed types of the internal `$value` property and `value()` return type hint, which is now `DateTimeImmutable|RelativeDate|bool|stdClass`.

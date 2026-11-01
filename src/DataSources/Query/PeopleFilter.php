@@ -15,7 +15,7 @@ final readonly class PeopleFilter implements Filter, Condition
     private function __construct(
         private string $propertyName,
         private Operator $operator,
-        private string|bool $value,
+        private string|CurrentUser|bool $value,
     ) {
         if (!in_array($operator, self::VALID_OPERATORS)) {
             throw new \Exception("Invalid operator");
@@ -64,29 +64,33 @@ final readonly class PeopleFilter implements Filter, Condition
         return $this->operator;
     }
 
-    public function value(): string|bool
+    public function value(): string|CurrentUser|bool
     {
         return $this->value;
     }
 
     public function toArray(): array
     {
+        $value = $this->value instanceof CurrentUser ? $this->value->value : $this->value;
+
         return [
             $this->propertyType() => $this->propertyName,
             "people" => [
-                $this->operator->value => $this->value
+                $this->operator->value => $value
             ],
         ];
     }
 
-    public function contains(string $userId): self
+    /** @param string|CurrentUser $user User ID or `CurrentUser::Me` */
+    public function contains(string|CurrentUser $user): self
     {
-        return new self($this->propertyName, Operator::Contains, $userId);
+        return new self($this->propertyName, Operator::Contains, $user);
     }
 
-    public function doesNotContain(string $userId): self
+    /** @param string|CurrentUser $user User ID or `CurrentUser::Me` */
+    public function doesNotContain(string|CurrentUser $user): self
     {
-        return new self($this->propertyName, Operator::DoesNotContain, $userId);
+        return new self($this->propertyName, Operator::DoesNotContain, $user);
     }
 
     public function isEmpty(): self

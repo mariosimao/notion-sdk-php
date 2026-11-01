@@ -195,6 +195,33 @@ class DateFilterTest extends TestCase
         $this->assertSame(RelativeDate::OneMonthFromNow, $filter->value());
     }
 
+    public function test_all_relative_dates_are_serialized(): void
+    {
+        $expected = [
+            "today",
+            "tomorrow",
+            "yesterday",
+            "one_week_ago",
+            "one_week_from_now",
+            "one_month_ago",
+            "one_month_from_now",
+        ];
+
+        $values = array_map(
+            fn (RelativeDate $date): string => $date->value,
+            RelativeDate::cases(),
+        );
+        $this->assertSame($expected, $values);
+
+        foreach (RelativeDate::cases() as $date) {
+            $filter = DateFilter::property("Due")->equals($date);
+            $this->assertSame(
+                [ "property" => "Due", "date" => [ "equals" => $date->value ] ],
+                $filter->toArray(),
+            );
+        }
+    }
+
     public function test_past_week(): void
     {
         $filter = DateFilter::property("Release date")
