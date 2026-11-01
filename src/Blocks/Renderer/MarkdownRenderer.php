@@ -81,6 +81,7 @@ final readonly class MarkdownRenderer implements RendererInterface
             BlockType::Paragraph        => Markdown\ParagraphRenderer::render($block, $depth),
             BlockType::Pdf              => Markdown\PdfRenderer::render($block, $depth),
             BlockType::Quote            => Markdown\QuoteRenderer::render($block, $depth),
+            BlockType::Tab              => Markdown\TabRenderer::render($block, $depth),
             BlockType::TableOfContents  => Markdown\TableOfContentsRenderer::render($block, $depth),
             BlockType::ToDo             => Markdown\ToDoRenderer::render($block, $depth),
             BlockType::Toggle           => Markdown\ToggleRenderer::render($block, $depth),

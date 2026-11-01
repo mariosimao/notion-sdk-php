@@ -22,9 +22,11 @@ use Notion\Blocks\LinkToPage;
 use Notion\Blocks\NumberedListItem;
 use Notion\Blocks\Paragraph;
 use Notion\Blocks\SyncedBlock;
+use Notion\Blocks\Tab;
 use Notion\Blocks\TableOfContents;
 use Notion\Blocks\ToDo;
 use Notion\Blocks\Toggle;
+use Notion\Common\Emoji;
 use Notion\Common\RichText;
 use Notion\Exceptions\ApiException;
 use PHPUnit\Framework\TestCase;
@@ -271,6 +273,45 @@ class BlocksTest extends TestCase
         $this->assertInstanceOf(SyncedBlock::class, $referenceBlock);
         $this->assertTrue($referenceBlock->isReference());
         $this->assertSame($originalBlock->metadata()->id, $referenceBlock->originalBlockId());
+    }
+
+    public function test_add_tab_block(): void
+    {
+        $client = Helper::client();
+
+        $tab = Tab::create(
+            Paragraph::fromString("Overview")
+                ->changeIcon(Emoji::fromString("📋"))
+                ->addChild(Paragraph::fromString("Tab 1 content")),
+            Paragraph::fromString("Details")
+                ->addChild(Paragraph::fromString("Tab 2 content")),
+        );
+
+        $blocks = $client->blocks()->append(Helper::testPageId(), [$tab]);
+        $tabBlock = $blocks[0];
+        $tabs = $client->blocks()->findChildrenRecursive($tabBlock->metadata()->id);
+        $foundTab = $client->blocks()->find($tabBlock->metadata()->id);
+
+        $client->blocks()->delete($tabBlock->metadata()->id);
+
+        $this->assertInstanceOf(Tab::class, $tabBlock);
+        $this->assertInstanceOf(Tab::class, $foundTab);
+        $this->assertTrue($foundTab->metadata()->hasChildren);
+
+        $this->assertCount(2, $tabs);
+        $this->assertInstanceOf(Paragraph::class, $tabs[0]);
+        $this->assertInstanceOf(Paragraph::class, $tabs[1]);
+        $this->assertSame("Overview", $tabs[0]->toString());
+        $this->assertSame("📋", $tabs[0]->icon?->emoji?->emoji);
+        $this->assertSame("Details", $tabs[1]->toString());
+
+        $content = $tabs[0]->children[0];
+        $this->assertInstanceOf(Paragraph::class, $content);
+        $this->assertSame("Tab 1 content", $content->toString());
+
+        $withTabs = $foundTab->changeChildren(...$tabs);
+        $this->assertInstanceOf(Tab::class, $withTabs);
+        $this->assertCount(2, $withTabs->tabs);
     }
 
     public function test_add_to_inexistent_block(): void

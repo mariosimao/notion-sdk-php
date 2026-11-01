@@ -36,5 +36,6 @@ enum BlockType: string
     case LinkToPage = "link_to_page";
     case SyncedBlock = "synced_block";
     case Template = "template";
+    case Tab = "tab";
     case Unknown = "unknown";
 }

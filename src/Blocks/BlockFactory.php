@@ -38,6 +38,7 @@ final readonly class BlockFactory
             BlockType::Quote->value            => Quote::fromArray($array),
             BlockType::SyncedBlock->value      => SyncedBlock::fromArray($array),
             BlockType::TableOfContents->value  => TableOfContents::fromArray($array),
+            BlockType::Tab->value              => Tab::fromArray($array),
             BlockType::Template->value         => Template::fromArray($array),
             BlockType::ToDo->value             => ToDo::fromArray($array),
             BlockType::Toggle->value           => Toggle::fromArray($array),
