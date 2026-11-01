@@ -3,6 +3,7 @@
 namespace Notion\Test\Unit\Comments;
 
 use Notion\Comments\Comment;
+use Notion\Comments\CommentBody;
 use Notion\Common\ParentType;
 use Notion\Common\RichText;
 use PHPUnit\Framework\TestCase;
@@ -12,22 +13,65 @@ class CommentTest extends TestCase
     public function test_create_page_comment(): void
     {
         $pageId = "8e2b2ad4-63f6-4e9c-8036-9a19c8d3c896";
-        $comment = Comment::create($pageId, RichText::fromString("Sample comment"));
+        $comment = Comment::create($pageId, CommentBody::richText(RichText::fromString("Sample comment")));
 
         $this->assertNull($comment->discussionId);
         $this->assertSame($pageId, $comment->parent?->id);
         $this->assertSame(ParentType::Page, $comment->parent?->type);
-        $this->assertSame("Sample comment", RichText::multipleToString(...$comment->text));
+        $this->assertSame("Sample comment", RichText::multipleToString(...$comment->body->richText));
     }
 
     public function test_create_disscussion_comment(): void
     {
         $discussionId = "27948296-9e5f-4c26-8fc5-46bea548cc33";
-        $comment = Comment::createReply($discussionId, RichText::fromString("Sample comment"));
+        $comment = Comment::createReply(
+            $discussionId,
+            CommentBody::richText(RichText::fromString("Sample comment")),
+        );
 
         $this->assertNull($comment->parent);
         $this->assertSame($discussionId, $comment->discussionId);
-        $this->assertSame("Sample comment", RichText::multipleToString(...$comment->text));
+        $this->assertSame("Sample comment", RichText::multipleToString(...$comment->body->richText));
+    }
+
+    public function test_create_markdown_page_comment(): void
+    {
+        $pageId = "8e2b2ad4-63f6-4e9c-8036-9a19c8d3c896";
+        $comment = Comment::create($pageId, CommentBody::markdown("**Bold** comment"));
+
+        $this->assertSame("**Bold** comment", $comment->body->markdown);
+        $this->assertSame([], $comment->body->richText);
+
+        $array = $comment->toArray();
+        $this->assertSame("**Bold** comment", $array["markdown"]);
+        $this->assertSame("v2", $array["markdown_version"]);
+        $this->assertArrayNotHasKey("rich_text", $array);
+        $this->assertSame("page_id", $array["parent"]["type"] ?? null);
+    }
+
+    public function test_create_markdown_reply(): void
+    {
+        $discussionId = "27948296-9e5f-4c26-8fc5-46bea548cc33";
+        $comment = Comment::createReply($discussionId, CommentBody::markdown("*Reply*"));
+
+        $array = $comment->toArray();
+        $this->assertSame($discussionId, $array["discussion_id"]);
+        $this->assertSame("*Reply*", $array["markdown"]);
+        $this->assertArrayNotHasKey("rich_text", $array);
+    }
+
+    public function test_change_body(): void
+    {
+        $comment = Comment::create(
+            "8e2b2ad4-63f6-4e9c-8036-9a19c8d3c896",
+            CommentBody::richText(RichText::fromString("Old")),
+        );
+
+        $changed = $comment->changeBody(CommentBody::markdown("New"));
+
+        $this->assertSame("New", $changed->body->markdown);
+        $this->assertSame("Old", RichText::multipleToString(...$comment->body->richText));
+        $this->assertSame($comment->parent, $changed->parent);
     }
 
     public function test_array_conversion_parent(): void
