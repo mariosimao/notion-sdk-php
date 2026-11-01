@@ -322,6 +322,40 @@ class PropertyCollectionTest extends TestCase
         $this->assertSame($prop, $c->getFormula("Name"));
     }
 
+    public function test_get_rollup_by_id(): void
+    {
+        $prop = Properties\Rollup::fromArray([
+            "id" => "abc",
+            "type" => "rollup",
+            "rollup" => [
+                "type" => "unsupported",
+                "function" => "sum",
+                "unsupported" => new \stdClass(),
+            ],
+        ]);
+
+        $c = PropertyCollection::create([ "Name" => $prop ]);
+
+        $this->assertSame($prop, $c->getRollupById("abc"));
+    }
+
+    public function test_get_rollup(): void
+    {
+        $prop = Properties\Rollup::fromArray([
+            "id" => "abc",
+            "type" => "rollup",
+            "rollup" => [
+                "type" => "number",
+                "function" => "sum",
+                "number" => 42,
+            ],
+        ]);
+
+        $c = PropertyCollection::create([ "Name" => $prop ]);
+
+        $this->assertSame($prop, $c->getRollup("Name"));
+    }
+
     public function test_get_last_edited_by_by_id(): void
     {
         $prop = Properties\LastEditedBy::fromArray([
