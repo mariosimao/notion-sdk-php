@@ -66,8 +66,13 @@ final readonly class Client
         return PropertyItemFactory::fromArray($body);
     }
 
-    /** @param list<BlockInterface> $content */
-    public function create(Page $page, array $content = []): Page
+    /**
+     * @param list<BlockInterface> $content
+     * @param list<string> $filterProperties Property names or IDs to include in
+     *                                       the returned page. All properties
+     *                                       are returned when empty.
+     */
+    public function create(Page $page, array $content = [], array $filterProperties = []): Page
     {
         $data = [
             "in_trash" => $page->inTrash,
@@ -84,7 +89,7 @@ final readonly class Client
 
         $data = json_encode($data);
 
-        $url = "https://api.notion.com/v1/pages";
+        $url = "https://api.notion.com/v1/pages" . self::filterPropertiesQuery($filterProperties);
         $request = Http::createRequest($url, $this->config)
             ->withMethod("POST")
             ->withHeader("Content-Type", "application/json");
@@ -96,7 +101,12 @@ final readonly class Client
         return Page::fromArray($body);
     }
 
-    public function update(Page $page): Page
+    /**
+     * @param list<string> $filterProperties Property names or IDs to include in
+     *                                       the returned page. All properties
+     *                                       are returned when empty.
+     */
+    public function update(Page $page, array $filterProperties = []): Page
     {
         $notUpdatableProps = [
             PropertyType::CreatedBy,
@@ -125,7 +135,7 @@ final readonly class Client
         $data = json_encode($data);
 
         $pageId = $page->id;
-        $url = "https://api.notion.com/v1/pages/{$pageId}";
+        $url = "https://api.notion.com/v1/pages/{$pageId}" . self::filterPropertiesQuery($filterProperties);
         $request = Http::createRequest($url, $this->config)
             ->withMethod("PATCH")
             ->withHeader("Content-Type", "application/json");
@@ -142,5 +152,20 @@ final readonly class Client
         $archivedPage = $page->delete();
 
         return $this->update($archivedPage);
+    }
+
+    /** @param list<string> $filterProperties */
+    private static function filterPropertiesQuery(array $filterProperties): string
+    {
+        if (empty($filterProperties)) {
+            return "";
+        }
+
+        $params = array_map(
+            fn(string $property) => "filter_properties=" . rawurlencode($property),
+            array_values(array_unique($filterProperties)),
+        );
+
+        return "?" . implode("&", $params);
     }
 }
