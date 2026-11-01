@@ -14,6 +14,7 @@ use Notion\Blocks\CodeLanguage;
 use Notion\Blocks\Column;
 use Notion\Blocks\ColumnList;
 use Notion\Blocks\Divider;
+use Notion\Blocks\Embed;
 use Notion\Blocks\EquationBlock;
 use Notion\Blocks\Heading1;
 use Notion\Blocks\Heading2;
@@ -348,6 +349,68 @@ class BlocksTest extends TestCase
         $this->assertSame($botId, $updatedBlock->metadata()->lastEditedBy?->id);
 
         $client->blocks()->delete($updatedBlock->metadata()->id);
+    }
+
+    public function test_create_page_with_html_block(): void
+    {
+        $client = Helper::client();
+        $fileUploadId = self::uploadHtmlFile();
+        $page = Helper::newPage()->changeTitle("HTML block test");
+
+        $newPage = $client->pages()->create($page, [Embed::fromFileUpload($fileUploadId)]);
+        $children = $client->blocks()->findChildren($newPage->id);
+        $client->pages()->delete($newPage);
+
+        $this->assertInstanceOf(Embed::class, $children[0]);
+        $this->assertNotEmpty($children[0]->url);
+        $this->assertNull($children[0]->fileUploadId);
+    }
+
+    public function test_add_html_block(): void
+    {
+        $client = Helper::client();
+        $fileUploadId = self::uploadHtmlFile();
+
+        $blocks = $client->blocks()->append(Helper::testPageId(), [
+            Embed::fromFileUpload($fileUploadId),
+        ]);
+        $found = $client->blocks()->find($blocks[0]->metadata()->id);
+        $client->blocks()->delete($blocks[0]->metadata()->id);
+
+        $this->assertSame(BlockType::Embed, $blocks[0]->metadata()->type);
+        $this->assertInstanceOf(Embed::class, $found);
+        $this->assertNotEmpty($found->url);
+    }
+
+    public function test_update_embed_to_html_block(): void
+    {
+        $client = Helper::client();
+        $fileUploadId = self::uploadHtmlFile();
+
+        $blocks = $client->blocks()->append(Helper::testPageId(), [
+            Embed::fromUrl("https://notion.so"),
+        ]);
+        /** @var Embed $embed */
+        $embed = $blocks[0];
+        $updated = $client->blocks()->update($embed->changeFileUpload($fileUploadId));
+        $client->blocks()->delete($updated->metadata()->id);
+
+        $this->assertInstanceOf(Embed::class, $updated);
+        $this->assertNotEmpty($updated->url);
+        $this->assertNotSame("https://notion.so", $updated->url);
+    }
+
+    private static function uploadHtmlFile(): string
+    {
+        $fileUploads = Helper::client()->fileUploads();
+        $fileUpload = $fileUploads->createSinglePart("html-block.html");
+        $fileUploads->sendSinglePart(
+            $fileUpload->id,
+            "html-block.html",
+            "<!DOCTYPE html><html><body><h1>Hello from notion-sdk-php</h1></body></html>",
+        );
+
+        return $fileUpload->id;
     }
 
     public function test_update_newly_created_block(): void

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support HTML blocks and file-backed embeds (#490).
+  - New `Notion\Blocks\Embed::fromFileUpload(string $fileUploadId)` named constructor, serialized as `embed.file_upload`. Attaching an uploaded `.html`/`.htm` file creates an HTML block.
+  - New `Embed::changeFileUpload(string $fileUploadId)`, `Embed::isFileUpload()` and nullable `Embed::$fileUploadId`. Supported when creating pages, appending children and updating blocks.
+  - `Embed::changeUrl()` now clears any attached file upload, as Notion accepts either `url` or `file_upload`, not both.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
@@ -45,6 +49,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` accept `RelativeDate` instances in addition to `DateTimeImmutable`.
 
 ### Changed
+- **[BREAKING]** `Notion\Blocks\Embed::$url` is now `string|null` instead of `string` (#490).
+  - It is `null` for embeds created with `Embed::fromFileUpload()` until they are sent to and read back from Notion (the API always returns a `url`).
+  - **Migration instructions:** handle the `null` case when reading `$url` from an embed you built locally.
+    ```php
+    // Before
+    $url = $embed->url;
+
+    // After
+    $url = $embed->url ?? "";
+    ```
 - **[BREAKING]** Change `DateFilter` value from `string` to `DateTimeImmutable|RelativeDate` and remove `array` type (#199).
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` now accept `DateTimeImmutable|RelativeDate` instead of a raw `string`.
   - Removed `array` from the allowed types of the internal `$value` property and `value()` return type hint, which is now `DateTimeImmutable|RelativeDate|bool|stdClass`.

@@ -15,6 +15,6 @@ final readonly class EmbedRenderer implements BlockRendererInterface
             return "";
         }
 
-        return MarkdownRenderer::ident($block->url, $depth);
+        return MarkdownRenderer::ident($block->url ?? "", $depth);
     }
 }
