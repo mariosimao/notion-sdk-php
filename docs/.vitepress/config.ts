@@ -121,6 +121,14 @@ export default defineConfig({
                 ],
             },
             {
+                text: 'Agents',
+                collapsible: true,
+                collapsed: true,
+                items: [
+                    { text: 'Introduction', link: '/agents/' },
+                ],
+            },
+            {
                 text: 'Advanced',
                 collapsible: true,
                 items: [

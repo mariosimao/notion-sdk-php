@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support Agent API management (#497).
+  - New `Notion\Agents\Client`, available through `Notion::agents()`.
+  - Query accessible agents with `query()`/`queryAll()` using `Notion\Agents\Query`, `Query\Filter` (including `and`/`or` compound filters) and `Query\Sort`.
+  - Retrieve agents with `find()` (use `Agent::PERSONAL_AGENT_ID` for Notion AI) and usage insights with `insights()`.
+  - Enable, disable, change or remove credit limits, and delete agents with `enable()`, `disable()`, `changeCreditLimit()`, `removeCreditLimit()` and `delete()`.
+  - Apply asynchronous batches of `Notion\Agents\Batch\Operation` with `batch()`, and poll them with `findBatch()` or `waitForBatch()`.
+  - Fields the integration cannot read are represented by `Notion\Agents\Hidden::Hidden`.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
