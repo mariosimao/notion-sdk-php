@@ -3,6 +3,12 @@
 namespace Notion\DataSources\Query;
 
 /**
+ * @psalm-type SortJson = array{
+ *      property?: string,
+ *      timestamp?: "created_time"|"last_edited_time",
+ *      direction: "ascending"|"descending",
+ * }
+ *
  * @psalm-immutable
  */
 final readonly class Sort
@@ -37,6 +43,22 @@ final readonly class Sort
     public static function lastEditedTime(): self
     {
         return new self(self::TYPE_TIMESTAMP, "last_edited_time", self::ORDER_ASCENDING);
+    }
+
+    /**
+     * @param SortJson $array
+     *
+     * @internal
+     */
+    public static function fromArray(array $array): self
+    {
+        $direction = $array["direction"] === self::ORDER_DESCENDING ? self::ORDER_DESCENDING : self::ORDER_ASCENDING;
+
+        if (isset($array["timestamp"])) {
+            return new self(self::TYPE_TIMESTAMP, $array["timestamp"], $direction);
+        }
+
+        return new self(self::TYPE_PROPERTY, $array["property"] ?? "", $direction);
     }
 
     public function ascending(): self

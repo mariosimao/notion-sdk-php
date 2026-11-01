@@ -10,6 +10,7 @@ use Notion\DataSources\Client as DataSourcesClient;
 use Notion\Pages\Client as PagesClient;
 use Notion\Search\Client as SearchClient;
 use Notion\Users\Client as UsersClient;
+use Notion\Views\Client as ViewsClient;
 use Notion\FileUploads\Client as FileUploadsClient;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -67,6 +68,11 @@ final readonly class Notion
     public function dataSources(): DataSourcesClient
     {
         return new DataSourcesClient($this->configuration);
+    }
+
+    public function views(): ViewsClient
+    {
+        return new ViewsClient($this->configuration);
     }
 
     public function blocks(): BlocksClient
