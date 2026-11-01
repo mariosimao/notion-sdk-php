@@ -190,6 +190,30 @@ class PageTest extends TestCase
         );
     }
 
+    public function test_array_conversion_with_agent_parent(): void
+    {
+        $array = [
+            "object" => "page",
+            "id" => "a7e80c0b-a766-43c3-a9e9-21ce94595e0e",
+            "created_time" => "2020-12-08T12:00:00.000000Z",
+            "last_edited_time" => "2020-12-08T12:00:00.000000Z",
+            "in_trash" => false,
+            "icon" => null,
+            "cover" => null,
+            "properties" => [],
+            "parent" => [
+                "type" => "agent_id",
+                "agent_id" => "7d50a184-5bbe-4d90-8f29-6bec57ed817b",
+            ],
+            "url" => "https://notion.so/a7e80c0ba76643c3a9e921ce94595e0e",
+        ];
+        $page = Page::fromArray($array);
+
+        $this->assertTrue($page->parent->isAgent());
+        $this->assertSame("7d50a184-5bbe-4d90-8f29-6bec57ed817b", $page->parent->id);
+        $this->assertSame($array, $page->toArray());
+    }
+
     public function test_from_array_change_emoji_icon(): void
     {
         $array = [

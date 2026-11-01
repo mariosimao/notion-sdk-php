@@ -8,7 +8,8 @@ namespace Notion\Common;
  *      database_id?: string,
  *      page_id?: string,
  *      block_id?: string,
- *      workspace?: true
+ *      workspace?: true,
+ *      agent_id?: string,
  * }
  */
 final readonly class ParentBlock
@@ -39,6 +40,14 @@ final readonly class ParentBlock
         return new self(ParentType::Workspace, null);
     }
 
+    /**
+     * Agent parents are only returned by the API for blocks inside agent instruction pages.
+     */
+    public static function agent(string $agentId): self
+    {
+        return new self(ParentType::Agent, $agentId);
+    }
+
     /** @psalm-param ParentJson $array */
     public static function fromArray(array $array): self
     {
@@ -49,6 +58,7 @@ final readonly class ParentBlock
             ParentType::Page => $array["page_id"] ?? "",
             ParentType::Block => $array["block_id"] ?? "",
             ParentType::Workspace => null,
+            ParentType::Agent => $array["agent_id"] ?? "",
         };
 
         return new self($type, $id);
@@ -74,6 +84,10 @@ final readonly class ParentBlock
 
         if ($this->type === ParentType::Workspace) {
             $array["workspace"] = true;
+        }
+
+        if ($this->type === ParentType::Agent) {
+            $array["agent_id"] = $this->id;
         }
 
         return $array;

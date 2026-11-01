@@ -8,4 +8,5 @@ enum ParentType: string
     case Page = "page_id";
     case Block = "block_id";
     case Workspace = "workspace";
+    case Agent = "agent_id";
 }
