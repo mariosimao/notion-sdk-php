@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support icons on tab-item paragraphs (#482).
+  - New nullable `Notion\Blocks\Paragraph::$icon` property (`Notion\Common\Icon|null`), parsed from and serialized to `paragraph.icon` (emoji, file or external icons).
+  - New `Paragraph::changeIcon(Emoji|File|Icon $icon)`, `Paragraph::removeIcon()` and `Paragraph::hasIcon()` methods.
+  - Notion only accepts icons on paragraphs that are direct children of a tab block; icons on other paragraphs are rejected by the API with a validation error.
+  - The `icon` key is omitted from request payloads for paragraphs without an icon, and sent as `null` only after `removeIcon()` clears an existing icon.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).

@@ -25,6 +25,7 @@ use Notion\Blocks\SyncedBlock;
 use Notion\Blocks\TableOfContents;
 use Notion\Blocks\ToDo;
 use Notion\Blocks\Toggle;
+use Notion\Common\Emoji;
 use Notion\Common\RichText;
 use Notion\Exceptions\ApiException;
 use PHPUnit\Framework\TestCase;
@@ -280,6 +281,16 @@ class BlocksTest extends TestCase
         $this->expectException(ApiException::class);
         $client->blocks()->append("inexistentId", [
             Paragraph::fromString("This is a simple paragraph"),
+        ]);
+    }
+
+    public function test_icon_on_paragraph_outside_tab_is_rejected(): void
+    {
+        $client = Helper::client();
+
+        $this->expectException(ApiException::class);
+        $client->blocks()->append(Helper::testPageId(), [
+            Paragraph::fromString("Not a tab item")->changeIcon(Emoji::fromString("🌙")),
         ]);
     }
 
