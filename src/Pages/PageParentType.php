@@ -9,4 +9,5 @@ enum PageParentType: string
     case Database = "database_id";
     case Workspace = "workspace";
     case Block = "block_id";
+    case Agent = "agent_id";
 }

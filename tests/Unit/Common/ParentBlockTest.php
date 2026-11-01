@@ -86,4 +86,26 @@ class ParentBlockTest extends TestCase
 
         $this->assertSame($array, $parent->toArray());
     }
+
+    public function test_agent(): void
+    {
+        $id = "7d50a184-5bbe-4d90-8f29-6bec57ed817b";
+        $parent = ParentBlock::agent($id);
+
+        $this->assertSame($id, $parent->id);
+        $this->assertSame(ParentType::Agent, $parent->type);
+    }
+
+    public function test_array_conversion_agent(): void
+    {
+        $array = [
+            "type" => "agent_id",
+            "agent_id" => "7d50a184-5bbe-4d90-8f29-6bec57ed817b",
+        ];
+        $parent = ParentBlock::fromArray($array);
+
+        $this->assertSame(ParentType::Agent, $parent->type);
+        $this->assertSame($array["agent_id"], $parent->id);
+        $this->assertSame($array, $parent->toArray());
+    }
 }

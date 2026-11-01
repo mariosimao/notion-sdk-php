@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support agent parents on pages and blocks (#487).
+  - New `Notion\Pages\PageParentType::Agent` and `Notion\Common\ParentType::Agent` enum cases, mapped to `agent_id`.
+  - New `PageParent::agent()` / `PageParent::isAgent()` and `ParentBlock::agent()` factories. The agent ID is exposed on `$parent->id`.
+  - Agent parents are only returned for agent instruction pages and their blocks, and are preserved in `fromArray()`/`toArray()` round trips.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
@@ -45,6 +49,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` accept `RelativeDate` instances in addition to `DateTimeImmutable`.
 
 ### Changed
+- **[BREAKING]** `Notion\Pages\PageParentType` and `Notion\Common\ParentType` have a new `Agent` case (#487).
+  - Exhaustive `match` expressions over these enums must handle the new case, e.g. `PageParentType::Agent => $parent->id`.
 - **[BREAKING]** Change `DateFilter` value from `string` to `DateTimeImmutable|RelativeDate` and remove `array` type (#199).
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` now accept `DateTimeImmutable|RelativeDate` instead of a raw `string`.
   - Removed `array` from the allowed types of the internal `$value` property and `value()` return type hint, which is now `DateTimeImmutable|RelativeDate|bool|stdClass`.

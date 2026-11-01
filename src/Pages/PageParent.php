@@ -4,12 +4,13 @@ namespace Notion\Pages;
 
 /**
  * @psalm-type PageParentJson = array{
- *      type: "page_id"|"data_source_id"|"database_id"|"workspace"|"block_id",
+ *      type: "page_id"|"data_source_id"|"database_id"|"workspace"|"block_id"|"agent_id",
  *      page_id?: string,
  *      data_source_id?: string,
  *      database_id?: string,
  *      workspace?: true,
  *      block_id?: string,
+ *      agent_id?: string,
  * }
  *
  * @psalm-immutable
@@ -49,6 +50,14 @@ final readonly class PageParent
     }
 
     /**
+     * Agent parents are only returned by the API for agent instruction pages.
+     */
+    public static function agent(string $agentId): self
+    {
+        return new self(PageParentType::Agent, $agentId);
+    }
+
+    /**
      * @psalm-param PageParentJson $array
      *
      * @internal
@@ -57,7 +66,8 @@ final readonly class PageParent
     {
         $type = PageParentType::from($array["type"]);
 
-        $id = $array["page_id"] ?? $array["data_source_id"] ?? $array["block_id"] ?? $array["database_id"] ?? null;
+        $id = $array["page_id"] ?? $array["data_source_id"] ?? $array["block_id"] ?? $array["database_id"]
+            ?? $array["agent_id"] ?? null;
 
         $databaseId = null;
         if (array_key_exists("database_id", $array)) {
@@ -90,6 +100,9 @@ final readonly class PageParent
         if ($this->isBlock()) {
             $array["block_id"] = $this->id;
         }
+        if ($this->isAgent()) {
+            $array["agent_id"] = $this->id;
+        }
 
         return $array;
     }
@@ -117,5 +130,10 @@ final readonly class PageParent
     public function isBlock(): bool
     {
         return $this->type === PageParentType::Block;
+    }
+
+    public function isAgent(): bool
+    {
+        return $this->type === PageParentType::Agent;
     }
 }

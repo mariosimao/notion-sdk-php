@@ -123,6 +123,30 @@ class PageParentTest extends TestCase
         $this->assertSame($array, $parent->toArray());
     }
 
+    public function test_create_parent_agent(): void
+    {
+        $parent = PageParent::agent("7d50a184-5bbe-4d90-8f29-6bec57ed817b");
+
+        $this->assertTrue($parent->isAgent());
+        $this->assertFalse($parent->isPage());
+        $this->assertSame(PageParentType::Agent, $parent->type);
+        $this->assertSame("7d50a184-5bbe-4d90-8f29-6bec57ed817b", $parent->id);
+        $this->assertNull($parent->databaseId);
+    }
+
+    public function test_agent_array_conversion(): void
+    {
+        $array = [
+            "type" => "agent_id",
+            "agent_id" => "7d50a184-5bbe-4d90-8f29-6bec57ed817b",
+        ];
+        $parent = PageParent::fromArray($array);
+
+        $this->assertTrue($parent->isAgent());
+        $this->assertSame($array["agent_id"], $parent->id);
+        $this->assertSame($array, $parent->toArray());
+    }
+
     public function test_invalid_type_array(): void
     {
         $this->expectException(\ValueError::class);
