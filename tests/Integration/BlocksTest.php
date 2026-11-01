@@ -19,6 +19,7 @@ use Notion\Blocks\Heading1;
 use Notion\Blocks\Heading2;
 use Notion\Blocks\Heading3;
 use Notion\Blocks\LinkToPage;
+use Notion\Blocks\MeetingNotesRequest;
 use Notion\Blocks\NumberedListItem;
 use Notion\Blocks\Paragraph;
 use Notion\Blocks\SyncedBlock;
@@ -358,5 +359,24 @@ class BlocksTest extends TestCase
 
         $this->expectException(ApiException::class);
         $client->blocks()->update($paragraph);
+    }
+
+    public function test_create_meeting_notes_from_non_media_block(): void
+    {
+        $client = Helper::client();
+        $page = $client->pages()->create(
+            Helper::newPage()->changeTitle("Meeting notes test"),
+            [ Paragraph::fromString("Not an audio block") ],
+        );
+        $paragraph = $client->blocks()->findChildren($page->id)[0];
+
+        try {
+            $this->expectException(ApiException::class);
+            $client->blocks()->createMeetingNotes(
+                MeetingNotesRequest::fromBlock($paragraph->metadata()->id)->disableSummary(),
+            );
+        } finally {
+            $client->pages()->delete($page);
+        }
     }
 }

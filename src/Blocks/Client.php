@@ -123,6 +123,33 @@ final readonly class Client
         return BlockFactory::fromArray($body);
     }
 
+    /**
+     * Create AI meeting notes from an uploaded audio or video file.
+     *
+     * Processing continues asynchronously. Retrieve the block with `find()`
+     * to check its status. This endpoint is not idempotent: retrying may
+     * create duplicate meeting notes blocks.
+     *
+     * @throws \Notion\Exceptions\InvalidBetaException When the beta feature is not available.
+     * @throws \Notion\Exceptions\ApiException When AI meeting notes are not available to the
+     *                                           integration's user or the request is invalid.
+     */
+    public function createMeetingNotes(MeetingNotesRequest $request): MeetingNotesCreated
+    {
+        $data = json_encode($request->toArray());
+
+        $url = "https://api.notion.com/v1/blocks/meeting_notes";
+        $httpRequest = Http::createRequest($url, $this->config)
+            ->withMethod("POST")
+            ->withHeader("Content-Type", "application/json");
+        $httpRequest->getBody()->write($data);
+
+        /** @var array{ object: string, id: string, type?: string, ... } $body */
+        $body = Http::sendRequest($httpRequest, $this->config);
+
+        return MeetingNotesCreated::fromArray($body);
+    }
+
     public function delete(string $blockId): BlockInterface
     {
         $url = "https://api.notion.com/v1/blocks/{$blockId}";

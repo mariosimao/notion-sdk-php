@@ -37,6 +37,7 @@ class ApiException extends NotionException
 
         return match ($code) {
             "conflict_error" => new ConflictException($message, $code, $response),
+            "invalid_beta"   => new InvalidBetaException($message, $code, $response),
             default          => new static($message, $code, $response),
         };
     }
