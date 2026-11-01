@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support searching the trash and querying archived pages (#492).
+  - New `Notion\Search\Query::filterByTrash(bool $inTrash = true)`, sent as `filter.in_trash`. It can be used alone or combined with `filterByPages()`/`filterByDataSources()` in any order.
+  - New `Notion\Search\Filter::byTrash()`, `pages()`, `dataSources()` and `changeInTrash()` methods, and `Filter::$inTrash` property.
+  - New `Notion\DataSources\Query::changeIsArchived(bool $isArchived = true)` and `Query::$isArchived` property, sent as the top-level `is_archived` body parameter to return archived pages.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
@@ -45,6 +49,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` accept `RelativeDate` instances in addition to `DateTimeImmutable`.
 
 ### Changed
+- **[BREAKING]** `Notion\Search\Filter::$value` and `Filter::$property` are now nullable (`FilterValue|null` and `FilterProperty|null`), since a search filter may contain only `in_trash` (#492).
+  - Code reading these properties must handle `null`:
+    ```php
+    // Before
+    $type = $query->filter->value->value;
+
+    // After
+    $type = $query->filter?->value?->value;
+    ```
+  - `Filter::toArray()` omits `value`/`property` when they are `null` and includes `in_trash` when set.
 - **[BREAKING]** Change `DateFilter` value from `string` to `DateTimeImmutable|RelativeDate` and remove `array` type (#199).
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` now accept `DateTimeImmutable|RelativeDate` instead of a raw `string`.
   - Removed `array` from the allowed types of the internal `$value` property and `value()` return type hint, which is now `DateTimeImmutable|RelativeDate|bool|stdClass`.

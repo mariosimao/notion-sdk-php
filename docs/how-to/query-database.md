@@ -32,3 +32,13 @@ $pages = $result->pages; // array of Page
 $result->hasMore; // true or false
 $result->nextCursor // cursor ID or null
 ```
+
+## Archived pages
+
+By default, only non-archived pages are returned. Use `changeIsArchived()` to
+query archived pages instead. The archive selector is applied before filters
+and sorts.
+
+```php
+$query = Query::create()->changeIsArchived();
+```

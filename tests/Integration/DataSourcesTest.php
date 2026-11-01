@@ -209,6 +209,21 @@ class DataSourcesTest extends TestCase
         $this->assertCount(1, $result->pages);
     }
 
+    public function test_query_archived_pages_from_data_source(): void
+    {
+        $client = Helper::client();
+
+        $database = $this->newDatabase("Movies DB");
+        $dataSource = self::moviesDataSource($database->id);
+
+        $result = $client->dataSources()->query($dataSource, Query::create()->changeIsArchived());
+
+        $client->databases()->delete($database);
+
+        // Freshly created pages are not archived
+        $this->assertCount(0, $result->pages);
+    }
+
     public function test_query_inexistent_data_source(): void
     {
         $client = Helper::client();

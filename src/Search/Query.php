@@ -2,7 +2,11 @@
 
 namespace Notion\Search;
 
-/** @psalm-immutable */
+/**
+ * @psalm-immutable
+ *
+ * @psalm-import-type FilterJson from \Notion\Search\Filter
+ */
 final readonly class Query
 {
     private function __construct(
@@ -28,7 +32,7 @@ final readonly class Query
     {
         return new self(
             $this->query,
-            Filter::byPages(),
+            $this->filter?->pages() ?? Filter::byPages(),
             $this->sort,
             $this->startCursor,
             $this->pageSize,
@@ -39,7 +43,23 @@ final readonly class Query
     {
         return new self(
             $this->query,
-            Filter::byDataSources(),
+            $this->filter?->dataSources() ?? Filter::byDataSources(),
+            $this->sort,
+            $this->startCursor,
+            $this->pageSize,
+        );
+    }
+
+    /**
+     * Filter results by trash status. Use `true` to list content in the trash.
+     *
+     * Can be combined with `filterByPages()` and `filterByDataSources()`.
+     */
+    public function filterByTrash(bool $inTrash = true): self
+    {
+        return new self(
+            $this->query,
+            $this->filter?->changeInTrash($inTrash) ?? Filter::byTrash($inTrash),
             $this->sort,
             $this->startCursor,
             $this->pageSize,
@@ -86,7 +106,7 @@ final readonly class Query
      *
      * @return array{
      *      query?: string,
-     *      filter?: array{ value: string, property: string },
+     *      filter?: FilterJson,
      *      sort?: array{ direction: string, timestamp: string },
      *      start_cursor?: string,
      *      page_size?: int

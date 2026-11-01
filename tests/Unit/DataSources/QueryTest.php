@@ -118,4 +118,31 @@ class QueryTest extends TestCase
 
         $this->assertEquals($expected, $query->toArray());
     }
+
+    public function test_query_archived_pages(): void
+    {
+        $query = Query::create()
+            ->changeIsArchived()
+            ->changeFilter(TextFilter::property("Title")->isNotEmpty())
+            ->addSort(Sort::createdTime()->descending())
+            ->changeSorts(Sort::createdTime()->descending())
+            ->changeStartCursor("abc")
+            ->changePageSize(10);
+
+        $this->assertTrue($query->isArchived);
+        $this->assertTrue($query->toArray()["is_archived"]);
+    }
+
+    public function test_query_non_archived_pages_by_default(): void
+    {
+        $query = Query::create();
+
+        $this->assertFalse($query->isArchived);
+        $this->assertArrayNotHasKey("is_archived", $query->toArray());
+
+        $query = $query->changeIsArchived()->changeIsArchived(false);
+
+        $this->assertFalse($query->isArchived);
+        $this->assertArrayNotHasKey("is_archived", $query->toArray());
+    }
 }
