@@ -27,7 +27,12 @@ MARKDOWN;
 
         $this->assertSame($expected, $markdown);
     }
+    public function test_render_with_start_index(): void
+    {
+        $block = NumberedListItem::fromString("Item 5")->changeListStartIndex(5);
 
+        $this->assertSame("5. Item 5", NumberedListItemRenderer::render($block));
+    }
 
     public function test_invalid_block(): void
     {

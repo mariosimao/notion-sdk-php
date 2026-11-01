@@ -19,6 +19,7 @@ use Notion\Blocks\Heading1;
 use Notion\Blocks\Heading2;
 use Notion\Blocks\Heading3;
 use Notion\Blocks\LinkToPage;
+use Notion\Blocks\NumberedListFormat;
 use Notion\Blocks\NumberedListItem;
 use Notion\Blocks\Paragraph;
 use Notion\Blocks\SyncedBlock;
@@ -31,6 +32,37 @@ use PHPUnit\Framework\TestCase;
 
 class BlocksTest extends TestCase
 {
+    public function test_numbered_list_metadata(): void
+    {
+        $client = Helper::client();
+        $page = Helper::newPage()->changeTitle("Numbered list metadata test");
+
+        $content = [
+            NumberedListItem::fromString("Third item")
+                ->changeListStartIndex(3)
+                ->changeListFormat(NumberedListFormat::Roman),
+            NumberedListItem::fromString("Fourth item"),
+        ];
+
+        $newPage = $client->pages()->create($page, $content);
+
+        $blocks = $client->blocks()->findChildren($newPage->id);
+
+        $first = $blocks[0];
+        $this->assertInstanceOf(NumberedListItem::class, $first);
+        $this->assertSame(3, $first->listStartIndex);
+        $this->assertSame(NumberedListFormat::Roman, $first->listFormat);
+
+        $updated = $client->blocks()->update(
+            $first->changeListStartIndex(5)->changeListFormat(NumberedListFormat::Letters),
+        );
+        $this->assertInstanceOf(NumberedListItem::class, $updated);
+        $this->assertSame(5, $updated->listStartIndex);
+        $this->assertSame(NumberedListFormat::Letters, $updated->listFormat);
+
+        $client->pages()->delete($newPage);
+    }
+
     public function test_create_page_change_all_blocks(): void
     {
         $client = Helper::client();
