@@ -2,6 +2,7 @@
 
 namespace Notion;
 
+use Notion\Agents\Client as AgentsClient;
 use Notion\Authentication\Client as AuthenticationClient;
 use Notion\Blocks\Client as BlocksClient;
 use Notion\Comments\Client as CommentsClient;
@@ -87,6 +88,11 @@ final readonly class Notion
     public function fileUploads(): FileUploadsClient
     {
         return new FileUploadsClient($this->configuration);
+    }
+
+    public function agents(): AgentsClient
+    {
+        return new AgentsClient($this->configuration);
     }
 
     public function authentication(string $clientId, string $clientSecret): AuthenticationClient
