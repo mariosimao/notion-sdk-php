@@ -134,4 +134,117 @@ class ColumnListTest extends TestCase
 
         $this->assertTrue($block->metadata()->inTrash);
     }
+
+    public function test_create_with_width_ratios(): void
+    {
+        $column1 = Column::create(Paragraph::fromString("1"))->changeWidthRatio(0.25);
+        $column2 = Column::create(Paragraph::fromString("2"))->changeWidthRatio(0.75);
+
+        $list = ColumnList::create($column1, $column2);
+
+        /** @var array{column_list: array{children: list<array{column: array{width_ratio: float}}>}} $array */
+        $array = $list->toArray();
+        $children = $array["column_list"]["children"];
+        $this->assertSame(0.25, $children[0]["column"]["width_ratio"]);
+        $this->assertSame(0.75, $children[1]["column"]["width_ratio"]);
+    }
+
+    public function test_create_with_width_ratios_tolerates_float_imprecision(): void
+    {
+        $list = ColumnList::create(
+            Column::create()->changeWidthRatio(0.1),
+            Column::create()->changeWidthRatio(0.2),
+            Column::create()->changeWidthRatio(0.7),
+        );
+
+        $this->assertCount(3, $list->columns);
+    }
+
+    public function test_create_with_partial_width_ratios(): void
+    {
+        $list = ColumnList::create(
+            Column::create()->changeWidthRatio(0.5),
+            Column::create(),
+            Column::create(),
+        );
+
+        $this->assertCount(3, $list->columns);
+    }
+
+    public function test_create_with_width_ratios_not_adding_up_to_one(): void
+    {
+        $this->expectException(ColumnListException::class);
+        $this->expectExceptionMessage("must add up to 1");
+
+        ColumnList::create(
+            Column::create()->changeWidthRatio(0.25),
+            Column::create()->changeWidthRatio(0.5),
+        );
+    }
+
+    public function test_create_with_width_ratios_exceeding_one(): void
+    {
+        $this->expectException(ColumnListException::class);
+        $this->expectExceptionMessage("must not add up to more than 1");
+
+        ColumnList::create(
+            Column::create()->changeWidthRatio(0.75),
+            Column::create()->changeWidthRatio(0.5),
+            Column::create(),
+        );
+    }
+
+    public function test_add_child_with_width_ratios(): void
+    {
+        $list = ColumnList::create()
+            ->addChild(Column::create()->changeWidthRatio(0.25))
+            ->addChild(Column::create()->changeWidthRatio(0.75));
+
+        $this->assertCount(2, $list->columns);
+    }
+
+    public function test_add_child_with_width_ratios_exceeding_one(): void
+    {
+        $list = ColumnList::create()->addChild(Column::create()->changeWidthRatio(0.75));
+
+        $this->expectException(ColumnListException::class);
+        $list->addChild(Column::create()->changeWidthRatio(0.5));
+    }
+
+    public function test_change_children_with_width_ratios_not_adding_up_to_one(): void
+    {
+        $this->expectException(ColumnListException::class);
+
+        ColumnList::create()->changeChildren(
+            Column::create()->changeWidthRatio(0.25),
+            Column::create()->changeWidthRatio(0.25),
+        );
+    }
+
+    public function test_from_array_does_not_validate_width_ratios(): void
+    {
+        $column = [
+            "object"           => "block",
+            "id"               => "880f4b72-28b9-497a-b9c3-dd67d61b87ef",
+            "created_time"     => "2021-10-18T17:09:00.000000Z",
+            "last_edited_time" => "2021-10-18T17:09:00.000000Z",
+            "in_trash"         => false,
+            "has_children"     => false,
+            "type"             => "column",
+            "column"           => [ "children" => [], "width_ratio" => 0.25 ],
+        ];
+
+        $list = ColumnList::fromArray([
+            "object"           => "block",
+            "id"               => "04a13895-f072-4814-8af7-cd11af127040",
+            "created_time"     => "2021-10-18T17:09:00.000000Z",
+            "last_edited_time" => "2021-10-18T17:09:00.000000Z",
+            "in_trash"         => false,
+            "has_children"     => true,
+            "type"             => "column_list",
+            "column_list"      => [ "children" => [ $column, $column ] ],
+        ]);
+
+        $this->assertSame(0.25, $list->columns[0]->widthRatio);
+    }
 }

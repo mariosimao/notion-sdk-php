@@ -17,6 +17,8 @@ use Notion\Exceptions\BlockException\ColumnListException;
  */
 final readonly class ColumnList implements BlockInterface
 {
+    private const WIDTH_RATIO_TOLERANCE = 0.000001;
+
     /** @param Column[] $columns */
     private function __construct(
         private BlockMetadata $metadata,
@@ -28,6 +30,7 @@ final readonly class ColumnList implements BlockInterface
     public static function create(Column ...$columns): self
     {
         $metadata = BlockMetadata::create(BlockType::ColumnList);
+        self::validateWidthRatios($columns, true);
 
         return new self($metadata, $columns);
     }
@@ -63,24 +66,58 @@ final readonly class ColumnList implements BlockInterface
 
     public function addChild(BlockInterface $child): self
     {
-        if ($child->metadata()->type !== BlockType::Column) {
+        if (!$child instanceof Column) {
             throw ColumnListException::childNotColumn();
         }
 
-        /** @var Column $child */
-        return new self($this->metadata(), [...$this->columns, $child]);
+        $columns = [...$this->columns, $child];
+        self::validateWidthRatios($columns, false);
+
+        return new self($this->metadata(), $columns);
     }
 
     public function changeChildren(BlockInterface ...$children): self
     {
+        $columns = [];
         foreach ($children as $child) {
-            if ($child->metadata()->type !== BlockType::Column) {
+            if (!$child instanceof Column) {
                 throw ColumnListException::childNotColumn();
             }
+            $columns[] = $child;
         }
 
-        /** @var Column[] $children */
-        return new self($this->metadata(), $children);
+        self::validateWidthRatios($columns, true);
+
+        return new self($this->metadata(), $columns);
+    }
+
+    /**
+     * Width ratios provided by columns must not add up to more than 1. When
+     * `$complete` is true and every column has a width ratio, they must add
+     * up to exactly 1.
+     *
+     * @param Column[] $columns
+     * @psalm-pure
+     */
+    private static function validateWidthRatios(array $columns, bool $complete): void
+    {
+        $sum = 0.0;
+        $allHaveRatios = $columns !== [];
+        foreach ($columns as $column) {
+            if ($column->widthRatio === null) {
+                $allHaveRatios = false;
+                continue;
+            }
+            $sum += $column->widthRatio;
+        }
+
+        if ($sum > 1 + self::WIDTH_RATIO_TOLERANCE) {
+            throw ColumnListException::widthRatiosExceedOne($sum);
+        }
+
+        if ($complete && $allHaveRatios && abs($sum - 1) > self::WIDTH_RATIO_TOLERANCE) {
+            throw ColumnListException::widthRatiosNotAddingUpToOne($sum);
+        }
     }
 
     public function delete(): BlockInterface

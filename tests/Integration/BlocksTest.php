@@ -273,6 +273,29 @@ class BlocksTest extends TestCase
         $this->assertSame($originalBlock->metadata()->id, $referenceBlock->originalBlockId());
     }
 
+    public function test_add_column_list_with_width_ratios(): void
+    {
+        $client = Helper::client();
+
+        $columnList = ColumnList::create(
+            Column::create(Paragraph::fromString("Narrow"))->changeWidthRatio(0.25),
+            Column::create(Paragraph::fromString("Wide"))->changeWidthRatio(0.75),
+        );
+
+        $blocks = $client->blocks()->append(Helper::testPageId(), [$columnList]);
+        $columnListId = $blocks[0]->metadata()->id;
+
+        $columns = $client->blocks()->findChildren($columnListId);
+
+        $client->blocks()->delete($columnListId);
+
+        $this->assertCount(2, $columns);
+        $this->assertInstanceOf(Column::class, $columns[0]);
+        $this->assertInstanceOf(Column::class, $columns[1]);
+        $this->assertEqualsWithDelta(0.25, $columns[0]->widthRatio, 0.0001);
+        $this->assertEqualsWithDelta(0.75, $columns[1]->widthRatio, 0.0001);
+    }
+
     public function test_add_to_inexistent_block(): void
     {
         $client = Helper::client();

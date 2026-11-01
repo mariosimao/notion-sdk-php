@@ -52,4 +52,31 @@ class BlockExceptionTest extends TestCase
         $expected = "Heading cannot be un-togglified with children. Please remove child blocks";
         $this->assertSame($expected, $e->getMessage());
     }
+
+    public function test_invalid_column_width_ratio(): void
+    {
+        $e = ColumnException::invalidWidthRatio(1.5);
+
+        $this->assertSame(
+            "Column width ratio must be greater than 0 and less than or equal to 1, 1.5 given.",
+            $e->getMessage(),
+        );
+    }
+
+    public function test_column_width_ratios_exceed_one(): void
+    {
+        $e = ColumnListException::widthRatiosExceedOne(1.25);
+
+        $this->assertSame("Column width ratios must not add up to more than 1, 1.25 given.", $e->getMessage());
+    }
+
+    public function test_column_width_ratios_not_adding_up_to_one(): void
+    {
+        $e = ColumnListException::widthRatiosNotAddingUpToOne(0.5);
+
+        $this->assertSame(
+            "When all columns of a column list have width ratios, they must add up to 1, 0.5 given.",
+            $e->getMessage(),
+        );
+    }
 }
