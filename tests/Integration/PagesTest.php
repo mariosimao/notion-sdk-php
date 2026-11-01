@@ -8,10 +8,12 @@ use Notion\Databases\DatabaseParent;
 use Notion\DataSources\DataSource;
 use Notion\DataSources\DataSourceParent;
 use Notion\DataSources\Properties\Relation as RelationDataSourceProperty;
+use Notion\DataSources\Properties\RichTextProperty as RichTextDataSourceProperty;
 use Notion\Exceptions\ApiException;
 use Notion\Pages\Page;
 use Notion\Pages\PageParent;
 use Notion\Pages\Properties\Relation;
+use Notion\Pages\Properties\RichTextProperty;
 use Notion\Pages\PropertyItems\PropertyItemList;
 use Notion\Pages\PropertyItems\TitlePropertyItem;
 use PHPUnit\Framework\TestCase;
@@ -179,5 +181,42 @@ class PagesTest extends TestCase
         } finally {
             $client->pages()->delete($page);
         }
+    }
+
+    public function test_filter_properties_on_create_and_update(): void
+    {
+        $client = Helper::client();
+
+        $database = Database::create(DatabaseParent::page(Helper::testPageId()))
+            ->changeTitle("Filter properties DB");
+        $database = $client->databases()->create($database);
+
+        $dataSource = DataSource::create(DataSourceParent::database($database->id))
+            ->changeTitle("Filter properties")
+            ->addProperty(RichTextDataSourceProperty::create("Description"));
+        $dataSource = $client->dataSources()->create($dataSource);
+
+        $page = Page::create(PageParent::dataSource($dataSource->id))
+            ->changeTitle("Filtered page")
+            ->addProperty("Description", RichTextProperty::fromString("Some description"));
+
+        $created = $client->pages()->create($page, [], ["title"]);
+        $createdProperties = $created->properties()->getAll();
+
+        $found = $client->pages()->find($created->id);
+        $updated = $client->pages()->update(
+            $found->addProperty("Description", RichTextProperty::fromString("Updated")),
+            ["Description"],
+        );
+        $updatedProperties = $updated->properties()->getAll();
+
+        $client->databases()->delete($database);
+
+        $this->assertCount(1, $createdProperties);
+        $this->assertSame("Filtered page", $created->title()?->toString());
+
+        $this->assertCount(1, $updatedProperties);
+        $this->assertArrayHasKey("Description", $updatedProperties);
+        $this->assertSame("Updated", $updated->properties()->getRichText("Description")->toString());
     }
 }

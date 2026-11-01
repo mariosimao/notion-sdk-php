@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support property filtering on page writes (#496).
+  - `Notion\Pages\Client::create()` accepts an optional third argument `$filterProperties` and `Notion\Pages\Client::update()` an optional second argument `$filterProperties`: a list of property names or IDs sent as repeated `filter_properties` query parameters to limit the properties included in the returned page.
+  - The request body is unchanged and all properties are returned when the list is empty (default).
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
