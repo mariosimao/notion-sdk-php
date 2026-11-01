@@ -135,6 +135,11 @@ final readonly class Client
     }
 
     /**
+     * Query every page of a data source, following pagination cursors
+     *
+     * Notion caps queries at 10,000 results. Use `query()` and check
+     * `Result::isIncomplete()` to detect when this limit is reached.
+     *
      * @param Sort[] $sorts
      *
      * @return Page[]

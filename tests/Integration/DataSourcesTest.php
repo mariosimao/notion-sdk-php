@@ -207,6 +207,8 @@ class DataSourcesTest extends TestCase
         $client->databases()->delete($database);
 
         $this->assertCount(1, $result->pages);
+        $this->assertTrue($result->requestStatus->isComplete());
+        $this->assertFalse($result->isIncomplete());
     }
 
     public function test_query_inexistent_data_source(): void

@@ -2,6 +2,7 @@
 
 namespace Notion\Search;
 
+use Notion\Common\RequestStatus;
 use Notion\DataSources\DataSource;
 use Notion\Pages\Page;
 
@@ -10,12 +11,14 @@ use Notion\Pages\Page;
  *
  * @psalm-import-type PageJson from \Notion\Pages\Page
  * @psalm-import-type DataSourceJson from \Notion\DataSources\DataSource
+ * @psalm-import-type RequestStatusJson from \Notion\Common\RequestStatus
  *
  * @psalm-type ResultJson = array{
  *      object: string,
  *      results: array<int, PageJson|DataSourceJson>,
  *      next_cursor: string|null,
- *      has_more: bool
+ *      has_more: bool,
+ *      request_status?: RequestStatusJson
  * }
  */
 final readonly class Result
@@ -25,6 +28,7 @@ final readonly class Result
         public array $results,
         public string|null $nextCursor,
         public bool $hasMore,
+        public RequestStatus $requestStatus,
     ) {
     }
 
@@ -51,6 +55,19 @@ final readonly class Result
             $results,
             $array["next_cursor"],
             $array["has_more"],
+            isset($array["request_status"])
+                ? RequestStatus::fromArray($array["request_status"])
+                : RequestStatus::complete(),
         );
+    }
+
+    /**
+     * Whether Notion stopped returning results before the search was exhausted
+     *
+     * When `true`, `hasMore` is `false` even though more matching results exist.
+     */
+    public function isIncomplete(): bool
+    {
+        return $this->requestStatus->isIncomplete();
     }
 }

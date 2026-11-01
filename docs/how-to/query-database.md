@@ -31,4 +31,11 @@ $result = $notion->databases()->query($database, $query);
 $pages = $result->pages; // array of Page
 $result->hasMore; // true or false
 $result->nextCursor // cursor ID or null
+$result->isIncomplete(); // true when Notion stopped at the 10,000 results limit
+$result->requestStatus->incompleteReason; // IncompleteReason::QueryResultLimitReached or null
 ```
+
+Notion paginates through at most 10,000 results per query. When this limit is
+reached, `hasMore` becomes `false` and `isIncomplete()` returns `true`. Narrow
+the query with filters (e.g. `created_time` windows) to read the remaining
+entries.
