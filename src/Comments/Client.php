@@ -58,44 +58,47 @@ final readonly class Client
         return Comment::fromArray($body);
     }
 
-    // public function find(string $userId): User
-    // {
-    //     $url = "https://api.notion.com/v1/users/{$userId}";
-    //     $request = Http::createRequest($url, $this->config);
+    /**
+     * Update the content of a comment
+     *
+     * Only comments created by the integration can be updated.
+     */
+    public function update(Comment $comment): Comment
+    {
+        $data = [
+            "rich_text" => $comment->toArray()["rich_text"],
+        ];
 
-    //     /** @psalm-var UserJson $body */
-    //     $body = Http::sendRequest($request, $this->config);
+        $json = json_encode($data);
 
-    //     return User::fromArray($body);
-    // }
+        $url = "https://api.notion.com/v1/comments/{$comment->id}";
+        $request = Http::createRequest($url, $this->config)
+            ->withMethod("PATCH")
+            ->withHeader("Content-Type", "application/json");
+        $request->getBody()->write($json);
 
-    // /**
-    //  * @return User[]
-    //  */
-    // public function findAll(): array
-    // {
-    //     $url = "https://api.notion.com/v1/users";
-    //     $request = Http::createRequest($url, $this->config);
+        /** @psalm-var CommentJson $body */
+        $body = Http::sendRequest($request, $this->config);
 
-    //     /** @var array{ results: UserJson[] } $body */
-    //     $body = Http::sendRequest($request, $this->config);
+        return Comment::fromArray($body);
+    }
 
-    //     return array_map(
-    //         function (array $userData): User {
-    //             return User::fromArray($userData);
-    //         },
-    //         $body["results"],
-    //     );
-    // }
+    /**
+     * Delete a comment
+     *
+     * Only comments created by the integration can be deleted.
+     *
+     * @param string $commentId Comment ID
+     */
+    public function delete(string $commentId): Comment
+    {
+        $url = "https://api.notion.com/v1/comments/{$commentId}";
+        $request = Http::createRequest($url, $this->config)
+            ->withMethod("DELETE");
 
-    // public function me(): User
-    // {
-    //     $url = "https://api.notion.com/v1/users/me";
-    //     $request = Http::createRequest($url, $this->config);
+        /** @psalm-var CommentJson $body */
+        $body = Http::sendRequest($request, $this->config);
 
-    //     /** @psalm-var UserJson $body */
-    //     $body = Http::sendRequest($request, $this->config);
-
-    //     return User::fromArray($body);
-    // }
+        return Comment::fromArray($body);
+    }
 }

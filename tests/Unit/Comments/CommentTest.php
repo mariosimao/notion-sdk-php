@@ -102,4 +102,20 @@ class CommentTest extends TestCase
         $comment = Comment::fromArray($array);
         $this->assertEquals($array, $comment->toArray());
     }
+
+    public function test_change_text(): void
+    {
+        $pageId = "8e2b2ad4-63f6-4e9c-8036-9a19c8d3c896";
+        $comment = Comment::create($pageId, RichText::fromString("Sample comment"));
+
+        $changed = $comment->changeText(RichText::fromString("Updated "), RichText::fromString("comment"));
+
+        $this->assertSame("Sample comment", RichText::multipleToString(...$comment->text));
+        $this->assertSame("Updated comment", RichText::multipleToString(...$changed->text));
+        $this->assertSame($comment->id, $changed->id);
+        $this->assertSame($comment->parent, $changed->parent);
+        $this->assertSame($comment->discussionId, $changed->discussionId);
+        $this->assertSame($comment->createdTime, $changed->createdTime);
+        $this->assertSame($comment->userId, $changed->userId);
+    }
 }
