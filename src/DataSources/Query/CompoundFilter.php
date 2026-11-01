@@ -30,6 +30,22 @@ final readonly class CompoundFilter implements Filter
         return new self(self::TYPE_OR, ...$filters);
     }
 
+    public function isAnd(): bool
+    {
+        return $this->type === self::TYPE_AND;
+    }
+
+    public function isOr(): bool
+    {
+        return $this->type === self::TYPE_OR;
+    }
+
+    /** @return Filter[] */
+    public function filters(): array
+    {
+        return $this->filters;
+    }
+
     public function toArray(): array
     {
         return [

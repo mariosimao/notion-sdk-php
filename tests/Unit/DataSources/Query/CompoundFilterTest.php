@@ -100,4 +100,20 @@ class CompoundFilterTest extends TestCase
         ];
         $this->assertSame($expected, $filter->toArray());
     }
+
+    public function test_accessors(): void
+    {
+        $text = TextFilter::property("Title")->isNotEmpty();
+        $date = DateFilter::createdTime()->pastWeek();
+
+        $and = CompoundFilter::and($text, $date);
+        $or = CompoundFilter::or($text);
+
+        $this->assertTrue($and->isAnd());
+        $this->assertFalse($and->isOr());
+        $this->assertSame([ $text, $date ], $and->filters());
+        $this->assertTrue($or->isOr());
+        $this->assertFalse($or->isAnd());
+        $this->assertSame([ $text ], $or->filters());
+    }
 }

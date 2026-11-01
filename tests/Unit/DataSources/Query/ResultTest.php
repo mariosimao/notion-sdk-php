@@ -36,5 +36,40 @@ class ResultTest extends TestCase
         $this->assertCount(1, $result->pages);
         $this->assertTrue($result->hasMore);
         $this->assertSame("889431ed-4f50-460b-a926-36f6cf0f9669", $result->nextCursor);
+        $this->assertNull($result->requestStatus);
+        $this->assertFalse($result->isIncomplete());
+    }
+
+    public function test_incomplete_result(): void
+    {
+        $apiResponse = [
+            "results" => [],
+            "has_more" => false,
+            "next_cursor" => null,
+            "request_status" => [
+                "type" => "incomplete",
+                "incomplete_reason" => "query_result_limit_reached",
+            ],
+        ];
+
+        $result = Result::fromArray($apiResponse);
+
+        $this->assertTrue($result->isIncomplete());
+        $this->assertNotNull($result->requestStatus);
+        $this->assertTrue($result->requestStatus->isResultLimitReached());
+    }
+
+    public function test_complete_result(): void
+    {
+        $apiResponse = [
+            "results" => [],
+            "has_more" => false,
+            "next_cursor" => null,
+            "request_status" => [ "type" => "complete" ],
+        ];
+
+        $result = Result::fromArray($apiResponse);
+
+        $this->assertFalse($result->isIncomplete());
     }
 }

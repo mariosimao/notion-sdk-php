@@ -22,6 +22,7 @@ use Notion\DataSources\Query;
 use Notion\DataSources\Query\CompoundFilter;
 use Notion\DataSources\Query\DateFilter;
 use Notion\DataSources\Query\SelectFilter;
+use Notion\DataSources\Query\Sort;
 use Notion\DataSources\DataSource;
 use Notion\DataSources\DataSourceParent;
 use Notion\DataSources\DataSourceParentType;
@@ -150,11 +151,52 @@ class DataSourcesTest extends TestCase
         $dataSource = self::moviesDataSource($database->id);
 
         $client = Helper::client();
-        $pages = $client->dataSources()->queryAllPages($dataSource);
+        $pages = $client->dataSources()->queryAll($dataSource);
 
         $client->databases()->delete($database);
 
         $this->assertCount(5, $pages);
+    }
+
+    public function test_query_all_pages_preserves_filter_and_sorts(): void
+    {
+        $database = $this->newDatabase("Movies DB");
+        $dataSource = self::moviesDataSource($database->id);
+
+        $query = Query::create()
+            ->changeFilter(SelectFilter::property("Category")->equals("Drama"))
+            ->changeSorts(Sort::property("Release date")->descending())
+            ->changePageSize(2);
+
+        $client = Helper::client();
+        $pages = $client->dataSources()->queryAll($dataSource, $query);
+
+        $client->databases()->delete($database);
+
+        $titles = array_map(fn (Page $p) => $p->title()?->toString(), $pages);
+        $this->assertSame(
+            [ "American Beauty", "Dead Poets Society", "A Clockwork Orange" ],
+            $titles,
+        );
+    }
+
+    public function test_iterate_all_pages_lazily(): void
+    {
+        $database = $this->newDatabase("Movies DB");
+        $dataSource = self::moviesDataSource($database->id);
+
+        $query = Query::create()->changePageSize(2);
+
+        $client = Helper::client();
+        $ids = [];
+        foreach ($client->dataSources()->iterateAll($dataSource, $query) as $page) {
+            $ids[] = $page->id;
+        }
+
+        $client->databases()->delete($database);
+
+        $this->assertCount(5, $ids);
+        $this->assertCount(5, array_unique($ids));
     }
 
     /** @group bigdb */
@@ -174,7 +216,7 @@ class DataSourcesTest extends TestCase
             $dataSource = self::bigDataSource($database->id);
         }
 
-        $pages = $client->dataSources()->queryAllPages($dataSource);
+        $pages = $client->dataSources()->queryAll($dataSource);
 
         $this->assertCount(self::$bigDataSourceSize, $pages);
     }

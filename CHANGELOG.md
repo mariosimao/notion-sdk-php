@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support querying data sources beyond the 10,000-row per-query result limit (#491).
+  - New `Notion\DataSources\Client::iterateAll(DataSource $dataSource, ?Query $query = null)` lazily yields every matching `Page` through a `Generator`, fetching pages on demand.
+  - New `Notion\DataSources\Client::queryAll(DataSource $dataSource, ?Query $query = null)` collects every matching `Page` into an array.
+  - Both helpers implement the [documented windowing strategy](https://developers.notion.com/guides/data-apis/query-large-data-sources): they sort by `created_time` ascending and, whenever a window reaches the limit, start a fresh query filtered by `created_time` on or after the last row seen. Rows on the window boundary are de-duplicated by ID.
+  - The query filter is preserved and combined with the window bound (`and` filters are flattened). The query page size is preserved and its start cursor is ignored.
+  - Query sorts are honored while the result fits in a single query; past the limit, the remaining pages are read in `created_time` order.
+  - A `Notion\Exceptions\QueryException` is thrown when the limit is reached on a query with a top-level `or` filter, or when more rows than the limit share the same `created_time`.
+  - New `Notion\DataSources\Query\RequestStatus` value object and `Result::$requestStatus` property, parsed from the `request_status` response field, plus `Result::isIncomplete()` to detect truncated query results.
+  - New `CompoundFilter::isAnd()`, `CompoundFilter::isOr()` and `CompoundFilter::filters()` accessors.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
@@ -79,6 +88,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Migration instructions:**
     - If you extended concrete SDK classes (e.g., `Page`, `Block`, `Client`, `RichText`, etc.) to override or add behavior, refactor your code to use **composition** instead of inheritance (e.g., wrap the SDK instance in your own service or decorator class).
     - If you mocked concrete SDK classes in unit tests, refactor test suites to mock interfaces (such as PSR-18 `ClientInterface`, PSR-17 factories, `BlockInterface`, `PropertyInterface`) or use real instances with HTTP mock handlers (`MockHandler`) or integration tests.
+
+### Removed
+- **[BREAKING]** Remove `Notion\DataSources\Client::queryAllPages()` in favor of `queryAll()` (#491).
+  - `queryAllPages()` silently stopped at 10,000 pages on large data sources. `queryAll()` reads every page and also accepts a filter.
+  - **Migration instructions:**
+    - Replace `queryAllPages()` calls with `queryAll()`, wrapping sorts in a `Query`:
+      ```php
+      // Before
+      $pages = $notion->dataSources()->queryAllPages($dataSource);
+      $pages = $notion->dataSources()->queryAllPages($dataSource, [ Sort::property("Name") ]);
+
+      // After
+      $pages = $notion->dataSources()->queryAll($dataSource);
+      $pages = $notion->dataSources()->queryAll($dataSource, Query::create()->addSort(Sort::property("Name")));
+      ```
+    - Sorts are only guaranteed while the result has up to 10,000 pages. Sort locally after collecting if you need a strict order on larger data sources.
+    - For very large data sources, prefer `iterateAll()` to stream pages instead of holding all of them in memory.
 
 ### Fixed
 - `DataSource::archive()`, `restore()` and `delete()` no longer drop `databaseParent` (#452).
