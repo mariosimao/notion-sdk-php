@@ -10,6 +10,8 @@ use Notion\Common\RichText;
 /**
  * @psalm-import-type ParentJson from \Notion\Common\ParentBlock
  * @psalm-import-type RichTextJson from \Notion\Common\RichText
+ * @psalm-import-type CommentAttachmentJson from \Notion\Comments\CommentAttachment
+ * @psalm-import-type CommentDisplayNameJson from \Notion\Comments\CommentDisplayName
  *
  * @psalm-type CommentJson = array{
  *      id: string,
@@ -21,12 +23,18 @@ use Notion\Common\RichText;
  *          object: "user",
  *          id: string
  *      },
- *      rich_text: RichTextJson[]
+ *      rich_text: RichTextJson[],
+ *      attachments?: CommentAttachmentJson[],
+ *      display_name?: CommentDisplayNameJson|null,
+ *      has_pending_attachments?: bool
  * }
  */
 final readonly class Comment
 {
-    /** @param RichText[] $text */
+    /**
+     * @param RichText[] $text
+     * @param CommentAttachment[] $attachments
+     */
     private function __construct(
         public string $id,
         public ParentBlock|null $parent,
@@ -35,6 +43,9 @@ final readonly class Comment
         public DateTimeImmutable $lastEditedTime,
         public string $userId,
         public array $text,
+        public array $attachments = [],
+        public CommentDisplayName|null $displayName = null,
+        public bool $hasPendingAttachments = false,
     ) {
     }
 
@@ -69,8 +80,22 @@ final readonly class Comment
         $lastEditedTime = new DateTimeImmutable($array["last_edited_time"]);
         $userId = $array["created_by"]["id"];
         $text = array_map(fn ($t) => RichText::fromArray($t), $array["rich_text"]);
+        $attachments = array_map(fn ($a) => CommentAttachment::fromArray($a), $array["attachments"] ?? []);
+        $displayName = isset($array["display_name"]) ? CommentDisplayName::fromArray($array["display_name"]) : null;
+        $hasPendingAttachments = $array["has_pending_attachments"] ?? false;
 
-        return new self($id, $parent, $discussionId, $createdTime, $lastEditedTime, $userId, $text);
+        return new self(
+            $id,
+            $parent,
+            $discussionId,
+            $createdTime,
+            $lastEditedTime,
+            $userId,
+            $text,
+            $attachments,
+            $displayName,
+            $hasPendingAttachments,
+        );
     }
 
     public function toArray(): array
@@ -84,6 +109,8 @@ final readonly class Comment
                 "id" => $this->userId,
             ],
             "rich_text" => array_map(fn (RichText $t) => $t->toArray(), $this->text),
+            "attachments" => array_map(fn (CommentAttachment $a) => $a->toArray(), $this->attachments),
+            "has_pending_attachments" => $this->hasPendingAttachments,
         ];
 
         if ($this->parent !== null) {
@@ -94,6 +121,64 @@ final readonly class Comment
             $array["discussion_id"] = $this->discussionId;
         }
 
+        if ($this->displayName !== null) {
+            $array["display_name"] = $this->displayName->toArray();
+        }
+
         return $array;
+    }
+
+    /** Add attachments to a comment. Comments support up to 3 attachments. */
+    public function addAttachment(CommentAttachment ...$attachments): self
+    {
+        return $this->changeAttachments(...[...$this->attachments, ...$attachments]);
+    }
+
+    public function changeAttachments(CommentAttachment ...$attachments): self
+    {
+        return new self(
+            $this->id,
+            $this->parent,
+            $this->discussionId,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $this->userId,
+            $this->text,
+            $attachments,
+            $this->displayName,
+            $this->hasPendingAttachments,
+        );
+    }
+
+    public function changeDisplayName(CommentDisplayName $displayName): self
+    {
+        return new self(
+            $this->id,
+            $this->parent,
+            $this->discussionId,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $this->userId,
+            $this->text,
+            $this->attachments,
+            $displayName,
+            $this->hasPendingAttachments,
+        );
+    }
+
+    public function removeDisplayName(): self
+    {
+        return new self(
+            $this->id,
+            $this->parent,
+            $this->discussionId,
+            $this->createdTime,
+            $this->lastEditedTime,
+            $this->userId,
+            $this->text,
+            $this->attachments,
+            null,
+            $this->hasPendingAttachments,
+        );
     }
 }

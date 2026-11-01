@@ -43,6 +43,21 @@ final readonly class Client
         unset($data["created_time"]);
         unset($data["last_edited_time"]);
         unset($data["created_by"]);
+        unset($data["has_pending_attachments"]);
+
+        // Only file uploads can be attached when creating a comment
+        $attachments = array_values(array_map(
+            fn (CommentAttachment $a) => $a->toArray(),
+            array_filter($comment->attachments, fn (CommentAttachment $a) => $a->isFileUpload()),
+        ));
+        unset($data["attachments"]);
+        if (count($attachments) > 0) {
+            $data["attachments"] = $attachments;
+        }
+
+        if ($comment->displayName !== null) {
+            $data["display_name"] = $comment->displayName->toRequestArray();
+        }
 
         $json = json_encode($data);
 
