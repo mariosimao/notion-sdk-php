@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support person user email verification state (#493).
+  - New nullable `Notion\Users\Person::$emailVerified` property, parsed from and serialized to `person.email_verified`, and `Person::isEmailVerified()` helper.
+  - Available wherever person emails are returned, including users and OAuth token `owner` users (`Notion\Authentication\Owner::$user`).
+  - It is `null` when the API does not return the field.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).

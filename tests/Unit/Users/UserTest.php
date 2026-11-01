@@ -16,7 +16,7 @@ class UserTest extends TestCase
             "name"       => "Mario Simao",
             "avatar_url" => "http://example.com",
             "type"       => "person",
-            "person"     => [ "email" => "mariosimao@email.com" ],
+            "person"     => [ "email" => "mariosimao@email.com", "email_verified" => true ],
         ];
 
         $user = User::fromArray($array);
@@ -27,6 +27,7 @@ class UserTest extends TestCase
         $this->assertEquals("Mario Simao", $user->name);
         $this->assertEquals(UserType::Person, $user->type);
         $this->assertEquals("mariosimao@email.com", $user->person?->email);
+        $this->assertTrue($user->person?->emailVerified);
     }
 
     public function test_bot_from_array(): void

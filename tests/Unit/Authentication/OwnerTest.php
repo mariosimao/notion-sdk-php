@@ -17,6 +17,11 @@ class OwnerTest extends TestCase
                 "object" => "user",
                 "id" => "e2586e30-b3e6-42d7-a50e-e374526d56d7",
                 "name" => "Jane Doe",
+                "type" => "person",
+                "person" => [
+                    "email" => "jane@example.com",
+                    "email_verified" => false,
+                ],
             ],
         ];
 
@@ -25,6 +30,8 @@ class OwnerTest extends TestCase
         $this->assertTrue($owner->isUser());
         $this->assertSame("e2586e30-b3e6-42d7-a50e-e374526d56d7", $owner->user?->id);
         $this->assertSame("Jane Doe", $owner->user?->name);
+        $this->assertSame("jane@example.com", $owner->user?->person?->email);
+        $this->assertFalse($owner->user?->person?->emailVerified);
     }
 
     public function test_from_array_workspace(): void
