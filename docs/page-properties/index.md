@@ -92,4 +92,23 @@ $notion->pages()->update($page);
 - PhoneNumber
 - Relation
 - RichText
+- Rollup
 - Select
+
+## Unavailable formula and rollup values
+
+Notion may return formula and rollup values with type `unsupported` when the
+value depends on too many related pages or nested formulas and rollups. No
+partial value is available in this case. Rollups still expose their function.
+
+```php
+$formula = $page->properties()->getFormula("Total");
+if ($formula->isUnsupported()) {
+    // Value is unavailable
+}
+
+$rollup = $page->properties()->getRollup("Sum of prices");
+if ($rollup->isUnsupported()) {
+    echo $rollup->function->value; // e.g. "sum"
+}
+```

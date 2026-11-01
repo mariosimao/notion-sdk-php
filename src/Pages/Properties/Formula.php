@@ -2,22 +2,24 @@
 
 namespace Notion\Pages\Properties;
 
-use DateTimeImmutable;
 use Notion\Common\Date;
+use stdClass;
 
 /**
  * @psalm-type FormulaJson = array{
  *      id: string,
  *      type: "formula",
  *      formula: array{
- *          type: "string"|"number"|"boolean"|"date",
- *          string?: string,
- *          number?: int|float,
- *          'boolean'?: bool,
+ *          type: "string"|"number"|"boolean"|"date"|"unsupported",
+ *          string?: string|null,
+ *          number?: int|float|null,
+ *          'boolean'?: bool|null,
  *          date?: array{
  *              start: string,
- *              end: string|null
- *          }
+ *              end?: string|null,
+ *              time_zone?: string|null
+ *          }|null,
+ *          unsupported?: array<empty, empty>|stdClass
  *      }
  * }
  *
@@ -74,6 +76,9 @@ final readonly class Formula implements PropertyInterface
             case FormulaType::Date:
                 $array["formula"]["date"] = $this->date?->toArray();
                 break;
+            case FormulaType::Unsupported:
+                $array["formula"]["unsupported"] = new stdClass();
+                break;
         }
 
         return $array;
@@ -82,5 +87,34 @@ final readonly class Formula implements PropertyInterface
     public function metadata(): PropertyMetadata
     {
         return $this->metadata;
+    }
+
+    public function isString(): bool
+    {
+        return $this->type === FormulaType::String;
+    }
+
+    public function isNumber(): bool
+    {
+        return $this->type === FormulaType::Number;
+    }
+
+    public function isBoolean(): bool
+    {
+        return $this->type === FormulaType::Boolean;
+    }
+
+    public function isDate(): bool
+    {
+        return $this->type === FormulaType::Date;
+    }
+
+    /**
+     * The value is unavailable because it depends on too many related pages
+     * or nested formulas and rollups. No partial value is exposed.
+     */
+    public function isUnsupported(): bool
+    {
+        return $this->type === FormulaType::Unsupported;
     }
 }

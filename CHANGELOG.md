@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support unavailable (`unsupported`) formula and rollup values (#495).
+  - New `Notion\Pages\Properties\Rollup` page property, returned by `PropertyFactory` for `rollup` values, with `getRollup()` and `getRollupById()` on `PropertyCollection`. It exposes `type`, `function`, `number`, `date` and `array`, plus `isNumber()`, `isDate()`, `isArray()`, `isIncomplete()` and `isUnsupported()`.
+  - `Notion\Pages\Properties\Formula` now round-trips `type: "unsupported"` values and has `isString()`, `isNumber()`, `isBoolean()`, `isDate()` and `isUnsupported()` helpers.
+  - Unsupported values never expose a partial value; rollups still expose their `function`. `FormulaPropertyItem` and `RollupPropertyItem` already support this variant through `isUnsupported()`.
 - Support moving a data source to another database with `Notion\DataSources\Client::move()` (#464).
   - The returned `DataSource` includes the updated `parent` and `databaseParent` metadata.
 - Support the Peruvian sol number format (#458).
@@ -45,6 +49,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` accept `RelativeDate` instances in addition to `DateTimeImmutable`.
 
 ### Changed
+- **[BREAKING]** Rollup page property values are parsed as `Notion\Pages\Properties\Rollup` instead of `Notion\Pages\Properties\Unknown` (#495).
+  - The `Notion\Pages\PropertyItems\RollupType` enum moved to `Notion\Pages\Properties\RollupType`, alongside `FormulaType`.
+  - **Migration instructions:**
+    - Replace `instanceof Unknown` checks and raw `toArray()["rollup"]` access with the typed `Rollup` class:
+      - Before: `$value = $page->getProperty("Total")->toArray()["rollup"]["number"];`
+      - After: `$value = $page->properties()->getRollup("Total")->number;`
+    - Change `use Notion\Pages\PropertyItems\RollupType;` to `use Notion\Pages\Properties\RollupType;`.
 - **[BREAKING]** Change `DateFilter` value from `string` to `DateTimeImmutable|RelativeDate` and remove `array` type (#199).
   - `DateFilter` methods `equals()`, `before()`, `after()`, `onOrBefore()`, and `onOrAfter()` now accept `DateTimeImmutable|RelativeDate` instead of a raw `string`.
   - Removed `array` from the allowed types of the internal `$value` property and `value()` return type hint, which is now `DateTimeImmutable|RelativeDate|bool|stdClass`.

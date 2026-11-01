@@ -5,6 +5,7 @@ namespace Notion\Pages\PropertyItems;
 use Notion\Common\Date;
 use Notion\DataSources\Properties\RollupFunction;
 use Notion\Pages\Properties\PropertyType;
+use Notion\Pages\Properties\RollupType;
 use stdClass;
 
 /**

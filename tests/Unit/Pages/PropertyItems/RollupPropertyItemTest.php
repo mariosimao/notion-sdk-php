@@ -7,7 +7,7 @@ use Notion\Common\Date;
 use Notion\DataSources\Properties\RollupFunction;
 use Notion\Pages\Properties\PropertyType;
 use Notion\Pages\PropertyItems\RollupPropertyItem;
-use Notion\Pages\PropertyItems\RollupType;
+use Notion\Pages\Properties\RollupType;
 use PHPUnit\Framework\TestCase;
 
 class RollupPropertyItemTest extends TestCase

@@ -1,6 +1,6 @@
 <?php
 
-namespace Notion\Pages\PropertyItems;
+namespace Notion\Pages\Properties;
 
 enum RollupType: string
 {
