@@ -7,6 +7,9 @@ use Notion\Exceptions\BlockException;
 use Notion\Blocks\Paragraph;
 use Notion\Common\Color;
 use Notion\Common\Date;
+use Notion\Common\Emoji;
+use Notion\Common\File;
+use Notion\Common\Icon;
 use Notion\Common\RichText;
 use PHPUnit\Framework\TestCase;
 
@@ -193,5 +196,132 @@ class ParagraphTest extends TestCase
         $paragraph = Paragraph::fromString("Hello World!")->changeColor(Color::Red);
 
         $this->assertSame(Color::Red, $paragraph->color);
+    }
+
+    public function test_paragraph_has_no_icon_by_default(): void
+    {
+        $paragraph = Paragraph::fromString("Hello World!");
+
+        $this->assertFalse($paragraph->hasIcon());
+        $this->assertNull($paragraph->icon);
+        $this->assertArrayNotHasKey("icon", $this->paragraphArray($paragraph));
+    }
+
+    public function test_change_icon_to_emoji(): void
+    {
+        $paragraph = Paragraph::fromString("Tab 1")->changeIcon(Emoji::fromString("🌙"));
+
+        $this->assertTrue($paragraph->hasIcon());
+        $this->assertTrue($paragraph->icon?->isEmoji());
+        $this->assertSame("🌙", $paragraph->icon->emoji?->emoji);
+        $this->assertSame(
+            [ "type" => "emoji", "emoji" => "🌙" ],
+            $this->paragraphArray($paragraph)["icon"],
+        );
+    }
+
+    public function test_change_icon_to_file(): void
+    {
+        $file = File::createExternal("https://example.com/icon.png");
+        $paragraph = Paragraph::fromString("Tab 1")->changeIcon($file);
+
+        $this->assertTrue($paragraph->hasIcon());
+        $this->assertTrue($paragraph->icon?->isFile());
+        $this->assertEquals($file->toArray(), $this->paragraphArray($paragraph)["icon"]);
+    }
+
+    public function test_change_icon_with_icon_object(): void
+    {
+        $icon = Icon::fromEmoji(Emoji::fromString("⭐"));
+        $paragraph = Paragraph::fromString("Tab 1")->changeIcon($icon);
+
+        $this->assertSame($icon, $paragraph->icon);
+    }
+
+    public function test_icon_is_kept_when_changing_paragraph(): void
+    {
+        $paragraph = Paragraph::fromString("Tab 1")
+            ->changeIcon(Emoji::fromString("🌙"))
+            ->changeText([ RichText::fromString("Tab 2") ])
+            ->addText(RichText::fromString("!"))
+            ->changeColor(Color::Blue)
+            ->addChild(Paragraph::fromString("Content"));
+
+        $this->assertTrue($paragraph->hasIcon());
+        $this->assertSame("Tab 2!", $paragraph->toString());
+    }
+
+    public function test_remove_icon(): void
+    {
+        $paragraph = Paragraph::fromString("Tab 1")
+            ->changeIcon(Emoji::fromString("🌙"))
+            ->removeIcon();
+
+        $this->assertFalse($paragraph->hasIcon());
+        $array = $this->paragraphArray($paragraph);
+        $this->assertArrayHasKey("icon", $array);
+        $this->assertNull($array["icon"]);
+    }
+
+    public function test_remove_icon_without_icon_does_not_send_icon(): void
+    {
+        $paragraph = Paragraph::fromString("Hello")->removeIcon();
+
+        $this->assertArrayNotHasKey("icon", $this->paragraphArray($paragraph));
+    }
+
+    public function test_create_from_array_with_emoji_icon(): void
+    {
+        $paragraph = Paragraph::fromArray($this->tabItemArray([ "type" => "emoji", "emoji" => "🌙" ]));
+
+        $this->assertTrue($paragraph->hasIcon());
+        $this->assertSame("🌙", $paragraph->icon?->emoji?->emoji);
+        $this->assertSame([ "type" => "emoji", "emoji" => "🌙" ], $this->paragraphArray($paragraph)["icon"]);
+    }
+
+    public function test_create_from_array_with_external_icon(): void
+    {
+        $paragraph = Paragraph::fromArray($this->tabItemArray([
+            "type"     => "external",
+            "external" => [ "url" => "https://example.com/icon.png" ],
+        ]));
+
+        $this->assertTrue($paragraph->hasIcon());
+        $this->assertTrue($paragraph->icon?->isFile());
+        $this->assertSame("https://example.com/icon.png", $paragraph->icon->file?->url);
+    }
+
+    public function test_create_from_array_with_null_icon(): void
+    {
+        $paragraph = Paragraph::fromArray($this->tabItemArray(null));
+
+        $this->assertFalse($paragraph->hasIcon());
+        $this->assertArrayNotHasKey("icon", $this->paragraphArray($paragraph));
+    }
+
+    private function paragraphArray(Paragraph $paragraph): array
+    {
+        /** @psalm-var array{paragraph: array<string, mixed>} $array */
+        $array = $paragraph->toArray();
+
+        return $array["paragraph"];
+    }
+
+    private function tabItemArray(array|null $icon): array
+    {
+        return [
+            "object"           => "block",
+            "id"               => "04a13895-f072-4814-8af7-cd11af127040",
+            "created_time"     => "2021-10-18T17:09:00.000Z",
+            "last_edited_time" => "2021-10-18T17:09:00.000Z",
+            "in_trash"         => false,
+            "has_children"     => false,
+            "type"             => "paragraph",
+            "paragraph"        => [
+                "rich_text" => [],
+                "color"     => "default",
+                "icon"      => $icon,
+            ],
+        ];
     }
 }
